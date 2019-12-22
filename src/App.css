@@ -1,0 +1,97 @@
+.App {
+  text-align: top;
+}
+
+.Header-default {
+  display: flex;
+  justify-content: center;
+
+  background-color: #171a21;
+  height: 102px;/*Set Header Height*/
+  width: 1024;/*Set Header Height*/
+  /*border: 1px solid green;*//*For some reason some hard margin exists at the top if I don't set border up like this*/
+}
+.Header-profile {
+  display: flex;
+  justify-content: center;
+  /*border: 1px solid green;*//*For some reason some hard margin exists at the top if I don't set border up like this*/
+}
+
+Button {
+  color: lightgray;
+  background: inherit;
+  margin: none;
+  border: none;
+}
+
+.Button-install {
+  display: inline-flex;
+
+  background: #5c7e10;
+  border: black;
+  text-align: top;
+
+  padding-top: 4.5px;
+  padding-bottom: 4.5px;
+  padding-right: 16px;
+  padding-left: 16px;
+  margin: 2px;
+
+  text-decoration: none;
+}
+
+.Card {
+  display: flex; 
+  flex: 1;/*1 for fill in the space of the parent*/
+  
+  border: 1px solid rgb(123, 79, 245);
+}
+
+.Card-noflex {
+  flex: 2;
+  border: 1px solid green;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+
+.Link-header, .grid {
+  color: white;
+}
+
+.Div-row{
+  display: flex; 
+  
+  border: #09d3ac;
+}
+
+.font-default{
+  background: inherit;  
+}
+
+.grid1{
+  display: flex; 
+  flex: 1;/*1 for fill in the space of the parent*/
+  
+  border: 1px solid green;
+  vertical-align: center;
+}
+.grid2{
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  border: 2px solid rgb(255, 208, 0);
+}
+
+img{
+ 
+}
+
+.font-default, text, .Link-header, .grid1, .grid2, .Button-install{
+  color: #E5E4dc;
+  font-size: 11px;
+  text-decoration: none;
+  /*font-family: "Motiva-Sans, sans-serif";*/
+}
