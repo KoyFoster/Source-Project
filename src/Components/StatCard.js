@@ -16,27 +16,22 @@ var chart =
     iScale: 150
 }
 
-var stats =
-{
+//User inputted stats as semi-colin dilimited strings
+var statTypes = "1;2;3;4;5;6"
+var stats = "1;3;1;5;1;7"
 
-}
-
-//Rotate Function
-
-
-//Stat Card
-function StatCard(props)
+var ChartSetup = function(props)
 {
     //Window Dimensions Window Center
-    var iWidth = 560;   chart.iCentX = iWidth/2;
-    var iHeight = 350;  chart.iCentY = iHeight/2;
-
     var iDim = [560, 350];
+    chart.iCentX = iDim[0]/2;
+    chart.iCentY = iDim[1]/2;
+
     var iCore = [iDim[0]/2, iDim[1]/2];
+    var iDegrees = 360/chart.iParts;
         //var pCenter = new Vector2(chart.iCentX,chart.iCentY);
         //var pLength = new Vector2(chart.iCentX+chart.iRadius,chart.iCentY);
 
-    var iDegrees = 360/chart.iParts;
         //var iRadians = (iDegrees*Math.PI)/180;
     //var iCircum = Math.PI*chart.iRadius*2;
     //var iArcLength = iCircum*(iDegrees)
@@ -61,10 +56,60 @@ function StatCard(props)
         }
     }    
     //Offset Coordinates
-    var meshTrans = mesh.map(function (arr) { return [iCore[0] + arr[0], iCore[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [iCore[0] + arr[0], iCore[1] + arr[1]]; });
+}
+
+var iDim = [560, 350];
+var iCore = [iDim[0]/2, iDim[1]/2];
+var meshTrans;
+
+function update()
+{
+    meshTrans = ChartSetup();
+}
+
+function start()
+{
+    update();
+}
+
+//User Input Class
+//Stat Card
+class InputForm extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.state = 
+        {
+            value: '3'
+        };
+        //OnHandle Updates
+        this.handleChange = this.handleChange.bind(this);
+    }
     
+    handleChange(event) {
+        this.setState({value: chart.iParts = event.target.value});//chart.iParts = event.target.value
+        start();
+        this.forceUpdate();
+    };    
+
+    render() 
+    {
+        return (<form>
+            <label>Stat quantity: </label>
+            <input type="text" value={this.state.value} onChange={this.handleChange}></input>
+        </form>);
+    }
+}
+
+//Stat Card
+function StatCard(props)
+{
+
     //OnLoad
-    window.onload = function () {
+    window.update = function () {
+        start();
     };
 
     //Render and Logic 
@@ -77,8 +122,7 @@ function StatCard(props)
             </svg>
         </Box>
         <Box display="flexbox" border="2px solid #3f0000" bgcolor="yellow" color="#a4a4a4" width={iDim[0]} height={iDim[1]}>
-            <label>Stat quantity: </label>
-            <input type="text" name="Stat quantity" value={6}></input>
+            <InputForm></InputForm>
         </Box>
     </div>)
 }
