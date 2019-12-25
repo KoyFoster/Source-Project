@@ -31,7 +31,7 @@ var setupDiagram = function(props)
     var iDegrees = 360/chart.iParts;
 
     /*Iterate For Each Triangle*/
-    var v2Polygon = [new Vector2(0,0), new Vector2(0, 1*chart.iScale), new Vector2(0, 1*chart.iScale)];
+    var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*chart.iScale), new Vector2(0, -1*chart.iScale)];
     var mesh = [];
     for (var i = 1; i < chart.iParts+1; i++)
     {
