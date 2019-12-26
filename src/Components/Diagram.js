@@ -7,14 +7,19 @@ var chart =
 { 
     iCentX: 0, iCentY: 0,
     iParts: 7,
-    iScale: 150
+    iScale: 300
 };
 
 //User inputted stats as semi-colin dilimited strings
+var statRange = [0,10];
 var statTypes = ["POWER","SPEED","RANGE","DURABILITY","PRECISION","POTENTIAL","???"];
-var stats = [8,(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1)];
+var stats = [(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1)];
 
-var iDim = [560, 350];
+//Window Dimensions Window Center
+var iDegrees = (360/chart.iParts);
+var iDim = [750, 750];
+chart.iCentX = iDim[0]/2;
+chart.iCentY = iDim[1]/2;
 var iCore = [iDim[0]/2, iDim[1]/2];
 var meshTrans;
 
@@ -22,14 +27,6 @@ var meshTrans;
 /*Update Diagram*/
 var setupDiagram = function(props)
 {
-    //Window Dimensions Window Center
-    var iDim = [560, 350];
-    chart.iCentX = iDim[0]/2;
-    chart.iCentY = iDim[1]/2;
-
-    var iCore = [iDim[0]/2, iDim[1]/2];
-    var iDegrees = 360/chart.iParts;
-
     /*Iterate For Each Triangle*/
     var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*chart.iScale), new Vector2(0, -1*chart.iScale)];
     var mesh = [];
@@ -55,14 +52,6 @@ var setupDiagram = function(props)
 
 var setupStats = function(props)
 {
-    //Window Dimensions Window Center
-    var iDim = [560, 350];
-    chart.iCentX = iDim[0]/2;
-    chart.iCentY = iDim[1]/2;
-
-    var iCore = [iDim[0]/2, iDim[1]/2];
-    var iDegrees = (360/chart.iParts);
-
     /*Iterate For Each Triangle*/
     var lastCorner = new Vector2();
     var firstCorner = new Vector2();
@@ -109,35 +98,42 @@ var setupStats = function(props)
     //Offset Coordinates
     meshTrans = mesh.map(function (arr) { return [iCore[0] + arr[0], iCore[1] + arr[1]]; });
 
-
-
     var htmlStats = <polygon points={meshTrans} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />;
 
     return htmlStats;
 };
 
-
-var SetupText = function(props)
+var SetupTextAndTicks = function(props)
 {
-    //Window Dimensions Window Center
-    var iDim = [560, 350];
-    var iCore = [iDim[0]/2, iDim[1]/2];
-    var iDegrees = (360/chart.iParts);
-
     var htmlResult = [];
     for (var i = 0; i < chart.iParts; i++)
-    {        
-        htmlResult.push( <text text-anchor="middle" x={iCore[0]} y={iCore[1]-chart.iScale-10} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"} > {statTypes[i]} </text>); 
-    }
-return <a>{htmlResult}</a>
-};
+    {   
+        //htmlResult.push( <polygon points="01,01 10,10 01,01" x={iCore[0]} y={iCore[1]-chart.iScale-10} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"} />);
+        /*Stat Label*/
+        htmlResult.push( <text text-anchor="middle" x={iCore[0]} y={iCore[1]-chart.iScale-10} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"} > {statTypes[i]} </text>);
 
+        /*Stat Ticks*/
+        var ticks = 10;
+        for(var iT = 1; iT<ticks; iT++)
+        {
+            htmlResult.push(<line x1={-4+iCore[0]} y1={iCore[1]-((chart.iScale/ticks)*iT)} x2={4+iCore[0]} y2={iCore[1]-((chart.iScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"}/>);
+            if((iT%2) === 0)
+            {
+                htmlResult.push(
+                <text text-anchor="middle" x={-10+iCore[0]} y={4+iCore[1]-((chart.iScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"}>
+                    {iT}
+                </text>);
+            }
+        }
+    }
+    return <a>{htmlResult}</a>
+};
 
 class Diagram extends React.Component
 {
     constructor(props){
         super(props);
-    };    
+    };
 
     render(){
         return(
@@ -153,7 +149,8 @@ class Diagram extends React.Component
                         </defs>
                         {setupDiagram()}
                         {setupStats()}
-                        {SetupText()}
+                        {SetupTextAndTicks()}
+                        {/*<line x1="0" y1="0" x2={iCore[0]} y2={iCore[1]} style={{stroke: "rgb(255,0,0)", strokeWidth: 2}}/>*/}
                     </svg>
                 </div>
                 <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={iDim[0]} height={iDim[1]}>
