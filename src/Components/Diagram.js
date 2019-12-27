@@ -5,24 +5,28 @@ import StatInputCtrls from "./StatInputCtrls.js"
 
 var chart = 
 { 
-    iCentX: 0, iCentY: 0,
-    iParts: 7,
+    iParts: 6,
     iScale: 300
 };
 
-//User inputted stats as semi-colin dilimited strings
-var statRange = [0,10];
-var statTypes = ["POWER","SPEED","RANGE","DURABILITY","PRECISION","POTENTIAL","???"];
-var stats = [(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1),(Math.random() * (8 - 1) + 1)];
-
 //Window Dimensions Window Center
 var iDegrees = (360/chart.iParts);
-var iDim = [750, 750];
-chart.iCentX = iDim[0]/2;
-chart.iCentY = iDim[1]/2;
+var iDim = [chart.iScale*3, chart.iScale*3];
 var iCore = [iDim[0]/2, iDim[1]/2];
 var meshTrans;
 
+
+//User inputted stats as semi-colin dilimited strings
+var statRanges = [[0,8], [0,10], [0,7],     [0,10],        [0,9],       [0,2],      [0,10], [0,10], [0,10], [0,10]];
+var statTypes = ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"];
+var stats = 
+[   (Math.random() * (statRanges[0][1] - 1) + 1), 
+    (Math.random() * (statRanges[0][1] - 1) + 1),
+    (Math.random() * (statRanges[2][1] - 1) + 1),
+    (Math.random() * (statRanges[3][1] - 1) + 1),
+    (Math.random() * (statRanges[4][1] - 1) + 1),
+    (Math.random() * (statRanges[5][1] - 1) + 1),
+    (Math.random() * (statRanges[6][1] - 1) + 1)];
 
 /*Update Diagram*/
 var setupDiagram = function(props)
@@ -50,54 +54,37 @@ var setupDiagram = function(props)
     return <polygon points={meshTrans} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 1, fillRule: "evenodd"}} />;
 };
 
+//Stats 2 and 3 are the same everytime
 var setupStats = function(props)
 {
-    /*Iterate For Each Triangle*/
-    var lastCorner = new Vector2();
-    var firstCorner = new Vector2();
     var mesh = [];
+    var v2Polygon;
+    var v2FirstPoint;//Done to save an operation step
+    /*Iterate For Each Triangle*/
     for (var i = 0; i < chart.iParts; i++)
     {
-        var v2Polygon;
         //Adjust Angles
-        if(i === 0)
+        if(i === 0)//First Stat
         {
             v2Polygon = [new Vector2(0,0), new Vector2(0, (-stats[0]*0.1*chart.iScale)), new Vector2(0, (-stats[1]*0.1*chart.iScale))];
-
-            Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],iDegrees*i);
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));
-
-            mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
-
-            firstCorner = v2Polygon[1];
+            v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],iDegrees*i);/*The Current Stat Point*/
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));/*The Next Stat Point*/
         }
-        else if(i !== chart.iParts-1)
+        else if(i !== chart.iParts-1)//Mid Stats
         {
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-stats[i-1]*0.1*chart.iScale)), new Vector2(0, (-stats[i]*0.1*chart.iScale))];
-
-            v2Polygon[1] = lastCorner;
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));
-
-            mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
+            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-stats[i+1]*0.1*chart.iScale))];
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));/*The Next Stat Point*/
         }
-        else
+        else//Last Stat
         {
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-stats[i]*0.1*chart.iScale)), new Vector2(0, (-stats[0]*0.1*chart.iScale))];
-            v2Polygon[1] = lastCorner;
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));
-
-            mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
+            v2Polygon = [new Vector2(0,0), v2Polygon[2], v2FirstPoint];
         }
-        
-        lastCorner = v2Polygon[2];
-        if(i === chart.iParts)
-        {
-            v2Polygon[2] = firstCorner;
-        }
+        mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
     }    
     //Offset Coordinates
     meshTrans = mesh.map(function (arr) { return [iCore[0] + arr[0], iCore[1] + arr[1]]; });
 
+    //Draw Stats
     var htmlStats = <polygon points={meshTrans} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />;
 
     return htmlStats;
@@ -108,20 +95,32 @@ var SetupTextAndTicks = function(props)
     var htmlResult = [];
     for (var i = 0; i < chart.iParts; i++)
     {   
-        //htmlResult.push( <polygon points="01,01 10,10 01,01" x={iCore[0]} y={iCore[1]-chart.iScale-10} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"} />);
-        /*Stat Label*/
-        htmlResult.push( <text text-anchor="middle" x={iCore[0]} y={iCore[1]-chart.iScale-10} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"} > {statTypes[i]} </text>);
+        /*Stat Type Label*/
+        var iAngle = i*iDegrees;
+
+        var iFlip = 0;
+        //Rotate text around it's center if upsidedown
+        if(iAngle > 90 && iAngle < 270)
+        {
+            iFlip = 180;
+        }        
+        var typeCenter = [iCore[0], iCore[1]-chart.iScale];
+        htmlResult.push( <text text-anchor="middle" x={typeCenter[0]} y={typeCenter[1]-3} transform={"rotate("+iAngle+", "+iCore[0]+","+iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-7)+")"} > {statTypes[i]} </text>);
 
         /*Stat Ticks*/
         var ticks = 10;
         for(var iT = 1; iT<ticks; iT++)
         {
-            htmlResult.push(<line x1={-4+iCore[0]} y1={iCore[1]-((chart.iScale/ticks)*iT)} x2={4+iCore[0]} y2={iCore[1]-((chart.iScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"}/>);
+            htmlResult.push(<line x1={-4+iCore[0]} y1={iCore[1]-((chart.iScale/ticks)*iT)} x2={4+iCore[0]} y2={iCore[1]-((chart.iScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+iCore[0]+","+iCore[1]+")"} />);
+           
             if((iT%2) === 0)
             {
+                //Deinfe and round off the tick values
+                var tickValue = Math.round(100 * (iT*( statRanges[i][1]/ticks)) )/100;
+                typeCenter = [iCore[0]+5, iCore[1]-((chart.iScale/ticks)*iT)+3];
                 htmlResult.push(
-                <text text-anchor="middle" x={-10+iCore[0]} y={4+iCore[1]-((chart.iScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+i*iDegrees+", "+iCore[0]+","+iCore[1]+")"}>
-                    {iT}
+                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+(iCore[0])+","+iCore[1]+"), rotate("+iFlip+","+(typeCenter[0]-5)+","+(typeCenter[1]-3)+")"}>
+                    {tickValue}
                 </text>);
             }
         }
@@ -150,7 +149,6 @@ class Diagram extends React.Component
                         {setupDiagram()}
                         {setupStats()}
                         {SetupTextAndTicks()}
-                        {/*<line x1="0" y1="0" x2={iCore[0]} y2={iCore[1]} style={{stroke: "rgb(255,0,0)", strokeWidth: 2}}/>*/}
                     </svg>
                 </div>
                 <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={iDim[0]} height={iDim[1]}>
