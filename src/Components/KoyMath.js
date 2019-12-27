@@ -30,19 +30,19 @@ var Vector4 = function(x, y, z, m)
 
 var Calc = 
 {
-	bComp(A, B){ if(A === B)	{return true;} return false; },
+	bV2Comp(A, B){ if(A === B)	{return true;} return false; },
 	bInRange(Dist, Range)	{if( Dist <= (Range*Range) ){ return true; } return false; },
-	VAdd(Target, Add)		{Target.x += Add.x; Target.y += Add.y; return Target;},
-	VSub(Target, Sub)		{Target.x -= Sub.x; Target.y -= Sub.y; return Target;},
-	VMult(Target, Mult)		{Target.x *= Mult.x; Target.y *= Mult.y; return Target;},
-	VDiv(Target, Div)		{ if(Div.x !== 0){Target.x /= Div.x;} if(Div.y !== 0){Target.y /= Div.y;} return Target;},
+	V2Add(Target, Add)		{Target.x += Add.x; Target.y += Add.y; return Target;},
+	V2Sub(Target, Sub)		{Target.x -= Sub.x; Target.y -= Sub.y; return Target;},
+	V2Mult(Target, Mult)		{Target.x *= Mult.x; Target.y *= Mult.y; return Target;},
+	V2Div(Target, Div)		{ if(Div.x !== 0){Target.x /= Div.x;} if(Div.y !== 0){Target.y /= Div.y;} return Target;},
 
-	VAdd(Target, Add)		{Target.x += Add.x; Target.y += Add.y; Target.z += Add.z; return Target;},
-	VSub(Target, Sub)		{Target.x -= Sub.x; Target.y -= Sub.y; Target.z -= Sub.z; return Target;},
-	VMult(Target, Mult)		{Target.x *= Mult.x; Target.y *= Mult.y; Target.z *= Mult.z; return Target;},	
-	VDiv(Target, Div)		{ if(Div.x !== 0){Target.x /= Div.x;} if(Div.y !== 0){Target.y /= Div.y;} if(Div.z !== 0){Target.z /= Div.z;}  return Target;},
+	V3Add(Target, Add)		{Target.x += Add.x; Target.y += Add.y; Target.z += Add.z; return Target;},
+	V3Sub(Target, Sub)		{Target.x -= Sub.x; Target.y -= Sub.y; Target.z -= Sub.z; return Target;},
+	V3Mult(Target, Mult)		{Target.x *= Mult.x; Target.y *= Mult.y; Target.z *= Mult.z; return Target;},	
+	V3Div(Target, Div)		{ if(Div.x !== 0){Target.x /= Div.x;} if(Div.y !== 0){Target.y /= Div.y;} if(Div.z !== 0){Target.z /= Div.z;}  return Target;},
 
-	bComp(A, B)				{ if((A.x === B.x)&&(A.y === B.y)&&(A.z === B.z)){return true;} return false; },
+	bV3Comp(A, B)				{ if((A.x === B.x)&&(A.y === B.y)&&(A.z === B.z)){return true;} return false; },
 
 	fDist(A, B)				{ return( Math.pow( (Math.pow(A.x - B.x,2) + Math.pow(A.y - B.y,2) + Math.pow(A.z - B.z,2)), (1.0/3.0) ) ); }
 }
@@ -87,13 +87,13 @@ var Deg =
         else if(Angle < 0){Angle += 6.28;}
         return Angle;
 	},
-    fGetPitchAngle(Self, Target)
+    fV2GetPitchAngle(Self, Target)
 	{
 		//get pitch angle
 		var fAngle = Math.atan2(Self.x - Target.x, Self.y - Target.y);
 		return Deg.fNormalizeRadians(fAngle);
 	},
-	fGetPitchAngle(Self, Target)
+	fV3GetPitchAngle(Self, Target)
 	{
 		//get pitch angle
 		var fAngle = Math.atan2(Self.x - Target.x, Self.z - Target.z);

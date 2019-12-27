@@ -17,16 +17,89 @@ var meshTrans;
 
 
 //User inputted stats as semi-colin dilimited strings
-var statRanges = [[0,8], [0,10], [0,7],     [0,10],        [0,9],       [0,2],      [0,10], [0,10], [0,10], [0,10]];
-var statTypes = ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"];
-var stats = 
-[   (Math.random() * (statRanges[0][1] - 1) + 1), 
-    (Math.random() * (statRanges[0][1] - 1) + 1),
-    (Math.random() * (statRanges[2][1] - 1) + 1),
-    (Math.random() * (statRanges[3][1] - 1) + 1),
-    (Math.random() * (statRanges[4][1] - 1) + 1),
-    (Math.random() * (statRanges[5][1] - 1) + 1),
-    (Math.random() * (statRanges[6][1] - 1) + 1)];
+var statData = 
+{
+    MaxPoints:  100,
+    Ranges:     [[0,8], [0,10], [0,7],      [0,10],        [0,9],       [0,2],      [0,10], [0,10], [0,10], [0,10]],
+    Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
+    Values:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
+    letterGrades:   ['F','E','D','C','B','A','S','?'],
+    statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
+}
+statData.Values =
+    [(Math.random() * (statData.Ranges[0][1] - 1) + 1),
+    (Math.random() * (statData.Ranges[0][1] - 1) + 1),
+    (Math.random() * (statData.Ranges[2][1] - 1) + 1),
+    (Math.random() * (statData.Ranges[3][1] - 1) + 1),
+    (Math.random() * (statData.Ranges[4][1] - 1) + 1),
+    (Math.random() * (statData.Ranges[5][1] - 1) + 1),
+    (Math.random() * (statData.Ranges[6][1] - 1) + 1)];
+
+//Grade Function
+var gradeCalc = function(index)
+{
+    var result = statData.letterGrades[7];//? grade
+
+    //Take Values and divide it against it's max range
+    var percentage = (statData.Values[index]/statData.Ranges[index][1])*100;
+
+    //Upper or lower value assignment
+    var masymenos = (value) => 
+    {
+        if(value > 10)
+        {
+            result += '+';
+        }
+        else if(value < 10)
+        {
+            result += '-';            
+        }
+    };
+
+    //Letter Assignment
+    if(percentage > 100)
+    {
+        result = statData.letterGrades[7];
+        masymenos(percentage-80);
+    }
+    if(percentage === 100)
+    {
+        result = statData.letterGrades[6];
+        masymenos(percentage-80);
+    }
+    else if(percentage >= 80)
+    {
+        result = statData.letterGrades[5];
+        masymenos(percentage-80);
+    }
+    else if(percentage >= 60)
+    {
+        result = statData.letterGrades[4];
+        masymenos(percentage-60);
+    }
+    else if(percentage >= 40)
+    {
+        result = statData.letterGrades[3];
+        masymenos(percentage-40);
+    }
+    else if(percentage >= 20)
+    {        
+        result = statData.letterGrades[2];
+        masymenos(percentage-20);
+    }
+    else if(percentage >= 0)
+    {
+        result = statData.letterGrades[1];
+        masymenos(percentage);
+    }
+    else if(percentage === 0)
+    {
+        result = statData.letterGrades[0];
+        masymenos(percentage);
+    }
+
+    return result;//Return '?'
+}
 
 /*Update Diagram*/
 var setupDiagram = function(props)
@@ -66,13 +139,13 @@ var setupStats = function(props)
         //Adjust Angles
         if(i === 0)//First Stat
         {
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-stats[0]*0.1*chart.iScale)), new Vector2(0, (-stats[1]*0.1*chart.iScale))];
+            v2Polygon = [new Vector2(0,0), new Vector2(0, (-statData.Values[0]*(1/statData.Ranges[i][1])*chart.iScale)), new Vector2(0, (-statData.Values[1]*(1/statData.Ranges[i][1])*chart.iScale))];
             v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],iDegrees*i);/*The Current Stat Point*/
             Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));/*The Next Stat Point*/
         }
         else if(i !== chart.iParts-1)//Mid Stats
         {
-            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-stats[i+1]*0.1*chart.iScale))];
+            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-statData.Values[i+1]*(1/statData.Ranges[i+1][1])*chart.iScale))];
             Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],iDegrees*(i+1));/*The Next Stat Point*/
         }
         else//Last Stat
@@ -105,7 +178,15 @@ var SetupTextAndTicks = function(props)
             iFlip = 180;
         }        
         var typeCenter = [iCore[0], iCore[1]-chart.iScale];
-        htmlResult.push( <text text-anchor="middle" x={typeCenter[0]} y={typeCenter[1]-3} transform={"rotate("+iAngle+", "+iCore[0]+","+iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-7)+")"} > {statTypes[i]} </text>);
+        htmlResult.push( 
+        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+iCore[0]+","+iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
+        {statData.Types[i]}
+        </text>);
+
+        htmlResult.push( 
+        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+iCore[0]+","+iCore[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
+        {gradeCalc(i)}
+        </text>);
 
         /*Stat Ticks*/
         var ticks = 10;
@@ -116,7 +197,7 @@ var SetupTextAndTicks = function(props)
             if((iT%2) === 0)
             {
                 //Deinfe and round off the tick values
-                var tickValue = Math.round(100 * (iT*( statRanges[i][1]/ticks)) )/100;
+                var tickValue = Math.round(100 * (iT*( statData.Ranges[i][1]/ticks)) )/100;
                 typeCenter = [iCore[0]+5, iCore[1]-((chart.iScale/ticks)*iT)+3];
                 htmlResult.push(
                 <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+(iCore[0])+","+iCore[1]+"), rotate("+iFlip+","+(typeCenter[0]-5)+","+(typeCenter[1]-3)+")"}>
@@ -125,7 +206,7 @@ var SetupTextAndTicks = function(props)
             }
         }
     }
-    return <a>{htmlResult}</a>
+    return <a href="">{htmlResult}</a>
 };
 
 class Diagram extends React.Component
