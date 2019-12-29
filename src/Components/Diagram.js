@@ -166,9 +166,7 @@ var SetupTextAndTicks = function(props)
 };
 
 class Diagram extends React.Component
-{
-    exampleFunction = () => {this.render();}
-    
+{    
     constructor(props){
         super(props);
         this.state = 
@@ -184,17 +182,18 @@ class Diagram extends React.Component
                 statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
             
                 //Window Dimensions Window Center
-                iDegrees: (360/this.state.Quantity),
+                iDegrees: null,
                 iDim: [iDiagramScale*3, iDiagramScale*3],
                 iCore: [null, null],
                 meshDiagram: null,
                 meshStats: null,
                 htmlText: null,
-        },        
+        };
         this.state.iCore = [this.state.iDim[0]/2, this.state.iDim[1]/2];
-        setupDiagram;
-        setupStats;
-        SetupTextAndTicks;
+        this.state.iDegrees = (360/this.state.Quantity);
+        setupDiagram();
+        setupStats();
+        SetupTextAndTicks();
     };
 
     render(){
