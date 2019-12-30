@@ -3,15 +3,15 @@ import { Box } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputCtrls from "./StatInputCtrls.js"
 
-const iDiagramScale = 256;
+const iDiagramScale = 144;
 
 //Grade Function
-var gradeCalc = function(index)
+var gradeCalc = function(index, state)
 {   
-    var result = this.state.letterGrades[7];//? grade
+    var result = state.letterGrades[7];//? grade
 
     //Take Values and divide it against it's max range
-    var percentage = (this.state.Values[index]/this.state.Ranges[index][1])*100;
+    var percentage = (state.Values[index]/state.Ranges[index][1])*100;
 
     //Upper or lower value assignment
     var masymenos = (value) => 
@@ -22,92 +22,92 @@ var gradeCalc = function(index)
     //Letter Assignment
     if(percentage > 100)
     {
-        result = this.state.letterGrades[7];
+        result = state.letterGrades[7];
         masymenos(percentage-80);
     }
     if(percentage === 100)
     {
-        result = this.state.letterGrades[6];
+        result = state.letterGrades[6];
         masymenos(percentage-80);
     }
     else if(percentage >= 80)
     {
-        result = this.state.letterGrades[5];
+        result = state.letterGrades[5];
         masymenos(percentage-80);
     }
     else if(percentage >= 60)
     {
-        result = this.state.letterGrades[4];
+        result = state.letterGrades[4];
         masymenos(percentage-60);
     }
     else if(percentage >= 40)
     {
-        result = this.state.letterGrades[3];
+        result = state.letterGrades[3];
         masymenos(percentage-40);
     }
     else if(percentage >= 20)
     {        
-        result = this.state.letterGrades[2];
+        result = state.letterGrades[2];
         masymenos(percentage-20);
     }
     else if(percentage >= 0)
     {
-        result = this.state.letterGrades[1];
+        result = state.letterGrades[1];
         masymenos(percentage);
     }
     else if(percentage === 0)
     {
-        result = this.state.letterGrades[0];
+        result = state.letterGrades[0];
         masymenos(percentage);
     }
     return result;//Return '?'
 }
 
 /*Update Diagram*/
-var setupDiagram = function(props)
+var setupDiagram = function(state)
 {
     /*Iterate For Each Triangle*/
     var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*iDiagramScale), new Vector2(0, -1*iDiagramScale)];
     var mesh = [];
-    for (var i = 1; i < this.state.Quantity+1; i++)
+    for (var i = 1; i < state.Quantity+1; i++)
     {
         //Adjust Angles
         if(i === 1)
         {
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],this.state.iDegrees)
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],state.iDegrees)
             mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
         }
         else
         {
-            Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],this.state.iDegrees);
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],this.state.iDegrees);
+            Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],state.iDegrees);
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],state.iDegrees);
             mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
         }
     }    
     //Offset Coordinates
-    this.state.meshDiagram = mesh.map(function (arr) { return [this.state.iCore[0] + arr[0], this.state.iCore[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [state.iCore[0] + arr[0], state.iCore[1] + arr[1]]; });
 };
 
 //Stats 2 and 3 are the same everytime
-var setupStats = function(props)
+var setupStats = function(state)
 {
     var mesh = [];
     var v2Polygon;
     var v2FirstPoint;//Done to save an operation step
     /*Iterate For Each Triangle*/
-    for (var i = 0; i < this.state.Quantity; i++)
+    for (var i = 0; i < state.Quantity; i++)
     {
         //Adjust Angles
         if(i === 0)//First Stat
         {
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-this.state.Values[0]*(1/this.state.Ranges[i][1])*iDiagramScale)), new Vector2(0, (-this.state.Values[1]*(1/this.state.Ranges[i][1])*iDiagramScale))];
-            v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],this.state.iDegrees*i);/*The Current Stat Point*/
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],this.state.iDegrees*(i+1));/*The Next Stat Point*/
+            v2Polygon = [new Vector2(0,0), new Vector2(0, (-state.Values[0]*(1/state.Ranges[i][1])*iDiagramScale)), new Vector2(0, (-state.Values[1]*(1/state.Ranges[i][1])*iDiagramScale))];
+            v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],state.iDegrees*i);/*The Current Stat Point*/
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],state.iDegrees*(i+1));/*The Next Stat Point*/
         }
-        else if(i !== this.state.Quantity-1)//Mid Stats
+        else if(i !== state.Quantity-1)//Mid Stats
         {
-            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-this.state.Values[i+1]*(1/this.state.Ranges[i+1][1])*iDiagramScale))];
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],this.state.iDegrees*(i+1));/*The Next Stat Point*/
+            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-state.Values[i+1]*(1/state.Ranges[i+1][1])*iDiagramScale))];
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],state.iDegrees*(i+1));/*The Next Stat Point*/
         }
         else//Last Stat
         {
@@ -116,16 +116,16 @@ var setupStats = function(props)
         mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
     }    
     //Offset Coordinates
-    this.state.meshStats = mesh.map(function (arr) { return [this.state.iCore[0] + arr[0], this.state.iCore[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [state.iCore[0] + arr[0], state.iCore[1] + arr[1]]; });
 };
 
-var SetupTextAndTicks = function(props)
+var SetupTextAndTicks = function(state)
 {
     var htmlResult = [];
-    for (var i = 0; i < this.state.Quantity; i++)
+    for (var i = 0; i < state.Quantity; i++)
     {   
         /*Stat Type Label*/
-        var iAngle = i*this.state.iDegrees;
+        var iAngle = i*state.iDegrees;
 
         var iFlip = 0;
         //Rotate text around it's center if upsidedown
@@ -133,36 +133,36 @@ var SetupTextAndTicks = function(props)
         {
             iFlip = 180;
         }        
-        var typeCenter = [this.state.iCore[0], this.state.iCore[1]-iDiagramScale];
+        var typeCenter = [state.iCore[0], state.iCore[1]-iDiagramScale];
         htmlResult.push( 
-        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+this.state.iCore[0]+","+this.state.iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
-        {this.state.Types[i]}
+        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
+        {state.Types[i]}
         </text>);
 
         htmlResult.push( 
-        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+this.state.iCore[0]+","+this.state.iCore[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
-        {gradeCalc(i)}
+        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
+        {gradeCalc(i, state)}
         </text>);
 
         /*Stat Ticks*/
         var ticks = 10;
         for(var iT = 1; iT<ticks; iT++)
         {
-            htmlResult.push(<line x1={-4+this.state.iCore[0]} y1={this.state.iCore[1]-((iDiagramScale/ticks)*iT)} x2={4+this.state.iCore[0]} y2={this.state.iCore[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+this.state.iCore[0]+","+this.state.iCore[1]+")"} />);
+            htmlResult.push(<line x1={-4+state.iCore[0]} y1={state.iCore[1]-((iDiagramScale/ticks)*iT)} x2={4+state.iCore[0]} y2={state.iCore[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+")"} />);
            
             if((iT%2) === 0)
             {
                 //Deinfe and round off the tick values
-                var tickValue = Math.round(100 * (iT*( this.state.Ranges[i][1]/ticks)) )/100;
-                typeCenter = [this.state.iCore[0]+5, this.state.iCore[1]-((iDiagramScale/ticks)*iT)+3];
+                var tickValue = Math.round(100 * (iT*( state.Ranges[i][1]/ticks)) )/100;
+                typeCenter = [state.iCore[0]+5, state.iCore[1]-((iDiagramScale/ticks)*iT)+3];
                 htmlResult.push(
-                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+(this.state.iCore[0])+","+this.state.iCore[1]+"), rotate("+iFlip+","+(typeCenter[0]-5)+","+(typeCenter[1]-3)+")"}>
+                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+(state.iCore[0])+","+state.iCore[1]+"), rotate("+iFlip+","+(typeCenter[0]-5)+","+(typeCenter[1]-3)+")"}>
                     {tickValue}
                 </text>);
             }
         }
     }
-    this.state.htmlText = <a href="">{htmlResult}</a>
+    return <a href="">{htmlResult}</a>
 };
 
 class Diagram extends React.Component
@@ -172,11 +172,11 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
-                Quantity: null,
+                Quantity: 6,
                 MaxPoints:  100,
                 Ranges:     [[0,8], [0,10], [0,7],      [0,10],        [0,9],       [0,2],      [0,10], [0,10], [0,10], [0,10]],
                 Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
-                Values:     [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                Values:     [5,1,1,1,1,1,1,1,1,1,1,1,1,1],
                 
                 letterGrades:   ['F','E','D','C','B','A','S','?'],
                 statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -191,10 +191,23 @@ class Diagram extends React.Component
         };
         this.state.iCore = [this.state.iDim[0]/2, this.state.iDim[1]/2];
         this.state.iDegrees = (360/this.state.Quantity);
-        setupDiagram();
-        setupStats();
-        SetupTextAndTicks();
+
+        this.state.meshDiagram = setupDiagram(this.state);
+        this.state.meshStats = setupStats(this.state);
+        this.state.htmlText = SetupTextAndTicks(this.state);
     };
+
+    //Update
+    Update(props)
+    {
+        this.setState({
+            Quantity: props.target.value,
+            
+            meshDiagram: setupDiagram(this.state),
+            meshStats: setupStats(this.state),
+            htmlText: SetupTextAndTicks(this.state)
+        })
+    }
 
     render(){
         return(
@@ -214,7 +227,7 @@ class Diagram extends React.Component
                     </svg>
                 </div>
                 <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={this.state.iDim[0]} height={this.state.iDim[1]}>
-                    <StatInputCtrls exampleFunctionLink={this.exampleFunction} value1={this.state.Quantity}></StatInputCtrls>
+                    <StatInputCtrls readOnly={false} Quantity={this.state.Quantity} onChange = {this.Update.bind(this)} ></StatInputCtrls>
                 </Box>
             </div>
         );
