@@ -173,7 +173,7 @@ class Diagram extends React.Component
         {
             //User inputted stats as semi-colin dilimited strings
                 Quantity: 5,
-                MaxPoints:  100,
+                TotalPoints:  0,
 
                 Ranges:     [[0,8], [0,10], [0,7],      [0,10],        [0,9],       [0,2],      [0,10]],
                 Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
@@ -201,17 +201,24 @@ class Diagram extends React.Component
     //Update
     UpdateQuantity(props)
     {
-        //Adjust State Arrays
-        var arrDiff = props.target.value - this.state.Values.length
-        for(var i=0; i < arrDiff+1; i++)
+        //Adjust State Arrays and update TotalPoints
+        var arrDiff = props.target.value - this.state.Values.length;
+        var totalPoints = 0;
+        for(var i=0; i < this.state.Quantity; i++)
         {
             //push additional elements if change in size exceeds current size
-            this.state.Ranges.push([0,10]);
-            this.state.Types.push("???");
-            this.state.Values.push(0);
-            
-            this.state.statGrades.push(0);
+            if(i < arrDiff+1)
+            {
+                this.state.Ranges.push([0,10]);
+                this.state.Types.push("???");
+                this.state.Values.push(0);
+                
+                this.state.statGrades.push(0);
+            };
+            totalPoints += this.state.Values[i];
         };
+        
+        this.setState({TotalPoints: totalPoints});
 
         this.setState({
             Quantity: props.target.value,           
@@ -226,6 +233,23 @@ class Diagram extends React.Component
             meshStats: SetupStats(this.state),
             htmlText: SetupTextAndTicks(this.state)
         });
+    }
+
+    UpdateTypes(props)
+    {
+        //Update Types and Values
+        /*var buffer = [];
+        for(var i=0; i < this.Types.length; i++)
+        {
+            buffer.push();
+        }
+        Types
+        Values*/
+    }
+
+    UpdateStats(props)
+    {
+
     }
 
     render(){
@@ -248,8 +272,12 @@ class Diagram extends React.Component
                 </div>
                 <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={this.state.iDim[0]} height={this.state.iDim[1]}>
                     <StatInputCtrls //readOnly={false} 
-                        Quantity={this.state.Quantity}
-                        UpdateQuantity = {this.UpdateQuantity.bind(this)}
+                        Quantity        = {this.state.Quantity}
+                        TotalPoints     = {this.state.TotalPoints}
+                        Types           = {this.state.Types}
+                        Values          = {this.state.Values}
+                        Ranges           = {this.state.Ranges}
+                        UpdateQuantity  = {this.UpdateQuantity.bind(this)}
                         /*onChange = {this.UpdateQuantity.bind(this)}*/ >
                     </StatInputCtrls>
                 </Box>
