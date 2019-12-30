@@ -64,7 +64,7 @@ var gradeCalc = function(index, state)
 }
 
 /*Update Diagram*/
-var setupDiagram = function(state)
+var SetupDiagram = function(state)
 {
     /*Iterate For Each Triangle*/
     var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*iDiagramScale), new Vector2(0, -1*iDiagramScale)];
@@ -89,7 +89,7 @@ var setupDiagram = function(state)
 };
 
 //Stats 2 and 3 are the same everytime
-var setupStats = function(state)
+var SetupStats = function(state)
 {
     var mesh = [];
     var v2Polygon;
@@ -135,12 +135,12 @@ var SetupTextAndTicks = function(state)
         }        
         var typeCenter = [state.iCore[0], state.iCore[1]-iDiagramScale];
         htmlResult.push( 
-        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
         {state.Types[i]}
         </text>);
 
         htmlResult.push( 
-        <text text-anchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+state.iCore[0]+","+state.iCore[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
         {gradeCalc(i, state)}
         </text>);
 
@@ -162,7 +162,7 @@ var SetupTextAndTicks = function(state)
             }
         }
     }
-    return <a href="">{htmlResult}</a>
+    return <a href="*">{htmlResult}</a>
 };
 
 class Diagram extends React.Component
@@ -172,11 +172,12 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
-                Quantity: 6,
+                Quantity: 5,
                 MaxPoints:  100,
-                Ranges:     [[0,8], [0,10], [0,7],      [0,10],        [0,9],       [0,2],      [0,10], [0,10], [0,10], [0,10]],
+
+                Ranges:     [[0,8], [0,10], [0,7],      [0,10],        [0,9],       [0,2],      [0,10]],
                 Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
-                Values:     [5,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                Values:     [5,1,1, 1,1,1, 1],
                 
                 letterGrades:   ['F','E','D','C','B','A','S','?'],
                 statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -192,24 +193,43 @@ class Diagram extends React.Component
         this.state.iCore = [this.state.iDim[0]/2, this.state.iDim[1]/2];
         this.state.iDegrees = (360/this.state.Quantity);
 
-        this.state.meshDiagram = setupDiagram(this.state);
-        this.state.meshStats = setupStats(this.state);
+        this.state.meshDiagram = SetupDiagram(this.state);
+        this.state.meshStats = SetupStats(this.state);
         this.state.htmlText = SetupTextAndTicks(this.state);
     };
 
     //Update
-    Update(props)
+    UpdateQuantity(props)
     {
-        this.setState({
-            Quantity: props.target.value,
+        //Adjust State Arrays
+        var arrDiff = props.target.value - this.state.Values.length
+        for(var i=0; i < arrDiff+1; i++)
+        {
+            //push additional elements if change in size exceeds current size
+            this.state.Ranges.push([0,10]);
+            this.state.Types.push("???");
+            this.state.Values.push(0);
             
-            meshDiagram: setupDiagram(this.state),
-            meshStats: setupStats(this.state),
+            this.state.statGrades.push(0);
+        };
+
+        this.setState({
+            Quantity: props.target.value,           
+            
+            iCore: [this.state.iDim[0]/2, this.state.iDim[1]/2],
+            iDegrees: (360/props.target.value),
+        });
+
+        this.setState({
+
+            meshDiagram: SetupDiagram(this.state),
+            meshStats: SetupStats(this.state),
             htmlText: SetupTextAndTicks(this.state)
-        })
+        });
     }
 
     render(){
+        console.log(this.state);
         return(
             <div>
                 <div>
@@ -217,8 +237,8 @@ class Diagram extends React.Component
                         <circle cx={this.state.iCore[0]} cy={this.state.iCore[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
                         <defs>
                             <linearGradient id = "grad">
-                                <stop offset="0" stop-color="purple"/>
-                                <stop offset="1" stop-color="lightBlue"/>
+                                <stop offset="0" stopColor="purple"/>
+                                <stop offset="1" stopColor="lightBlue"/>
                             </linearGradient>
                         </defs>
                         {<polygon points={this.state.meshDiagram} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 1, fillRule: "evenodd"}} />}
@@ -227,7 +247,11 @@ class Diagram extends React.Component
                     </svg>
                 </div>
                 <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={this.state.iDim[0]} height={this.state.iDim[1]}>
-                    <StatInputCtrls readOnly={false} Quantity={this.state.Quantity} onChange = {this.Update.bind(this)} ></StatInputCtrls>
+                    <StatInputCtrls //readOnly={false} 
+                        Quantity={this.state.Quantity}
+                        UpdateQuantity = {this.UpdateQuantity.bind(this)}
+                        /*onChange = {this.UpdateQuantity.bind(this)}*/ >
+                    </StatInputCtrls>
                 </Box>
             </div>
         );

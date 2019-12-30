@@ -11,22 +11,21 @@ var Vector3 = function(x, y, z)
     this.y = y;
     this.z = z;
 }
-var Vector4 = function(x, y, z, m)
+/*var Vector4 = function(x, y, z, m)
 {
     this.x = x;
     this.y = y;
     this.z = z;
     this.m = m;
-}
+}*/
 
+//var pCenter = new Vector2(chart.iCentX,chart.iCentY);
+//var pLength = new Vector2(chart.iCentX+chart.iRadius,chart.iCentY);
 
-        //var pCenter = new Vector2(chart.iCentX,chart.iCentY);
-        //var pLength = new Vector2(chart.iCentX+chart.iRadius,chart.iCentY);
-
-        //var iRadians = (iDegrees*Math.PI)/180;
-    //var iCircum = Math.PI*chart.iRadius*2;
-    //var iArcLength = iCircum*(iDegrees)
-        //var iChord = 2*chart.iRadius*Math.sin(iArcLength/chart.iRadius*2)
+//var iRadians = (iDegrees*Math.PI)/180;
+//var iCircum = Math.PI*chart.iRadius*2;
+//var iArcLength = iCircum*(iDegrees)
+//var iChord = 2*chart.iRadius*Math.sin(iArcLength/chart.iRadius*2)
 
 var Calc = 
 {

@@ -1,9 +1,7 @@
-import React, {useState} from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import { Box } from '@material-ui/core';
-import Diagram from "./Diagram.js";
-
-var stats = 3;
+import React from "react";
+//import { makeStyles } from '@material-ui/core/styles';
+//import { Box } from '@material-ui/core';
+//import Diagram from "./Diagram.js";
 
 var statCtrls = function(slices = 3) 
 {
@@ -34,35 +32,38 @@ class StatInputCtrls extends React.Component
         super(props);
         this.state =
         {
-            controls: statCtrls()
+            controls: statCtrls(this.props.Quantity)
         }
     }
 
     //On Slices Change, update form
     newSlices(props)
     {
+        //Update Form
         this.setState({
             controls: statCtrls(props.target.value)
         });
 
-        this.props.Quantity = props.target.value
+        //Update Diagram
+        props.Quantity = props.target.value;
+        this.props.UpdateQuantity(props);
     }
 
     render() 
     {
-        return(        
+        return(
         <div>
             <div>
                 <label style = {{color: "black"}} >Stat quantity: </label>
 
-                <input readOnly={false} defaultValue={3} 
-                    type="number" name="SQ"
+                <input readOnly={false} 
+                    value={this.props.Quantity} 
                     
-                    Quantity={this.props.Quantity}
+                    type="number" name="SQ"
 
                     onChange={this.newSlices.bind(this)}
 
-                    style = {{width: "38px"}} >                    
+                    style = {{width: "38px"}} >
                 </input>
 
             </div>
