@@ -4,6 +4,7 @@ import {Vector2,  Coll} from './KoyMath.js';
 import StatInputCtrls from "./StatInputCtrls.js"
 
 const iDiagramScale = 144;
+const iDimension = [iDiagramScale*3, iDiagramScale*3];
 
 //Grade Function
 var gradeCalc = function(index, Ranges, Values, letterGrades)
@@ -99,7 +100,8 @@ var SetupStats = function(Quantity, Center, Degrees, Ranges, Values)
         //Adjust Angles
         if(i === 0)//First Stat
         {
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Values[0]*(1/Ranges[i][1])*iDiagramScale)), new Vector2(0, (-Values[1]*(1/Ranges[i][1])*iDiagramScale))];
+            //Create First Polygon, comprised of stat 1 and two
+            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Values[i]*(1/Ranges[i][1])*iDiagramScale)), new Vector2(0, (-Values[i+1]*(1/Ranges[i+1][1])*iDiagramScale))];
             v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Degrees*i);/*The Current Stat Point*/
             Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Degrees*(i+1));/*The Next Stat Point*/
         }
@@ -183,13 +185,12 @@ class Diagram extends React.Component
             
                 //Window Dimensions Window Center
                 iDegrees: null,
-                iDim: [iDiagramScale*3, iDiagramScale*3],
                 Center: [null, null],
                 meshDiagram: null,
                 meshStats: null,
                 htmlText: null,
         };
-        this.state.Center = [this.state.iDim[0]/2, this.state.iDim[1]/2];
+        this.state.Center = [iDimension[0]/2, iDimension[1]/2];
         this.state.iDegrees = (360/this.state.iQuantity);
 
         this.state.meshDiagram = SetupDiagram(this.state.iQuantity, this.state.Center, this.state.iDegrees);
@@ -223,7 +224,7 @@ class Diagram extends React.Component
             };
             
             var Quantity = parseInt(props.target.value);                
-            var Center = [this.state.iDim[0]/2, this.state.iDim[1]/2];
+            var Center = [iDimension[0]/2, iDimension[1]/2];
             var iDegrees = (360/props.target.value);
 
             this.setState({
@@ -244,8 +245,8 @@ class Diagram extends React.Component
             tempVal[iIndex] = parseInt(props.target.value);
 
             this.setState({Values: tempVal,
-                meshStats: SetupStats(this.state),
-                htmlText: SetupTextAndTicks(this.state)});
+                meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
+                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)});
         }
         else if(iIndex.search("Types") > -1)
         {
@@ -254,8 +255,8 @@ class Diagram extends React.Component
             tempTypes[iIndex] = props.target.value;
 
             this.setState({Types: tempTypes,
-                meshStats: SetupStats(this.state),
-                htmlText: SetupTextAndTicks(this.state)});
+                meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
+                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)});
         }
         else if(iIndex.search("Ranges") > -1)
         {
@@ -275,8 +276,8 @@ class Diagram extends React.Component
             tempRanges[iIndex][iIndex2] = parseInt(props.target.value);
 
             this.setState({Ranges: tempRanges,
-                meshStats: SetupStats(this.state),
-                htmlText: SetupTextAndTicks(this.state)});
+                meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
+                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)});
         }
     };
 
@@ -285,7 +286,7 @@ class Diagram extends React.Component
         return(
             <div>
                 <div>
-                    <svg width={this.state.iDim[0]} height={this.state.iDim[1]} >
+                    <svg width={iDimension[0]} height={iDimension[1]} >
                         <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
                         <defs>
                             <linearGradient id = "grad">
@@ -298,7 +299,7 @@ class Diagram extends React.Component
                         {this.state.htmlText}
                     </svg>
                 </div>
-                <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={this.state.iDim[0]} height={this.state.iDim[1]}>
+                <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={iDimension[0]} height={iDimension[1]}>
                     <StatInputCtrls
                         Quantity        = {this.state.iQuantity}
                         TotalPoints     = {this.state.TotalPoints}
