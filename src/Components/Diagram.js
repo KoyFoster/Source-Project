@@ -5,11 +5,12 @@ import StatInputCtrls from "./StatInputCtrls.js"
 
 const iDiagramScale = 144;
 const iDimension = [iDiagramScale*3, iDiagramScale*3];
+const cLetterGrades = ['F','E','D','C','B','A','S','?'];
 
 //Grade Function
-var gradeCalc = function(index, Ranges, Values, letterGrades)
+var gradeCalc = function(index, Ranges, Values)
 {   
-    var result = letterGrades[7];//? grade
+    var result = cLetterGrades[7];//? grade
     //Take Values and divide it against it's max range
     var percentage = (Values[index]/Ranges[index][1])*100;
 
@@ -22,42 +23,40 @@ var gradeCalc = function(index, Ranges, Values, letterGrades)
     //Letter Assignment
     if(percentage > 100)
     {
-        result = letterGrades[7];
-        masymenos(percentage-80);
+        result = cLetterGrades[7];
     }
     else if(percentage === 100)
     {
-        result = letterGrades[6];
+        result = cLetterGrades[6];
         masymenos(percentage-80);
     }
     else if(percentage >= 80)
     {
-        result = letterGrades[5];
+        result = cLetterGrades[5];
         masymenos(percentage-80);
     }
     else if(percentage >= 60)
     {
-        result = letterGrades[4];
+        result = cLetterGrades[4];
         masymenos(percentage-60);
     }
     else if(percentage >= 40)
     {
-        result = letterGrades[3];
+        result = cLetterGrades[3];
         masymenos(percentage-40);
     }
     else if(percentage >= 20)
     {        
-        result = letterGrades[2];
+        result = cLetterGrades[2];
         masymenos(percentage-20);
     }
     else if(percentage > 0)
     {
-        result = letterGrades[1];
-        masymenos(percentage);
+        result = cLetterGrades[1];
     }
     else if(percentage === 0)
     {
-        result = letterGrades[0];
+        result = cLetterGrades[0];
     }
     return result;//Return '?'
 }
@@ -120,7 +119,7 @@ var SetupStats = function(Quantity, Center, Degrees, Ranges, Values)
     return mesh.map(function (arr) { return [Center[0] + arr[0], Center[1] + arr[1]]; });
 };
 
-var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Types, letterGrades)
+var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Types)
 {
     var htmlResult = [];
     for (var i = 0; i < Quantity; i++)
@@ -142,7 +141,7 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
 
         htmlResult.push( 
         <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
-        {gradeCalc(i, Ranges, Values, letterGrades)}
+        {gradeCalc(i, Ranges, Values)}
         </text>);
 
         /*Stat Ticks*/
@@ -180,7 +179,6 @@ class Diagram extends React.Component
                 Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
                 Values:     [5,1,1, 1,1,1, 1],
                 
-                letterGrades:   ['F','E','D','C','B','A','S','?'],
                 statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
             
                 //Window Dimensions Window Center
@@ -195,7 +193,7 @@ class Diagram extends React.Component
 
         this.state.meshDiagram = SetupDiagram(this.state.iQuantity, this.state.Center, this.state.iDegrees);
         this.state.meshStats = SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values);
-        this.state.htmlText = SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades);
+        this.state.htmlText = SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types);
     };
 
     //Update Functions
@@ -235,7 +233,7 @@ class Diagram extends React.Component
                 iDegrees: iDegrees,
                 meshDiagram: SetupDiagram(Quantity, Center, iDegrees),
                 meshStats: SetupStats(Quantity, Center, iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(Quantity, Center, iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)
+                htmlText: SetupTextAndTicks(Quantity, Center, iDegrees, this.state.Ranges, this.state.Values, this.state.Types)
             });
         }
         else if(iIndex.search("Value") > -1)
@@ -246,7 +244,7 @@ class Diagram extends React.Component
 
             this.setState({Values: tempVal,
                 meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)});
+                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
         else if(iIndex.search("Types") > -1)
         {
@@ -256,7 +254,7 @@ class Diagram extends React.Component
 
             this.setState({Types: tempTypes,
                 meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)});
+                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
         else if(iIndex.search("Ranges") > -1)
         {
@@ -277,7 +275,7 @@ class Diagram extends React.Component
 
             this.setState({Ranges: tempRanges,
                 meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types, this.state.letterGrades)});
+                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
     };
 
