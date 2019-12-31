@@ -6,7 +6,7 @@ function StatCard(props)
 {
     //Render and Logic 
     return(
-        <Diagram/>
+        <Diagram name="StatCard"/>
     )
 };
 
