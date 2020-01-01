@@ -1,5 +1,6 @@
 import React from "react";
 import { Box } from '@material-ui/core';
+import {Row, Col} from './Grid.js'
 
 var statForm = function(parent, Quantity) 
 {
@@ -64,9 +65,9 @@ var statForm = function(parent, Quantity)
                     ></input>);
                 };
         };
-        htmlForm.push(  <Box display="inline-box" border="1px solid #3f0000" color="#a4a4a4" > {htmlBuffer} </Box>)
+        htmlForm.push(  <div> {htmlBuffer} </div>)
     }
-    return <Box display="flex" border="1px solid #3f0000" color="#a4a4a4" >{htmlForm}</Box>;
+    return <Row>{htmlForm}</Row>;
 }
 
 //User Input Class

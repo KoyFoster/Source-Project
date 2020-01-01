@@ -15,8 +15,9 @@ label {
 }
 
 input {
-  height: 24; 
-  width: 48;
+  display: inline;
+  max-height: 24; 
+  max-width: 48;
 }
 
 .Header-default {
@@ -35,6 +36,7 @@ input {
 }
 
 Button {
+  display: inline;
   color: lightgray;
   background: inherit;
 }
