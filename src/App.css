@@ -2,6 +2,23 @@
   text-align: top;
 }
 
+text {
+  display: inline-block;
+  height: 24;
+  text-align: right;
+}
+
+label {
+  display: inline-block;
+  height: 24;
+  text-align: right;
+}
+
+input {
+  height: 24; 
+  width: 48;
+}
+
 .Header-default {
   display: flex;
   justify-content: center;
@@ -20,8 +37,6 @@
 Button {
   color: lightgray;
   background: inherit;
-  margin: none;
-  border: none;
 }
 
 .Button-install {
@@ -89,9 +104,9 @@ img{
  
 }
 
-.font-default, text, .Link-header, .grid1, .grid2, .Button-install{
+.font-default, text, label, .Link-header, .grid1, .grid2, .Button-install{
   color: #E5E4dc;
   font-size: 11px;
   text-decoration: none;
-  /*font-family: "Motiva-Sans, sans-serif";*/
+  font-family: "Motiva-Sans, sans-serif";
 }

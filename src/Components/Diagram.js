@@ -1,7 +1,7 @@
 import React from "react";
 import { Box } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
-import StatInputCtrls from "./StatInputCtrls.js"
+import StatInputForm from "./StatInputForm.js"
 
 const iDiagramScale = 144;
 const iDimension = [iDiagramScale*3, iDiagramScale*3];
@@ -172,28 +172,28 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
-                iQuantity: 6,
-                TotalPoints:  0,
+                iQuantity:      6,
+                TotalPoints:    0,
 
-                Ranges:     [[0,10], [0,10], [0,10],      [0,10],        [0,10],       [0,10],      [0,10]],
-                Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
-                Values:     [3,4,4,8,4,2, 0],
+                Ranges: [[0,10], [0,10], [0,10],      [0,10],        [0,10],       [0,10],      [0,10]],
+                Types:  ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
+                Values: [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
                 
-                statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],
             
                 //Window Dimensions Window Center
-                iDegrees: null,
-                Center: [null, null],
-                meshDiagram: null,
-                meshStats: null,
-                htmlText: null,
+                iDegrees:       null,
+                Center:         [null, null],
+                meshDiagram:    null,
+                meshStats:      null,
+                htmlText:       null,
         };
-        this.state.Center = [iDimension[0]/2, iDimension[1]/2];
-        this.state.iDegrees = (360/this.state.iQuantity);
+        this.state.Center       = [iDimension[0]/2, iDimension[1]/2];
+        this.state.iDegrees     = (360/this.state.iQuantity);
 
-        this.state.meshDiagram = SetupDiagram(this.state.iQuantity, this.state.Center, this.state.iDegrees);
-        this.state.meshStats = SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values);
-        this.state.htmlText = SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types);
+        this.state.meshDiagram  = SetupDiagram      (this.state.iQuantity, this.state.Center, this.state.iDegrees);
+        this.state.meshStats    = SetupStats        (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values);
+        this.state.htmlText     = SetupTextAndTicks (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types);
     };
 
     //Update Functions
@@ -221,30 +221,30 @@ class Diagram extends React.Component
                 totalPoints += this.state.Values[i];
             };
             
-            var Quantity = parseInt(props.target.value);                
-            var Center = [iDimension[0]/2, iDimension[1]/2];
-            var iDegrees = (360/props.target.value);
+            var Quantity    = parseInt(props.target.value);                
+            var Center      = [iDimension[0]/2, iDimension[1]/2];
+            var iDegrees    = (360/props.target.value);
 
             this.setState({
                 TotalPoints: totalPoints,
 
-                iQuantity: Quantity,
-                Center: Center,
-                iDegrees: iDegrees,
-                meshDiagram: SetupDiagram(Quantity, Center, iDegrees),
-                meshStats: SetupStats(Quantity, Center, iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(Quantity, Center, iDegrees, this.state.Ranges, this.state.Values, this.state.Types)
+                iQuantity:      Quantity,
+                Center:         Center,
+                iDegrees:       iDegrees,
+                meshDiagram:    SetupDiagram        (Quantity, Center, iDegrees),
+                meshStats:      SetupStats          (Quantity, Center, iDegrees, this.state.Ranges, this.state.Values),
+                htmlText:       SetupTextAndTicks   (Quantity, Center, iDegrees, this.state.Ranges, this.state.Values, this.state.Types)
             });
         }
         else if(iIndex.search("Value") > -1)
         {
             iIndex = parseInt(iIndex.replace("Value", ""));
             var tempVal = this.state.Values;
-            tempVal[iIndex] = parseInt(props.target.value);
+            tempVal[iIndex] = props.target.value;
 
             this.setState({Values: tempVal,
-                meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
+                meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
+                htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
         else if(iIndex.search("Types") > -1)
         {
@@ -253,8 +253,8 @@ class Diagram extends React.Component
             tempTypes[iIndex] = props.target.value;
 
             this.setState({Types: tempTypes,
-                meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
+                meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
+                htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
         else if(iIndex.search("Ranges") > -1)
         {
@@ -262,54 +262,54 @@ class Diagram extends React.Component
             var iIndex2;
             if(iIndex.search("Min") > -1)
             {
-                iIndex = parseInt(iIndex.replace("Min", ""));
+                iIndex  = parseInt(iIndex.replace("Min", ""));
                 iIndex2 = 0;
             }
             else
             {
-                iIndex = parseInt(iIndex.replace("Max", ""));
+                iIndex  = parseInt(iIndex.replace("Max", ""));
                 iIndex2 = 1;
             }
             var tempRanges = this.state.Ranges;            
-            tempRanges[iIndex][iIndex2] = parseInt(props.target.value);
+            tempRanges[iIndex][iIndex2] = props.target.value;
 
             this.setState({Ranges: tempRanges,
-                meshStats: SetupStats(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText: SetupTextAndTicks(this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
+                meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
+                htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
     };
 
     render(){
         //console.log(this.state);
-        return(
-            <div>
+        return(            
+            <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" /*width={iDimension[0]} height={iDimension[1]}*/>
                 <div>
-                    <svg width={iDimension[0]} height={iDimension[1]} >
-                        <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
-                        <defs>
-                            <linearGradient id = "grad">
-                                <stop offset="0" stopColor="purple"/>
-                                <stop offset="1" stopColor="lightBlue"/>
-                            </linearGradient>
-                        </defs>
-                        {<polygon points={this.state.meshDiagram} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 1, fillRule: "evenodd"}} />}
-                        {<polygon points={this.state.meshStats} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
-                        {this.state.htmlText}
-                    </svg>
-                </div>
-                <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" width={iDimension[0]} height={iDimension[1]}>
-                    <StatInputCtrls
+                    <div>
+                        <svg width={iDimension[0]} height={iDimension[1]} >
+                            <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
+                            <defs>
+                                <linearGradient id = "grad">
+                                    <stop offset="0" stopColor="purple"/>
+                                    <stop offset="1" stopColor="lightBlue"/>
+                                </linearGradient>
+                            </defs>
+                            {<polygon points={this.state.meshDiagram} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 1, fillRule: "evenodd"}} />}
+                            {<polygon points={this.state.meshStats} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
+                            {this.state.htmlText}
+                        </svg>
+                    </div>
+                    <StatInputForm
                         Quantity        = {this.state.iQuantity}
                         TotalPoints     = {this.state.TotalPoints}
                         Types           = {this.state.Types}
                         Values          = {this.state.Values}
                         Ranges           = {this.state.Ranges}
-                        
+                            
                         UpdateQuantity  = {this.UpdateQuantity.bind(this)}
                         /*onChange = {this.UpdateQuantity.bind(this)}*/ >
-                    </StatInputCtrls>
-                </Box>
-            </div>
+                    </StatInputForm>
+                </div>
+            </Box>
         );
     }
 }

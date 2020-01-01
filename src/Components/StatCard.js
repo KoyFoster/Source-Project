@@ -5,9 +5,7 @@ import Diagram from "./Diagram.js";
 function StatCard(props)
 {
     //Render and Logic 
-    return(
-        <Diagram name="StatCard"/>
-    )
+    return( <Diagram name="StatCard"/> )
 };
 
 export default StatCard; 
