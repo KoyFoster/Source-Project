@@ -3,37 +3,66 @@ import React from "react";
 //import { Box } from '@material-ui/core';
 //import Diagram from "./Diagram.js";
 
-var statCtrls = function(parent) 
+var statCtrls = function(parent, Quantity) 
 {
-    var controls = [];
-
-    for(var i=0; i < parent.props.Quantity; i++)
+    var htmlForm = [];
+    var rows = parent.props.Quantity;
+    var col = 7;
+    for(var iCol=-1; iCol < col; iCol++)
     {
-        controls.push(<div>
-            <label style = {{color: "black"}} >Stat: </label>
-            <input type="input" name={"Types"+i} style = {{width: "96px"}}
-                value={parent.props.Types[i]}
-                onChange={parent.Update.bind(parent)}
-            ></input>
-            
-            <label style = {{color: "black"}} > Value: </label>
-            <input type="number" name={"Value"+i} style = {{width: "48px"}}
-                value={parent.props.Values[i]}
-                onChange ={parent.Update.bind(parent)}
-            ></input>
-            
-            <label style = {{color: "black"}} > Range: </label>
-            <input type="number" name={"RangesMin"+i} style = {{width: "48px"}}
-                value={parent.props.Ranges[i][0]}
-                onChange ={parent.Update.bind(parent)}
-            ></input>            
-            <input type="number" name={"RangesMax"+i} style = {{width: "48px"}}
-                value={parent.props.Ranges[i][1]}
-                onChange ={parent.Update.bind(parent)}
-            ></input>
-        </div>)
+        for(var iRow=0; iRow < row; iRow++)
+        {   
+                if(iCol < 0)
+                {
+
+                }
+                else if(iCol === 0)//Stat Labels
+                {
+                    <label style = {{align: "right", color: "black"}} >Stat: </label>
+                }
+                else if(iCol === 1)//Stat Number Form
+                {
+                    <input type="input" name={"Types"+iRow} style = {{width: "96px"}}
+                        value={parent.props.Types[iRow]}
+                        onChange={parent.Update.bind(parent)}
+                    ></input>
+                }
+                else if(iCol === 2)
+                {
+                    <label style = {{color: "black"}} > Value: </label>
+                }
+                else if(iCol === 3)
+                {
+                    <input type="number" name={"Value"+iRow} style = {{width: "48px"}}
+                        value={parent.props.Values[iRow]}
+                        onChange ={parent.Update.bind(parent)}
+                    ></input>
+                }
+                else if(iCol === 4)
+                {
+                    <label style = {{color: "black"}} > Range: </label>
+                }
+                else if(iCol === 5)
+                {
+                    <input type="number" name={"RangesMin"+iRow} style = {{width: "48px"}}
+                        value={parent.props.Ranges[iRow][0]}
+                        onChange ={parent.Update.bind(parent)}
+                    ></input>
+                }
+                else if(iCol === 6)
+                {
+                    <input type="number" name={"RangesMax"+iRow} style = {{width: "48px"}}
+                        value={parent.props.Ranges[iRow][1]}
+                        onChange ={parent.Update.bind(parent)}
+                    ></input>
+                };
+                
+                htmlForm.push(<div>
+                    
+                </div>)
+        };
     }
-    return controls;
+    return htmlForm;
 }
 
 //User Input Class
@@ -44,7 +73,7 @@ class StatInputCtrls extends React.Component
         super(props);
         this.state = 
         {
-            controls: statCtrls(this)
+            htmlForm: statCtrls(this, this.props.Quantity)
         }
     };
 
@@ -55,7 +84,10 @@ class StatInputCtrls extends React.Component
         this.props.UpdateQuantity(props);
 
         //Update Form
-        this.setState({controls: statCtrls(this)})
+        //if(props.target.name === "Quantity")
+        {
+            this.setState({htmlForm: statCtrls(this)})
+        }
     };
 
     render() 
@@ -75,7 +107,7 @@ class StatInputCtrls extends React.Component
                 </input>
                 <label type="number" style = {{width: "38px", color: "black"}}> Points Spent: {this.props.TotalPoints} </label>
             </div>
-            {this.state.controls}
+            {this.state.htmlForm}
         </div>);
     }
 };

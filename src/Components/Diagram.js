@@ -21,14 +21,10 @@ var gradeCalc = function(index, Ranges, Values)
     };
 
     //Letter Assignment
-    if(percentage > 100)
-    {
-        result = cLetterGrades[7];
-    }
-    else if(percentage === 100)
+    if(percentage >= 100)
     {
         result = cLetterGrades[6];
-        masymenos(percentage-80);
+        masymenos(percentage-90);
     }
     else if(percentage >= 80)
     {
@@ -100,7 +96,9 @@ var SetupStats = function(Quantity, Center, Degrees, Ranges, Values)
         if(i === 0)//First Stat
         {
             //Create First Polygon, comprised of stat 1 and two
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Values[i]*(1/Ranges[i][1])*iDiagramScale)), new Vector2(0, (-Values[i+1]*(1/Ranges[i+1][1])*iDiagramScale))];
+            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Values[i]*(1/Ranges[i][1])*iDiagramScale)), new Vector2(0, 0, 0)];
+            //Quantity Check
+            if(Quantity !== 1){ v2Polygon[2] = new Vector2(0, (-Values[i+1]*(1/Ranges[i+1][1])*iDiagramScale)); }
             v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Degrees*i);/*The Current Stat Point*/
             Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Degrees*(i+1));/*The Next Stat Point*/
         }
@@ -132,7 +130,7 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
         if(iAngle > 90 && iAngle < 270)
         {
             iFlip = 180;
-        }        
+        }
         var typeCenter = [Center[0], Center[1]-iDiagramScale];
         htmlResult.push( 
         <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
@@ -146,17 +144,19 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
 
         /*Stat Ticks*/
         var ticks = 10;
+        var tickWidth = 3;
         for(var iT = 1; iT<ticks; iT++)
         {
-            htmlResult.push(<line x1={-4+Center[0]} y1={Center[1]-((iDiagramScale/ticks)*iT)} x2={4+Center[0]} y2={Center[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+")"} />);
-           
             if((iT%2) === 0)
             {
-                //Deinfe and round off the tick values
+                //TICKS
+                htmlResult.push(<line x1={-tickWidth+Center[0]} y1={Center[1]-((iDiagramScale/ticks)*iT)} x2={tickWidth+Center[0]} y2={Center[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+")"} />);
+
+                //Define and round off the TICK VALUES
                 var tickValue = Math.round(100 * (iT*( Ranges[i][1]/ticks)) )/100;
                 typeCenter = [Center[0]+5, Center[1]-((iDiagramScale/ticks)*iT)+3];
                 htmlResult.push(
-                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+(Center[0])+","+Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-5)+","+(typeCenter[1]-3)+")"}>
+                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: 8, strokeWidth: 1}} transform={"rotate("+iAngle+", "+(Center[0])+","+Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-4)+","+(typeCenter[1]-3)+")"}>
                     {tickValue}
                 </text>);
             }
@@ -172,12 +172,12 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
-                iQuantity: 5,
+                iQuantity: 6,
                 TotalPoints:  0,
 
-                Ranges:     [[0,8], [0,10], [0,7],      [0,10],        [0,9],       [0,2],      [0,10]],
+                Ranges:     [[0,10], [0,10], [0,10],      [0,10],        [0,10],       [0,10],      [0,10]],
                 Types:      ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
-                Values:     [5,1,1, 1,1,1, 1],
+                Values:     [3,4,4,8,4,2, 0],
                 
                 statGrades:     [0,0,0,0,0,0,0,0,0,0,0,0,0],
             
