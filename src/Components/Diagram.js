@@ -1,11 +1,17 @@
 import React from "react";
-import { Box, Paper } from '@material-ui/core';
+import { Box, Paper, makeStyles, createMuiTheme } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
 
 const iDiagramScale = 144;
 const iDimension = [iDiagramScale*3, iDiagramScale*3];
 const cLetterGrades = ['F','E','D','C','B','A','S','?'];
+
+
+const useStyles = makeStyles(({
+    Paper: {margin: 4, display: 'flex', flexDirection: 'column'}
+}));
+
 
 //Grade Function
 var gradeCalc = function(index, Ranges, Values)
@@ -222,7 +228,7 @@ class Diagram extends React.Component
     {
         //vars
         var iIndex = props.target.name;
-
+        console.log(props.target.name);
         if(props.target.name === "Quantity")
         {
             //Adjust State Arrays and update TotalPoints
@@ -293,7 +299,7 @@ class Diagram extends React.Component
         var tempValues = [];
         for(var i=0; i<this.state.iQuantity; i++)
         {
-            tempValues.push( this.state.Ranges[i][0]+Math.floor(Math.random() * this.state.Ranges[i][1]+1-this.state.Ranges[i][0]));
+            tempValues.push( parseInt(this.state.Ranges[i][0])+Math.floor(Math.random() * (this.state.Ranges[i][1]+1-this.state.Ranges[i][0])));
         };
         this.state.Values = tempValues;
 
@@ -307,9 +313,9 @@ class Diagram extends React.Component
 
     render(){
         //console.log(this.state);
-        return(            
+        return(
             <Box name="body" display="flex" style={{alignItems: "flex"}} /*border="2px solid #3f0000"*/ bgcolor="darkGrey">
-                    <Paper>
+                    <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                         <StatInputForm
                             Quantity    = {this.state.iQuantity}
                             TotalPoints = {this.state.TotalPoints}
@@ -322,7 +328,7 @@ class Diagram extends React.Component
                             /*onChange = {this.UpdateQuantity.bind(this)}*/ >
                         </StatInputForm>  
                     </Paper>   
-                    <Paper>
+                    <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                         <svg width={iDimension[0]} height={iDimension[1]} >
                             <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
                             <defs>

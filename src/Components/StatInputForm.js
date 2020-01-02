@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import {Row, Col} from './Grid.js'
 
 var statForm = function(Comp, Quantity) 
@@ -12,6 +12,7 @@ var statForm = function(Comp, Quantity)
         if(iRow === -1)//Run if else cases if iRow is not negative
         {    
             htmlBuffer.push(<button name="RNG" onClick={Comp.Update.bind(Comp)}> RNG </button>);
+            htmlBuffer.push(<Button name="RNG" onClick={Comp.Update.bind(Comp)}> RNG </Button>);
             htmlForm.push(  htmlBuffer )
         }
         else
