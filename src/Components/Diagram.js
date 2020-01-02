@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from '@material-ui/core';
+import { Box, Paper } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
 
@@ -308,8 +308,8 @@ class Diagram extends React.Component
     render(){
         //console.log(this.state);
         return(            
-            <Box name="body" display="flex" style={{alignItems: "flex"}} border="2px solid #3f0000" bgcolor="darkGrey">
-                    <Box border="2px solid #3f0000">
+            <Box name="body" display="flex" style={{alignItems: "flex"}} /*border="2px solid #3f0000"*/ bgcolor="darkGrey">
+                    <Paper>
                         <StatInputForm
                             Quantity    = {this.state.iQuantity}
                             TotalPoints = {this.state.TotalPoints}
@@ -321,8 +321,8 @@ class Diagram extends React.Component
                             RandomizeStats  = {this.RandomizeStats.bind(this)}
                             /*onChange = {this.UpdateQuantity.bind(this)}*/ >
                         </StatInputForm>  
-                    </Box>   
-                    <Box border="2px solid #3f0000">
+                    </Paper>   
+                    <Paper>
                         <svg width={iDimension[0]} height={iDimension[1]} >
                             <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
                             <defs>
@@ -335,7 +335,7 @@ class Diagram extends React.Component
                             {<polygon points={this.state.meshStats} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
                             {this.state.htmlText}
                         </svg>
-                    </Box>              
+                    </Paper>              
             </Box>
         );
     }

@@ -2,6 +2,12 @@
   text-align: top;
 }
 
+Paper {
+  margin: 4;
+  display: 'flex';
+  flex-direction: 'column'
+}
+
 text {
   display: inline-block;
   height: 16px; 
@@ -113,8 +119,8 @@ img{
 }
 
 .font-default, text, label, .Link-header, .grid1, .grid2, .Button-install{
-  color: #E5E4dc;
-  font-size: 11px;
+  color: #171a21;
+  font-size: 14px;
   text-decoration: none;
   font-family: "Motiva-Sans, sans-serif";
 }
