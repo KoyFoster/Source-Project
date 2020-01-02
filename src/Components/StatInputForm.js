@@ -2,104 +2,55 @@ import React from "react";
 import { Box } from '@material-ui/core';
 import {Row, Col} from './Grid.js'
 
-var statForm = function(parent, Quantity) 
+var statForm = function(Comp, Quantity) 
 {
     var htmlForm = [];
-    var rows = parent.props.Quantity;
-    var cols = 7;
-    for(var iCol=0; iCol < cols; iCol++)
+    var rows = Comp.props.Quantity;
+    for(var iRow=-1; iRow < rows; iRow++)
     {
         var htmlBuffer = [];
-        for(var iRow=-1; iRow < rows; iRow++)
+        if(iRow === -1)//Run if else cases if iRow is not negative
+        {    
+            htmlBuffer.push(<button name="RNG" onClick={Comp.Update.bind(Comp)}> RNG </button>);
+            htmlForm.push(  htmlBuffer )
+        }
+        else
         {
-                if(iRow === -1)//Run if else cases if iRow is not negative
-                {
-                    if(iCol === 3)//Stat Value Number Form
-                    {
-                        htmlBuffer.push(<button> RNG </button>);
-                    }
-                    else
-                    {
-                        htmlBuffer.push(<span> </span>);
-                    }
-                }
-                else if(iCol === 0)//Stat Labels
-                {
-                    htmlBuffer.push(<label> Stat: </label>);
-                }
-                else if(iCol === 1)//Stat Type Form
-                {
-                    htmlBuffer.push(<input type="input" name={"Types"+iRow}
-                        value={parent.props.Types[iRow]}
-                        onChange={parent.Update.bind(parent)}
-                    ></input>);
-                }
-                else if(iCol === 2)//Stat Value Labels
-                {
-                    htmlBuffer.push(<label> Value: </label>);
-                }
-                else if(iCol === 3)//Stat Value Number Form
-                {
-                    htmlBuffer.push(
-                    <input type="number" name={"Value"+iRow}
-                        value={parent.props.Values[iRow]}
-                        onChange ={parent.Update.bind(parent)}
-                    ></input>);
-                }
-                else if(iCol === 4)//Range Label
-                {
-                    htmlBuffer.push(<label> Range: </label>);
-                }
-                else if(iCol === 5)//Range Min Numnber Form
-                {
-                    htmlBuffer.push(<input type="number" name={"RangesMin"+iRow}
-                        value={parent.props.Ranges[iRow][0]}
-                        onChange ={parent.Update.bind(parent)}
-                    ></input>);
-                }
-                else if(iCol === 6)//Range Max Numnber Form
-                {
-                    htmlBuffer.push(<input type="number" name={"RangesMax"+iRow}
-                        value={parent.props.Ranges[iRow][1]}
-                        onChange ={parent.Update.bind(parent)}
-                    ></input>);
-                };
-        };
-        htmlForm.push(  <div> {htmlBuffer} </div>)
+            htmlBuffer.push(<label> Stat: </label>);
+            htmlBuffer.push(<input type="input" style={{width: "96px"}} name={"Types"+iRow} value={Comp.props.Types[iRow]} onChange={Comp.Update.bind(Comp)} ></input>);                
+            htmlBuffer.push(<label> Value: </label>);
+            htmlBuffer.push(<input type="number" name={"Value"+iRow} value={Comp.props.Values[iRow]} onChange ={Comp.Update.bind(Comp)} ></input>);               
+            htmlBuffer.push(<label> Range: </label>);
+            htmlBuffer.push(<input type="number" name={"RangesMin"+iRow} value={Comp.props.Ranges[iRow][0]} onChange ={Comp.Update.bind(Comp)} ></input>);                
+            htmlBuffer.push(<input type="number" name={"RangesMax"+iRow} value={Comp.props.Ranges[iRow][1]} onChange ={Comp.Update.bind(Comp)} ></input>);
+            htmlForm.push(  <Row name={"Row"+iRow}> {htmlBuffer} </Row>);
+        }
     }
-    return <Row>{htmlForm}</Row>;
+    return htmlForm;
 }
 
 //User Input Class
 class StatInputForm extends React.Component
-{    
-    constructor(props)
-    {
-        super(props);
-        this.state = 
-        {
-            htmlForm: statForm(this, this.props.Quantity)
-        }
-    };
-
+{
     //On Slices Change, update form
     Update(props)
     {
-        //Update Diagram
-        this.props.UpdateQuantity(props);
-
-        //Update Form
-        //if(props.target.name === "Quantity")
-        //{
-            this.setState({htmlForm: statForm(this)})
-        //}
+        if(props.target.name === "RNG")
+        {
+            this.props.RandomizeStats(props);
+        }
+        else
+        {
+            //Update Diagram
+            this.props.UpdateQuantity(props);
+        }
     };
 
     render() 
     {
         return(
-        <div>
-            <div align="center">
+        <div name="body">
+            <div name="GraphBody" align="center">
                 <label> Stat quantity: </label>
                 <input
                     type="number"
@@ -112,7 +63,9 @@ class StatInputForm extends React.Component
                 </input>
                 <label> Points Spent: {this.props.TotalPoints} </label>
             </div>
-            {this.state.htmlForm}
+            <div name="FormBody" align="center">
+                {statForm(this)}
+            </div>
         </div>);
     }
 };

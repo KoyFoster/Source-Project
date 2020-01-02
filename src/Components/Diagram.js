@@ -165,8 +165,27 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
     return htmlResult
 };
 
+var GetTotalPoints = function(Comp, arrDiff = 0)
+{
+    var totalPoints = 0;
+    for(var i=0; i < Comp.state.iQuantity; i++)
+        {
+            //push additional elements if change in size exceeds current size
+            if(i < arrDiff+1)
+            {
+                Comp.state.Ranges.push([0,10]);
+                Comp.state.Types.push("???");
+                Comp.state.Values.push(0);
+                
+                Comp.state.statGrades.push(0);
+            };
+            totalPoints += Comp.state.Values[i];
+        };
+        return totalPoints;
+};
+
 class Diagram extends React.Component
-{    
+{   
     constructor(props){
         super(props);
         this.state = 
@@ -194,6 +213,8 @@ class Diagram extends React.Component
         this.state.meshDiagram  = SetupDiagram      (this.state.iQuantity, this.state.Center, this.state.iDegrees);
         this.state.meshStats    = SetupStats        (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values);
         this.state.htmlText     = SetupTextAndTicks (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types);
+
+        this.state.TotalPoints  = GetTotalPoints(this);
     };
 
     //Update Functions
@@ -206,20 +227,7 @@ class Diagram extends React.Component
         {
             //Adjust State Arrays and update TotalPoints
             var arrDiff = props.target.value - this.state.Values.length;
-            var totalPoints = 0;
-            for(var i=0; i < this.state.iQuantity; i++)
-            {
-                //push additional elements if change in size exceeds current size
-                if(i < arrDiff+1)
-                {
-                    this.state.Ranges.push([0,10]);
-                    this.state.Types.push("???");
-                    this.state.Values.push(0);
-                    
-                    this.state.statGrades.push(0);
-                };
-                totalPoints += this.state.Values[i];
-            };
+            var totalPoints = GetTotalPoints(this, arrDiff);
             
             var Quantity    = parseInt(props.target.value);                
             var Center      = [iDimension[0]/2, iDimension[1]/2];
@@ -274,17 +282,47 @@ class Diagram extends React.Component
             tempRanges[iIndex][iIndex2] = props.target.value;
 
             this.setState({Ranges: tempRanges,
+                Values: this.state.Values,
                 meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
                 htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
         }
     };
 
+    RandomizeStats(props)
+    {
+        var tempValues = [];
+        for(var i=0; i<this.state.iQuantity; i++)
+        {
+            tempValues.push( this.state.Ranges[i][0]+Math.floor(Math.random() * this.state.Ranges[i][1]+1-this.state.Ranges[i][0]));
+        };
+        this.state.Values = tempValues;
+
+        var totalPoints = GetTotalPoints(this);
+        this.setState({
+            TotalPoints: totalPoints,
+            meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, tempValues),
+            htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, tempValues, this.state.Types)
+        });
+    };
+
     render(){
         //console.log(this.state);
         return(            
-            <Box display="flexbox" border="2px solid #3f0000" bgcolor="darkGrey" color="#a4a4a4" /*width={iDimension[0]} height={iDimension[1]}*/>
-                <div>
-                    <div>
+            <Box name="body" display="flex" style={{alignItems: "flex"}} border="2px solid #3f0000" bgcolor="darkGrey">
+                    <Box border="2px solid #3f0000">
+                        <StatInputForm
+                            Quantity    = {this.state.iQuantity}
+                            TotalPoints = {this.state.TotalPoints}
+                            Types       = {this.state.Types}
+                            Values      = {this.state.Values}
+                            Ranges      = {this.state.Ranges}
+                                
+                            UpdateQuantity  = {this.UpdateQuantity.bind(this)}
+                            RandomizeStats  = {this.RandomizeStats.bind(this)}
+                            /*onChange = {this.UpdateQuantity.bind(this)}*/ >
+                        </StatInputForm>  
+                    </Box>   
+                    <Box border="2px solid #3f0000">
                         <svg width={iDimension[0]} height={iDimension[1]} >
                             <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
                             <defs>
@@ -297,18 +335,7 @@ class Diagram extends React.Component
                             {<polygon points={this.state.meshStats} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
                             {this.state.htmlText}
                         </svg>
-                    </div>
-                    <StatInputForm
-                        Quantity        = {this.state.iQuantity}
-                        TotalPoints     = {this.state.TotalPoints}
-                        Types           = {this.state.Types}
-                        Values          = {this.state.Values}
-                        Ranges           = {this.state.Ranges}
-                            
-                        UpdateQuantity  = {this.UpdateQuantity.bind(this)}
-                        /*onChange = {this.UpdateQuantity.bind(this)}*/ >
-                    </StatInputForm>
-                </div>
+                    </Box>              
             </Box>
         );
     }

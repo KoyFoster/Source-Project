@@ -4,20 +4,26 @@
 
 text {
   display: inline-block;
-  height: 24;
+  height: 16px; 
+  width: 48px;
   text-align: right;
 }
 
 label {
-  display: inline-block;
-  height: 24;
+  display: inline;
   text-align: right;
+  align-content: center;
 }
 
 input {
-  display: inline;
-  max-height: 24; 
-  max-width: 48;
+  display: inline-flexbox;
+  height: 16px; 
+  width: 48px;
+  vertical-align: middle;
+}
+
+div{
+  vertical-align: middle;
 }
 
 .Header-default {
