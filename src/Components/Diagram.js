@@ -3,20 +3,15 @@ import { Box, Paper, makeStyles, createMuiTheme } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
 
-const iDiagramScale = 144;
+const iStrokeWidth = 0.5;
+const iDiagramScale = 256;
 const iDimension = [iDiagramScale*3, iDiagramScale*3];
-const cLetterGrades = ['F','E','D','C','B','A','S','?'];
-
-
-const useStyles = makeStyles(({
-    Paper: {margin: 4, display: 'flex', flexDirection: 'column'}
-}));
-
+const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
 
 //Grade Function
 var gradeCalc = function(index, Ranges, Values)
 {   
-    var result = cLetterGrades[7];//? grade
+    var result = cLetterGrades[9];//? grade
     //Take Values and divide it against it's max range
     var percentage = (Values[index]/Ranges[index][1])*100;
 
@@ -27,7 +22,16 @@ var gradeCalc = function(index, Ranges, Values)
     };
 
     //Letter Assignment
-    if(percentage >= 100)
+    if(percentage >= 140)
+    {
+        result = cLetterGrades[8];
+    }
+    else if(percentage >= 120)
+    {
+        result = cLetterGrades[7];
+        masymenos(percentage-110);
+    }
+    else if(percentage >= 100)
     {
         result = cLetterGrades[6];
         masymenos(percentage-90);
@@ -139,12 +143,12 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
         }
         var typeCenter = [Center[0], Center[1]-iDiagramScale];
         htmlResult.push( 
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
         {Types[i]}
         </text>);
 
         htmlResult.push( 
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: 1}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
         {gradeCalc(i, Ranges, Values)}
         </text>);
 
@@ -156,13 +160,13 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
             if((iT%2) === 0)
             {
                 //TICKS
-                htmlResult.push(<line x1={-tickWidth+Center[0]} y1={Center[1]-((iDiagramScale/ticks)*iT)} x2={tickWidth+Center[0]} y2={Center[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: 1}} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+")"} />);
+                htmlResult.push(<line x1={-tickWidth+Center[0]} y1={Center[1]-((iDiagramScale/ticks)*iT)} x2={tickWidth+Center[0]} y2={Center[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: iStrokeWidth}} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+")"} />);
 
                 //Define and round off the TICK VALUES
                 var tickValue = Math.round(100 * (iT*( Ranges[i][1]/ticks)) )/100;
                 typeCenter = [Center[0]+5, Center[1]-((iDiagramScale/ticks)*iT)+3];
                 htmlResult.push(
-                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: 8, strokeWidth: 1}} transform={"rotate("+iAngle+", "+(Center[0])+","+Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-4)+","+(typeCenter[1]-3)+")"}>
+                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: 8, strokeWidth: iStrokeWidth}} transform={"rotate("+iAngle+", "+(Center[0])+","+Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-4)+","+(typeCenter[1]-3)+")"}>
                     {tickValue}
                 </text>);
             }
@@ -171,9 +175,9 @@ var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Type
     return htmlResult
 };
 
-var GetTotalPoints = function(Comp, arrDiff = 0)
+var GetPointTotal = function(Comp, arrDiff = 0)
 {
-    var totalPoints = 0;
+    var PointTotal = 0;
     for(var i=0; i < Comp.state.iQuantity; i++)
         {
             //push additional elements if change in size exceeds current size
@@ -185,9 +189,9 @@ var GetTotalPoints = function(Comp, arrDiff = 0)
                 
                 Comp.state.statGrades.push(0);
             };
-            totalPoints += Comp.state.Values[i];
+            PointTotal += Comp.state.Values[i];
         };
-        return totalPoints;
+        return PointTotal;
 };
 
 class Diagram extends React.Component
@@ -198,13 +202,14 @@ class Diagram extends React.Component
         {
             //User inputted stats as semi-colin dilimited strings
                 iQuantity:      6,
-                TotalPoints:    0,
+                PointTotal:    0,
+                PointLimit:    60,
 
-                Ranges: [[0,10], [0,10], [0,10],      [0,10],        [0,10],       [0,10],      [0,10]],
+                Ranges: [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
                 Types:  ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
                 Values: [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
                 
-                statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],//Placeholder
             
                 //Window Dimensions Window Center
                 iDegrees:       null,
@@ -220,7 +225,7 @@ class Diagram extends React.Component
         this.state.meshStats    = SetupStats        (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values);
         this.state.htmlText     = SetupTextAndTicks (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types);
 
-        this.state.TotalPoints  = GetTotalPoints(this);
+        this.state.PointTotal  = GetPointTotal(this);
     };
 
     //Update Functions
@@ -228,19 +233,18 @@ class Diagram extends React.Component
     {
         //vars
         var iIndex = props.target.name;
-        console.log(props.target.name);
         if(props.target.name === "Quantity")
         {
-            //Adjust State Arrays and update TotalPoints
+            //Adjust State Arrays and update PointTotal
             var arrDiff = props.target.value - this.state.Values.length;
-            var totalPoints = GetTotalPoints(this, arrDiff);
+            var PointTotal = GetPointTotal(this, arrDiff);
             
-            var Quantity    = parseInt(props.target.value);                
+            var Quantity    = parseInt(props.target.value);
             var Center      = [iDimension[0]/2, iDimension[1]/2];
             var iDegrees    = (360/props.target.value);
 
             this.setState({
-                TotalPoints: totalPoints,
+                PointTotal: PointTotal,
 
                 iQuantity:      Quantity,
                 Center:         Center,
@@ -284,7 +288,7 @@ class Diagram extends React.Component
                 iIndex  = parseInt(iIndex.replace("Max", ""));
                 iIndex2 = 1;
             }
-            var tempRanges = this.state.Ranges;            
+            var tempRanges = this.state.Ranges;
             tempRanges[iIndex][iIndex2] = props.target.value;
 
             this.setState({Ranges: tempRanges,
@@ -294,18 +298,32 @@ class Diagram extends React.Component
         }
     };
 
+    UpdatePointLimit(props)
+    {
+        this.setState({PointLimit: props.target.value})
+    };
+
     RandomizeStats(props)
     {
         var tempValues = [];
+        var tempTotal = 0;
         for(var i=0; i<this.state.iQuantity; i++)
         {
-            tempValues.push( parseInt(this.state.Ranges[i][0])+Math.floor(Math.random() * (this.state.Ranges[i][1]+1-this.state.Ranges[i][0])));
+            var tempVal = 0;
+            if(tempTotal < this.state.PointLimit)
+            {
+                var iSubRange = this.state.PointLimit - tempTotal - this.state.Ranges[i][1];
+                if(iSubRange > 0){iSubRange = 0;}
+                tempVal = parseInt(this.state.Ranges[i][0]) + Math.floor(Math.random() * (this.state.Ranges[i][1]+1-this.state.Ranges[i][0]-iSubRange) );
+                tempTotal += tempVal;
+            }
+            tempValues.push(tempVal);
         };
         this.state.Values = tempValues;
 
-        var totalPoints = GetTotalPoints(this);
+        var PointTotal = GetPointTotal(this);
         this.setState({
-            TotalPoints: totalPoints,
+            PointTotal: PointTotal,
             meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, tempValues),
             htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, tempValues, this.state.Types)
         });
@@ -314,34 +332,35 @@ class Diagram extends React.Component
     render(){
         //console.log(this.state);
         return(
-            <Box name="body" display="flex" style={{alignItems: "flex"}} /*border="2px solid #3f0000"*/ bgcolor="darkGrey">
-                    <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
+            <Box name="body" display="flex" style={{alignItems: "flex"}} bgcolor="darkGrey">
+                    <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                         <StatInputForm
                             Quantity    = {this.state.iQuantity}
-                            TotalPoints = {this.state.TotalPoints}
+                            PointTotal = {this.state.PointTotal}
+                            PointLimit = {this.state.PointLimit}
                             Types       = {this.state.Types}
                             Values      = {this.state.Values}
                             Ranges      = {this.state.Ranges}
                                 
                             UpdateQuantity  = {this.UpdateQuantity.bind(this)}
                             RandomizeStats  = {this.RandomizeStats.bind(this)}
-                            /*onChange = {this.UpdateQuantity.bind(this)}*/ >
+                            UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
                         </StatInputForm>  
                     </Paper>   
                     <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                         <svg width={iDimension[0]} height={iDimension[1]} >
-                            <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 2}} />
+                            <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
                             <defs>
                                 <linearGradient id = "grad">
                                     <stop offset="0" stopColor="purple"/>
                                     <stop offset="1" stopColor="lightBlue"/>
                                 </linearGradient>
                             </defs>
-                            {<polygon points={this.state.meshDiagram} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: 1, fillRule: "evenodd"}} />}
+                            {<polygon points={this.state.meshDiagram} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth, fillRule: "evenodd"}} />}
                             {<polygon points={this.state.meshStats} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
                             {this.state.htmlText}
                         </svg>
-                    </Paper>              
+                    </Paper>
             </Box>
         );
     }
