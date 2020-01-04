@@ -4,19 +4,21 @@ import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
 
 const iStrokeWidth = 0.5;
-const iDiagramScale = 256;
-const iDimension = [iDiagramScale*3, iDiagramScale*3];
+const iWinWidth = window.innerWidth;
+const iScale = 0.20;
+const iDrawScale = iWinWidth*iScale;
+const iDimension = [(iWinWidth*iScale*2)+144, (iWinWidth*iScale*2)+144];
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
 
 //Grade Function
 var gradeCalc = function(index, Ranges, Values)
-{   
+{
     var result = cLetterGrades[9];//? grade
     //Take Values and divide it against it's max range
     var percentage = (Values[index]/Ranges[index][1])*100;
 
     //Upper or lower value assignment
-    var masymenos = (value) => 
+    var masymenos = (value) =>
     {
         if(value > 10){result += '+';} else if(value < 10){result += '-';}
     };
@@ -68,109 +70,128 @@ var gradeCalc = function(index, Ranges, Values)
 }
 
 /*Update Diagram*/
-var SetupDiagram = function(Quantity, Center, Degrees)
+var SetupDiagram = function(Comp)
 {
-    /*Iterate For Each Triangle*/
-    var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*iDiagramScale), new Vector2(0, -1*iDiagramScale)];
+    /*Iterate For Each TriAngles*/
+    var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*iDrawScale), new Vector2(0, -1*iDrawScale)];
     var mesh = [];
-    console.log(Quantity, Center, Degrees)
-    for (var i = 1; i < Quantity+1; i++)
+    //The logic here is that a triangle is created and repeated for each number of angles
+    for (var i = 0; i < Comp.state.iQuantity; i++)
     {
         //Adjust Angles
-        if(i === 1)
+        if(i === 0)
         {
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Degrees)
-            mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Comp.state.iAngles[i+1]);//Rotate Second Point Over
+
+            //Push First Triangle
+            mesh.push([v2Polygon[0].x, v2Polygon[0].y]); 
+            mesh.push([v2Polygon[1].x, v2Polygon[1].y]); 
+            mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
         }
         else
         {
-            Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Degrees);
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Degrees);
-            mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
+            Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Comp.state.iAngles[1]);//Rotate First Point Over
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Comp.state.iAngles[1]);//Rotate Second Point Over
+
+            //Push Current Triangle
+            mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
+            mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
+            mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
         }
-    }    
+    }
     //Offset Coordinates
-    return mesh.map(function (arr) { return [Center[0] + arr[0], Center[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
 };
 
+
 //Stats 2 and 3 are the same everytime
-var SetupStats = function(Quantity, Center, Degrees, Ranges, Values)
+var SetupStats = function(Comp)
 {
     var mesh = [];
     var v2Polygon;
     var v2FirstPoint;//Done to save an operation step
-    /*Iterate For Each Triangle*/
-    for (var i = 0; i < Quantity; i++)
+    /*Iterate For Each TriAngles*/
+    for (var i = 0; i < Comp.state.iQuantity; i++)
     {
         //Adjust Angles
         if(i === 0)//First Stat
         {
             //Create First Polygon, comprised of stat 1 and two
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Values[i]*(1/Ranges[i][1])*iDiagramScale)), new Vector2(0, 0, 0)];
+            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Comp.state.Values[i]*(1/Comp.state.Ranges[i][1])*iDrawScale)), new Vector2(0, 0, 0)];
+
             //Quantity Check
-            if(Quantity !== 1){ v2Polygon[2] = new Vector2(0, (-Values[i+1]*(1/Ranges[i+1][1])*iDiagramScale)); }
-            v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Degrees*i);/*The Current Stat Point*/
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Degrees*(i+1));/*The Next Stat Point*/
+            if(Comp.state.iQuantity !== 1){ v2Polygon[2] = new Vector2(0, (-Comp.state.Values[i+1]*(1/Comp.state.Ranges[i+1][1])*iDrawScale) ); }
+
+            v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Comp.state.iAngles[i]);/*The Current Stat Point*/
+
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Comp.state.iAngles[i+1]);/*The Next Stat Point*/
         }
-        else if(i !== Quantity-1)//Mid Stats
+        else if(i !== Comp.state.Quantity-1)//Mid Stats
         {
-            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-Values[i+1]*(1/Ranges[i+1][1])*iDiagramScale))];
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Degrees*(i+1));/*The Next Stat Point*/
+            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-Comp.state.Values[i+1]*(1/Comp.state.Ranges[i+1][1])*iDrawScale))];
+            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Comp.state.iAngles[i+1]);/*The Next Stat Point*/
         }
         else//Last Stat
         {
+            console.log(v2FirstPoint);
             v2Polygon = [new Vector2(0,0), v2Polygon[2], v2FirstPoint];
         }
         mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
     }    
     //Offset Coordinates
-    return mesh.map(function (arr) { return [Center[0] + arr[0], Center[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
 };
 
-var SetupTextAndTicks = function(Quantity, Center, Degrees, Ranges, Values, Types)
+var SetupTextAndTicks = function(Comp)
 {
-    var htmlResult = [];
-    for (var i = 0; i < Quantity; i++)
-    {   
-        /*Stat Type Label*/
-        var iAngle = i*Degrees;
+    var typeCenter = [Comp.state.Center[0], Comp.state.Center[1]-iDrawScale-5];
+    var tickWidth = iDrawScale*0.005;
+    var ticks = 10;
+    var strCenter = +Comp.state.Center[0]+","+Comp.state.Center[1];
 
-        var iFlip = 0;
+    var strRotateSelf = ", rotate(180,"+typeCenter[0]+","+(typeCenter[1]-4)+")";
+
+    var htmlResult = [];
+    for (var i = 0; i < Comp.state.iQuantity; i++)
+    {
+        var sFlip = "";
         //Rotate text around it's center if upsidedown
-        if(iAngle > 90 && iAngle < 270)
+        if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
-            iFlip = 180;
+            sFlip = strRotateSelf;
         }
-        var typeCenter = [Center[0], Center[1]-iDiagramScale];
+
+        //Letter Grades
         htmlResult.push( 
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 14, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]-6} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+iFlip+","+typeCenter[0]+","+(typeCenter[1]-10)+")"} > 
-        {Types[i]}
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Math.floor(iDrawScale/6), strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+8} 
+            transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+"), rotate("+-Comp.state.iAngles[i]+","+typeCenter[0]+","+(typeCenter[1])+")"} > 
+            {gradeCalc(i, Comp.state.Ranges, Comp.state.Values)}
         </text>);
 
-        htmlResult.push( 
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: 40, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]-40} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+"), rotate("+-iAngle+","+typeCenter[0]+","+(typeCenter[1]-50)+")"} > 
-        {gradeCalc(i, Ranges, Values)}
+        //Types
+        htmlResult.push(
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iDrawScale/22, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]}
+            transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+")"+sFlip} >                
+            {Comp.state.Types[i]}
         </text>);
 
         /*Stat Ticks*/
-        var ticks = 10;
-        var tickWidth = 3;
-        for(var iT = 1; iT<ticks; iT++)
+        /*for(var iT = 1; iT<ticks; iT++)
         {
             if((iT%2) === 0)
             {
                 //TICKS
-                htmlResult.push(<line x1={-tickWidth+Center[0]} y1={Center[1]-((iDiagramScale/ticks)*iT)} x2={tickWidth+Center[0]} y2={Center[1]-((iDiagramScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: iStrokeWidth}} transform={"rotate("+iAngle+", "+Center[0]+","+Center[1]+")"} />);
+                htmlResult.push(<line x1={(-tickWidth)+Comp.state.Center[0]} y1={Comp.state.Center[1]-((iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.Center[0]} y2={Comp.state.Center[1]-((iDrawScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: iStrokeWidth*2}} transform={"rotate("+Comp.state.iAngles[i]+", "+Comp.state.Center[0]+","+Comp.state.Center[1]+")"} />);
 
                 //Define and round off the TICK VALUES
-                var tickValue = Math.round(100 * (iT*( Ranges[i][1]/ticks)) )/100;
-                typeCenter = [Center[0]+5, Center[1]-((iDiagramScale/ticks)*iT)+3];
+                var tickValue = Math.round(100 * (iT*( Comp.state.Ranges[i][1]/ticks)) )/100;
+                typeCenter = [Comp.state.Center[0]+5, Comp.state.Center[1]-((iDrawScale/ticks)*iT)+3];
                 htmlResult.push(
-                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: 8, strokeWidth: iStrokeWidth}} transform={"rotate("+iAngle+", "+(Center[0])+","+Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-4)+","+(typeCenter[1]-3)+")"}>
+                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.Center[0])+","+Comp.state.Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-4)+","+(typeCenter[1]-3)+")"}>
                     {tickValue}
                 </text>);
             }
-        }
+        }*/
     }
     return htmlResult
 };
@@ -202,6 +223,7 @@ class Diagram extends React.Component
         {
             //User inputted stats as semi-colin dilimited strings
                 iQuantity:      6,
+                iAngles: [0, 60, 120, 180, 240, 300],
                 PointTotal:    0,
                 PointLimit:    60,
 
@@ -212,26 +234,30 @@ class Diagram extends React.Component
                 statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],//Placeholder
             
                 //Window Dimensions Window Center
-                iDegrees:       null,
                 Center:         [null, null],
-                meshDiagram:    null,
-                meshStats:      null,
-                htmlText:       null,
         };
         this.state.Center       = [iDimension[0]/2, iDimension[1]/2];
-        this.state.iDegrees     = (360/this.state.iQuantity);
-
-        this.state.meshDiagram  = SetupDiagram      (this.state.iQuantity, this.state.Center, this.state.iDegrees);
-        this.state.meshStats    = SetupStats        (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values);
-        this.state.htmlText     = SetupTextAndTicks (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types);
 
         this.state.PointTotal  = GetPointTotal(this);
+    };
+
+    UpdateAngles(props)
+    {
+        this.state.iAngles = [];
+        var tempArr = [];
+        var iSlice = 360/props.target.value;
+        for(var i=0; i<props.target.value; i++)
+        {
+            tempArr.push(i*iSlice);
+        };
+        this.setState({iAngles: tempArr})
     };
 
     //Update Functions
     UpdateQuantity(props)
     {
         //vars
+        this.UpdateAngles(props);
         var iIndex = props.target.name;
         if(props.target.name === "Quantity")
         {
@@ -241,17 +267,12 @@ class Diagram extends React.Component
             
             var Quantity    = parseInt(props.target.value);
             var Center      = [iDimension[0]/2, iDimension[1]/2];
-            var iDegrees    = (360/props.target.value);
 
             this.setState({
                 PointTotal: PointTotal,
 
                 iQuantity:      Quantity,
                 Center:         Center,
-                iDegrees:       iDegrees,
-                meshDiagram:    SetupDiagram        (Quantity, Center, iDegrees),
-                meshStats:      SetupStats          (Quantity, Center, iDegrees, this.state.Ranges, this.state.Values),
-                htmlText:       SetupTextAndTicks   (Quantity, Center, iDegrees, this.state.Ranges, this.state.Values, this.state.Types)
             });
         }
         else if(iIndex.search("Value") > -1)
@@ -260,9 +281,7 @@ class Diagram extends React.Component
             var tempVal = this.state.Values;
             tempVal[iIndex] = props.target.value;
 
-            this.setState({Values: tempVal,
-                meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
+            this.setState({Values: tempVal});
         }
         else if(iIndex.search("Types") > -1)
         {
@@ -270,9 +289,7 @@ class Diagram extends React.Component
             var tempTypes = this.state.Types;    
             tempTypes[iIndex] = props.target.value;
 
-            this.setState({Types: tempTypes,
-                meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
+            this.setState({Types: tempTypes});
         }
         else if(iIndex.search("Ranges") > -1)
         {
@@ -292,10 +309,11 @@ class Diagram extends React.Component
             tempRanges[iIndex][iIndex2] = props.target.value;
 
             this.setState({Ranges: tempRanges,
-                Values: this.state.Values,
-                meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values),
-                htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, this.state.Values, this.state.Types)});
+                Values: this.state.Values});
         }
+
+        this.setState({
+        });
     };
 
     UpdatePointLimit(props)
@@ -324,8 +342,7 @@ class Diagram extends React.Component
         var PointTotal = GetPointTotal(this);
         this.setState({
             PointTotal: PointTotal,
-            meshStats:  SetupStats          (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, tempValues),
-            htmlText:   SetupTextAndTicks   (this.state.iQuantity, this.state.Center, this.state.iDegrees, this.state.Ranges, tempValues, this.state.Types)
+            meshStats:  SetupStats          (this)
         });
     };
 
@@ -336,8 +353,8 @@ class Diagram extends React.Component
                     <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                         <StatInputForm
                             Quantity    = {this.state.iQuantity}
-                            PointTotal = {this.state.PointTotal}
-                            PointLimit = {this.state.PointLimit}
+                            PointTotal  = {this.state.PointTotal}
+                            PointLimit  = {this.state.PointLimit}
                             Types       = {this.state.Types}
                             Values      = {this.state.Values}
                             Ranges      = {this.state.Ranges}
@@ -349,16 +366,16 @@ class Diagram extends React.Component
                     </Paper>   
                     <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                         <svg width={iDimension[0]} height={iDimension[1]} >
-                            <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDiagramScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
+                            <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*iDrawScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
                             <defs>
                                 <linearGradient id = "grad">
                                     <stop offset="0" stopColor="purple"/>
                                     <stop offset="1" stopColor="lightBlue"/>
                                 </linearGradient>
                             </defs>
-                            {<polygon points={this.state.meshDiagram} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth, fillRule: "evenodd"}} />}
-                            {<polygon points={this.state.meshStats} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
-                            {this.state.htmlText}
+                            {<polygon points={SetupDiagram(this)} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth, fillRule: "evenodd"}} />}
+                            {<polygon points={SetupStats(this)} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
+                            {SetupTextAndTicks (this)}
                         </svg>
                     </Paper>
             </Box>

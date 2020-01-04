@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, TextField, makeStyles, InputLabel, FormLabel, Divider } from '@material-ui/core';
+import { Button, TextField, makeStyles, InputLabel, Divider } from '@material-ui/core';
 import {Row, Col} from './Grid.js'
 
 const useStyles = makeStyles(
@@ -61,7 +61,6 @@ function StatInputForm(props)
     //On Slices Change, update form
     var RandomizeStats = (event) =>
     {
-        console.log(event.target.value);
         if(event.target.name === "Limit")
         {
             props.UpdatePointLimit(event);
