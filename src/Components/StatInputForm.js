@@ -82,10 +82,11 @@ function StatInputForm(props)
         var rows = props.Quantity;
         for(var iCol=0; iCol < 4; iCol++)
         {
+            var htmlBuffer = [];
+            var iRow = -1;
             if(iCol === 0)
             {
-                var htmlBuffer = [];
-                for(var iRow=-1; iRow < rows; iRow++)
+                for(iRow=-1; iRow < rows; iRow++)
                 {
                     if(iRow < 0)//Run if else cases if iRow is not negative
                     htmlBuffer.push(<InputLabel classes={{root: classes.Label}} > Stat </InputLabel>);
@@ -97,8 +98,7 @@ function StatInputForm(props)
             }
             else if(iCol === 1)
             {
-                var htmlBuffer = [];
-                for(var iRow=-1; iRow < rows; iRow++)
+                for(iRow=-1; iRow < rows; iRow++)
                 {
                     if(iRow < 0)//Run if else cases if iRow is not negative
                     htmlBuffer.push(<InputLabel classes={{root: classes.Label}} > Value </InputLabel>);
@@ -110,8 +110,7 @@ function StatInputForm(props)
             }
             else if(iCol === 2)
             {
-                var htmlBuffer = [];
-                for(var iRow=-1; iRow < rows; iRow++)
+                for(iRow=-1; iRow < rows; iRow++)
                 {
                     if(iRow < 0)//Run if else cases if iRow is not negative
                     htmlBuffer.push(<InputLabel classes={{root: classes.Label}} > Min </InputLabel>);
@@ -122,8 +121,7 @@ function StatInputForm(props)
             }
             else if(iCol === 3)
             {
-                var htmlBuffer = [];
-                for(var iRow=-1; iRow < rows; iRow++)
+                for(iRow=-1; iRow < rows; iRow++)
                 {
                     if(iRow < 0)//Run if else cases if iRow is not negative
                     htmlBuffer.push(<InputLabel classes={{root: classes.Label}} > Max </InputLabel>);
