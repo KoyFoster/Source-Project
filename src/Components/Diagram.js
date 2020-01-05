@@ -115,12 +115,14 @@ var SetupStats = function(Comp)
         var i2 = i+1;
         if(i2 >= Comp.state.iQuantity){i2 = 0;}
         //console.log(Comp.state.v2StatVectors, Comp.state.iQuantity);
-        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2]) ];
+        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2].x, Comp.state.v2StatVectors[i2].y) ];
 
         mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
         mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
         mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
-    }    
+        console.log(mesh);
+    };
+    console.log(mesh);
     //Offset Coordinates
     return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
 };
@@ -228,21 +230,19 @@ class Diagram extends React.Component
         };
         this.state.Center       = [iDimension[0]/2, iDimension[1]/2];
         this.state.PointTotal  = GetPointTotal(this);
-        this.state.v2StatVectors = this.UpdateStatVectors(this.state.iQuantity);
+        this.state.v2StatVectors = this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles);
     };
 
-    UpdateStatVectors(Quantity)
+    UpdateStatVectors(Quantity, Angles)
     {
         var tempVectors = [];//this.state.v2StatVectors
 
         //Calculate All Point
         for (var i = 0; i < Quantity; i++)
         {
-            console.log((-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale), this.state.iAngles[i]);
-            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale)), new Vector2(0,0), this.state.iAngles[i]));
+            console.log((-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale), Angles[i]);
+            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale)), new Vector2(0,0), Angles[i]));
         };
-
-        console.log(tempVectors);
         return tempVectors;
     };
 
@@ -255,15 +255,16 @@ class Diagram extends React.Component
         {
             tempArr.push(i*iSlice);
         };
-        this.setState({iAngles: tempArr})
+        return tempArr;
     };
 
     //Update Functions
     UpdateQuantity(props)
     {
         //vars
-        this.UpdateAngles(props);
-        this.setState({v2StatVectors: this.UpdateStatVectors(props.target.value)});
+        var tempAngles = this.UpdateAngles(props);
+        this.setState({iAngles: tempAngles});
+        this.setState({v2StatVectors: this.UpdateStatVectors(props.target.value, tempAngles)});
         var iIndex = props.target.name;
         if(props.target.name === "Quantity")
         {
@@ -346,7 +347,7 @@ class Diagram extends React.Component
         this.state.Values = tempValues;
 
         var PointTotal = GetPointTotal(this);
-        this.UpdateStatVectors(this.state.iQuantity);
+        this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles);
         this.setState({
             PointTotal: PointTotal,
             meshStats:  SetupStats          (this)
