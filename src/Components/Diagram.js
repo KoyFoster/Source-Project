@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Paper, makeStyles, createMuiTheme } from '@material-ui/core';
+import { Box, Paper/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
 
@@ -103,40 +103,23 @@ var SetupDiagram = function(Comp)
     return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
 };
 
-
 //Stats 2 and 3 are the same everytime
 var SetupStats = function(Comp)
 {
     var mesh = [];
     var v2Polygon;
-    var v2FirstPoint;//Done to save an operation step
+
     /*Iterate For Each TriAngles*/
     for (var i = 0; i < Comp.state.iQuantity; i++)
     {
-        //Adjust Angles
-        if(i === 0)//First Stat
-        {
-            //Create First Polygon, comprised of stat 1 and two
-            v2Polygon = [new Vector2(0,0), new Vector2(0, (-Comp.state.Values[i]*(1/Comp.state.Ranges[i][1])*iDrawScale)), new Vector2(0, 0, 0)];
+        var i2 = i+1;
+        if(i2 >= Comp.state.iQuantity){i2 = 0;}
+        //console.log(Comp.state.v2StatVectors, Comp.state.iQuantity);
+        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2]) ];
 
-            //Quantity Check
-            if(Comp.state.iQuantity !== 1){ v2Polygon[2] = new Vector2(0, (-Comp.state.Values[i+1]*(1/Comp.state.Ranges[i+1][1])*iDrawScale) ); }
-
-            v2FirstPoint = Coll.v2Rotate2D(v2Polygon[1],v2Polygon[0],Comp.state.iAngles[i]);/*The Current Stat Point*/
-
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Comp.state.iAngles[i+1]);/*The Next Stat Point*/
-        }
-        else if(i !== Comp.state.Quantity-1)//Mid Stats
-        {
-            v2Polygon = [new Vector2(0,0), v2Polygon[2], new Vector2(0, (-Comp.state.Values[i+1]*(1/Comp.state.Ranges[i+1][1])*iDrawScale))];
-            Coll.v2Rotate2D(v2Polygon[2],v2Polygon[0],Comp.state.iAngles[i+1]);/*The Next Stat Point*/
-        }
-        else//Last Stat
-        {
-            console.log(v2FirstPoint);
-            v2Polygon = [new Vector2(0,0), v2Polygon[2], v2FirstPoint];
-        }
-        mesh.push([v2Polygon[0].x, v2Polygon[0].y]); mesh.push([v2Polygon[1].x, v2Polygon[1].y]); mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
+        mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
+        mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
+        mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
     }    
     //Offset Coordinates
     return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
@@ -170,13 +153,13 @@ var SetupTextAndTicks = function(Comp)
 
         //Types
         htmlResult.push(
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iDrawScale/22, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]}
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iDrawScale/22, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+2}
             transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+")"+sFlip} >                
             {Comp.state.Types[i]}
         </text>);
 
         /*Stat Ticks*/
-        /*for(var iT = 1; iT<ticks; iT++)
+        for(var iT = 1; iT<ticks; iT++)
         {
             if((iT%2) === 0)
             {
@@ -185,13 +168,19 @@ var SetupTextAndTicks = function(Comp)
 
                 //Define and round off the TICK VALUES
                 var tickValue = Math.round(100 * (iT*( Comp.state.Ranges[i][1]/ticks)) )/100;
-                typeCenter = [Comp.state.Center[0]+5, Comp.state.Center[1]-((iDrawScale/ticks)*iT)+3];
-                htmlResult.push(
-                <text x={typeCenter[0]} y={typeCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.Center[0])+","+Comp.state.Center[1]+"), rotate("+iFlip+","+(typeCenter[0]-4)+","+(typeCenter[1]-3)+")"}>
+                var tickCenter = [Comp.state.Center[0], Comp.state.Center[1]-((iDrawScale/ticks)*iT)];
+                if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
+                {
+                    sFlip = ", rotate(180,"+tickCenter[0]+","+(tickCenter[1])+")";;
+                };
+
+                //Tick Value
+                htmlResult.push(<text x={tickCenter[0]} y={tickCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
+                    transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.Center[0])+","+Comp.state.Center[1]+")"+sFlip}>
                     {tickValue}
                 </text>);
             }
-        }*/
+        };
     }
     return htmlResult
 };
@@ -228,6 +217,7 @@ class Diagram extends React.Component
                 PointLimit:    60,
 
                 Ranges: [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
+                v2StatVectors: [],
                 Types:  ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
                 Values: [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
                 
@@ -237,8 +227,23 @@ class Diagram extends React.Component
                 Center:         [null, null],
         };
         this.state.Center       = [iDimension[0]/2, iDimension[1]/2];
-
         this.state.PointTotal  = GetPointTotal(this);
+        this.state.v2StatVectors = this.UpdateStatVectors(this.state.iQuantity);
+    };
+
+    UpdateStatVectors(Quantity)
+    {
+        var tempVectors = [];//this.state.v2StatVectors
+
+        //Calculate All Point
+        for (var i = 0; i < Quantity; i++)
+        {
+            console.log((-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale), this.state.iAngles[i]);
+            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale)), new Vector2(0,0), this.state.iAngles[i]));
+        };
+
+        console.log(tempVectors);
+        return tempVectors;
     };
 
     UpdateAngles(props)
@@ -258,6 +263,7 @@ class Diagram extends React.Component
     {
         //vars
         this.UpdateAngles(props);
+        this.setState({v2StatVectors: this.UpdateStatVectors(props.target.value)});
         var iIndex = props.target.name;
         if(props.target.name === "Quantity")
         {
@@ -340,6 +346,7 @@ class Diagram extends React.Component
         this.state.Values = tempValues;
 
         var PointTotal = GetPointTotal(this);
+        this.UpdateStatVectors(this.state.iQuantity);
         this.setState({
             PointTotal: PointTotal,
             meshStats:  SetupStats          (this)
