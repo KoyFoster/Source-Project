@@ -248,9 +248,7 @@ class Diagram extends React.Component
         var tempArr = [];
         var iSlice = 360/props.target.value;
         for(var i=0; i<props.target.value; i++)
-        {
-            tempArr.push(i*iSlice);
-        };
+        { tempArr.push(i*iSlice); };
         return tempArr;
     };
 
