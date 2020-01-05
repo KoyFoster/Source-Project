@@ -114,15 +114,12 @@ var SetupStats = function(Comp)
     {
         var i2 = i+1;
         if(i2 >= Comp.state.iQuantity){i2 = 0;}
-        //console.log(Comp.state.v2StatVectors, Comp.state.iQuantity);
         v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2].x, Comp.state.v2StatVectors[i2].y) ];
 
         mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
         mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
         mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
-        console.log(mesh);
     };
-    console.log(mesh);
     //Offset Coordinates
     return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
 };
@@ -230,18 +227,17 @@ class Diagram extends React.Component
         };
         this.state.Center       = [iDimension[0]/2, iDimension[1]/2];
         this.state.PointTotal  = GetPointTotal(this);
-        this.state.v2StatVectors = this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles);
+        this.state.v2StatVectors = this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values);
     };
 
-    UpdateStatVectors(Quantity, Angles)
+    UpdateStatVectors(Quantity, Angles, Values)
     {
         var tempVectors = [];//this.state.v2StatVectors
 
         //Calculate All Point
         for (var i = 0; i < Quantity; i++)
         {
-            console.log((-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale), Angles[i]);
-            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-this.state.Values[i]*(1/this.state.Ranges[i][1])*iDrawScale)), new Vector2(0,0), Angles[i]));
+            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i] * (1/this.state.Ranges[i][1])*iDrawScale) ), new Vector2(0,0), Angles[i]));
         };
         return tempVectors;
     };
@@ -262,30 +258,34 @@ class Diagram extends React.Component
     UpdateQuantity(props)
     {
         //vars
-        var tempAngles = this.UpdateAngles(props);
-        this.setState({iAngles: tempAngles});
-        this.setState({v2StatVectors: this.UpdateStatVectors(props.target.value, tempAngles)});
+        var tempAngles = this.state.iAngles;
+        var Quantity = this.state.iQuantity;
+        var tempVal = this.state.Values;
         var iIndex = props.target.name;
         if(props.target.name === "Quantity")
         {
+            //Update Angles
+            tempAngles = this.UpdateAngles(props);
+            this.setState({iAngles: tempAngles});
             //Adjust State Arrays and update PointTotal
             var arrDiff = props.target.value - this.state.Values.length;
             var PointTotal = GetPointTotal(this, arrDiff);
             
-            var Quantity    = parseInt(props.target.value);
+            Quantity    = parseInt(props.target.value);
             var Center      = [iDimension[0]/2, iDimension[1]/2];
 
             this.setState({
                 PointTotal: PointTotal,
 
-                iQuantity:      Quantity,
-                Center:         Center,
+                iQuantity:  Quantity,
+                Center:     Center,
+                iAngles:    tempAngles
             });
         }
         else if(iIndex.search("Value") > -1)
         {
             iIndex = parseInt(iIndex.replace("Value", ""));
-            var tempVal = this.state.Values;
+            tempVal = this.state.Values;
             tempVal[iIndex] = props.target.value;
 
             this.setState({Values: tempVal});
@@ -315,12 +315,10 @@ class Diagram extends React.Component
             var tempRanges = this.state.Ranges;
             tempRanges[iIndex][iIndex2] = props.target.value;
 
-            this.setState({Ranges: tempRanges,
-                Values: this.state.Values});
+            this.setState({Ranges: tempRanges});
         }
 
-        this.setState({
-        });
+        this.setState({v2StatVectors: this.UpdateStatVectors(Quantity, tempAngles, tempVal)});
     };
 
     UpdatePointLimit(props)
@@ -334,28 +332,27 @@ class Diagram extends React.Component
         var tempTotal = 0;
         for(var i=0; i<this.state.iQuantity; i++)
         {
+            //Break is total is met or exceeded
+            if(tempTotal > this.state.PointLimit)
+            { break; }
+
             var tempVal = 0;
-            if(tempTotal < this.state.PointLimit)
-            {
                 var iSubRange = this.state.PointLimit - tempTotal - this.state.Ranges[i][1];
                 if(iSubRange > 0){iSubRange = 0;}
                 tempVal = parseInt(this.state.Ranges[i][0]) + Math.floor(Math.random() * (this.state.Ranges[i][1]+1-this.state.Ranges[i][0]-iSubRange) );
+
                 tempTotal += tempVal;
-            }
+
             tempValues.push(tempVal);
         };
-        this.state.Values = tempValues;
+        this.setState({Values: tempValues});
 
-        var PointTotal = GetPointTotal(this);
-        this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles);
-        this.setState({
-            PointTotal: PointTotal,
-            meshStats:  SetupStats          (this)
+        this.setState({PointTotal: GetPointTotal(this),
+            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
         });
     };
 
     render(){
-        //console.log(this.state);
         return(
             <Box name="body" display="flex" style={{alignItems: "flex"}} bgcolor="darkGrey">
                     <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
