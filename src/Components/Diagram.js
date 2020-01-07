@@ -97,7 +97,7 @@ var SetupDiagram = function(Comp)
         }
     }
     //Offset Coordinates
-    return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [Comp.state.WinInfo.Center[0] + arr[0], Comp.state.WinInfo.Center[1] + arr[1]]; });
 };
 
 //Stats 2 and 3 are the same everytime
@@ -118,15 +118,15 @@ var SetupStats = function(Comp)
         mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
     };
     //Offset Coordinates
-    return mesh.map(function (arr) { return [Comp.state.Center[0] + arr[0], Comp.state.Center[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [Comp.state.WinInfo.Center[0] + arr[0], Comp.state.WinInfo.Center[1] + arr[1]]; });
 };
 
 var SetupTextAndTicks = function(Comp)
 {
-    var typeCenter = [Comp.state.Center[0], Comp.state.Center[1]-Comp.state.WinInfo.iDrawScale-5];
+    var typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-5];
     var tickWidth = Comp.state.WinInfo.iDrawScale*0.005;
     var ticks = 10;
-    var strCenter = +Comp.state.Center[0]+","+Comp.state.Center[1];
+    var strCenter = +Comp.state.WinInfo.Center[0]+","+Comp.state.WinInfo.Center[1];
 
     var strRotateSelf = ", rotate(180,"+typeCenter[0]+","+(typeCenter[1]-4)+")";
 
@@ -160,11 +160,11 @@ var SetupTextAndTicks = function(Comp)
             if((iT%2) === 0)
             {
                 //TICKS
-                htmlResult.push(<line x1={(-tickWidth)+Comp.state.Center[0]} y1={Comp.state.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.Center[0]} y2={Comp.state.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: iStrokeWidth*2}} transform={"rotate("+Comp.state.iAngles[i]+", "+Comp.state.Center[0]+","+Comp.state.Center[1]+")"} />);
+                htmlResult.push(<line x1={(-tickWidth)+Comp.state.WinInfo.Center[0]} y1={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.WinInfo.Center[0]} y2={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} style={{stroke: "rgb(0,0,0)", strokeWidth: iStrokeWidth*2}} transform={"rotate("+Comp.state.iAngles[i]+", "+Comp.state.WinInfo.Center[0]+","+Comp.state.WinInfo.Center[1]+")"} />);
 
                 //Define and round off the TICK VALUES
                 var tickValue = Math.round(100 * (iT*( Comp.state.Ranges[i][1]/ticks)) )/100;
-                var tickCenter = [Comp.state.Center[0], Comp.state.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
+                var tickCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
                 if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
                 {
                     sFlip = ", rotate(180,"+tickCenter[0]+","+(tickCenter[1])+")";;
@@ -172,7 +172,7 @@ var SetupTextAndTicks = function(Comp)
 
                 //Tick Value
                 htmlResult.push(<text x={tickCenter[0]} y={tickCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
-                    transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.Center[0])+","+Comp.state.Center[1]+")"+sFlip}>
+                    transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+Comp.state.WinInfo.Center[1]+")"+sFlip}>
                     {tickValue}
                 </text>);
             }
@@ -223,26 +223,26 @@ class Diagram extends React.Component
                 statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],//Placeholder
             
                 //Window Dimensions Window Center
-                Center:         [null, null],
                 WinInfo: 
                 {
                     iWinWidth: window.innerWidth,
                     iDrawScale: null,
-                    iDimension: null
+                    iDimension: null,
+                    Center:     [null, null],
                 }
         };
         
         this.state.WinInfo.iDrawScale = this.state.WinInfo.iWinWidth*iScale;
         this.state.WinInfo.iDimension = [(this.state.WinInfo.iWinWidth*iScale*2)+144, (this.state.WinInfo.iWinWidth*iScale*2)+144];
 
-        this.state.Center       = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
+        this.state.WinInfo.Center       = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
         this.state.PointTotal  = GetPointTotal(this);
-        this.state.v2StatVectors = this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values);
+        this.state.v2StatVectors = this.UpdateStatVectors();
 
         this.UpdateViewPort = this.UpdateViewPort.bind(this);
     };
 
-    
+    //Setup Listener Events
     componentDidMount() 
     {
         window.addEventListener("resize", this.UpdateViewPort);
@@ -252,14 +252,14 @@ class Diagram extends React.Component
         window.removeEventListener("resize", this.UpdateViewPort);
     };
 
-    UpdateStatVectors(Quantity, Angles, Values)
+    UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, iDrawScale=this.state.WinInfo.iDrawScale)
     {
         var tempVectors = [];//this.state.v2StatVectors
 
         //Calculate All Point
         for (var i = 0; i < Quantity; i++)
         {
-            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i] * (1/this.state.Ranges[i][1])*this.state.WinInfo.iDrawScale) ), new Vector2(0,0), Angles[i]));
+            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i] * (1/this.state.Ranges[i][1])*iDrawScale) ), new Vector2(0,0), Angles[i]));
         };
         return tempVectors;
     };
@@ -291,13 +291,11 @@ class Diagram extends React.Component
             var PointTotal = GetPointTotal(this, arrDiff);
             
             Quantity    = parseInt(props.target.value);
-            var Center      = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
 
             this.setState({
                 PointTotal: PointTotal,
 
                 iQuantity:  Quantity,
-                Center:     Center,
                 iAngles:    tempAngles
             });
         }
@@ -366,8 +364,10 @@ class Diagram extends React.Component
         };
         this.setState({Values: tempValues});
 
-        this.setState({PointTotal: GetPointTotal(this),
-            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
+        this.setState(
+        {
+            PointTotal:     GetPointTotal(this), 
+            v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
         });
     };
     
@@ -376,17 +376,20 @@ class Diagram extends React.Component
     {
         /*Temp Vars*/
         var tempDrawScale = window.innerWidth*iScale;
-        var tempDim = [(window.innerWidth*iScale*2)+144, (window.innerWidth*iScale*2)+144];
+        var tempDim = [(tempDrawScale*2)+144, (tempDrawScale*2)+144];
+        var tempCenter = [tempDim[0]/2, tempDim[1]/2];
 
         this.setState(
         {WinInfo: 
             {
-                iWinWidth: window.innerWidth,
+                iWinWidth:  window.innerWidth,
                 iDrawScale: tempDrawScale,
-                iDimension: tempDim
-            }
+                iDimension: tempDim,
+                Center:     tempCenter
+            },
+            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values, tempDrawScale)
         });
-        console.log(this.state.WinInfo);
+        //console.log(this.state.WinInfo);
     };
 
     render(){
@@ -407,8 +410,8 @@ class Diagram extends React.Component
                         </StatInputForm>  
                     </Paper>   
                     <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-                        <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]} >
-                            <circle cx={this.state.Center[0]} cy={this.state.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
+                        <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
+                            <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
                             <defs>
                                 <linearGradient id = "grad">
                                     <stop offset="0" stopColor="purple"/>
@@ -417,7 +420,7 @@ class Diagram extends React.Component
                             </defs>
                             {<polygon points={SetupDiagram(this)} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth, fillRule: "evenodd"}} />}
                             {<polygon points={SetupStats(this)} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
-                            {SetupTextAndTicks (this)}
+                            {SetupTextAndTicks(this)}
                         </svg>
                     </Paper>
             </Box>
