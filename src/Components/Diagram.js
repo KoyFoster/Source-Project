@@ -2,9 +2,11 @@ import React from "react";
 import { Box, Paper/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
+import StatCode from "./StatCode.js"
+import {Row, Col} from "./Grid"
 
 const iStrokeWidth = 0.5;
-const iScale = 0.20;
+const iScale = 0.15;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
 
 //Grade Function
@@ -141,7 +143,7 @@ var SetupTextAndTicks = function(Comp)
         }
 
         //Letter Grades
-        htmlResult.push( 
+        htmlResult.push(
         <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Math.floor(Comp.state.WinInfo.iDrawScale/6), strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+8} 
             transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+"), rotate("+-Comp.state.iAngles[i]+","+typeCenter[0]+","+(typeCenter[1])+")"} > 
             {gradeCalc(i, Comp.state.Ranges, Comp.state.Values)}
@@ -181,7 +183,6 @@ var SetupTextAndTicks = function(Comp)
     return htmlResult
 };
 
-
 var GetPointTotal = function(Comp, arrDiff = 0)
 {
     var PointTotal = 0;
@@ -201,45 +202,112 @@ var GetPointTotal = function(Comp, arrDiff = 0)
         return PointTotal;
 };
 
+//templates
+var tmplGeneric =
+{
+    types:          [""],
+    ranges:         [[0,0]],
+    defaultValues:  [0],
+    pntLlimit:      0
+};
+var tmplJojo =
+{
+    types:      ["POWER","SPEED","RANGE",   "DURABILITY","PRECISION","POTENTIAL"],
+    ranges:     [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
+    values:     [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
+    pntLlimit:  70
+};
+var tmplDS3 =
+{
+    types:  ["Vigor","Attunement","Endurance",   "Vitality",  "Strength", "Dexterity","Intelligence", "Faith", "Luck", "Hollowing"],//Dark Souls 3 Style
+    ranges: [[1,100],[1,100],[1,100], [1,100],[1,100],[1,100], [1,100],[1,100],[1,100], [1,100]],
+    values: [15,10,15,15,20,18,10,10,10,0],
+    pntLlimit: 999
+};
+
 class Diagram extends React.Component
 {
-
     constructor(props){
         super(props);
 
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
-                iQuantity:      6,
-                iAngles: [0, 60, 120, 180, 240, 300],
-                PointTotal:    0,
-                PointLimit:    60,
-
-                Ranges: [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
-                v2StatVectors: [],
-                Types:  ["POWER","SPEED","RANGE",   "DURABILITY",  "PRECISION", "POTENTIAL","???"],
-                Values: [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
+                iQuantity:  0,
+                iAngles:    [0],
+                PointTotal: 0,
+                v2StatVectors:  [],
+                //User Defined
+                Types:          [""],
+                Ranges:         [[0,0]],
+                Values:     [0],
+                PointLimit: 0,
                 
                 statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],//Placeholder
             
                 //Window Dimensions Window Center
-                WinInfo: 
+                WinInfo:
                 {
                     iWinWidth: window.innerWidth,
-                    iDrawScale: null,
-                    iDimension: null,
-                    Center:     [null, null],
+                    iDrawScale: 1,
+                    iDimension: [],
+                    Center:     [0, 0],
                 }
         };
-        
-        this.state.WinInfo.iDrawScale = this.state.WinInfo.iWinWidth*iScale;
-        this.state.WinInfo.iDimension = [(this.state.WinInfo.iWinWidth*iScale*2)+144, (this.state.WinInfo.iWinWidth*iScale*2)+144];
-
-        this.state.WinInfo.Center       = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
-        this.state.PointTotal  = GetPointTotal(this);
-        this.state.v2StatVectors = this.UpdateStatVectors();
-
+        this.LoadTemplate(this.state, tmplDS3);
+        this.Initialize(this.state);
         this.UpdateViewPort = this.UpdateViewPort.bind(this);
+    };
+
+    //Load States
+    Initialize(state=null)
+    {
+        if(state !== null)
+        {
+            state.iQuantity             = this.state.Types.length;
+            state.iAngles               = this.UpdateAngles();
+            state.WinInfo.iDrawScale    = this.state.WinInfo.iWinWidth*iScale;
+            state.WinInfo.iDimension    = [(this.state.WinInfo.iWinWidth*iScale*2)+144, (this.state.WinInfo.iWinWidth*iScale*2)+144];
+            state.WinInfo.Center        = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
+            state.PointTotal            = GetPointTotal(this);
+            state.v2StatVectors         = this.UpdateStatVectors();
+        }
+        else
+        {
+            this.setState({
+                iQuantity: this.state.Types.length,
+                iAngles: this.UpdateAngles(),
+                WinInfo: 
+                {
+                    iDrawScale: this.state.WinInfo.iWinWidth*iScale,
+                    iDimension: [(this.state.WinInfo.iWinWidth*iScale*2)+144, (this.state.WinInfo.iWinWidth*iScale*2)+144],
+                    Center: [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2],
+                },
+                PointTotal: GetPointTotal(this),
+                v2StatVectors: this.UpdateStatVectors()
+            });
+        }
+    };
+    LoadTemplate(state = null, template = tmplGeneric)
+    {
+        //If State needs to be updated now
+        if(state !== null)
+        {
+            state.Types         = template.types;
+            state.Ranges        = template.ranges;
+            state.Values        = template.values;
+            state.PointLimit    = template.pntLlimit
+        }
+        else
+        {
+            this.setState(
+            {
+                Types:      template.types,
+                Ranges:     template.ranges,
+                Values:     template.values,
+                PointLimit: template.pntLlimit
+            });
+        }
     };
 
     //Setup Listener Events
@@ -264,11 +332,11 @@ class Diagram extends React.Component
         return tempVectors;
     };
 
-    UpdateAngles(props)
+    UpdateAngles(Quantity = this.state.iQuantity)
     {
         var tempArr = [];
-        var iSlice = 360/props.target.value;
-        for(var i=0; i<props.target.value; i++)
+        var iSlice = 360/Quantity;
+        for(var i=0; i<Quantity; i++)
         { tempArr.push(i*iSlice); };
         return tempArr;
     };
@@ -284,7 +352,7 @@ class Diagram extends React.Component
         if(props.target.name === "Quantity")
         {
             //Update Angles
-            tempAngles = this.UpdateAngles(props);
+            tempAngles = this.UpdateAngles(props.target.value);
             this.setState({iAngles: tempAngles});
             //Adjust State Arrays and update PointTotal
             var arrDiff = props.target.value - this.state.Values.length;
@@ -356,11 +424,11 @@ class Diagram extends React.Component
             var tempVal = 0;
                 var iSubRange = this.state.PointLimit - tempTotal - this.state.Ranges[i][1];
                 if(iSubRange > 0){iSubRange = 0;}
-                tempVal = parseInt(this.state.Ranges[i][0]) + Math.floor(Math.random() * (this.state.Ranges[i][1]+1-this.state.Ranges[i][0]-iSubRange) );
-
+                var tempRange = this.state.Ranges[i][1]+1-this.state.Ranges[i][0]-iSubRange;
+                tempVal = parseInt(this.state.Ranges[i][0]) + Math.floor(Math.random() * (tempRange) );
                 tempTotal += tempVal;
-
             tempValues.push(tempVal);
+            console.log("Range:",tempRange, "SubRange:",iSubRange);
         };
         this.setState({Values: tempValues});
 
@@ -395,34 +463,39 @@ class Diagram extends React.Component
     render(){
         return(
             <Box name="body" display="flex" style={{alignItems: "flex"}} bgcolor="darkGrey">
-                    <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-                        <StatInputForm
-                            Quantity    = {this.state.iQuantity}
-                            PointTotal  = {this.state.PointTotal}
-                            PointLimit  = {this.state.PointLimit}
-                            Types       = {this.state.Types}
-                            Values      = {this.state.Values}
-                            Ranges      = {this.state.Ranges}
-                                
-                            UpdateQuantity  = {this.UpdateQuantity.bind(this)}
-                            RandomizeStats  = {this.RandomizeStats.bind(this)}
-                            UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
-                        </StatInputForm>  
-                    </Paper>   
-                    <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-                        <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
-                            <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
-                            <defs>
-                                <linearGradient id = "grad">
-                                    <stop offset="0" stopColor="purple"/>
-                                    <stop offset="1" stopColor="lightBlue"/>
-                                </linearGradient>
-                            </defs>
-                            {<polygon points={SetupDiagram(this)} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth, fillRule: "evenodd"}} />}
-                            {<polygon points={SetupStats(this)} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
-                            {SetupTextAndTicks(this)}
-                        </svg>
-                    </Paper>
+                    <Col>
+                        <Row>
+                            <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
+                                <StatInputForm
+                                    Quantity    = {this.state.iQuantity}
+                                    PointTotal  = {this.state.PointTotal}
+                                    PointLimit  = {this.state.PointLimit}
+                                    Types       = {this.state.Types}
+                                    Values      = {this.state.Values}
+                                    Ranges      = {this.state.Ranges}
+                                        
+                                    UpdateQuantity  = {this.UpdateQuantity.bind(this)}
+                                    RandomizeStats  = {this.RandomizeStats.bind(this)}
+                                    UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
+                                </StatInputForm>  
+                            </Paper>   
+                            <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
+                                <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
+                                    <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth*4}} />
+                                    <defs>
+                                        <linearGradient id = "grad">
+                                            <stop offset="0" stopColor="purple"/>
+                                            <stop offset="1" stopColor="lightBlue"/>
+                                        </linearGradient>
+                                    </defs>
+                                    {<polygon points={SetupDiagram(this)} style={{fill: "white", fillOpacity: 0.5, stroke: "black", strokeWidth: iStrokeWidth, fillRule: "evenodd"}} />}
+                                    {<polygon points={SetupStats(this)} fill = "url(#grad)" style={{fillOpacity: 0.66, stroke: "red", strokeWidth: 0, fillRule: "evenodd"}} />}
+                                    {SetupTextAndTicks(this)}
+                                </svg>
+                            </Paper>
+                        </Row>
+                        <StatCode></StatCode>
+                    </Col>
             </Box>
         );
     }
