@@ -1,9 +1,11 @@
 import React from "react";
-import { Button, TextField, makeStyles, InputLabel, Divider } from '@material-ui/core';
+import { Button, TextField, makeStyles, InputLabel, Divider, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import {Row, Col} from './Grid.js'
+import { purple, orange, green, red } from "@material-ui/core/colors";
 
-const useStyles = makeStyles(
-{
+//Styles
+const useStyles = makeStyles(theme =>
+({
     //Global style that effects all sub styles
     '@global': 
     {
@@ -22,23 +24,23 @@ const useStyles = makeStyles(
             width: '152px'
         },
     },
-    root: {  
+    root: {
         fontSize: '16px',
     },
+    checked: {},
     
     Label: {  
-        textAlign: 'center',
-        
+        textAlign: 'center',        
         backgroundColor: 'black',
         color: 'white',
     },
 
-    Field: {  
-        //fullWidth: 'false',
+    Field: {
+        textAlign: 'center',
     },
     NumberField: {  
-        //fullWidth: 'false',
-        width: '48px'
+        width: '56px',
+        textAlign: 'center'
     },
 
     Button: {
@@ -50,7 +52,7 @@ const useStyles = makeStyles(
       color: 'white',
       padding: '0 30px',
     },
-});
+}));
 
 //User Input Class
 function StatInputForm(props)
@@ -91,7 +93,7 @@ function StatInputForm(props)
                     if(iRow < 0)//Run if else cases if iRow is not negative
                     htmlBuffer.push(<InputLabel classes={{root: classes.Label}} > Stat </InputLabel>);
                     else
-                    htmlBuffer.push(<TextField classes={{root: classes.Field}} name={"Types"+iRow} value={props.Types[iRow]} onChange={(event) => Update(event)} ></TextField>);
+                    htmlBuffer.push(<TextField inputProps={{style: { textAlign: "center" }}} name={"Types"+iRow} value={props.Types[iRow]} onChange={(event) => Update(event)} ></TextField>);
                 }
                 htmlForm.push(  <Col name={"Row"+iRow}> {htmlBuffer} </Col> );
                 htmlForm.push(  <Divider orientation="vertical" /> );
@@ -135,14 +137,13 @@ function StatInputForm(props)
     }
 
         return(
-        <div name="body">
+        <ThemeProvider>
             <div name="GraphBody" style={{display: 'flex', justifyContent:'center'}}>
             <Row>
                 <Col>
                     <InputLabel classes={{root: classes.Label}} > Stat Quantity </InputLabel>
                     <TextField classes={{root: classes.NumberField}} 
                         type="number" name="Quantity"
-                        style = {{width: "48px"}}
                         value={props.Quantity}
                         onChange={(event) => Update(event)}
                     >
@@ -154,7 +155,6 @@ function StatInputForm(props)
                         <InputLabel classes={{root: classes.Label}} > Limit: </InputLabel>
                         <TextField classes={{root: classes.NumberField}}
                             type="number" name="Limit"
-                            style = {{width: "48px"}}
                             value={props.PointLimit}
                             onChange={(event) => RandomizeStats(event)}
                             ></TextField>
@@ -165,7 +165,7 @@ function StatInputForm(props)
             <div name="FormBody" align="center">
                 {statForm(props)}
             </div>
-        </div>);
+        </ThemeProvider >);
 };
 
 export default StatInputForm;

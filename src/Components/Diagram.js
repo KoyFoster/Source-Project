@@ -224,6 +224,13 @@ var tmplDS3 =
     values: [15,10,15,15,20,18,10,10,10,0],
     pntLlimit: 999
 };
+var tmplAA =
+{
+    types:  ["Strength","Agility","Stamina","Spirit","Intelligence", "Cast Time","Attack Speed", "Move Speed"],//Dark Souls 3 Style
+    ranges: [[158,2560],[158,2560],[158,2560],[158,2560],[158,2560], [0,100],[0,100],[5.4,10]],
+    values: [158,158,158, 158,158, 10,10,5.4],
+    pntLlimit: 2560
+};
 
 class Diagram extends React.Component
 {
@@ -254,7 +261,7 @@ class Diagram extends React.Component
                     Center:     [0, 0],
                 }
         };
-        this.LoadTemplate(this.state, tmplDS3);
+        this.LoadTemplate(this.state, tmplAA);
         this.Initialize(this.state);
         this.UpdateViewPort = this.UpdateViewPort.bind(this);
     };
