@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Paper/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
-import StatCode from "./StatCode.js"
+/*import StatCode from "./StatCode.js"*/
 import {Row, Col} from "./Grid"
 
 const iStrokeWidth = 0.5;
@@ -364,6 +364,7 @@ class Diagram extends React.Component
         var Quantity = this.state.iQuantity;
         var tempVal = this.state.Values;
         var iIndex = props.target.name;
+        var PointTotal = this.state.PointTotal;
         if(props.target.name === "Quantity")
         {
             //Update Angles
@@ -371,7 +372,7 @@ class Diagram extends React.Component
             this.setState({iAngles: tempAngles});
             //Adjust State Arrays and update PointTotal
             var arrDiff = props.target.value - this.state.Values.length;
-            var PointTotal = GetPointTotal(this, arrDiff);
+            PointTotal = GetPointTotal(this, arrDiff);
             
             Quantity    = parseInt(props.target.value);
 
@@ -388,7 +389,7 @@ class Diagram extends React.Component
             tempVal = this.state.Values;
             tempVal[iIndex] = props.target.value;
 
-            var PointTotal = GetPointTotal(this,0,tempVal);
+            PointTotal = GetPointTotal(this,0,tempVal);
             console.log("increment");
 
             this.setState({Values: tempVal});
@@ -438,12 +439,10 @@ class Diagram extends React.Component
         var randOrder = [];        
         var tempOrder = [];
         //Compile Order
-        for(var i = 0; i < this.state.iQuantity; i++)
-        {
-            tempOrder.push(i);
-        };
+        for(var iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
+        { tempOrder.push(iTRO); };
         //Jumble Order
-        for(var i = 0; i < this.state.iQuantity; i++)
+        for(var iRO = 0; iRO < this.state.iQuantity; iRO++)
         {
             var tempIndex = Math.floor(Math.random()*(tempOrder.length));
 
