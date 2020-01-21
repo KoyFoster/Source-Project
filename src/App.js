@@ -1,107 +1,66 @@
-import React from "react";
-import "./App.css";
+import React from 'react';
+import './App.css';
 import StatCard from './Components/StatCard.js';
 
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core'
-
-
-//Styles
-const theme = createMuiTheme({
-  //overrides: {
-    MuiTextField:
-    {
-      standard: {
-        margin: '30 30px',
-        
-      },
-
-      filled: {
-        //style: {width: "56px"},
-        //inputProps: {style: { textAlign: 'center'}},
-
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        border: 0,
-        borderRadius: 3,
-
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-        color: 'white',
-        padding: '0 30px',
-        margin: '30 30px',
-      },
-      outlined: {
-        textAlign: 'center',
-
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        border: 0,
-        borderRadius: 3,
-
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-        color: 'white',
-        padding: '0 30px',
-        margin: '30 30px',
-      }
-    },
-    
-
-    MuiButton:
-    {
-      contained: {
-        fontSize: '1rem',
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        border: 0,
-        borderRadius: 3,
-
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-        color: 'white',
-        padding: '0 30px',
-      }
-    },
-
-    MuiInputAdornment: {
-      standard: {
-        shrink: true,
-        backgroundColor: 'orange',
-        textAlign: 'center',
-      },
-
-      filled: {
-        shrink: true,
-        backgroundColor: 'orange',
-        textAlign: 'center',
-      },
-      outline: {
-        textAlign: 'center',
-      }
-    },
-
-    MuiInputLabel: {
-      filled: {
-        shrink: true,
-        backgroundColor: 'orange',
-        textAlign: 'center',
-      },
-      outline: {
-        textAlign: 'center',
-      }
-    },
-  //}//End of Override
-});
-
-//Global Style
-/*const Global = withStyle({
-
-
-});*/
+import {ThemeProvider, createMuiTheme, useMediaQuery} from '@material-ui/core'
+import {blue, red} from '@material-ui/core/colors'
 
 
 /* ---------------------- CORE ---------------------- */
-class App extends React.Component {
-  render() {
+function App() {
+
+const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+//theme palette
+const palette = {
+  type: prefersDarkMode ? 'dark' : 'light',
+  primary: blue,
+  secondary: red,
+};//End of palette
+
+//Styles
+const theme = createMuiTheme({
+  palette: palette,//End of palette
+  
+  status: {
+    danger: 'orange',
+  },
+
+  props: {
+    MuiTextField:
+    {
+      //TextField Props Here
+      style: {//base component props
+        backgroundColor: 'primary'
+      },
+
+      inputProps: {//Contents of the TextField
+        style: { textAlign: 'center' }
+      },
+    },
+
+    MuiButton:
+    {
+      style: {
+        border:   'primary',
+        padding:  '0 30px',
+        fontSize: '1rem',
+      }
+    },
+
+    MuiInputLabel: {//This also includes the lables of the TextFields
+      style: {
+        textAlign: 'right',
+      },
+    },
+  }//End of props
+});//End of theme
+
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <StatCard></StatCard>
-    </MuiThemeProvider>
-  )};
+    </ThemeProvider>
+  );
 }
 
 export default App;

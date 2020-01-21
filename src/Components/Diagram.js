@@ -145,7 +145,7 @@ var SetupTextAndTicks = function(Comp)
         {
             sTypeFlip = strTypeRotateSelf;
             iOffset = -20;
-        }
+        };
 
         //Letter Grades
         htmlResult.push(
@@ -156,7 +156,7 @@ var SetupTextAndTicks = function(Comp)
 
         //Types
         htmlResult.push(
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Comp.state.WinInfo.iDrawScale/22, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+2}
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Comp.state.WinInfo.iDrawScale/12, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+2}
             transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+")"+sTypeFlip}>
             {Comp.state.Types[i]}
         </text>);
@@ -429,16 +429,20 @@ class Diagram extends React.Component
         var tempTotal = 0;
         for(var i=0; i<this.state.iQuantity; i++)
         {
+            var tempVal = 0;
+
             //Break is total is met or exceeded
             if(tempTotal > this.state.PointLimit)
-            { break; }
-
-            var tempVal = 0;
+            { tempTotal += tempVal }
+            else
+            {
                 var iSubRange = this.state.PointLimit - tempTotal - this.state.Ranges[i][1];
                 if(iSubRange > 0){iSubRange = 0;}
-                var tempRange = this.state.Ranges[i][1]+1-this.state.Ranges[i][0]-iSubRange;
+                var tempRange = (this.state.Ranges[i][1]+1 - this.state.Ranges[i][0])-iSubRange;/*Max minus Min minus point limit*/
+
                 tempVal = parseInt(this.state.Ranges[i][0]) + Math.floor(Math.random() * (tempRange) );
                 tempTotal += tempVal;
+            }
             tempValues.push(tempVal);
             console.log("Range:",tempRange, "SubRange:",iSubRange);
         };
