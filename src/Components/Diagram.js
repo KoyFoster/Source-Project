@@ -141,17 +141,19 @@ var SetupTextAndTicks = function(Comp)
         var sTickFlip = "";
         var iFontSize = Math.floor(Comp.state.WinInfo.iDrawScale);
         var iFlipOffset = 0;
+        var iFlipOffset2 = 5;
         //Rotate text around it's center if upsidedown
         if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
             sTypeFlip = strTypeRotateSelf;
             iFlipOffset = iFontSize;
+            iFlipOffset2 = 0;
         };
 
         //Letter Grades
         htmlResult.push(
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iFontSize/9, strokeWidth: iStrokeWidth}} x={gradeCenter[0]} y={gradeCenter[1]/*+12*/}//This is a hardcoded offset to have the letters center themselves
-            transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+(Comp.state.WinInfo.Center[1])+"), rotate("+-Comp.state.iAngles[i]+","+gradeCenter[0]+","+(gradeCenter[1]-iFlipOffset/24)+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iFontSize/9, strokeWidth: iStrokeWidth}} x={gradeCenter[0]} y={gradeCenter[1]-iFlipOffset2}
+            transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+(Comp.state.WinInfo.Center[1])+"), rotate("+-Comp.state.iAngles[i]+","+gradeCenter[0]+","+(gradeCenter[1]-iFontSize/24)+")"} > 
             {gradeCalc(i, Comp.state.Ranges, Comp.state.Values)}
         </text>);
 
