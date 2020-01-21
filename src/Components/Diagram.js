@@ -140,23 +140,26 @@ var SetupTextAndTicks = function(Comp)
         var sTypeFlip = "";
         var sTickFlip = "";
         var iOffset = 20;
+        var iFontSize = Math.floor(Comp.state.WinInfo.iDrawScale);
+        var iFlipOffset = 0;
         //Rotate text around it's center if upsidedown
         if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
             sTypeFlip = strTypeRotateSelf;
             iOffset = -20;
+            iFlipOffset = iFontSize;
         };
 
         //Letter Grades
         htmlResult.push(
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Math.floor(Comp.state.WinInfo.iDrawScale/6), strokeWidth: iStrokeWidth}} x={gradeCenter[0]} y={gradeCenter[1]/*+12*/}//This is a hardcoded offset to have the letters center themselves
-            transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+(Comp.state.WinInfo.Center[1])+"), rotate("+-Comp.state.iAngles[i]+","+gradeCenter[0]+","+(gradeCenter[1]-12)+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iFontSize/9, strokeWidth: iStrokeWidth}} x={gradeCenter[0]} y={gradeCenter[1]/*+12*/}//This is a hardcoded offset to have the letters center themselves
+            transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+(Comp.state.WinInfo.Center[1])+"), rotate("+-Comp.state.iAngles[i]+","+gradeCenter[0]+","+(gradeCenter[1]-iFlipOffset/24)+")"} > 
             {gradeCalc(i, Comp.state.Ranges, Comp.state.Values)}
         </text>);
 
         //Types
         htmlResult.push(
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Comp.state.WinInfo.iDrawScale/12, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+2}
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: iFontSize/12, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+iFlipOffset/24}
             transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+")"+sTypeFlip}>
             {Comp.state.Types[i]}
         </text>);
