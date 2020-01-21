@@ -188,7 +188,7 @@ var SetupTextAndTicks = function(Comp)
     return htmlResult
 };
 
-var GetPointTotal = function(Comp, arrDiff = 0)
+var GetPointTotal = function(Comp, arrDiff = 0, Values = 0)
 {
     var PointTotal = 0;
     for(var i=0; i < Comp.state.iQuantity; i++)
@@ -202,7 +202,10 @@ var GetPointTotal = function(Comp, arrDiff = 0)
                 
                 Comp.state.statGrades.push(0);
             };
-            PointTotal += Comp.state.Values[i];
+            if(Values === 0)
+            {PointTotal += Comp.state.Values[i];}
+            else
+            {PointTotal += parseInt(Values[i]);}
         };
         return PointTotal;
 };
@@ -385,6 +388,9 @@ class Diagram extends React.Component
             tempVal = this.state.Values;
             tempVal[iIndex] = props.target.value;
 
+            var PointTotal = GetPointTotal(this,0,tempVal);
+            console.log("increment");
+
             this.setState({Values: tempVal});
         }
         else if(iIndex.search("Types") > -1)
@@ -415,7 +421,8 @@ class Diagram extends React.Component
             this.setState({Ranges: tempRanges});
         }
 
-        this.setState({v2StatVectors: this.UpdateStatVectors(Quantity, tempAngles, tempVal)});
+        this.setState({v2StatVectors: this.UpdateStatVectors(Quantity, tempAngles, tempVal),
+            PointTotal: PointTotal});
     };
 
     UpdatePointLimit(props)
@@ -427,6 +434,23 @@ class Diagram extends React.Component
     {
         var tempValues = [];
         var tempTotal = 0;
+        //Generate Random Order
+        var randOrder = [];        
+        var tempOrder = [];
+        //Compile Order
+        for(var i = 0; i < this.state.iQuantity; i++)
+        {
+            tempOrder.push(i);
+        };
+        //Jumble Order
+        for(var i = 0; i < this.state.iQuantity; i++)
+        {
+            var tempIndex = Math.floor(Math.random()*(tempOrder.length));
+
+            randOrder.push(tempOrder[tempIndex]);//Add Index
+            tempOrder.splice(tempIndex, 1);//Sub Temp Index
+        };
+        //Iterate through list of stats
         for(var i=0; i<this.state.iQuantity; i++)
         {
             var tempVal = 0;
@@ -436,21 +460,21 @@ class Diagram extends React.Component
             { tempTotal += tempVal }
             else
             {
-                var iSubRange = this.state.PointLimit - tempTotal - this.state.Ranges[i][1];
+                var iR = randOrder[i];
+                var iSubRange = this.state.PointLimit - tempTotal - this.state.Ranges[iR][1];
                 if(iSubRange > 0){iSubRange = 0;}
-                var tempRange = (this.state.Ranges[i][1]+1 - this.state.Ranges[i][0])-iSubRange;/*Max minus Min minus point limit*/
+                var tempRange = (this.state.Ranges[iR][1] - this.state.Ranges[iR][0])+iSubRange;/*Max minus Min minus point limit*/
 
-                tempVal = parseInt(this.state.Ranges[i][0]) + Math.floor(Math.random() * (tempRange) );
+                tempVal = parseInt(this.state.Ranges[iR][0]) + Math.floor(Math.random() * (tempRange) );
                 tempTotal += tempVal;
             }
             tempValues.push(tempVal);
-            console.log("Range:",tempRange, "SubRange:",iSubRange);
         };
         this.setState({Values: tempValues});
 
         this.setState(
         {
-            PointTotal:     GetPointTotal(this), 
+            PointTotal:     GetPointTotal(this, 0, tempValues), 
             v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
         });
     };
