@@ -109,6 +109,12 @@ img{
  
 }
 
+example{
+  align-content: center;
+  align-items: center;
+  align-self: center;
+}
+
 .font-default, text, label, .Link-header, .grid1, .grid2, .Button-install{
   color: #171a21;
   font-size: 14px;

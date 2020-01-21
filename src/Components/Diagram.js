@@ -125,34 +125,39 @@ var SetupStats = function(Comp)
 
 var SetupTextAndTicks = function(Comp)
 {
-    var typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-5];
+    var ticks = 10;    
     var tickWidth = Comp.state.WinInfo.iDrawScale*0.005;
-    var ticks = 10;
+
+    var typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-5];
+    var gradeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-25];
     var strCenter = +Comp.state.WinInfo.Center[0]+","+Comp.state.WinInfo.Center[1];
 
-    var strRotateSelf = ", rotate(180,"+typeCenter[0]+","+(typeCenter[1]-4)+")";
+    var strTypeRotateSelf = ", rotate(180,"+typeCenter[0]+","+(typeCenter[1]-2)+")";
 
     var htmlResult = [];
     for (var i = 0; i < Comp.state.iQuantity; i++)
     {
-        var sFlip = "";
+        var sTypeFlip = "";
+        var sTickFlip = "";
+        var iOffset = 20;
         //Rotate text around it's center if upsidedown
         if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
-            sFlip = strRotateSelf;
+            sTypeFlip = strTypeRotateSelf;
+            iOffset = -20;
         }
 
         //Letter Grades
         htmlResult.push(
-        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Math.floor(Comp.state.WinInfo.iDrawScale/6), strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+8} 
-            transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+"), rotate("+-Comp.state.iAngles[i]+","+typeCenter[0]+","+(typeCenter[1])+")"} > 
+        <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Math.floor(Comp.state.WinInfo.iDrawScale/6), strokeWidth: iStrokeWidth}} x={gradeCenter[0]} y={gradeCenter[1]/*+12*/}//This is a hardcoded offset to have the letters center themselves
+            transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+(Comp.state.WinInfo.Center[1])+"), rotate("+-Comp.state.iAngles[i]+","+gradeCenter[0]+","+(gradeCenter[1]-12)+")"} > 
             {gradeCalc(i, Comp.state.Ranges, Comp.state.Values)}
         </text>);
 
         //Types
         htmlResult.push(
         <text textAnchor="middle" style={{stroke: "rgb(0,0,0)", fontSize: Comp.state.WinInfo.iDrawScale/22, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]+2}
-            transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+")"+sFlip} >                
+            transform={"rotate("+Comp.state.iAngles[i]+", "+strCenter+")"+sTypeFlip}>
             {Comp.state.Types[i]}
         </text>);
 
@@ -169,12 +174,12 @@ var SetupTextAndTicks = function(Comp)
                 var tickCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
                 if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
                 {
-                    sFlip = ", rotate(180,"+tickCenter[0]+","+(tickCenter[1])+")";;
+                    sTickFlip = ", rotate(180,"+tickCenter[0]+","+(tickCenter[1])+")";;
                 };
 
                 //Tick Value
-                htmlResult.push(<text x={tickCenter[0]} y={tickCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
-                    transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+Comp.state.WinInfo.Center[1]+")"+sFlip}>
+                htmlResult.push(<text x={tickCenter[0]+2} y={tickCenter[1]} style={{stroke: "rgb(0,0,0)", fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
+                    transform={"rotate("+Comp.state.iAngles[i]+", "+(Comp.state.WinInfo.Center[0])+","+(Comp.state.WinInfo.Center[1])+")"+sTickFlip}>
                     {tickValue}
                 </text>);
             }
@@ -261,7 +266,7 @@ class Diagram extends React.Component
                     Center:     [0, 0],
                 }
         };
-        this.LoadTemplate(this.state, tmplAA);
+        this.LoadTemplate(this.state, tmplJojo);
         this.Initialize(this.state);
         this.UpdateViewPort = this.UpdateViewPort.bind(this);
     };
@@ -471,7 +476,7 @@ class Diagram extends React.Component
         return(
             <Box name="body" display="flex" style={{alignItems: "flex"}} bgcolor="darkGrey">
                     <Col>
-                        <Row>
+                        <Row alignItems='top'>
                             <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                                 <StatInputForm
                                     Quantity    = {this.state.iQuantity}
@@ -501,7 +506,7 @@ class Diagram extends React.Component
                                 </svg>
                             </Paper>
                         </Row>
-                        <StatCode></StatCode>
+                        {/*<StatCode></StatCode>*/}
                     </Col>
             </Box>
         );

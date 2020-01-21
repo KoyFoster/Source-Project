@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, TextField, makeStyles, InputLabel, Divider } from '@material-ui/core';
+import { Box, Button, TextField, makeStyles, InputLabel, Divider } from '@material-ui/core';
 import {Row, Col} from './Grid.js'
-import { purple, orange, green, red } from "@material-ui/core/colors";
+//import { purple, orange, green, red } from "@material-ui/core/colors";
 import "../App.css";
 
 //User Input Class
@@ -32,13 +32,13 @@ function StatInputForm(props)
         for(var iCol=0; iCol < 4; iCol++)
         {
             var htmlBuffer = [];
-            var iRow = -1;
+            var iRow = 0;
             if(iCol === 0)
             {
-                for(iRow=-1; iRow < rows; iRow++)
+                for(iRow=0; iRow < rows; iRow++)
                 {
-                    if(iRow < 0)//Run if else cases if iRow is not negative
-                    htmlBuffer.push(<InputLabel > Stat </InputLabel>);
+                    if(iRow < 1)//Run if else cases if iRow is not negative
+                    htmlBuffer.push(<TextField label="Stat" name={"Types"+iRow} value={props.Types[iRow]} onChange={(event) => Update(event)} ></TextField>);
                     else
                     htmlBuffer.push(<TextField name={"Types"+iRow} value={props.Types[iRow]} onChange={(event) => Update(event)} ></TextField>);
                 }
@@ -47,35 +47,35 @@ function StatInputForm(props)
             }
             else if(iCol === 1)
             {
-                for(iRow=-1; iRow < rows; iRow++)
+                for(iRow=0; iRow < rows; iRow++)
                 {
-                    if(iRow < 0)//Run if else cases if iRow is not negative
-                    htmlBuffer.push(<InputLabel > Value </InputLabel>);
+                    if(iRow < 1)//Run if else cases if iRow is not negative
+                    htmlBuffer.push(<TextField label="Value" variant="standard" type="number" name={"Value"+iRow} value={props.Values[iRow]} onChange={(event) => Update(event)} ></TextField>);
                     else
-                    htmlBuffer.push(<TextField type="number" name={"Value"+iRow} value={props.Values[iRow]} onChange={(event) => Update(event)} ></TextField>);
+                    htmlBuffer.push(<TextField variant="standard" type="number" name={"Value"+iRow} value={props.Values[iRow]} onChange={(event) => Update(event)} ></TextField>);
                 }
                 htmlForm.push(  <Col name={"Row"+iRow}> {htmlBuffer} </Col> );
                 htmlForm.push(  <Divider orientation="vertical" /> );
             }
             else if(iCol === 2)
             {
-                for(iRow=-1; iRow < rows; iRow++)
+                for(iRow=0; iRow < rows; iRow++)
                 {
-                    if(iRow < 0)//Run if else cases if iRow is not negative
-                    htmlBuffer.push(<InputLabel  > Min </InputLabel>);
+                    if(iRow < 1)//Run if else cases if iRow is not negative
+                    htmlBuffer.push(<TextField label="Min" variant="standard" type="number" name={"RangesMin"+iRow} value={props.Ranges[iRow][0]} onChange={(event) => Update(event)} ></TextField>);
                     else
-                    htmlBuffer.push(<TextField  type="number" name={"RangesMin"+iRow} value={props.Ranges[iRow][0]} onChange={(event) => Update(event)} ></TextField>);
+                    htmlBuffer.push(<TextField variant="standard" type="number" name={"RangesMin"+iRow} value={props.Ranges[iRow][0]} onChange={(event) => Update(event)} ></TextField>);
                 }
                 htmlForm.push(  <Col name={"Row"+iRow}> {htmlBuffer} </Col> );
             }
             else if(iCol === 3)
             {
-                for(iRow=-1; iRow < rows; iRow++)
+                for(iRow=0; iRow < rows; iRow++)
                 {
-                    if(iRow < 0)//Run if else cases if iRow is not negative
-                    htmlBuffer.push(<InputLabel  > Max </InputLabel>);
+                    if(iRow < 1)//Run if else cases if iRow is not negative
+                    htmlBuffer.push(<TextField label="Max" variant="standard" type="number" name={"RangesMax"+iRow} value={props.Ranges[iRow][1]} onChange={(event) => Update(event)} ></TextField>);
                     else
-                    htmlBuffer.push(<TextField  type="number" name={"RangesMax"+iRow} value={props.Ranges[iRow][1]} onChange={(event) => Update(event)} ></TextField>);
+                    htmlBuffer.push(<TextField variant="standard" type="number" name={"RangesMax"+iRow} value={props.Ranges[iRow][1]} onChange={(event) => Update(event)} ></TextField>);
                 }
                 htmlForm.push(  <Col name={"Row"+iRow}> {htmlBuffer} </Col> );
             }
@@ -84,35 +84,42 @@ function StatInputForm(props)
     }
 
         return(
-        <div>
-            <div name="GraphBody" style={{display: 'flex', justifyContent:'center'}}>
-            <Row>
+            <div>
+            <Row name="GraphBody">
+                <TextField
+                    //style={{display: "flex"}}
+                    label="Stats"
+                    variant="filled"
+                    type="number" name="Quantity"
+                    value={props.Quantity}
+                    onChange={(event) => Update(event)}
+                    /*inputProps={{
+                    style: { textAlign: "center" }
+                    }}*/
+                ></TextField>
                 <Col>
-                    <InputLabel  > Stat Quantity </InputLabel>
-                    <TextField 
-                        type="number" name="Quantity"
-                        value={props.Quantity}
-                        onChange={(event) => Update(event)}
-                    >
-                    </TextField>
-                </Col>
-                <Col>
-                    <InputLabel  > Points Spent: {props.PointTotal} </InputLabel>                    
-                    <Row justifyContent="left">
-                        <InputLabel > Limit: </InputLabel>
-                        <TextField 
-                            type="number" name="Limit"
-                            value={props.PointLimit}
-                            onChange={(event) => RandomizeStats(event)}
-                            ></TextField>
-                    </Row>
+                    <Box name="body3" bgcolor="green">
+                        <Box name="body2" bgcolor="red">
+                            <InputLabel shrink> Points Spent: {props.PointTotal} </InputLabel>
+                        </Box>
+                        <Row justifyContent="center">
+                            <InputLabel shrink style={{display: 'flexBox'}}> Limit: </InputLabel>
+                            <TextField
+                                variant="filled"
+                                type="number" name="Limit"
+                                value={props.PointLimit}
+                                onChange={(event) => RandomizeStats(event)}
+                                ></TextField>
+                        </Row>
+                    </Box>
                 </Col>
             </Row>
-            </div>
-            <div name="FormBody" align="center">
-                {statForm(props)}
-            </div>
-        </div >);
+            <Row>
+                <Box name="FormBody" align="center">
+                    {statForm(props)}
+                </Box>
+            </Row>
+            </div>);
 };
 
 export default StatInputForm;

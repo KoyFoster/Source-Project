@@ -2,86 +2,96 @@ import React from "react";
 import "./App.css";
 import StatCard from './Components/StatCard.js';
 
-import {Button, MuiThemeProvider, createMuiTheme} from '@material-ui/core'
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core'
 
 
 //Styles
 const theme = createMuiTheme({
-  overrides: {
-      MuiButton:
-      {
-        contained: {          
-          background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-          border: 0,
-          borderRadius: 3,
-
-          boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-          color: 'white',
-          padding: '0 30px',
-        }
-      },w
-      MuiTextField:
-      {
-        contained: {          
-          background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-          border: 0,
-          borderRadius: 3,
-
-          boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-          color: 'white',
-          padding: '0 30px',
-        }
+  //overrides: {
+    MuiTextField:
+    {
+      standard: {
+        margin: '30 30px',
+        
       },
 
+      filled: {
+        //style: {width: "56px"},
+        //inputProps: {style: { textAlign: 'center'}},
 
-  },
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        border: 0,
+        borderRadius: 3,
 
-      //Global style that effects all sub styles
-      /*'@global': 
-      {
-          //If you nest themes, You should target [class*="MuiButton-root"].
-          '.MuiButton-root': {
-            fontSize: '1rem',
-          },
-          '.MuiInputLabel-root': {
-            fontSize: '1rem',
-  
-            padding: '6px 6px',
-            borderRadius: 3
-          },
-          '.MuiTextField-root': {
-              fontSize: '1px',
-              width: '152px'
-          },
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        color: 'white',
+        padding: '0 30px',
+        margin: '30 30px',
       },
-      root: {
-          fontSize: '16px',
+      outlined: {
+        textAlign: 'center',
+
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        border: 0,
+        borderRadius: 3,
+
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        color: 'white',
+        padding: '0 30px',
+        margin: '30 30px',
+      }
+    },
+    
+
+    MuiButton:
+    {
+      contained: {
+        fontSize: '1rem',
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        border: 0,
+        borderRadius: 3,
+
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        color: 'white',
+        padding: '0 30px',
+      }
+    },
+
+    MuiInputAdornment: {
+      standard: {
+        shrink: true,
+        backgroundColor: 'orange',
+        textAlign: 'center',
       },
-      checked: {},
-      
-      Label: {  
-          textAlign: 'center',        
-          backgroundColor: 'black',
-          color: 'white',
+
+      filled: {
+        shrink: true,
+        backgroundColor: 'orange',
+        textAlign: 'center',
       },
-  
-      Field: {
-          textAlign: 'center',
+      outline: {
+        textAlign: 'center',
+      }
+    },
+
+    MuiInputLabel: {
+      filled: {
+        shrink: true,
+        backgroundColor: 'orange',
+        textAlign: 'center',
       },
-      NumberField: {  
-          width: '56px',
-          textAlign: 'center'
-      },
-  
-      Button: {
-      },*/
-  });
+      outline: {
+        textAlign: 'center',
+      }
+    },
+  //}//End of Override
+});
 
 //Global Style
-const Global = withStyle({
+/*const Global = withStyle({
 
 
-});
+});*/
 
 
 /* ---------------------- CORE ---------------------- */
