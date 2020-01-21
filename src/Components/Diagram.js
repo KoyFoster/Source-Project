@@ -139,12 +139,14 @@ var SetupTextAndTicks = function(Comp)
     {
         var sTypeFlip = "";
         var sTickFlip = "";
+        var iOffset = 20;
         var iFontSize = Math.floor(Comp.state.WinInfo.iDrawScale);
         var iFlipOffset = 0;
         //Rotate text around it's center if upsidedown
         if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
             sTypeFlip = strTypeRotateSelf;
+            iOffset = -20;
             iFlipOffset = iFontSize;
         };
 
