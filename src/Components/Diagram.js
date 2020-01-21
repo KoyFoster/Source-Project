@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Paper/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from "./StatInputForm.js"
-/*import StatCode from "./StatCode.js"*/
 import {Row, Col} from "./Grid"
 
 const iStrokeWidth = 0.5;
