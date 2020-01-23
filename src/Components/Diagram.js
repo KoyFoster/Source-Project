@@ -252,7 +252,7 @@ function ScaleSlider(props) {
     return(<div>
     <Slider name='graphScale' min={iBaseSize/2} max={iBaseSize}
         marks       =   {[{value: iBaseSize*0.5, label: iBaseSize*0.5},{value: iBaseSize*0.75, label: iBaseSize*0.75},{value: iBaseSize, label: iBaseSize}]}
-        value       =   {props.Scale}
+        defaultValue       =   {props.Scale}
         valueLabelDisplay="auto"
         
         onChangeCommitted =   {OnSliderChange}
@@ -552,8 +552,10 @@ class Diagram extends React.Component
     };
 
     OnSliderChange(Scale) {
-        this.UpdateViewPort(Scale);
+       this.UpdateViewPort(Scale);
     };
+
+
 
     render(){
         return(
