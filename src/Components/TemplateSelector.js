@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Paper, Select, MenuItem} from '@material-ui/core'
+import React from 'react';
+import {Paper, Select} from '@material-ui/core'
 
 function TemplateSelector(props)
 {
@@ -10,7 +10,7 @@ function TemplateSelector(props)
 
     return(
         <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-            Template <Select onChange={(event) => OnTemplateChange(event)}>{props.MenuItems}</Select>
+            Template <Select defaultValue={props.defaultValue} onChange={(event) => OnTemplateChange(event)}>{props.MenuItems}</Select>
         </Paper>
     )
 };

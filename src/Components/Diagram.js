@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Box, Paper, Slider, MenuItem, Button/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
+import React from 'react';
+import { Box, Paper, Slider, MenuItem/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
 import {Row, Col} from './Grid'
@@ -126,7 +126,7 @@ var SetupStats = function(Comp)
 
 var SetupTextAndTicks = function(Comp)
 {
-    var ticks = 10;    
+    var ticks = 10;
     var tickWidth = Comp.state.WinInfo.iDrawScale*0.005;
 
     var typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iType];
@@ -152,7 +152,9 @@ var SetupTextAndTicks = function(Comp)
         <text name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}} 
             x={gradeCenter[0]} y={gradeCenter[1]}
             transform={'rotate('+Comp.state.iAngles[i]+', '+(Comp.state.WinInfo.Center[0])+','+(Comp.state.WinInfo.Center[1])+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')'} > 
-            {gradeCalc(i, Comp.state.Ranges, Comp.state.Values)}
+            {
+                gradeCalc(i, Comp.state.Ranges, Comp.state.Values)
+            }
         </text>);
 
         //Types
@@ -189,19 +191,20 @@ var SetupTextAndTicks = function(Comp)
     return htmlResult
 };
 
-var GetPointTotal = function(Comp, arrDiff = 0, Values = 0)
+var GetPointTotal = function(Quantity, Comp, Values = 0)
 {
     var PointTotal = 0;
-    for(var i=0; i < Comp.state.iQuantity; i++)
+    var arrDiff = Quantity - Comp.state.Values.length;
+    for(var i=0; i < Quantity; i++)
         {
             //push additional elements if change in size exceeds current size
-            if(i < arrDiff+1)
+            if(arrDiff > 0)
             {
                 Comp.state.Ranges.push([0,10]);
+                console.log('Push more types');
                 Comp.state.Types.push('???');
                 Comp.state.Values.push(0);
-                
-                Comp.state.statGrades.push(0);
+                arrDiff--;
             };
             if(Values === 0)
             {PointTotal += Comp.state.Values[i];}
@@ -212,26 +215,27 @@ var GetPointTotal = function(Comp, arrDiff = 0, Values = 0)
 };
 
 //templates
+const iDefTmpl = 0;
 const defaultTemplates = [
-    {
-        label:  'Generic',
-        types:          [''],
-        ranges:         [[0,0]],
-        defaultValues:  [0],
-        pntLlimit:      0
-    },
+    /*{
+        label:  'Empty',
+        types:          ['',''],
+        ranges:         [[0,0], [0,0]],
+        defaultValues:  [0, 0],
+        pntLlimit:      2
+    },*/
     {
         label:  'Jojo',
         types:      ['POWER','SPEED','RANGE',   'DURABILITY','PRECISION','POTENTIAL'],
-        ranges:     [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
-        values:     [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
+        ranges:     [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10]],
+        values:     [3.0,4.0,4.0,8.0,4.0,2.0],
         pntLlimit:  60
     },
     {
         label:  'Dark Souls III',
         types:  ['Vigor','Attunement','Endurance',   'Vitality',  'Strength', 'Dexterity','Intelligence', 'Faith', 'Luck', 'Hollowing'],//Dark Souls 3 Style
         ranges: [[1,100],[1,100],[1,100], [1,100],[1,100],[1,100], [1,100],[1,100],[1,100], [1,100]],
-        values: [15,10,15,15,20,18,10,10,10,0],
+        values: [15,10,15,15,20,18,10,10,10,100],
         pntLlimit: 999
     },
     {
@@ -249,7 +253,7 @@ function compileMenuItems()
 
     for(var i=0; i<defaultTemplates.length; i++)
     {
-    result.push(<MenuItem value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
+        result.push(<MenuItem value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
     }
 
     return result;
@@ -292,8 +296,6 @@ class Diagram extends React.Component
                 Ranges:     [[0,0]],
                 Values:     [0],
                 PointLimit: 0,
-                
-                statGrades: [0,0,0,0,0,0,0,0,0,0,0,0,0],//Placeholder
             
                 //Window Dimensions Window Center
                 WinInfo:
@@ -312,7 +314,7 @@ class Diagram extends React.Component
                 }
         };
         this.CalcOffset(this.state);
-        this.LoadTemplate(this.state, defaultTemplates[3]);
+        this.LoadTemplate(this.state, defaultTemplates[iDefTmpl]);
         this.Initialize(this.state);
         //this.UpdateViewPort = this.UpdateViewPort.bind(this);
     };
@@ -338,25 +340,23 @@ class Diagram extends React.Component
                 iGrade: grade * scale
             }})
         }
-    }
+    };
 
     //Load States
     Initialize(state=null)
     {
         if(state !== null)
         {
-            state.iQuantity             = this.state.Types.length;
             state.iAngles               = this.UpdateAngles();
             state.WinInfo.iDrawScale    = this.state.WinInfo.iScale;
             state.WinInfo.iDimension    = [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer];
             state.WinInfo.Center        = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
-            state.PointTotal            = GetPointTotal(this);
+            state.PointTotal            = GetPointTotal(this.state.Types.length, this);
             state.v2StatVectors         = this.UpdateStatVectors();
         }
         else
         {
             this.setState({
-                iQuantity: this.state.Types.length,
                 iAngles: this.UpdateAngles(),
                 WinInfo: 
                 {
@@ -364,17 +364,18 @@ class Diagram extends React.Component
                     iDimension: [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer],
                     Center: [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2],
                 },
-                PointTotal: GetPointTotal(this),
+                PointTotal: GetPointTotal(this.state.Types.length, this),
                 v2StatVectors: this.UpdateStatVectors()
             });
         }
     };
+
     LoadTemplate(state = null, template = defaultTemplates[0])
     {
-        console.log(template.types, template.ranges, template.values, template.pntLlimit);
         //If State needs to be updated now
         if(state !== null)
         {
+            state.iQuantity     = template.types.length;
             state.Types         = template.types;
             state.Ranges        = template.ranges;
             state.Values        = template.values;
@@ -384,6 +385,7 @@ class Diagram extends React.Component
         {
             this.setState(
             {
+                iQuantity:  template.types.length,
                 Types:      template.types,
                 Ranges:     template.ranges,
                 Values:     template.values,
@@ -393,17 +395,15 @@ class Diagram extends React.Component
     };
 
     OnTemplateChange(template)
-    {       
-        console.log('template:',template)
+    {
         this.LoadTemplate(null, template);
-
-        var tempAngle = this.UpdateAngles();
-
+        var Quantity    = template.types.length;
+        var tempAngles  = this.UpdateAngles(Quantity);
+        
         this.setState({
-            iQuantity: this.state.Types.length,
-            iAngles: tempAngle,
-            PointTotal: GetPointTotal(this),
-            v2StatVectors: this.UpdateStatVectors(this.state.Types.length, tempAngle, template.Values)
+            iAngles:        tempAngles,
+            PointTotal:     GetPointTotal(Quantity, this, template.values),
+            v2StatVectors:  this.UpdateStatVectors(Quantity, tempAngles, template.values, template.ranges)
         });
     }
 
@@ -417,14 +417,14 @@ class Diagram extends React.Component
         //window.removeEventListener('resize', this.UpdateViewPort);
     };
 
-    UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, iDrawScale=this.state.WinInfo.iDrawScale)
+    UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, Ranges=this.state.Ranges, iDrawScale=this.state.WinInfo.iDrawScale)
     {
         var tempVectors = [];//this.state.v2StatVectors
 
         //Calculate All Point
         for (var i = 0; i < Quantity; i++)
         {
-            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i] * (1/this.state.Ranges[i][1])*iDrawScale) ), new Vector2(0,0), Angles[i]));
+            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i] * (1/Ranges[i][1])*iDrawScale) ), new Vector2(0,0), Angles[i]));
         };
         return tempVectors;
     };
@@ -442,28 +442,18 @@ class Diagram extends React.Component
     UpdateQuantity(props)
     {
         //vars
-        var tempAngles = this.state.iAngles;
-        var Quantity = this.state.iQuantity;
-        var tempVal = this.state.Values;
-        var iIndex = props.target.name;
-        var PointTotal = this.state.PointTotal;
+        var tempAngles      = this.state.iAngles;
+        var Quantity        = this.state.iQuantity;
+        var tempVal         = this.state.Values;
+        var iIndex          = props.target.name;
+        var tempTypes       = this.state.Types;
+        var tempRanges      = this.state.Ranges;
+        var PointTotal      = this.state.PointTotal;
         if(props.target.name === 'Quantity')
         {
-            //Update Angles
-            tempAngles = this.UpdateAngles(props.target.value);
-            this.setState({iAngles: tempAngles});
-            //Adjust State Arrays and update PointTotal
-            var arrDiff = props.target.value - this.state.Values.length;
-            PointTotal = GetPointTotal(this, arrDiff);
-            
             Quantity    = parseInt(props.target.value);
-
-            this.setState({
-                PointTotal: PointTotal,
-
-                iQuantity:  Quantity,
-                iAngles:    tempAngles
-            });
+            tempAngles  = this.UpdateAngles(Quantity);
+            PointTotal  = GetPointTotal(Quantity, this);
         }
         else if(iIndex.search('Value') > -1)
         {
@@ -471,22 +461,17 @@ class Diagram extends React.Component
             tempVal = this.state.Values;
             tempVal[iIndex] = props.target.value;
 
-            PointTotal = GetPointTotal(this,0,tempVal);
-
-            this.setState({Values: tempVal});
+            PointTotal = GetPointTotal(Quantity, this, tempVal);
         }
         else if(iIndex.search('Types') > -1)
         {
             iIndex = parseInt(iIndex.replace('Types', ''));
-            var tempTypes = this.state.Types;    
             tempTypes[iIndex] = props.target.value;
-
-            this.setState({Types: tempTypes});
         }
         else if(iIndex.search('Ranges') > -1)
         {
             iIndex = iIndex.replace('Ranges', '');
-            var iIndex2;
+            var iIndex2 = 1;
             if(iIndex.search('Min') > -1)
             {
                 iIndex  = parseInt(iIndex.replace('Min', ''));
@@ -495,16 +480,20 @@ class Diagram extends React.Component
             else
             {
                 iIndex  = parseInt(iIndex.replace('Max', ''));
-                iIndex2 = 1;
             }
-            var tempRanges = this.state.Ranges;
             tempRanges[iIndex][iIndex2] = props.target.value;
 
-            this.setState({Ranges: tempRanges});
+            
         }
 
-        this.setState({v2StatVectors: this.UpdateStatVectors(Quantity, tempAngles, tempVal),
-            PointTotal: PointTotal});
+        this.setState({
+            iQuantity:      Quantity,
+            v2StatVectors:  this.UpdateStatVectors(Quantity, tempAngles, tempVal),
+            iAngles:        tempAngles,
+            PointTotal:     PointTotal,
+            Values:         tempVal,
+            Types:          tempTypes,
+            Ranges:         tempRanges});
     };
 
     UpdatePointLimit(props)
@@ -554,7 +543,7 @@ class Diagram extends React.Component
 
         this.setState(
         {
-            PointTotal:     GetPointTotal(this, 0, tempValues), 
+            PointTotal:     GetPointTotal(this.state.iQuantity, this, tempValues), 
             v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
         });
     };
@@ -577,7 +566,7 @@ class Diagram extends React.Component
                 iDimension: tempDim,
                 Center:     tempCenter
             },
-            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values, tempDrawScale)
+            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values, this.state.Ranges, tempDrawScale)
         });
     };
 
@@ -590,7 +579,7 @@ class Diagram extends React.Component
             <Box name='body' display='flex' style={{alignItems: 'flex'}} bgcolor='darkGrey'>
                         <Row alignItems='top'>
                             <Col alignSelf ='top'>
-                                <TemplateSelector MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
+                                <TemplateSelector defaultValue={defaultTemplates[iDefTmpl]} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
                                 <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                                     <StatInputForm
                                         Quantity    = {this.state.iQuantity}
