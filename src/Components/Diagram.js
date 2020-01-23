@@ -224,7 +224,7 @@ const defaultTemplates = {
         types:      ['POWER','SPEED','RANGE',   'DURABILITY','PRECISION','POTENTIAL'],
         ranges:     [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
         values:     [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
-        pntLlimit:  70
+        pntLlimit:  60
     },
     tmplDS3:
     {
