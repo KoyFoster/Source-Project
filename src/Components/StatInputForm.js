@@ -12,6 +12,7 @@ import '../App.css';
 
 //User Input Class
 function StatInputForm(props) {
+  
   //On Slices Change, update form
   var RandomizeStats = event => {
     if (event.target.name === 'Limit') {
@@ -20,6 +21,7 @@ function StatInputForm(props) {
       props.RandomizeStats(event);
     }
   };
+  
   var Update = event => {
     //Update Diagram
     props.UpdateQuantity(event);

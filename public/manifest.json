@@ -3,7 +3,7 @@
   "name": "Diagram Stat Card",
   "icons": [
     {
-      "src": "Koigox64.png",
+      "src": "favicon.ico",
       "type": "image/png",
       "sizes": "64x64 32x32 24x24 16x16"
     },
