@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import { Box, Paper, Slider, Button/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
+import { Box, Paper, Slider, MenuItem, Button/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
 import {Row, Col} from './Grid'
+import TemplateSelector from './TemplateSelector'
 
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
@@ -211,36 +212,49 @@ var GetPointTotal = function(Comp, arrDiff = 0, Values = 0)
 };
 
 //templates
-const defaultTemplates = {
-    tmplGeneric:
+const defaultTemplates = [
     {
+        label:  'Generic',
         types:          [''],
         ranges:         [[0,0]],
         defaultValues:  [0],
         pntLlimit:      0
     },
-    tmplJojo:
     {
+        label:  'Jojo',
         types:      ['POWER','SPEED','RANGE',   'DURABILITY','PRECISION','POTENTIAL'],
         ranges:     [[1,10], [1,10], [1,10],      [1,10],        [1,10],       [1,10],      [1,10]],
         values:     [3.0,4.0,4.0,8.0,4.0,2.0, 0.0],
         pntLlimit:  60
     },
-    tmplDS3:
     {
+        label:  'Dark Souls III',
         types:  ['Vigor','Attunement','Endurance',   'Vitality',  'Strength', 'Dexterity','Intelligence', 'Faith', 'Luck', 'Hollowing'],//Dark Souls 3 Style
         ranges: [[1,100],[1,100],[1,100], [1,100],[1,100],[1,100], [1,100],[1,100],[1,100], [1,100]],
         values: [15,10,15,15,20,18,10,10,10,0],
         pntLlimit: 999
     },
-    tmplAA:
     {
+        label:  'ArcheAge',
         types:  ['Strength','Agility','Stamina','Spirit','Intelligence', 'Cast Time','Attack Speed', 'Move Speed'],//Dark Souls 3 Style
         ranges: [[158,2560],[158,2560],[158,2560],[158,2560],[158,2560], [0,100],[0,100],[5.4,10]],
         values: [158,158,158, 158,158, 10,10,5.4],
         pntLlimit: 2560
     }
-};
+];
+
+function compileMenuItems()
+{
+    var result = [];
+
+    for(var i=0; i<defaultTemplates.length; i++)
+    {
+    result.push(<MenuItem value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
+    }
+
+    return result;
+}
+const tmplMenuItems = compileMenuItems();
 
 function ScaleSlider(props) {
     //Slider Update
@@ -298,7 +312,7 @@ class Diagram extends React.Component
                 }
         };
         this.CalcOffset(this.state);
-        this.LoadTemplate(this.state, defaultTemplates.tmplJojo);
+        this.LoadTemplate(this.state, defaultTemplates[3]);
         this.Initialize(this.state);
         //this.UpdateViewPort = this.UpdateViewPort.bind(this);
     };
@@ -355,8 +369,9 @@ class Diagram extends React.Component
             });
         }
     };
-    LoadTemplate(state = null, template = defaultTemplates.tmplGeneric)
+    LoadTemplate(state = null, template = defaultTemplates[0])
     {
+        console.log(template.types, template.ranges, template.values, template.pntLlimit);
         //If State needs to be updated now
         if(state !== null)
         {
@@ -376,6 +391,21 @@ class Diagram extends React.Component
             });
         }
     };
+
+    OnTemplateChange(template)
+    {       
+        console.log('template:',template)
+        this.LoadTemplate(null, template);
+
+        var tempAngle = this.UpdateAngles();
+
+        this.setState({
+            iQuantity: this.state.Types.length,
+            iAngles: tempAngle,
+            PointTotal: GetPointTotal(this),
+            v2StatVectors: this.UpdateStatVectors(this.state.Types.length, tempAngle, template.Values)
+        });
+    }
 
     //Setup Listener Events
     componentDidMount() 
@@ -555,28 +585,27 @@ class Diagram extends React.Component
        this.UpdateViewPort(Scale);
     };
 
-
-
     render(){
         return(
             <Box name='body' display='flex' style={{alignItems: 'flex'}} bgcolor='darkGrey'>
-                    <Col>
                         <Row alignItems='top'>
-                            
-                            <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-                                <StatInputForm
-                                    Quantity    = {this.state.iQuantity}
-                                    PointTotal  = {this.state.PointTotal}
-                                    PointLimit  = {this.state.PointLimit}
-                                    Types       = {this.state.Types}
-                                    Values      = {this.state.Values}
-                                    Ranges      = {this.state.Ranges}
-                                        
-                                    UpdateQuantity  = {this.UpdateQuantity.bind(this)}
-                                    RandomizeStats  = {this.RandomizeStats.bind(this)}
-                                    UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
-                                </StatInputForm>
-                            </Paper>
+                            <Col alignSelf ='top'>
+                                <TemplateSelector MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
+                                <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
+                                    <StatInputForm
+                                        Quantity    = {this.state.iQuantity}
+                                        PointTotal  = {this.state.PointTotal}
+                                        PointLimit  = {this.state.PointLimit}
+                                        Types       = {this.state.Types}
+                                        Values      = {this.state.Values}
+                                        Ranges      = {this.state.Ranges}
+                                            
+                                        UpdateQuantity  = {this.UpdateQuantity.bind(this)}
+                                        RandomizeStats  = {this.RandomizeStats.bind(this)}
+                                        UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
+                                    </StatInputForm>
+                                </Paper>
+                            </Col>
                             <Paper style={{height: 442, margin: '4px 0px 4px 0px', padding: '8px 4px 8px 0px', display: 'flex', }}>
                                 <ScaleSlider
                                         Scale           =   {this.state.WinInfo.iScale}
@@ -584,7 +613,6 @@ class Diagram extends React.Component
                                 </ScaleSlider>
                             </Paper>
                             <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'row'}}>
-
 
                                 <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
                                     <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
@@ -601,7 +629,6 @@ class Diagram extends React.Component
                             </Paper>
                         </Row>
                         {/*<StatCode></StatCode>*/}
-                    </Col>
             </Box>
         );
     }
