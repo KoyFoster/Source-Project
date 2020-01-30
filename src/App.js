@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
-import StatCard from './Components/StatCard.js';
-
-import {ThemeProvider, createMuiTheme, useMediaQuery} from '@material-ui/core'
+import StatCard from './Components/StatCard';
+import NavBar from './Components/NavBar'
+import FootBar from './Components/FootBar'
+import {ThemeProvider, createMuiTheme, useMediaQuery, Box, Divider} from '@material-ui/core'
 import {blue, red} from '@material-ui/core/colors'
-
+import {Col, Row} from './Components/Grid'
 
 /* ---------------------- CORE ---------------------- */
 function App() {
@@ -58,7 +59,15 @@ const theme = createMuiTheme({
 
   return (
     <ThemeProvider theme={theme}>
-      <StatCard></StatCard>
+      <Col>
+        <Box name='body' display='flex-box'  width='100%' height={'100%'} align='center' bgcolor='darkGrey'>
+          <Col>
+            <NavBar></NavBar>
+            <StatCard></StatCard>
+            <FootBar></FootBar>
+          </Col>
+        </Box>
+      </Col>
     </ThemeProvider>
   );
 }

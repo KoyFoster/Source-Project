@@ -8,4 +8,4 @@ function StatCard(props)
     return( <Diagram name="StatCard"/> )
 };
 
-export default StatCard; 
+export default StatCard;

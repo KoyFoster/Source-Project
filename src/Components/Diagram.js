@@ -561,7 +561,7 @@ class Diagram extends React.Component
         this.setState(
         {WinInfo:
             {
-                iScale: tempScale,
+                iScale:     tempScale,
                 iDrawScale: tempDrawScale,
                 iDimension: tempDim,
                 Center:     tempCenter
@@ -576,7 +576,7 @@ class Diagram extends React.Component
 
     render(){
         return(
-            <Box name='body' display='flex' style={{alignItems: 'flex'}} bgcolor='darkGrey'>
+            <Box name='body' style={{display: 'inline-flex'}} bgcolor='darkGrey'>
                         <Row alignItems='top'>
                             <Col alignSelf ='top'>
                                 <TemplateSelector defaultValue={defaultTemplates[iDefTmpl]} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
