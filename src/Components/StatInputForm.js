@@ -41,7 +41,7 @@ function StatInputForm(props) {
               <TextField
                 label='Stat'
                 name={'Types' + iRow}
-                value={props.Types[iRow]}
+                value={props.Values[iRow][0]}
                 onChange={event => Update(event)}
               ></TextField>
             );
@@ -49,7 +49,7 @@ function StatInputForm(props) {
             htmlBuffer.push(
               <TextField
                 name={'Types' + iRow}
-                value={props.Types[iRow]}
+                value={props.Values[iRow][0]}
                 onChange={event => Update(event)}
               ></TextField>
             );
@@ -65,7 +65,7 @@ function StatInputForm(props) {
                 label='Value'
                 type='number'
                 name={'Value' + iRow}
-                value={props.Values[iRow]}
+                value={props.Values[iRow][1]}
                 onChange={event => Update(event)}
                 style={{width: '56px'}}
               ></TextField>
@@ -75,7 +75,7 @@ function StatInputForm(props) {
               <TextField
                 type='number'
                 name={'Value' + iRow}
-                value={props.Values[iRow]}
+                value={props.Values[iRow][1]}
                 onChange={event => Update(event)}
                 style={{width: '56px'}}
               ></TextField>
@@ -92,7 +92,7 @@ function StatInputForm(props) {
                 label='Min'
                 type='number'
                 name={'RangesMin' + iRow}
-                value={props.Ranges[iRow][0]}
+                value={props.Values[iRow][2]}
                 onChange={event => Update(event)}
                 style={{width: '56px'}}
               ></TextField>
@@ -102,7 +102,7 @@ function StatInputForm(props) {
               <TextField
                 type='number'
                 name={'RangesMin' + iRow}
-                value={props.Ranges[iRow][0]}
+                value={props.Values[iRow][2]}
                 onChange={event => Update(event)}
                 style={{width: '56px',}}
               ></TextField>
@@ -118,7 +118,7 @@ function StatInputForm(props) {
                 label='Max'
                 type='number'
                 name={'RangesMax' + iRow}
-                value={props.Ranges[iRow][1]}
+                value={props.Values[iRow][3]}
                 onChange={event => Update(event)}
                 style={{width: '56px'}}
               ></TextField>
@@ -128,7 +128,7 @@ function StatInputForm(props) {
               <TextField
                 type='number'
                 name={'RangesMax' + iRow}
-                value={props.Ranges[iRow][1]}
+                value={props.Values[iRow][3]}
                 onChange={event => Update(event)}
                 style={{width: '56px'}}
               ></TextField>
