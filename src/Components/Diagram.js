@@ -586,11 +586,10 @@ class Diagram extends React.Component
             { tempTotal += tempVal; }
             else*/
             {
-                tempVal = tempVal[iR][2];
                 //var iSubRange = this.state.PointLimit - tempTotal - this.state.Values[iR][3];
                 //if(iSubRange > 0) {iSubRange = 0;}
 
-                tempVal = parseInt(tempVal[iR][2]) + Math.floor(Math.random() * (tempVal[iR][3] - tempVal[iR][2])/*MinMax*/ );
+                tempVal = parseInt(tempValues[iR][2]) + Math.floor(Math.random() * (tempValues[iR][3] - tempValues[iR][2])/*MinMax*/ );
                 tempTotal += tempVal;
 
                 console.log("tempVal:",tempVal);
