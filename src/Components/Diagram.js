@@ -195,6 +195,7 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
 {
     var PointTotal  = 0;
     var PointMin    = 0;
+    var PointMax    = 0;
     var arrDiff     = Quantity - Comp.state.Values.length;
     var iI = 0;
     for(iI; iI < Quantity; iI++)
@@ -210,11 +211,13 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
             {
                 PointTotal  += parseInt(Comp.state.Values[iI][1]);
                 PointMin    += parseInt(Comp.state.Values[iI][2]);
+                PointMax    += parseInt(Comp.state.Values[iI][3]);
             }
             else
             {
                 PointTotal  += parseInt(Values[iI][1]);
                 PointMin    += parseInt(Values[iI][2]);
+                PointMax    += parseInt(Values[iI][3]);
             };
     };
     //check if new entry causes the point limit to be exceeded
@@ -233,7 +236,24 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
     }
 
     if(Comp.state.PointDiff){PointTotal -= PointMin;}
-    return [PointTotal, PointMin];
+    return [PointTotal, PointMin, PointMax];
+};
+var GetPointMax = function(Quantity, Comp, Values = 0)
+{
+    var PointMax    = 0;
+    for(var iI; iI < Quantity; iI++)
+    {
+            if(Values === 0)
+            {
+                PointMax    += parseInt(Comp.state.Values[iI][3]);
+            }
+            else
+            {
+                PointMax    += parseInt(Values[iI][3]);
+            };
+    };
+
+    return PointMax;
 };
 
 //templates
@@ -372,6 +392,7 @@ class Diagram extends React.Component
             state.WinInfo.Center        = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
             state.PointTotal            = Points[0];
             state.PointMin              = Points[1];
+            state.PointMax              = Points[2];
             state.v2StatVectors         = this.UpdateStatVectors();
         }
         else
@@ -386,6 +407,7 @@ class Diagram extends React.Component
                 },
                 PointTotal: Points[0],
                 PointMin:   Points[1],
+                PointMax:   Points[2],
                 v2StatVectors: this.UpdateStatVectors()
             });
         }
@@ -424,6 +446,7 @@ class Diagram extends React.Component
             iAngles:        tempAngles,
             PointTotal:     Points[0],
             PointMin:       Points[1],
+            PointMax:       Points[2],
             v2StatVectors:  this.UpdateStatVectors(Quantity, tempAngles, template.values)
         });
     }
@@ -538,6 +561,7 @@ class Diagram extends React.Component
             iAngles:        tempAngles,
             PointTotal:     Points[0],
             PointMin:       Points[1],
+            PointMax:       Points[2],
             Values:         tempVal});
     };
 
@@ -550,61 +574,99 @@ class Diagram extends React.Component
 
     RandomizeStats(props)
     {
-        var tempTotal = 0;
-        if(this.state.PointDiff === false){tempTotal = this.state.PointMin;}
         //Generate Random Order
         var randOrder = []; var tempOrder = [];
+            //Compile Order
+            for(var iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
+            { tempOrder.push(iTRO); };
+                //Random Order
+                for(var iRO = 0; iRO < this.state.iQuantity; iRO++)
+                {
+                    var tempIndex = Math.floor(Math.random()*(tempOrder.length));
+                    randOrder.push(tempOrder[tempIndex]);//Add Index
+                    tempOrder.splice(tempIndex, 1);//Sub Temp Index
+                };
 
-        //Compile Order
-        for(var iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
-        { tempOrder.push(iTRO); };
-
-        //Jumble Order
-        for(var iRO = 0; iRO < this.state.iQuantity; iRO++)
-        {
-            var tempIndex = Math.floor(Math.random()*(tempOrder.length));
-
-            randOrder.push(tempOrder[tempIndex]);//Add Index
-            tempOrder.splice(tempIndex, 1);//Sub Temp Index
-        };
-
-        //Temporary Values
+        //Values Buffer
         //Desc: set default values to minimum
         //Note: bring this logic into the main loop later for more efficiency.
-        var tempValues = this.state.Values;
-        for(var i1=0; i1<tempValues.length; i1++)
-        {tempValues[i1][1] = tempValues[i1][2];}
+        var valuesBuffer = this.state.Values;
+        for(var i1=0; i1<valuesBuffer.length; i1++)
+        {valuesBuffer[i1][1] = valuesBuffer[i1][2];}
+
+        //Total Buffer
+        var totalBuffer = 0;
+        if(this.state.PointDiff === false){totalBuffer = this.state.PointMin;}
 
         //Iterate through list of stats
-        for(var i=0; i<this.state.iQuantity; i++)
+        var iProcs = 0;
+        for(var i=0; totalBuffer < this.state.PointLimit; i++)
         {
+            console.log('i:',i);
             var iR = randOrder[i];
-            var tempVal = this.state.Values[iR][2];
 
-            //Break is total is met or exceeded
-            /*if(tempTotal > this.state.PointLimit)
-            { tempTotal += tempVal; }
-            else*/
+            var min = valuesBuffer[iR][1]; 
+            var max = valuesBuffer[iR][3];
+
+            if(max > this.state.PointMax)
             {
-                //var iSubRange = this.state.PointLimit - tempTotal - this.state.Values[iR][3];
-                //if(iSubRange > 0) {iSubRange = 0;}
-
-                tempVal = parseInt(tempValues[iR][2]) + Math.floor(Math.random() * (tempValues[iR][3] - tempValues[iR][2])/*MinMax*/ );
-                tempTotal += tempVal;
-
-                console.log("tempVal:",tempVal);
+               console.log('max:'.max,'PointMax:',this.state.PointMax);
+               max = this.state.PointMax;
             }
-            tempValues[iR][1]=tempVal;
-        };
-        this.setState({Values: tempValues});
+            if(max > valuesBuffer[iR][3])
+            {
+                console.log('max:'.max,'valuesBuffer:',valuesBuffer[iR][3]);
+                max = valuesBuffer[iR][3];
+            }
+            if(max > this.state.PointLimit - totalBuffer)
+            { 
+                console.log('max:',max,'this.state.PointLimit - totalBuffer:',this.state.PointLimit - totalBuffer);
+                max = this.state.PointLimit - totalBuffer; 
+            }
 
-        var Points = GetPointTotal(this.state.iQuantity, this, tempValues);
+            //Generate Random Value
+            var tempVal = 0;
+            if(min < max)
+            {tempVal = (Math.floor(Math.random() * (max-min)) + min+1);}
+            else
+            {
+                console.log('iR:',iR,'min:',min,'max:',max);
+                tempVal = min;
+                iProcs++;
+            }
+
+            totalBuffer += tempVal;
+            if(totalBuffer > this.state.PointLimit)
+            {
+                var iDiff = this.state.PointLimit - totalBuffer;
+                totalBuffer += iDiff;
+                tempVal += iDiff;
+                console.log('totalBuffer:',totalBuffer,'tempVal:',tempVal);
+                break;
+            }
+
+            //Save Value
+            valuesBuffer[iR][1]=tempVal;
+
+            //Reiterate
+            if(i >= valuesBuffer.length-1)
+            {i=-1; totalBuffer=0;}
+
+            //Emergency Break
+            if(iProcs > valuesBuffer.length){break;}
+        };
+        console.log('2. totalBuffer:'|totalBuffer)
+
+        this.setState({Values: valuesBuffer});
+
+        var Points = GetPointTotal(this.state.iQuantity, this, valuesBuffer);
 
         this.setState(
         {
             PointTotal:     Points[0],
             PointMin:       Points[1],
-            v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
+            PointMax:       Points[2],
+            v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, valuesBuffer)
         });
     };
     
