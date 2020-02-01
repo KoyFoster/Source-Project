@@ -193,23 +193,47 @@ var SetupTextAndTicks = function(Comp)
 
 var GetPointTotal = function(Quantity, Comp, Values = 0)
 {
-    var PointTotal = 0;
-    var arrDiff = Quantity - Comp.state.Values.length;
-    for(var i=0; i < Quantity; i++)
-        {
+    var PointTotal  = 0;
+    var PointMin    = 0;
+    var arrDiff     = Quantity - Comp.state.Values.length;
+    var iI = 0;
+    for(iI; iI < Quantity; iI++)
+    {
             //push additional elements if change in size exceeds current size
             if(arrDiff > 0)
             {
-                console.log('Push more more items');
+                console.log('Push more items');
                 Comp.state.Values.push(['???',0,0,10]);
                 arrDiff--;
             };
             if(Values === 0)
-            {PointTotal += Comp.state.Values[i][1];}
+            {
+                PointTotal  += parseInt(Comp.state.Values[iI][1]);
+                PointMin    += parseInt(Comp.state.Values[iI][2]);
+            }
             else
-            {PointTotal += parseInt(Values[i][1]);}
-        };
-        return PointTotal;
+            {
+                PointTotal  += parseInt(Values[iI][1]);
+                PointMin    += parseInt(Values[iI][2]);
+            };
+    };
+    //check if new entry causes the point limit to be exceeded
+    if((PointTotal > Comp.state.PointLimit) && (Quantity !== Comp.state.iQuantity))
+    {
+        var iDiff = Comp.state.PointLimit - PointTotal;
+        if(Values === 0)
+        {
+            Comp.state.Values[iI-1][1] += parseInt(iDiff);
+        }
+        else
+        {
+            Values[iI-1][1] += parseInt(iDiff);
+        }
+        PointTotal = Comp.state.PointLimit;
+    }
+
+    if(Comp.state.PointDiff){PointTotal -= PointMin;}
+    return [PointTotal, PointMin];
 };
 
 //templates
@@ -223,18 +247,21 @@ const defaultTemplates = [
     {
         label:      'Jojo',
         values:     [['POWER',3.0,1,10], ['SPEED',4.0,1,10], ['RANGE',4.0,1,10], ['DURABILITY',8.0,1,10], ['PRECISION',4.0,1,10], ['POTENTIAL',2.0,1,10]],
-        pntLlimit:  60
+        pntLlimit:  60,
+        pntDiff: false
     },
     {
         label:  'Dark Souls III',
         values: [['Vigor',15,1,100],['Attunement',10,1,100],['Endurance',15,1,100], ['Vitality',15,1,100],['Strength',20,1,100],['Dexterity',18,1,100], ['Intelligence',10,1,100],['Faith',10,1,100],['Luck',10,1,100], ['Hollowing',100,1,100]],
         pntLlimit: 999,
+        pntDiff: true
         //key: ''+values|pntLlimit+''
     },
     {
         label:  'ArcheAge',
         values: [['Strength',158,158,2560],['Agility',158,158,2560],['Stamina',158,158,2560],['Spirit',158,158,2560],['Intelligence',158,158,2560], ['Cast Time',10,0,100],['Attack Speed',10,0,100],['Move Speed',5.4,5.4,10]],
-        pntLlimit: 2560
+        pntLlimit: 2560,
+        pntDiff: false
     }
 ];
 
@@ -281,6 +308,8 @@ class Diagram extends React.Component
                 iQuantity:  0,
                 iAngles:    [0],
                 PointTotal: 0,
+                PointMin:   0,
+                PointDiff: false,//Wether or not to take the difference between PointTotal and Minimum Required Stats
                 v2StatVectors:  [],
                 //User Defined
                 Values:     [['',0,0,0]],
@@ -334,13 +363,15 @@ class Diagram extends React.Component
     //Load States
     Initialize(state=null)
     {
+        var Points = GetPointTotal(this.state.Values.length, this);
         if(state !== null)
         {
             state.iAngles               = this.UpdateAngles();
             state.WinInfo.iDrawScale    = this.state.WinInfo.iScale;
             state.WinInfo.iDimension    = [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer];
             state.WinInfo.Center        = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
-            state.PointTotal            = GetPointTotal(this.state.Values.length, this);
+            state.PointTotal            = Points[0];
+            state.PointMin              = Points[1];
             state.v2StatVectors         = this.UpdateStatVectors();
         }
         else
@@ -353,7 +384,8 @@ class Diagram extends React.Component
                     iDimension: [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer],
                     Center: [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2],
                 },
-                PointTotal: GetPointTotal(this.state.Values.length, this),
+                PointTotal: Points[0],
+                PointMin:   Points[1],
                 v2StatVectors: this.UpdateStatVectors()
             });
         }
@@ -366,7 +398,8 @@ class Diagram extends React.Component
         {
             state.iQuantity     = template.values.length;
             state.Values        = template.values;
-            state.PointLimit    = template.pntLlimit
+            state.PointLimit    = template.pntLlimit;
+            state.PointDiff    = template.pntDiff
         }
         else
         {
@@ -374,7 +407,8 @@ class Diagram extends React.Component
             {
                 iQuantity:  template.values.length,
                 Values:     template.values,
-                PointLimit: template.pntLlimit
+                PointLimit: template.pntLlimit,
+                PointDiff:  template.pntDiff
             });
         }
     };
@@ -384,10 +418,12 @@ class Diagram extends React.Component
         this.LoadTemplate(null, template);
         var Quantity    = template.values.length;
         var tempAngles  = this.UpdateAngles(Quantity);
-        
+        var Points = GetPointTotal(Quantity, this, template.values);
+
         this.setState({
             iAngles:        tempAngles,
-            PointTotal:     GetPointTotal(Quantity, this, template.values),
+            PointTotal:     Points[0],
+            PointMin:       Points[1],
             v2StatVectors:  this.UpdateStatVectors(Quantity, tempAngles, template.values)
         });
     }
@@ -428,27 +464,31 @@ class Diagram extends React.Component
     };
 
     //Update Functions
-    UpdateQuantity(props)
+    UpdateStates(props)
     {
         //vars
         var tempAngles      = this.state.iAngles;
         var Quantity        = this.state.iQuantity;
         var tempVal         = this.state.Values;
         var iIndex          = props.target.name;
-        var PointTotal      = this.state.PointTotal;
+        var Points      = [this.state.PointTotal, this.state.PointMin];
         if(props.target.name === 'Quantity')
         {
             Quantity    = parseInt(props.target.value);
             tempAngles  = this.UpdateAngles(Quantity);
-            PointTotal  = GetPointTotal(Quantity, this);
+            Points      = GetPointTotal(Quantity, this);
         }
         else if(iIndex.search('Value') > -1)
         {
             iIndex = parseInt(iIndex.replace('Value', ''));
             tempVal = this.state.Values;
-            tempVal[iIndex][1] = props.target.value;
+            //Value Range Check
+            tempVal[iIndex][1] = Coll.iAATest(props.target.value, tempVal[iIndex][2], tempVal[iIndex][3]);
 
-            PointTotal = GetPointTotal(Quantity, this, tempVal);
+            //Check Point Limit Range
+            Points = GetPointTotal(Quantity, this, tempVal);
+            if(Points[0] > this.state.PointLimit)
+            { return; }
         }
         else if(iIndex.search('Types') > -1)
         {
@@ -463,37 +503,62 @@ class Diagram extends React.Component
             {
                 iIndex  = parseInt(iIndex.replace('Min', ''));
                 iIndex2 = 2;
+                
+                //Check if min exceeds then current value or is less then zero
+                props.target.value = Coll.iAATest(props.target.value,0,tempVal[iIndex][1]);
             }
             else
             {
                 iIndex  = parseInt(iIndex.replace('Max', ''));
+
+                //Check if max is less then current value
+                props.target.value = Coll.iAATest(props.target.value,tempVal[iIndex][1]);
             }
             tempVal[iIndex][iIndex2] = props.target.value;
+            Points = GetPointTotal(Quantity, this, tempVal);
+        }
+        else if(props.target.name === 'PointDiff')
+        {
+            //update to new PointsTotal
+            if(props.target.checked)
+            { Points[0] = Points[0]-Points[1]; }
+            else
+            { Points[0] = Points[0]+Points[1]; }
+
+            this.setState({
+                PointDiff: props.target.checked,
+                PointTotal: Points[0]
+            });
+            return;
         }
 
         this.setState({
             iQuantity:      Quantity,
             v2StatVectors:  this.UpdateStatVectors(Quantity, tempAngles, tempVal),
             iAngles:        tempAngles,
-            PointTotal:     PointTotal,
+            PointTotal:     Points[0],
+            PointMin:       Points[1],
             Values:         tempVal});
     };
 
     UpdatePointLimit(props)
     {
+        //Limit Cannot be less then the minimum or the point total
+        props.target.value = Coll.iAATest(props.target.value, this.state.PointTotal);
         this.setState({PointLimit: props.target.value})
     };
 
     RandomizeStats(props)
     {
-        var tempValues = this.state.Values;
         var tempTotal = 0;
+        if(this.state.PointDiff === false){tempTotal = this.state.PointMin;}
         //Generate Random Order
-        var randOrder = [];
-        var tempOrder = [];
+        var randOrder = []; var tempOrder = [];
+
         //Compile Order
         for(var iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
         { tempOrder.push(iTRO); };
+
         //Jumble Order
         for(var iRO = 0; iRO < this.state.iQuantity; iRO++)
         {
@@ -502,31 +567,44 @@ class Diagram extends React.Component
             randOrder.push(tempOrder[tempIndex]);//Add Index
             tempOrder.splice(tempIndex, 1);//Sub Temp Index
         };
+
+        //Temporary Values
+        //Desc: set default values to minimum
+        //Note: bring this logic into the main loop later for more efficiency.
+        var tempValues = this.state.Values;
+        for(var i1=0; i1<tempValues.length; i1++)
+        {tempValues[i1][1] = tempValues[i1][2];}
+
         //Iterate through list of stats
         for(var i=0; i<this.state.iQuantity; i++)
         {
-            var tempVal = 0;
+            var iR = randOrder[i];
+            var tempVal = this.state.Values[iR][2];
 
             //Break is total is met or exceeded
-            if(tempTotal > this.state.PointLimit)
-            { tempTotal += tempVal }
-            else
+            /*if(tempTotal > this.state.PointLimit)
+            { tempTotal += tempVal; }
+            else*/
             {
-                var iR = randOrder[i];
-                var iSubRange = this.state.PointLimit - tempTotal - this.state.Values[iR][3];
-                if(iSubRange > 0){iSubRange = 0;}
-                var tempRange = (this.state.Values[iR][3] - this.state.Values[iR][2])+iSubRange;/*Max minus Min minus point limit*/
+                tempVal = tempVal[iR][2];
+                //var iSubRange = this.state.PointLimit - tempTotal - this.state.Values[iR][3];
+                //if(iSubRange > 0) {iSubRange = 0;}
 
-                tempVal = parseInt(this.state.Values[iR][2]) + Math.floor(Math.random() * (tempRange) );
+                tempVal = parseInt(tempVal[iR][2]) + Math.floor(Math.random() * (tempVal[iR][3] - tempVal[iR][2])/*MinMax*/ );
                 tempTotal += tempVal;
+
+                console.log("tempVal:",tempVal);
             }
             tempValues[iR][1]=tempVal;
         };
         this.setState({Values: tempValues});
 
+        var Points = GetPointTotal(this.state.iQuantity, this, tempValues);
+
         this.setState(
         {
-            PointTotal:     GetPointTotal(this.state.iQuantity, this, tempValues), 
+            PointTotal:     Points[0],
+            PointMin:       Points[1],
             v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, tempValues)
         });
     };
@@ -569,8 +647,9 @@ class Diagram extends React.Component
                                         PointTotal  = {this.state.PointTotal}
                                         PointLimit  = {this.state.PointLimit}
                                         Values      = {this.state.Values}
+                                        PointDiff   = {this.state.PointDiff}
                                             
-                                        UpdateQuantity  = {this.UpdateQuantity.bind(this)}
+                                        UpdateStates  = {this.UpdateStates.bind(this)}
                                         RandomizeStats  = {this.RandomizeStats.bind(this)}
                                         UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
                                     </StatInputForm>

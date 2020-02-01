@@ -4,7 +4,7 @@ import {
   Button,
   TextField,
   InputLabel,
-  Divider
+  Checkbox
 } from '@material-ui/core';
 import { Row, Col } from './Grid.js';
 //import { purple, orange, green, red } from '@material-ui/core/colors';
@@ -24,7 +24,7 @@ function StatInputForm(props) {
   
   var Update = event => {
     //Update Diagram
-    props.UpdateQuantity(event);
+    props.UpdateStates(event);
   };
 
   var statForm = function(props) {
@@ -55,7 +55,6 @@ function StatInputForm(props) {
             );
         }
         htmlForm.push(<Col name={'Row' + iRow}> {htmlBuffer} </Col>);
-        htmlForm.push(<Divider orientation='vertical' />);
       } else if (iCol === 1) {
         for (iRow = 0; iRow < rows; iRow++) {
           if (iRow < 1)
@@ -82,7 +81,6 @@ function StatInputForm(props) {
             );
         }
         htmlForm.push(<Col name={'Row' + iRow}> {htmlBuffer} </Col>);
-        htmlForm.push(<Divider orientation='vertical' />);
       } else if (iCol === 2) {
         for (iRow = 0; iRow < rows; iRow++) {
           if (iRow < 1)
@@ -150,18 +148,15 @@ function StatInputForm(props) {
 
   return (
     <div>
-      <Row name='GraphBody'>
+      <Col name='GraphBody'>
+      <Row>
         <TextField
-          //style={{display: 'flex'}}
           label='Stats'
           type='number'
           name='Quantity'
           value={props.Quantity}
           onChange={event => Update(event)}
         ></TextField>
-        <Col>
-          <InputLabel shrink> Points Spent: {props.PointTotal} </InputLabel>
-          <Row justifyContent='center'>
             <InputLabel style={{ display: 'flexBox' }}>
               {' '}
               Limit:{' '}
@@ -172,9 +167,12 @@ function StatInputForm(props) {
               value={props.PointLimit}
               onChange={event => RandomizeStats(event)}
             ></TextField>
-          </Row>
-        </Col>
       </Row>
+      <Row>
+            <Checkbox name='PointDiff' checked={props.PointDiff} onChange={event => Update(event)}/>
+            <InputLabel>Min - Points Spent: {props.PointTotal} </InputLabel>
+      </Row>
+      </Col>
       <Row>
         <Box name='FormBody' align='center'>
           {statForm(props)}

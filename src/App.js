@@ -3,9 +3,9 @@ import './App.css';
 import StatCard from './Components/StatCard';
 import NavBar from './Components/NavBar'
 import FootBar from './Components/FootBar'
-import {ThemeProvider, createMuiTheme, useMediaQuery, Box, Divider} from '@material-ui/core'
-import {blue, red} from '@material-ui/core/colors'
-import {Col, Row} from './Components/Grid'
+import {ThemeProvider, createMuiTheme, useMediaQuery, Box} from '@material-ui/core'
+import {grey} from '@material-ui/core/colors'
+import {Col} from './Components/Grid'
 
 /* ---------------------- CORE ---------------------- */
 function App() {
@@ -15,8 +15,8 @@ const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 //theme palette
 const palette = {
   type: prefersDarkMode ? 'dark' : 'light',
-  primary: blue,
-  secondary: red,
+  primary: grey,
+  secondary: grey,
 };//End of palette
 
 //Styles
@@ -27,18 +27,29 @@ const theme = createMuiTheme({
     danger: 'orange',
   },
 
+  overrides:
+  {
+    MuiCheckbox: {//This also includes the lables of the TextFields
+      '&$checked': {
+        labelStyle: {
+          color: 'white'
+        },
+        iconStyle:
+        {
+          fill: 'white'
+        }
+      }
+    },
+  },
+
   props: {
     MuiTextField:
     {
-      //TextField Props Here
-      style: {//base component props
-        backgroundColor: 'primary'
-      },
-
       inputProps: {//Contents of the TextField
         style: { textAlign: 'center' }
       },
     },
+
 
     MuiButton:
     {

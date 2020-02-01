@@ -111,6 +111,18 @@ var Deg =
 
 var Coll =
 {
+	iAATest(value, aMin, aMax=-1)
+	{
+		if((value < aMin) && aMin !== -1)
+		{
+			return aMin;
+		}
+		else if((value > aMax) && aMax !== -1)
+		{
+			return aMax;
+		};
+		return value;
+	},
     b2DAABBTest: function(aMin, aMax, bMin, bMax)
     {
         var bColliding = true;
@@ -342,6 +354,6 @@ var Coll =
         Deg.V3Normalize(A);
         return A; 
     }
-}
+};
 
 export {Vector2, Vector3, Deg, Coll, Calc};
