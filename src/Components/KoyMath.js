@@ -43,7 +43,14 @@ var Calc =
 
 	bV3Comp(A, B)				{ if((A.x === B.x)&&(A.y === B.y)&&(A.z === B.z)){return true;} return false; },
 
-	fDist(A, B)				{ return( Math.pow( (Math.pow(A.x - B.x,2) + Math.pow(A.y - B.y,2) + Math.pow(A.z - B.z,2)), (1.0/3.0) ) ); }
+	fDist(A, B)				{ return( Math.pow( (Math.pow(A.x - B.x,2) + Math.pow(A.y - B.y,2) + Math.pow(A.z - B.z,2)), (1.0/3.0) ) ); },
+	fRNG(min, max, wholeNumber = true)			
+	{ 
+		if(wholeNumber)
+		{return (Math.floor(Math.random() * (max-min)) + min+1);}
+		else
+		{return (Math.random() * (max-min) + min+1);}
+	}
 }
 
 var Deg = 

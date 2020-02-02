@@ -4,7 +4,7 @@ import StatCard from './Components/StatCard';
 import NavBar from './Components/NavBar'
 import FootBar from './Components/FootBar'
 import {ThemeProvider, createMuiTheme, useMediaQuery, Box} from '@material-ui/core'
-import {grey} from '@material-ui/core/colors'
+import {lightGreen, green} from '@material-ui/core/colors'
 import {Col} from './Components/Grid'
 
 /* ---------------------- CORE ---------------------- */
@@ -15,8 +15,8 @@ const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 //theme palette
 const palette = {
   type: prefersDarkMode ? 'dark' : 'light',
-  primary: grey,
-  secondary: grey,
+  primary: lightGreen,
+  secondary: green,
 };//End of palette
 
 //Styles
@@ -34,7 +34,6 @@ const theme = createMuiTheme({
         style: { textAlign: 'center' }
       },
     },
-
 
     MuiButton:
     {

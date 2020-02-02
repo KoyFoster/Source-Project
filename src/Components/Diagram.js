@@ -1,14 +1,24 @@
 import React from 'react';
 import { Box, Paper, Slider, MenuItem/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
-import {Vector2,  Coll} from './KoyMath.js';
+import {Vector2,  Coll, Calc} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
 import {Row, Col} from './Grid'
 import TemplateSelector from './TemplateSelector'
+import {Link} from 'react-router-dom'
 
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
 const edgeSpacer=128;
 const iBaseSize = 256;
+const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
+
+
+var IsUnit = function(UnitType)
+{ 
+    var temp = 'X'; 
+    temp = UnitType.toUpperCase();
+    return sUnitTypes.includes(temp);
+}
 
 //Grade Function
 var gradeCalc = function(index, Values)
@@ -149,7 +159,7 @@ var SetupTextAndTicks = function(Comp)
 
         //Letter Grades
         htmlResult.push(
-        <text name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}} 
+        <text name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}}
             x={gradeCenter[0]} y={gradeCenter[1]}
             transform={'rotate('+Comp.state.iAngles[i]+', '+(Comp.state.WinInfo.Center[0])+','+(Comp.state.WinInfo.Center[1])+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')'} > 
             {
@@ -203,21 +213,29 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
             //push additional elements if change in size exceeds current size
             if(arrDiff > 0)
             {
-                console.log('Push more items');
-                Comp.state.Values.push(['???',0,0,10]);
+                Comp.state.Values.push(['???',0,0,10,'']);
                 arrDiff--;
             };
             if(Values === 0)
             {
-                PointTotal  += parseInt(Comp.state.Values[iI][1]);
-                PointMin    += parseInt(Comp.state.Values[iI][2]);
-                PointMax    += parseInt(Comp.state.Values[iI][3]);
+                //Only Include Only Point Defined Stats
+                if(IsUnit(Comp.state.Values[iI][4]))
+                {
+                    PointTotal  += parseInt(Comp.state.Values[iI][1]);
+                    PointMin    += parseInt(Comp.state.Values[iI][2]);
+                    PointMax    += parseInt(Comp.state.Values[iI][3]);
+                }
             }
             else
             {
-                PointTotal  += parseInt(Values[iI][1]);
-                PointMin    += parseInt(Values[iI][2]);
-                PointMax    += parseInt(Values[iI][3]);
+                //Only Include Only Point Defined Stats
+                //console.log(iI,'-',Values[iI][4]);
+                if(IsUnit(Values[iI][4]))
+                {
+                    PointTotal  += parseInt(Values[iI][1]);
+                    PointMin    += parseInt(Values[iI][2]);
+                    PointMax    += parseInt(Values[iI][3]);
+                }
             };
     };
     //check if new entry causes the point limit to be exceeded
@@ -238,19 +256,22 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
     if(Comp.state.PointDiff){PointTotal -= PointMin;}
     return [PointTotal, PointMin, PointMax];
 };
+
 var GetPointMax = function(Quantity, Comp, Values = 0)
 {
     var PointMax    = 0;
     for(var iI; iI < Quantity; iI++)
     {
-            if(Values === 0)
-            {
-                PointMax    += parseInt(Comp.state.Values[iI][3]);
-            }
-            else
-            {
-                PointMax    += parseInt(Values[iI][3]);
-            };
+        if(Values === 0)
+        {
+            if(IsUnit(Values[iI][4]))
+            {PointMax    += parseInt(Comp.state.Values[iI][3]);}
+        }
+        else
+        {
+            if(IsUnit(Values[iI][4]))
+            {PointMax    += parseInt(Values[iI][3]);}
+        };
     };
     return PointMax;
 };
@@ -265,20 +286,20 @@ const defaultTemplates = [
     },*/
     {
         label:      'Jojo',
-        values:     [['POWER',3.0,1,10], ['SPEED',4.0,1,10,''], ['RANGE',4.0,1,10,''], ['DURABILITY',8.0,1,10,''], ['PRECISION',4.0,1,10,''], ['POTENTIAL',2.0,1,10,'']],
+        values:     [['POWER',3.0,1,10,'LVL'], ['SPEED',4.0,1,10,''], ['RANGE',4.0,1,10,''], ['DURABILITY',8.0,1,10,''], ['PRECISION',4.0,1,10,''], ['POTENTIAL',2.0,1,10,'']],
         pntLlimit:  60,
         pntDiff: false
     },
     {
         label:  'Dark Souls III',
-        values: [['Vigor',15,1,100],['Attunement',10,1,100,''],['Endurance',15,1,100,''], ['Vitality',15,1,100,''],['Strength',20,1,100,''],['Dexterity',18,1,100,''], ['Intelligence',10,1,100,''],['Faith',10,1,100,''],['Luck',10,1,100,''], ['Hollowing',100,1,100,'X']],
-        pntLlimit: 999,
+        values: [['Vigor',15,1,100,'LVL'],['Attunement',10,1,100,''],['Endurance',15,1,100,''], ['Vitality',15,1,100,''],['Strength',20,1,100,''],['Dexterity',18,1,100,''], ['Intelligence',10,1,100,''],['Faith',10,1,100,''],['Luck',10,1,100,''], ['Hollowing',100,1,100,'X']],
+        pntLlimit: 802,
         pntDiff: true
         //key: ''+values|pntLlimit+''
     },
     {
         label:  'ArcheAge',
-        values: [['Strength',158,158,2560],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
+        values: [['Strength',158,158,2560,'PNT'],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
         pntLlimit: 2560,
         pntDiff: false
     }
@@ -292,7 +313,6 @@ function compileMenuItems()
     {
         result.push(<MenuItem value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
     }
-
     return result;
 }
 const tmplMenuItems = compileMenuItems();
@@ -354,7 +374,7 @@ class Diagram extends React.Component
         this.LoadTemplate(this.state, defaultTemplates[iDefTmpl]);
         this.Initialize(this.state);
         //this.UpdateViewPort = this.UpdateViewPort.bind(this);
-    };
+    }
 
     //Calculate Offsets once per rezise
     CalcOffset(state=null, event=null)
@@ -377,7 +397,7 @@ class Diagram extends React.Component
                 iGrade: grade * scale
             }})
         }
-    };
+    }
 
     //Load States
     Initialize(state=null)
@@ -410,7 +430,7 @@ class Diagram extends React.Component
                 v2StatVectors: this.UpdateStatVectors()
             });
         }
-    };
+    }
 
     LoadTemplate(state = null, template = defaultTemplates[0])
     {
@@ -432,7 +452,7 @@ class Diagram extends React.Component
                 PointDiff:  template.pntDiff
             });
         }
-    };
+    }
 
     OnTemplateChange(template)
     {
@@ -450,19 +470,34 @@ class Diagram extends React.Component
         });
     }
 
-
-
     //Setup Listener Events
     componentDidMount() 
     {
         //window.addEventListener('resize', this.UpdateViewPort);
+        var userDefined = this.props.location.pathname.replace('/','');
+        userDefined = this.ParseStringAsStatCard(userDefined);
 
-        //console.log('Search:',this.props.location);
-    };
+        if(userDefined !== '')
+        {
+            var tempAngles  = this.UpdateAngles(userDefined.length);
+            var Points      = GetPointTotal(userDefined.length, this);
+            var tempVectors = this.UpdateStatVectors(userDefined.length, tempAngles, userDefined);
+            this.setState({
+                Values:     userDefined,
+                iQuantity: userDefined.length,
+                iAngles:    tempAngles,
+                v2StatVectors: tempVectors,
+                PointTotal: Points[0],
+                PointMin:   Points[1],
+                PointMax:   Points[2],
+            });
+        }
+    }
+
     componentWillUnmount()
     {
         //window.removeEventListener('resize', this.UpdateViewPort);
-    };
+    }
 
     UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, iDrawScale=this.state.WinInfo.iDrawScale)
     {
@@ -474,7 +509,7 @@ class Diagram extends React.Component
             tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i][1] * (1/Values[i][3])*iDrawScale) ), new Vector2(0,0), Angles[i]));
         };
         return tempVectors;
-    };
+    }
 
     UpdateAngles(Quantity = this.state.iQuantity)
     {
@@ -483,7 +518,7 @@ class Diagram extends React.Component
         for(var i=0; i<Quantity; i++)
         { tempArr.push(i*iSlice); };
         return tempArr;
-    };
+    }
 
     //Update Functions
     UpdateStates(props)
@@ -554,6 +589,17 @@ class Diagram extends React.Component
             });
             return;
         }
+        else if(iIndex.search('Unit') > -1)
+        {
+            iIndex = parseInt(iIndex.replace('Unit', ''));
+            tempVal = this.state.Values;
+            tempVal[iIndex][4] = props.target.value;
+
+            //Check Point Limit Range
+            Points = GetPointTotal(Quantity, this, tempVal);
+            if(Points[0] > this.state.PointLimit)
+            { return; }
+        }
 
         this.setState({
             iQuantity:      Quantity,
@@ -563,121 +609,47 @@ class Diagram extends React.Component
             PointMin:       Points[1],
             PointMax:       Points[2],
             Values:         tempVal});
-    };
+    }
 
     UpdatePointLimit(props)
     {
         //Limit Cannot be less then the minimum or the point total
         props.target.value = Coll.iAATest(parseInt(props.target.value), this.state.PointTotal);
         this.setState({PointLimit: props.target.value})
-    };
+    }
 
     RandomizeStats(props)
     {
         //Generate Random Order
-        var randOrder = []; var tempOrder = [];
+        var randOrder = [];
+        {//Creating scope here to clear 'tempOrder' when finished
+            var tempOrder = [];
+
             //Compile Order
             for(var iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
-            { tempOrder.push(iTRO); };
-                //Random Order
-                for(var iRO = 0; iRO < this.state.iQuantity; iRO++)
-                {
-                    var tempIndex = Math.floor(Math.random()*(tempOrder.length));
-                    randOrder.push(tempOrder[tempIndex]);//Add Index
-                    tempOrder.splice(tempIndex, 1);//Sub Temp Index
-                };
+            { 
+                if(IsUnit(this.state.Values[iTRO][4]))
+                {tempOrder.push(iTRO);}
+            };
+            
+            //Random Order
+            var iSize = tempOrder.length;
+            for(var iRO = 0; iRO < iSize; iRO++)
+            {
+                var randIndex = Math.floor(Math.random()*(tempOrder.length));
 
-        //Values Buffer
-        //Desc: set default values to minimum
-        //Note: bring this logic into the main loop later for more efficiency.
-        var valuesBuffer = this.state.Values;
-        for(var i1=0; i1<valuesBuffer.length; i1++)
-        {valuesBuffer[i1][1] = valuesBuffer[i1][2];}
+                randOrder.push(tempOrder[randIndex]);//Add Index
 
-        //Total Buffer
-        var totalBuffer = this.state.PointMin;
-        if((this.state.PointLimit >= this.state.PointMax) || (this.state.PointMax === this.state.PointMin))
-        {
-            totalBuffer = 0;
+                tempOrder.splice(randIndex, 1);//Sub Temp Index
+            };
         }
 
-        //Iterate through list of stats
-        var iProcs = 0;
-        for(var i=0; totalBuffer <= this.state.PointMax; i++)
+        //Loop Through Random Order
+        var valuesBuffer = this.state.Values;
+        for(var i = 0; i < randOrder.length; i++)
         {
-            //Random Order
-            var iR = randOrder[i];
-
-            //Limit is equal to max points then max out each stat
-            if((this.state.PointLimit >= this.state.PointMax) || (this.state.PointMax === this.state.PointMin))
-            {
-                //console.log('(',this.state.PointLimit,' >= ',this.state.PointMax,') || (',this.state.PointMax,' === ',this.state.PointMin,')');
-                totalBuffer         +=  valuesBuffer[iR][3];
-                valuesBuffer[iR][1] =   valuesBuffer[iR][3];
-                continue;
-            };
-
-            //Emergency Break
-            if(iProcs >= 30/*valuesBuffer.length*/){console.log('E-break'); break;}
-            //Reiterate
-            if(i >= valuesBuffer.length-1)
-            {i=0;}
-
-            //min and max of randomized values
-            var min = valuesBuffer[iR][1];
-            var max = valuesBuffer[iR][3];
-            
-            /*Continue if min and max are the same */
-            if(min === max){ iProcs++; continue; }
-
-            //On every loop, subtract min value from total
-            totalBuffer -= min;
-
-            if(max > this.state.PointMax)
-            {
-               //console.log('max:'.max,'PointMax:',this.state.PointMax);
-               max = this.state.PointMax;
-            };
-            if(max > valuesBuffer[iR][3])
-            {
-                //console.log('max:'.max,'valuesBuffer:',valuesBuffer[iR][3]);
-                max = valuesBuffer[iR][3];
-            };
-            if(max > this.state.PointLimit - totalBuffer)
-            {
-                //console.log('max:',max,'this.state.PointLimit - totalBuffer:',this.state.PointLimit - totalBuffer);
-                max = this.state.PointLimit - totalBuffer; 
-            };
-
-            //Generate Random Value
-            var tempVal = 0;
-            if(min < max)
-            {
-                tempVal = (Math.floor(Math.random() * (max-min)) + min+1);
-                //console.log('+iR:',iR,'min:',min,'max:',max,'totalBuffer:',totalBuffer,'tempVal:',tempVal);
-            }
-            else if(min > max)
-            {
-                tempVal = min;
-                //console.log('-iR:',iR,'min:',min,'max:',max,'totalBuffer:',totalBuffer,'tempVal:',tempVal);
-                iProcs++;
-            }
-
-            totalBuffer += tempVal;
-            if(totalBuffer > this.state.PointLimit)
-            {
-                var iDiff = this.state.PointLimit - totalBuffer;
-                totalBuffer += iDiff;
-                //tempVal += iDiff;
-                //console.log('totalBuffer:',totalBuffer,'tempVal:',tempVal);
-                break;
-            };
-
-            //Save Value
-            valuesBuffer[iR][1]=tempVal;
+            valuesBuffer[randOrder[i]][1] = Calc.fRNG(valuesBuffer[randOrder[i]][2], valuesBuffer[randOrder[i]][3]);
         };
-
-        //console.log('2. totalBuffer:',totalBuffer);
 
         this.setState({Values: valuesBuffer});
 
@@ -690,7 +662,7 @@ class Diagram extends React.Component
             PointMax:       Points[2],
             v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, valuesBuffer)
         });
-    };
+    }
     
     //Just Update
     UpdateViewPort(Scale=null)
@@ -712,11 +684,97 @@ class Diagram extends React.Component
             },
             v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values, tempDrawScale)
         });
-    };
+    }
 
     OnSliderChange(Scale) {
        this.UpdateViewPort(Scale);
-    };
+    }
+
+    GetStatCardAsString()
+    {
+        var sResult = '';
+        for(var x=0;x<this.state.Values.length;x++)
+        {
+            var xBuffer = '';
+            for(var y=0;y<5;y++)
+            {
+                var yBuffer = this.state.Values[x][y];
+                /*if(y === 0 || y === 4)
+                {
+                    xBuffer += '\''+yBuffer+'\''+',';
+                }
+                else*/
+                {
+                    xBuffer += yBuffer+',';
+                }
+            }
+            sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
+        }
+        return <Link to={`/${sResult}`}>{sResult}</Link>;
+    }
+
+    ParseStringAsStatCard(value)
+    {
+        //Break String Down Into Objects
+        var superElement = [];
+        var element = [];
+        var subElement = '';
+        var bToggle = false;
+        var iElement = 1;
+        var bSuccess = false;
+        for(var i = 0; i < value.length; i++)
+        {
+            if(value[i] === '[')//element start
+            {
+                subElement = '';//clear sub element
+                iElement = 1;
+                continue;
+            }
+            else if(value[i] === ']')//element end
+            {
+                //1. push sub element
+                var buffer = subElement;                
+                if(iElement !== 1 && iElement !== 5)
+                {
+                    buffer = parseInt(buffer);
+                }
+                element.push(buffer);
+
+                //2. push element
+                superElement.push(element);
+                element = [];//clear sub element
+
+                iElement++;
+
+                bSuccess = true;
+
+                continue;
+            }
+            else if(value[i] === ',')//sub element end/start: at the point a full sub element should have been compiled
+            {
+                //push sub element
+                var buffer = subElement;                
+                if(iElement !== 1 && iElement !== 5)
+                {
+                    buffer = parseInt(buffer);
+                }
+                element.push(buffer);//push sub element
+
+                subElement = '';//clear sub element
+                iElement++;
+
+                continue;
+            }
+            subElement += value[i];
+        }
+
+        if(bSuccess === false)
+        {
+            return '';
+        }
+
+        return superElement;
+    }
 
     render(){
         return(
@@ -728,6 +786,8 @@ class Diagram extends React.Component
                                     <StatInputForm
                                         Quantity    = {this.state.iQuantity}
                                         PointTotal  = {this.state.PointTotal}
+                                        PointMin    = {this.state.PointMin}
+                                        PointMax    = {this.state.PointMax}
                                         PointLimit  = {this.state.PointLimit}
                                         Values      = {this.state.Values}
                                         PointDiff   = {this.state.PointDiff}
@@ -745,6 +805,7 @@ class Diagram extends React.Component
                                 </ScaleSlider>
                             </Paper>
                             <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'row'}}>
+                            {this.GetStatCardAsString()}
 
                                 <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
                                     <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
@@ -754,7 +815,7 @@ class Diagram extends React.Component
                                             <stop offset='1' stopColor='lightBlue'/>
                                         </linearGradient>
                                     </defs>
-                                    {<polygon points={SetupDiagram(this)} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth, fillRule: 'evenodd'}} />}
+                                    {<polygon points={SetupDiagram(this)} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*2, fillRule: 'evenodd'}} />}
                                     {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{fillOpacity: 0.66, stroke: 'red', strokeWidth: 0, fillRule: 'evenodd'}} />}
                                     {SetupTextAndTicks(this)}
                                 </svg>
