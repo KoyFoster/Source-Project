@@ -4,7 +4,8 @@ import {Vector2,  Coll, Calc} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
 import {Row, Col} from './Grid'
 import TemplateSelector from './TemplateSelector'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
+import StatCode from './StatCode'
 
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
@@ -297,12 +298,12 @@ const defaultTemplates = [
         pntDiff: true
         //key: ''+values|pntLlimit+''
     },
-    {
+    /*{
         label:  'ArcheAge',
         values: [['Strength',158,158,2560,'PNT'],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
         pntLlimit: 2560,
         pntDiff: false
-    }
+    }*/
 ];
 
 function compileMenuItems()
@@ -344,6 +345,7 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
+                Update: false,
                 iQuantity:  0,
                 iAngles:    [0],
                 PointTotal: 0,
@@ -690,8 +692,10 @@ class Diagram extends React.Component
        this.UpdateViewPort(Scale);
     }
 
-    GetStatCardAsString()
+    GetURLCode()
     {
+        //if(!this.state.bUpdateUrl){return '';}
+
         var sResult = '';
         for(var x=0;x<this.state.Values.length;x++)
         {
@@ -710,7 +714,7 @@ class Diagram extends React.Component
             }
             sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
         }
-        return <Link to={`/${sResult}`}>{sResult}</Link>;
+        return 'koyfoster.github.io/'+sResult;
     }
 
     ParseStringAsStatCard(value)
@@ -797,6 +801,7 @@ class Diagram extends React.Component
                                         UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
                                     </StatInputForm>
                                 </Paper>
+                                <StatCode width='320px' code={this.GetURLCode()}></StatCode>
                             </Col>
                             <Paper style={{height: 442, margin: '4px 0px 4px 0px', padding: '8px 4px 8px 0px', display: 'flex', }}>
                                 <ScaleSlider
@@ -805,8 +810,6 @@ class Diagram extends React.Component
                                 </ScaleSlider>
                             </Paper>
                             <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'row'}}>
-                            {this.GetStatCardAsString()}
-
                                 <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
                                     <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
                                     <defs>
@@ -821,7 +824,6 @@ class Diagram extends React.Component
                                 </svg>
                             </Paper>
                         </Row>
-                        {/*<StatCode></StatCode>*/}
             </Box>
         );
     }

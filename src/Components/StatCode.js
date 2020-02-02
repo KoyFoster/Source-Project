@@ -17,14 +17,11 @@ class StatCode extends React.Component
         document.execCommand("copy")
     };
 
-    render(){return(<Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'row'}}>
+    render(){return(<Paper style={{width: this.props.width, margin: 4, padding: 4, display: 'flex', flexDirection: 'row'}}>
 
             <Button style={{width: "128px"}} onClick={() => this.copyCodeToClipboard()}>Copy Code</Button>
 
-            <TextField style={{display: "flex"}}>
-            </TextField>
-
-                <textarea ref={(textarea) => this.textArea = textarea} value="Example copy for the textarea."/>>
+                <textarea ref={(textarea) => this.textArea = textarea} value={this.props.code}/>
 
         </Paper>)}
 };
