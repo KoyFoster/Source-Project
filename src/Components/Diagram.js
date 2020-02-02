@@ -252,12 +252,11 @@ var GetPointMax = function(Quantity, Comp, Values = 0)
                 PointMax    += parseInt(Values[iI][3]);
             };
     };
-
     return PointMax;
 };
 
 //templates
-const iDefTmpl = 0;
+const iDefTmpl = 1;
 const defaultTemplates = [
     /*{
         label:  'Empty',
@@ -266,20 +265,20 @@ const defaultTemplates = [
     },*/
     {
         label:      'Jojo',
-        values:     [['POWER',3.0,1,10], ['SPEED',4.0,1,10], ['RANGE',4.0,1,10], ['DURABILITY',8.0,1,10], ['PRECISION',4.0,1,10], ['POTENTIAL',2.0,1,10]],
+        values:     [['POWER',3.0,1,10], ['SPEED',4.0,1,10,''], ['RANGE',4.0,1,10,''], ['DURABILITY',8.0,1,10,''], ['PRECISION',4.0,1,10,''], ['POTENTIAL',2.0,1,10,'']],
         pntLlimit:  60,
         pntDiff: false
     },
     {
         label:  'Dark Souls III',
-        values: [['Vigor',15,1,100],['Attunement',10,1,100],['Endurance',15,1,100], ['Vitality',15,1,100],['Strength',20,1,100],['Dexterity',18,1,100], ['Intelligence',10,1,100],['Faith',10,1,100],['Luck',10,1,100], ['Hollowing',100,1,100]],
+        values: [['Vigor',15,1,100],['Attunement',10,1,100,''],['Endurance',15,1,100,''], ['Vitality',15,1,100,''],['Strength',20,1,100,''],['Dexterity',18,1,100,''], ['Intelligence',10,1,100,''],['Faith',10,1,100,''],['Luck',10,1,100,''], ['Hollowing',100,1,100,'X']],
         pntLlimit: 999,
         pntDiff: true
         //key: ''+values|pntLlimit+''
     },
     {
         label:  'ArcheAge',
-        values: [['Strength',158,158,2560],['Agility',158,158,2560],['Stamina',158,158,2560],['Spirit',158,158,2560],['Intelligence',158,158,2560], ['Cast Time',10,0,100],['Attack Speed',10,0,100],['Move Speed',5.4,5.4,10]],
+        values: [['Strength',158,158,2560],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
         pntLlimit: 2560,
         pntDiff: false
     }
@@ -307,9 +306,9 @@ function ScaleSlider(props) {
     //Render
     return(<div>
     <Slider name='graphScale' min={iBaseSize/2} max={iBaseSize}
-        marks       =   {[{value: iBaseSize*0.5, label: iBaseSize*0.5},{value: iBaseSize*0.75, label: iBaseSize*0.75},{value: iBaseSize, label: iBaseSize}]}
-        defaultValue       =   {props.Scale}
-        valueLabelDisplay="auto"
+        marks               =   {[{value: iBaseSize*0.5, label: iBaseSize*0.5},{value: iBaseSize*0.75, label: iBaseSize*0.75},{value: iBaseSize, label: iBaseSize}]}
+        defaultValue        =   {props.Scale}
+        valueLabelDisplay   =   "auto"
         
         onChangeCommitted =   {OnSliderChange}
         orientation =   'vertical'>
@@ -332,7 +331,7 @@ class Diagram extends React.Component
                 PointDiff: false,//Wether or not to take the difference between PointTotal and Minimum Required Stats
                 v2StatVectors:  [],
                 //User Defined
-                Values:     [['',0,0,0]],
+                Values:     [['',0,0,0,'']],
                 PointLimit: 0,
             
                 //Window Dimensions Window Center
@@ -458,7 +457,7 @@ class Diagram extends React.Component
     {
         //window.addEventListener('resize', this.UpdateViewPort);
 
-        console.log('Search:',this.props.location);
+        //console.log('Search:',this.props.location);
     };
     componentWillUnmount()
     {
@@ -490,11 +489,11 @@ class Diagram extends React.Component
     UpdateStates(props)
     {
         //vars
-        var tempAngles      = this.state.iAngles;
-        var Quantity        = this.state.iQuantity;
-        var tempVal         = this.state.Values;
-        var iIndex          = props.target.name;
-        var Points      = [this.state.PointTotal, this.state.PointMin];
+        var tempAngles  = this.state.iAngles;
+        var Quantity    = this.state.iQuantity;
+        var tempVal     = this.state.Values;
+        var iIndex      = props.target.name;
+        var Points      = [this.state.PointTotal, this.state.PointMin, this.state.PointMax];
         if(props.target.name === 'Quantity')
         {
             Quantity    = parseInt(props.target.value);
@@ -506,7 +505,7 @@ class Diagram extends React.Component
             iIndex = parseInt(iIndex.replace('Value', ''));
             tempVal = this.state.Values;
             //Value Range Check
-            tempVal[iIndex][1] = Coll.iAATest(props.target.value, tempVal[iIndex][2], tempVal[iIndex][3]);
+            tempVal[iIndex][1] = Coll.iAATest(parseInt(props.target.value), tempVal[iIndex][2], tempVal[iIndex][3]);
 
             //Check Point Limit Range
             Points = GetPointTotal(Quantity, this, tempVal);
@@ -528,16 +527,17 @@ class Diagram extends React.Component
                 iIndex2 = 2;
                 
                 //Check if min exceeds then current value or is less then zero
-                props.target.value = Coll.iAATest(props.target.value,0,tempVal[iIndex][1]);
+                props.target.value = Coll.iAATest(parseInt(props.target.value),0,tempVal[iIndex][1]);
             }
             else
             {
                 iIndex  = parseInt(iIndex.replace('Max', ''));
 
                 //Check if max is less then current value
-                props.target.value = Coll.iAATest(props.target.value,tempVal[iIndex][1]);
+                props.target.value = Coll.iAATest(parseInt(props.target.value),tempVal[iIndex][1]);
+                Points[2] = GetPointMax(Quantity,this,props.target.value);
             }
-            tempVal[iIndex][iIndex2] = props.target.value;
+            tempVal[iIndex][iIndex2] = parseInt(props.target.value);
             Points = GetPointTotal(Quantity, this, tempVal);
         }
         else if(props.target.name === 'PointDiff')
@@ -568,7 +568,7 @@ class Diagram extends React.Component
     UpdatePointLimit(props)
     {
         //Limit Cannot be less then the minimum or the point total
-        props.target.value = Coll.iAATest(props.target.value, this.state.PointTotal);
+        props.target.value = Coll.iAATest(parseInt(props.target.value), this.state.PointTotal);
         this.setState({PointLimit: props.target.value})
     };
 
@@ -595,43 +595,71 @@ class Diagram extends React.Component
         {valuesBuffer[i1][1] = valuesBuffer[i1][2];}
 
         //Total Buffer
-        var totalBuffer = 0;
-        if(this.state.PointDiff === false){totalBuffer = this.state.PointMin;}
+        var totalBuffer = this.state.PointMin;
+        if((this.state.PointLimit >= this.state.PointMax) || (this.state.PointMax === this.state.PointMin))
+        {
+            totalBuffer = 0;
+        }
 
         //Iterate through list of stats
         var iProcs = 0;
-        for(var i=0; totalBuffer < this.state.PointLimit; i++)
+        for(var i=0; totalBuffer <= this.state.PointMax; i++)
         {
-            console.log('i:',i);
+            //Random Order
             var iR = randOrder[i];
 
-            var min = valuesBuffer[iR][1]; 
+            //Limit is equal to max points then max out each stat
+            if((this.state.PointLimit >= this.state.PointMax) || (this.state.PointMax === this.state.PointMin))
+            {
+                //console.log('(',this.state.PointLimit,' >= ',this.state.PointMax,') || (',this.state.PointMax,' === ',this.state.PointMin,')');
+                totalBuffer         +=  valuesBuffer[iR][3];
+                valuesBuffer[iR][1] =   valuesBuffer[iR][3];
+                continue;
+            };
+
+            //Emergency Break
+            if(iProcs >= 30/*valuesBuffer.length*/){console.log('E-break'); break;}
+            //Reiterate
+            if(i >= valuesBuffer.length-1)
+            {i=0;}
+
+            //min and max of randomized values
+            var min = valuesBuffer[iR][1];
             var max = valuesBuffer[iR][3];
+            
+            /*Continue if min and max are the same */
+            if(min === max){ iProcs++; continue; }
+
+            //On every loop, subtract min value from total
+            totalBuffer -= min;
 
             if(max > this.state.PointMax)
             {
-               console.log('max:'.max,'PointMax:',this.state.PointMax);
+               //console.log('max:'.max,'PointMax:',this.state.PointMax);
                max = this.state.PointMax;
-            }
+            };
             if(max > valuesBuffer[iR][3])
             {
-                console.log('max:'.max,'valuesBuffer:',valuesBuffer[iR][3]);
+                //console.log('max:'.max,'valuesBuffer:',valuesBuffer[iR][3]);
                 max = valuesBuffer[iR][3];
-            }
+            };
             if(max > this.state.PointLimit - totalBuffer)
-            { 
-                console.log('max:',max,'this.state.PointLimit - totalBuffer:',this.state.PointLimit - totalBuffer);
+            {
+                //console.log('max:',max,'this.state.PointLimit - totalBuffer:',this.state.PointLimit - totalBuffer);
                 max = this.state.PointLimit - totalBuffer; 
-            }
+            };
 
             //Generate Random Value
             var tempVal = 0;
             if(min < max)
-            {tempVal = (Math.floor(Math.random() * (max-min)) + min+1);}
-            else
             {
-                console.log('iR:',iR,'min:',min,'max:',max);
+                tempVal = (Math.floor(Math.random() * (max-min)) + min+1);
+                //console.log('+iR:',iR,'min:',min,'max:',max,'totalBuffer:',totalBuffer,'tempVal:',tempVal);
+            }
+            else if(min > max)
+            {
                 tempVal = min;
+                //console.log('-iR:',iR,'min:',min,'max:',max,'totalBuffer:',totalBuffer,'tempVal:',tempVal);
                 iProcs++;
             }
 
@@ -640,22 +668,16 @@ class Diagram extends React.Component
             {
                 var iDiff = this.state.PointLimit - totalBuffer;
                 totalBuffer += iDiff;
-                tempVal += iDiff;
-                console.log('totalBuffer:',totalBuffer,'tempVal:',tempVal);
+                //tempVal += iDiff;
+                //console.log('totalBuffer:',totalBuffer,'tempVal:',tempVal);
                 break;
-            }
+            };
 
             //Save Value
             valuesBuffer[iR][1]=tempVal;
-
-            //Reiterate
-            if(i >= valuesBuffer.length-1)
-            {i=-1; totalBuffer=0;}
-
-            //Emergency Break
-            if(iProcs > valuesBuffer.length){break;}
         };
-        console.log('2. totalBuffer:'|totalBuffer)
+
+        //console.log('2. totalBuffer:',totalBuffer);
 
         this.setState({Values: valuesBuffer});
 

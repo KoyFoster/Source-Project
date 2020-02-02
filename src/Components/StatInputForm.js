@@ -30,7 +30,7 @@ function StatInputForm(props) {
   var statForm = function(props) {
     var htmlForm = [];
     var rows = props.Quantity;
-    for (var iCol = 0; iCol < 4; iCol++) {
+    for (var iCol = 0; iCol < 5; iCol++) {
       var htmlBuffer = [];
       var iRow = 0;
       if (iCol === 0) {
@@ -133,7 +133,32 @@ function StatInputForm(props) {
             );
         }
         htmlForm.push(<Col name={'Row' + iRow}> {htmlBuffer} </Col>);
-      }
+      }//End of column 3 
+      else if (iCol === 4) {
+        for (iRow = 0; iRow < rows; iRow++) {
+          if (iRow < 1)
+            //Run if else cases if iRow is not negative
+            htmlBuffer.push(
+              <TextField
+                label='Unit'
+                name={'Unit' + iRow}
+                value={props.Values[iRow][4]}
+                onChange={event => Update(event)}
+                style={{width: '32px'}}
+              ></TextField>
+            );
+          else
+            htmlBuffer.push(
+              <TextField
+                name={'Unit' + iRow}
+                value={props.Values[iRow][4]}
+                onChange={event => Update(event)}
+                style={{width: '32px'}}
+              ></TextField>
+            );
+        }
+        htmlForm.push(<Col name={'Row' + iRow}> {htmlBuffer} </Col>);
+      }//End of column 4
     }
     return (
       <Col>

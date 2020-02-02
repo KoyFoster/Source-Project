@@ -27,21 +27,6 @@ const theme = createMuiTheme({
     danger: 'orange',
   },
 
-  overrides:
-  {
-    MuiCheckbox: {//This also includes the lables of the TextFields
-      '&$checked': {
-        labelStyle: {
-          color: 'white'
-        },
-        iconStyle:
-        {
-          fill: 'white'
-        }
-      }
-    },
-  },
-
   props: {
     MuiTextField:
     {
