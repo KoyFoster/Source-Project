@@ -530,6 +530,10 @@ class Diagram extends React.Component
         var tempVal     = this.state.Values;
         var iIndex      = props.target.name;
         var Points      = [this.state.PointTotal, this.state.PointMin, this.state.PointMax];
+        console.log('tempVal:',tempVal);
+        console.log('props:',props);
+        console.log('iIndex:',iIndex);
+
         if(props.target.name === 'Quantity')
         {
             Quantity    = parseInt(props.target.value);
@@ -538,7 +542,7 @@ class Diagram extends React.Component
         }
         else if(iIndex.search('Value') > -1)
         {
-            iIndex = parseInt(iIndex.replace('Value', ''));
+            iIndex = parseInt(iIndex.replace('Value_(', '')[0]);
             tempVal = this.state.Values;
             //Value Range Check
             tempVal[iIndex][1] = Coll.iAATest(parseInt(props.target.value), tempVal[iIndex][2], tempVal[iIndex][3]);
@@ -550,24 +554,25 @@ class Diagram extends React.Component
         }
         else if(iIndex.search('Types') > -1)
         {
-            iIndex = parseInt(iIndex.replace('Types', ''));
+            iIndex = parseInt(iIndex.replace('Types_(', '')[0]);
             tempVal[iIndex][0] = props.target.value;
         }
         else if(iIndex.search('Ranges') > -1)
         {
-            iIndex = iIndex.replace('Ranges', '');
+            iIndex = iIndex.replace('Ranges_(', '');
             var iIndex2 = 3;
             if(iIndex.search('Min') > -1)
             {
-                iIndex  = parseInt(iIndex.replace('Min', ''));
+                iIndex  = parseInt(iIndex.replace('Min_(', '')[0]);
                 iIndex2 = 2;
                 
                 //Check if min exceeds then current value or is less then zero
+                console.log('iIndex:',iIndex);
                 props.target.value = Coll.iAATest(parseInt(props.target.value),0,tempVal[iIndex][1]);
             }
             else
             {
-                iIndex  = parseInt(iIndex.replace('Max', ''));
+                iIndex  = parseInt(iIndex.replace('Max_(', '')[0]);
 
                 //Check if max is less then current value
                 props.target.value = Coll.iAATest(parseInt(props.target.value),tempVal[iIndex][1]);
@@ -592,7 +597,7 @@ class Diagram extends React.Component
         }
         else if(iIndex.search('Unit') > -1)
         {
-            iIndex = parseInt(iIndex.replace('Unit', ''));
+            iIndex = parseInt(iIndex.replace('Unit_(', '')[0]);
             tempVal = this.state.Values;
             tempVal[iIndex][4] = props.target.value;
 

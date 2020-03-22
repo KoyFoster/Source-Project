@@ -9,6 +9,7 @@ import {
 import { Row, Col } from "./DivGrid.js";
 //import { purple, orange, green, red } from '@material-ui/core/colors';
 import "../App.css";
+import Grid from './Forms/Grid';
 
 //User Input Class
 function StatInputForm(props) {
@@ -24,166 +25,6 @@ function StatInputForm(props) {
   var Update = event => {
     //Update Diagram
     props.UpdateStates(event);
-  };
-
-  var statForm = function(props) {
-    var htmlForm = [];
-    var rows = props.Quantity;
-    for (var iCol = 0; iCol < 5; iCol++) {
-      var htmlBuffer = [];
-      var iRow = 0;
-      if (iCol === 0) {
-        for (iRow = 0; iRow <= rows; iRow++) {
-          if (iRow < 1)
-            //Run if else cases if iRow is not negative
-            htmlBuffer.push(
-              <TextField
-                label="Stat"
-                name={"Types" + iRow}
-                value={props.Values[iRow][0]}
-                onChange={event => Update(event)}
-              ></TextField>
-            );
-          else if (iRow !== rows) {
-            htmlBuffer.push( <TextField name={"Types" + iRow} value={props.Values[iRow][0]} onChange={event => Update(event)}></TextField>);
-          } //Last Row
-          else {
-            htmlBuffer.push(<TextField name={'T'+iCol} value={"Totals"} disabled></TextField>);
-          }
-        }
-        htmlForm.push(<Col name={"Row" + iRow}> {htmlBuffer} </Col>);
-      } else if (iCol === 1) {
-        for (iRow = 0; iRow <= rows; iRow++) {
-          if (iRow < 1) {
-            //Run if else cases if iRow is not negative
-            htmlBuffer.push(
-              <TextField
-                label="Value"
-                type="number"
-                name={"Value" + iRow}
-                value={props.Values[iRow][1]}
-                onChange={event => Update(event)}
-                style={{ width: "56px" }}
-              ></TextField>
-            );
-          } else if (iRow !== rows) {
-            htmlBuffer.push(
-              <TextField
-                type="number"
-                name={"Value" + iRow}
-                value={props.Values[iRow][1]}
-                onChange={event => Update(event)}
-                style={{ width: "56px" }}
-              ></TextField>
-            );
-          } //Last Row
-          else {
-            htmlBuffer.push(<TextField type="number" name={'T'+iCol} value={props.PointTotal} disabled></TextField>);
-          }
-        }
-        htmlForm.push(<Col name={"Row" + iRow}> {htmlBuffer} </Col>);
-      } else if (iCol === 2) {
-        for (iRow = 0; iRow <= rows; iRow++) {
-          if (iRow < 1) {
-            //Run if else cases if iRow is not negative
-            htmlBuffer.push(
-              <TextField
-                label="Min"
-                type="number"
-                name={"RangesMin" + iRow}
-                value={props.Values[iRow][2]}
-                onChange={event => Update(event)}
-                style={{ width: "56px" }}
-              ></TextField>
-            );
-          } else if (iRow !== rows) {
-            htmlBuffer.push(
-              <TextField
-                type="number"
-                name={"RangesMin" + iRow}
-                value={props.Values[iRow][2]}
-                onChange={event => Update(event)}
-                style={{ width: "56px" }}
-              ></TextField>
-            );
-          } //Last Row
-          else {
-            htmlBuffer.push(<TextField type="number" name={'T'+iCol} value={props.PointMin} disabled></TextField>);
-          }
-        }//end of row loop
-        htmlForm.push(<Col name={"Row" + iRow}> {htmlBuffer} </Col>);
-      } else if (iCol === 3) {
-        for (iRow = 0; iRow <= rows; iRow++) {
-          if (iRow < 1) {
-            //Run if else cases if iRow is not negative
-            htmlBuffer.push(
-              <TextField
-                label="Max"
-                type="number"
-                name={"RangesMax" + iRow}
-                value={props.Values[iRow][3]}
-                onChange={event => Update(event)}
-                style={{ width: "56px" }}
-              ></TextField>
-            );
-          } else if (iRow !== rows) {
-            htmlBuffer.push(
-              <TextField
-                type="number"
-                name={"RangesMax" + iRow}
-                value={props.Values[iRow][3]}
-                onChange={event => Update(event)}
-                style={{ width: "56px" }}
-              ></TextField>
-            );
-          } //Last Row
-          else {
-            htmlBuffer.push(<TextField type="number" name={'T'+iCol} value={props.PointMax} disabled></TextField>);
-          }
-        }//end of row loop
-        htmlForm.push(<Col name={"Row" + iRow}> {htmlBuffer} </Col>);
-      } //End of column 3
-      else if (iCol === 4) {
-        for (iRow = 0; iRow <= rows; iRow++) {
-          if (iRow < 1)
-          {
-            //Run if else cases if iRow is not negative
-            htmlBuffer.push(
-              <TextField
-                label="Unit"
-                name={"Unit" + iRow}
-                value={props.Values[iRow][4]}
-                onChange={event => Update(event)}
-                style={{ width: "32px" }}
-              ></TextField>
-            );
-          }
-          else if (iRow !== rows) {
-            htmlBuffer.push(
-              <TextField
-                name={"Unit" + iRow}
-                value={props.Values[iRow][4]}
-                onChange={event => Update(event)}
-                style={{ width: "32px" }}
-              ></TextField>
-            );
-          } //Last Row
-          else {
-            htmlBuffer.push(<TextField name={'T'+iCol} disabled></TextField>);
-          }
-        }//end of row loop
-        htmlForm.push(<Col name={"Row" + iRow}> {htmlBuffer} </Col>);
-      } //End of column 4
-    }
-    return (
-      <Col>
-        <Button name="RNG" onClick={event => RandomizeStats(event)}>
-          {" "}
-          Random{" "}
-        </Button>
-        <Row>{htmlForm}</Row>
-      </Col>
-    );
   };
 
   return (
@@ -216,7 +57,24 @@ function StatInputForm(props) {
       </Col>
       <Row>
         <Box name="FormBody" align="center">
-          {statForm(props)}
+          
+          <Col>
+            <Button name="RNG" onClick={event => RandomizeStats(event)}> {" "}Random{" "} </Button>
+            <Grid hHeader={[<div>Stats</div>,<div>Value</div>,<div>Min</div>,<div>Max</div>,<div>LVL</div>]} 
+            hFooter={[<div>Totals</div>,
+              <TextField type="number" name={'T'/*+iCol*/} value={props.PointTotal} disabled></TextField>,
+              <TextField type="number" name={'T'/*+iCol*/} value={props.PointMin} disabled></TextField>,
+              <TextField type="number" name={'T'/*+iCol*/} value={props.PointMax} disabled></TextField>,
+            <div></div>]} iRows = {props.Quantity} style={{border: '1px solid green'}} cellStyle={{border: '1px solid red'}} value={props.Values}>
+
+              <TextField name={"Types"} onChange={event => Update(event)}/>{/*[iRow][0]*/}
+              <TextField type="number" name={"Value"} onChange={event => Update(event)} style={{ width: "56px" }}/>{/*[iRow][1]*/}
+              <TextField type="number" name={"Min"} onChange={event => Update(event)} style={{ width: "56px" }}/>{/*[iRow][2]*/}
+              <TextField type="number" name={"Max"} onChange={event => Update(event)} style={{ width: "56px" }}/>{/*[iRow][3]*/}
+              <TextField name={"Unit"} onChange={event => Update(event)} style={{ width: "32px" }}/>{/*[iRow][4]*/}
+              
+          </Grid>
+          </Col>
         </Box>
       </Row>
     </div>
