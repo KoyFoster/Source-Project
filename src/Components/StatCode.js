@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Paper, TextField, makeStyles, InputLabel, Divider } from '@material-ui/core';
-import {Row, Col} from './Grid.js'
+import {Row, Col} from './DivGrid.js'
 
 function CopyToClipboard(event)
 {

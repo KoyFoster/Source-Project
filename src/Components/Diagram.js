@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Paper, Slider, MenuItem/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
 import {Vector2,  Coll, Calc} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
-import {Row, Col} from './Grid'
+import {Row, Col} from './DivGrid'
 import TemplateSelector from './TemplateSelector'
 import {Link, Redirect} from 'react-router-dom'
 import StatCode from './StatCode'
@@ -12,7 +12,6 @@ const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
 const edgeSpacer=128;
 const iBaseSize = 256;
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
-
 
 var IsUnit = function(UnitType)
 { 

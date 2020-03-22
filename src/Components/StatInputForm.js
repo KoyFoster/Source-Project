@@ -6,7 +6,7 @@ import {
   InputLabel,
   Checkbox
 } from "@material-ui/core";
-import { Row, Col } from "./Grid.js";
+import { Row, Col } from "./DivGrid.js";
 //import { purple, orange, green, red } from '@material-ui/core/colors';
 import "../App.css";
 
