@@ -21,9 +21,9 @@ const palette = {
 };//End of palette
 
   return (
-    <Grid iRows = {7} Header = {true}>
-      <div name='butts'>One</div><div name='butts'>Two</div><div name='butts'>Three</div>
-      </Grid>
+  <Grid rowStyle ={{ border: '1px solid red'}} cellStyle={{border: '1px solid green'}} iRows = {7} Header = {true}>
+    <div name='butts'>One</div><div name='apples'>Two</div><div name='oranges'>Three</div>
+  </Grid>
   );
 }
 

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 function Grid(props)
 {
-    // console.log('Grid:',props.children);
-    console.log('Grid:', props.Header);
     // init functions
     const initRowSize = () => 
     { 
@@ -20,12 +18,15 @@ function Grid(props)
     }
     const initRows = () =>
     {
-        let hRows = props.hRows ? [props.hRows] : [];
+        let hRows = props.hRows ? [[...props.hRows]] : [];
         if(hRows.length === 0)
-        { hRows = props.children ? [props.children] : []; }
+        { hRows = props.children ? [[...props.children]] : []; }
+
+        // Copy to hRow if single row passed
+        let hRow = hRows.length === 1 ? [...hRows] : [];
 
         // Validate
-        if(hRows.length === 0)
+        if(hRows.length === 0 && props.iRows)
         {
             for(let y=0; y < props.iRows; y++)
             {
@@ -33,20 +34,20 @@ function Grid(props)
             }
         }
         // Multiple rows based on row size
-        else if(hRows.length < props.iRows)
+        if(props.iRows)
+        if(hRows.length < props.iRows)
         {
-            for(let y=1; y < props.iRows; y++)
-            {
-                hRows.push(hRows[0]);
-            }
-
-            // Update Cell Names
-            
-            for(let x=0; x < props.iCols; x++)
+            // Clear first row as it will be replaced
+            if(hRows.length === 1) hRows.splice(0,1);
+            // Add Rows and Update Names
             for(let y=0; y < props.iRows; y++)
-            {
-                hRows[y][x].props.name = hRows[y][x].props.name + `_${iCols},${props.iRows}`;
-                console.log('Renamed:', hRows[y][x]);
+            {                
+                hRows.push([...hRow[0]]);
+                for(let x=0; x < hRows[0].length; x++)
+                {
+                    const name = hRows[y][x].props.name + `_(${x},${y})`;
+                    hRows[y][x] = {...hRows[y][x], props: {...hRows[y][x].props, name: name}};
+                }
             }
         }
         return hRows;
@@ -58,11 +59,11 @@ function Grid(props)
     // const [hCols, setCols] = useState(props.hRows ? props.hRows : -1); //An Array of
     const [iRows, setRowSize] = useState(initRowSize())
     const [iCols, setColSize] = useState(initColSize())
-
     // const [iW, setWidth] = useState(props.iW)
     // const [iH, setHeight] = useState(props.iH)
     const [style, SetStyle] = useState(props.style)
-
+    const cellStyle = props.cellStyle ? props.cellStyle : undefined;
+    const rowStyle = props.rowStyle ? props.rowStyle : undefined; // This style doesn't work at the moment
 
     const parseRows = (arr) =>
     {
@@ -73,10 +74,10 @@ function Grid(props)
             for(let x=0; x < arr[0].length; x)
             {
                 // console.log('cell:',arr[y][x]);
-                row.push(<th>{arr[y][x]}</th>);
+                row.push(<th style={{...cellStyle}}>{arr[y][x]}</th>);
                 x += 1;
             }
-            rows.push(<tr>{row}</tr>);
+            rows.push(<tr style={{...rowStyle}}>{row}</tr>);
             y += 1;
         }
         // console.log('parseRows:',rows, hRows, iCols, iRows);
@@ -94,7 +95,7 @@ function Grid(props)
         return parseRows(hRows);
         // <thead><tr>header</tr></thead><tr></tr>
     }
-    const getGrid = () => { return <table style = {{...style, border: '1px solid red', tableLayout: 'fixed'}}><thead>{getHeader()}</thead>{getRows()}</table>; }
+    const getGrid = () => { return <table style = {{...style, tableLayout: 'fixed'}}><thead>{getHeader()}</thead>{getRows()}</table>; }
 
     return (getGrid())
 }
