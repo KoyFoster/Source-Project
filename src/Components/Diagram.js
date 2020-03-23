@@ -495,11 +495,6 @@ class Diagram extends React.Component
         }
     }
 
-    componentWillUnmount()
-    {
-        //window.removeEventListener('resize', this.UpdateViewPort);
-    }
-
     UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, iDrawScale=this.state.WinInfo.iDrawScale)
     {
         var tempVectors = [];//this.state.v2StatVectors
