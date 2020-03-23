@@ -45,32 +45,29 @@ function Grid(props)
                 hRows.push([...hRow[0]]);
                 for(let x=0; x < hRows[0].length; x++)
                 {
-                    // value
-                    let value = props.value !== undefined ? props.value[y][x] : undefined;
-                    console.log('value:',value)
                     // name
                     const name = hRows[y][x].props.name + `_(${x},${y})`;
+                    tags.push(hRows[y][x].props.name);
                     // component
-                    hRows[y][x] = {...hRows[y][x], props: {...hRows[y][x].props, value, name: name}};
+                    hRows[y][x] = {...hRows[y][x], props: {...hRows[y][x].props, value: Values !== undefined ? Values[y][x] : undefined, name: name}};
                 }
             }
         }
         return hRows;
     }
 
-    // States
-    const [hHeader, setHeader] = useState(props.hHeader ? [[...props.hHeader]] : undefined); //An Array of components
-    const [hFooter, setFooter] = useState(props.hFooter ? [[...props.hFooter]] : undefined); //An Array of components
-    const [hRows, setRows] = useState(initRows()); //A 2d Array of components
-    // const [hCols, setCols] = useState(props.hRows ? props.hRows : -1); //An Array of
+    // States Vars
+    const [Values, setValues] = useState(props.Values ? props.Values : undefined); //An Array of components
+    const [tags, setTags] = useState([]); //An Array of components
+    const [hHeader, setHeader] = useState(props.hHeader ? [props.hHeader] : undefined); //An Array of components
     const [iRows, setRowSize] = useState(initRowSize());
     const [iCols, setColSize] = useState(initColSize());
-    // const [iW, setWidth] = useState(props.iW)
-    // const [iH, setHeight] = useState(props.iH)
-    const [style, SetStyle] = useState(props.style);
+    // Rerender Vars    
+    const hFooter = props.hFooter ? [props.hFooter] : undefined; //An Array of components
+    const hRows = initRows(); //A 2d Array of components
+    const style = props.style ? props.style : undefined;
     const cellStyle = props.cellStyle ? props.cellStyle : undefined;
     const rowStyle = props.rowStyle ? props.rowStyle : undefined; // This style doesn't work at the moment
-    const values = props.values ? props.values : [];
 
     const parseRows = (arr) =>
     {
@@ -80,7 +77,6 @@ function Grid(props)
             let row = [];
             for(let x=0; x < arr[0].length; x)
             {
-                // console.log('cell:',arr[y][x]);
                 row.push(<th style={{...cellStyle}}>{arr[y][x]}</th>);
                 x += 1;
             }
@@ -104,8 +100,12 @@ function Grid(props)
         if(!hRows) return '';
         return parseRows(hRows);
     }
-    const getGrid = () => { return <table style = {{...style, tableLayout: 'fixed'}}><thead>{getHeader()}</thead>{getRows()}{getFooter()}</table>; }
+    const getGrid = () => 
+    { 
+        return <table style = {{...style, tableLayout: 'fixed'}} onChange={e => {props.onChange(e); }}><thead>{getHeader()}</thead>{getRows()}{getFooter()}</table>; 
+    }
 
+    // return render
     return (getGrid())
 }
 

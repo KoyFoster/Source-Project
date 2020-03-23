@@ -60,19 +60,20 @@ function StatInputForm(props) {
           
           <Col>
             <Button name="RNG" onClick={event => RandomizeStats(event)}> {" "}Random{" "} </Button>
-            <Grid hHeader={[<div>Stats</div>,<div>Value</div>,<div>Min</div>,<div>Max</div>,<div>LVL</div>]} 
-            hFooter={[<div>Totals</div>,
-              <TextField type="number" name={'T'/*+iCol*/} value={props.PointTotal} disabled></TextField>,
-              <TextField type="number" name={'T'/*+iCol*/} value={props.PointMin} disabled></TextField>,
-              <TextField type="number" name={'T'/*+iCol*/} value={props.PointMax} disabled></TextField>,
-            <div></div>]} iRows = {props.Quantity} style={{border: '1px solid green'}} cellStyle={{border: '1px solid red'}} value={props.Values}>
+            
+            <Grid onChange={event => Update(event)} hHeader={[<div>Stats</div>,<div>Value</div>,<div>Min</div>,<div>Max</div>,<div>LVL</div>]}
+              hFooter={[<div>Totals</div>,
+              <TextField type="number" value={props.PointTotal} disabled></TextField>,
+              <TextField type="number" value={props.PointMin} disabled></TextField>,
+              <TextField type="number" value={props.PointMax} disabled></TextField>,
+            <div></div>]} iRows = {props.Quantity} style={{margins: 'none', padding: 'none'}} cellStyle={{margins: 'none', padding: 'none'}} Values={props.Values}>
 
               <TextField name={"Types"} onChange={event => Update(event)}/>{/*[iRow][0]*/}
-              <TextField type="number" name={"Value"} onChange={event => Update(event)} style={{ width: "56px" }}/>{/*[iRow][1]*/}
-              <TextField type="number" name={"Min"} onChange={event => Update(event)} style={{ width: "56px" }}/>{/*[iRow][2]*/}
-              <TextField type="number" name={"Max"} onChange={event => Update(event)} style={{ width: "56px" }}/>{/*[iRow][3]*/}
-              <TextField name={"Unit"} onChange={event => Update(event)} style={{ width: "32px" }}/>{/*[iRow][4]*/}
-              
+              <TextField type="number" name={"Value"} style={{ width: "56px" }}/>{/*[iRow][1]*/}
+              <TextField type="number" name={"Min"} style={{ width: "56px" }}/>{/*[iRow][2]*/}
+              <TextField type="number" name={"Max"} style={{ width: "56px" }}/>{/*[iRow][3]*/}
+              <TextField name={"Unit"} style={{ width: "32px" }}/>{/*[iRow][4]*/}
+
           </Grid>
           </Col>
         </Box>

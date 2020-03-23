@@ -525,14 +525,12 @@ class Diagram extends React.Component
     UpdateStates(props)
     {
         //vars
-        var tempAngles  = this.state.iAngles;
-        var Quantity    = this.state.iQuantity;
-        var tempVal     = this.state.Values;
-        var iIndex      = props.target.name;
-        var Points      = [this.state.PointTotal, this.state.PointMin, this.state.PointMax];
-        console.log('tempVal:',tempVal);
-        console.log('props:',props);
-        console.log('iIndex:',iIndex);
+        let tempAngles  = this.state.iAngles;
+        let Quantity    = this.state.iQuantity;
+        let tempVal     = this.state.Values;
+        let iIndex      = props.target.name.indexOf(',') ? props.target.name.substring(props.target.name.indexOf(',')+1, props.target.name.indexOf(')')) : props.target.name;
+        let sTag        = props.target.name.indexOf('_(') ? props.target.name.substring(0, props.target.name.indexOf('_(')) : props.target.name;
+        let Points      = [this.state.PointTotal, this.state.PointMin, this.state.PointMax];
 
         if(props.target.name === 'Quantity')
         {
@@ -540,10 +538,8 @@ class Diagram extends React.Component
             tempAngles  = this.UpdateAngles(Quantity);
             Points      = GetPointTotal(Quantity, this);
         }
-        else if(iIndex.search('Value') > -1)
+        else if(sTag === 'Value')
         {
-            iIndex = parseInt(iIndex.replace('Value_(', '')[0]);
-            tempVal = this.state.Values;
             //Value Range Check
             tempVal[iIndex][1] = Coll.iAATest(parseInt(props.target.value), tempVal[iIndex][2], tempVal[iIndex][3]);
 
@@ -552,28 +548,24 @@ class Diagram extends React.Component
             if(Points[0] > this.state.PointLimit)
             { return; }
         }
-        else if(iIndex.search('Types') > -1)
+        else if(sTag === 'Types')
         {
             iIndex = parseInt(iIndex.replace('Types_(', '')[0]);
             tempVal[iIndex][0] = props.target.value;
         }
-        else if(iIndex.search('Ranges') > -1)
+        else if(sTag === 'Min' || sTag === 'Max')
         {
-            iIndex = iIndex.replace('Ranges_(', '');
             var iIndex2 = 3;
-            if(iIndex.search('Min') > -1)
+            if(sTag === 'Min')
             {
-                iIndex  = parseInt(iIndex.replace('Min_(', '')[0]);
                 iIndex2 = 2;
                 
                 //Check if min exceeds then current value or is less then zero
                 console.log('iIndex:',iIndex);
                 props.target.value = Coll.iAATest(parseInt(props.target.value),0,tempVal[iIndex][1]);
             }
-            else
+            else if(sTag === 'Max')
             {
-                iIndex  = parseInt(iIndex.replace('Max_(', '')[0]);
-
                 //Check if max is less then current value
                 props.target.value = Coll.iAATest(parseInt(props.target.value),tempVal[iIndex][1]);
                 Points[2] = GetPointMax(Quantity,this,props.target.value);
@@ -581,7 +573,7 @@ class Diagram extends React.Component
             tempVal[iIndex][iIndex2] = parseInt(props.target.value);
             Points = GetPointTotal(Quantity, this, tempVal);
         }
-        else if(props.target.name === 'PointDiff')
+        else if(sTag === 'PointDiff')
         {
             //update to new PointsTotal
             if(props.target.checked)
@@ -595,10 +587,8 @@ class Diagram extends React.Component
             });
             return;
         }
-        else if(iIndex.search('Unit') > -1)
+        else if(sTag === 'Unit')
         {
-            iIndex = parseInt(iIndex.replace('Unit_(', '')[0]);
-            tempVal = this.state.Values;
             tempVal[iIndex][4] = props.target.value;
 
             //Check Point Limit Range
