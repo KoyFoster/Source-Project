@@ -18,6 +18,7 @@ function Grid(props)
     }
     const initRows = () =>
     {
+        console.log(props);
         let hRows = props.hRows ? [[...props.hRows]] : [];
         if(hRows.length === 0)
         { hRows = props.children ? [[...props.children]] : []; }
@@ -50,6 +51,7 @@ function Grid(props)
                     tags.push(hRows[y][x].props.name);
                     // component
                     hRows[y][x] = {...hRows[y][x], props: {...hRows[y][x].props, value: Values !== undefined ? Values[y][x] : undefined, name: name}};
+                    console.log('hRow:',hRows[y][x]);
                 }
             }
         }
@@ -62,7 +64,7 @@ function Grid(props)
     const [hHeader, setHeader] = useState(props.hHeader ? [props.hHeader] : undefined); //An Array of components
     const [iRows, setRowSize] = useState(initRowSize());
     const [iCols, setColSize] = useState(initColSize());
-    // Rerender Vars    
+    // Rerender Vars
     const hFooter = props.hFooter ? [props.hFooter] : undefined; //An Array of components
     const hRows = initRows(); //A 2d Array of components
     const style = props.style ? props.style : undefined;

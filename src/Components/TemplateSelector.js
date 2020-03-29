@@ -1,5 +1,6 @@
 import React from 'react';
-import {Paper, Select} from '@material-ui/core'
+import ComboBox from './Forms/ComboBox'
+import {Paper} from '@material-ui/core'
 
 function TemplateSelector(props)
 {
@@ -9,8 +10,11 @@ function TemplateSelector(props)
     }
 
     return(
-        <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-            Template <Select defaultValue={props.defaultValue} onChange={(event) => OnTemplateChange(event)}>{props.MenuItems}</Select>
+        <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}} display='flex'>
+        Template
+        <ComboBox defaultValue={props.defaultValue} onChange={e => OnTemplateChange(e)} >
+            {props.MenuItems}
+        </ComboBox>
         </Paper>
     )
 };
