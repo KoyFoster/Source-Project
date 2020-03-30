@@ -3,22 +3,23 @@ import React, { useState } from "react";
 function Grid(props)
 {
     // init functions
-    const initRowSize = () => 
+    const initRowSize = (iSize = -1) => 
     { 
         let size = props.iRows ? props.iRows : -1;
+        if(size === -1) size = iSize;
         if(size === -1) size = props.hRows ? props.hRows.length : 0;
         return size; 
     }
-    const initColSize = () => 
+    const initColSize = (iSize = -1) => 
     {
         let size = props.iCols ? props.iCols : -1;
+        if(size === -1) size = iSize;
         if(size === -1) size = props.hRows ? props.hRows[0].length : -1;
         if(size === -1) size = props.children ? 1 : 0;
         return size;
     }
     const initRows = () =>
     {
-        console.log(props);
         let hRows = props.hRows ? [[...props.hRows]] : [];
         if(hRows.length === 0)
         { hRows = props.children ? [[...props.children]] : []; }
@@ -51,7 +52,6 @@ function Grid(props)
                     tags.push(hRows[y][x].props.name);
                     // component
                     hRows[y][x] = {...hRows[y][x], props: {...hRows[y][x].props, value: Values !== undefined ? Values[y][x] : undefined, name: name}};
-                    console.log('hRow:',hRows[y][x]);
                 }
             }
         }
@@ -64,12 +64,19 @@ function Grid(props)
     const [hHeader, setHeader] = useState(props.hHeader ? [props.hHeader] : undefined); //An Array of components
     const [iRows, setRowSize] = useState(initRowSize());
     const [iCols, setColSize] = useState(initColSize());
+    if(props.Values !== Values && Values !== undefined)
+    {
+        setValues(props.Values);
+        setRowSize(props.Values.length);
+        setColSize(props.Values.length > 0 ? props.Values[0].length : 0);
+    };
     // Rerender Vars
     const hFooter = props.hFooter ? [props.hFooter] : undefined; //An Array of components
     const hRows = initRows(); //A 2d Array of components
     const style = props.style ? props.style : undefined;
     const cellStyle = props.cellStyle ? props.cellStyle : undefined;
     const rowStyle = props.rowStyle ? props.rowStyle : undefined; // This style doesn't work at the moment
+
 
     const parseRows = (arr) =>
     {

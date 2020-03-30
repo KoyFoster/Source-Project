@@ -229,7 +229,6 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
             else
             {
                 //Only Include Only Point Defined Stats
-                //console.log(iI,'-',Values[iI][4]);
                 if(IsUnit(Values[iI][4]))
                 {
                     PointTotal  += parseInt(Values[iI][1]);
@@ -292,7 +291,7 @@ const defaultTemplates = [
     },
     {
         label:  'Dark Souls III',
-        values: [['Vigor',15,1,100,'LVL'],['Attunement',10,1,100,''],['Endurance',15,1,100,''], ['Vitality',15,1,100,''],['Strength',20,1,100,''],['Dexterity',18,1,100,''], ['Intelligence',10,1,100,''],['Faith',10,1,100,''],['Luck',10,1,100,''], ['Hollowing',100,1,100,'X']],
+        values: [['Vigor',15,1,99,'LVL'],['Attunement',10,1,99,''],['Endurance',15,1,99,''], ['Vitality',15,1,99,''],['Strength',20,1,99,''],['Dexterity',18,1,99,''], ['Intelligence',10,1,99,''],['Faith',10,1,99,''],['Luck',10,1,99,''], ['Hollowing',99,1,99,'X']],
         pntLlimit: 802,
         pntDiff: true
         //key: ''+values|pntLlimit+''
@@ -309,7 +308,7 @@ function compileMenuItems()
 {
     var result = [];
 
-    for(var i=0; i<defaultTemplates.length; i++)
+    for(var i=0; i < defaultTemplates.length; i++)
     {
         result.push(<MenuItem value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
     }
@@ -419,7 +418,7 @@ class Diagram extends React.Component
         {
             this.setState({
                 iAngles: this.UpdateAngles(),
-                WinInfo: 
+                WinInfo:
                 {
                     iDrawScale: this.state.WinInfo.iScale,
                     iDimension: [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer],
@@ -435,13 +434,15 @@ class Diagram extends React.Component
 
     LoadTemplate(state = null, template = defaultTemplates[0])
     {
+        if(Object.keys(template).length === 0) {return false;}
+        
         //If State needs to be updated now
         if(state !== null)
         {
             state.iQuantity     = template.values.length;
             state.Values        = template.values;
             state.PointLimit    = template.pntLlimit;
-            state.PointDiff    = template.pntDiff
+            state.PointDiff     = template.pntDiff
         }
         else
         {
@@ -453,14 +454,18 @@ class Diagram extends React.Component
                 PointDiff:  template.pntDiff
             });
         }
+        
+        return true;
     }
 
     OnTemplateChange(template)
     {
-        this.LoadTemplate(null, template);
+        console.log('OnTemplateChange:' ,template)
+        if(!this.LoadTemplate(null, template)) return;
         var Quantity    = template.values.length;
         var tempAngles  = this.UpdateAngles(Quantity);
         var Points = GetPointTotal(Quantity, this, template.values);
+        console.log('Quantity:',Quantity, template);
 
         this.setState({
             iAngles:        tempAngles,
@@ -556,7 +561,6 @@ class Diagram extends React.Component
                 iIndex2 = 2;
                 
                 //Check if min exceeds then current value or is less then zero
-                console.log('iIndex:',iIndex);
                 props.target.value = Coll.iAATest(parseInt(props.target.value),0,tempVal[iIndex][1]);
             }
             else if(sTag === 'Max')
@@ -774,7 +778,7 @@ class Diagram extends React.Component
             <Box name='body' style={{display: 'inline-flex'}} bgcolor='darkGrey'>
                         <Row alignItems='top'>
                             <Col alignSelf ='top'>
-                                <TemplateSelector defaultValue={defaultTemplates[iDefTmpl]} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
+                                <TemplateSelector defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
                                 <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                                     <StatInputForm
                                         Quantity    = {this.state.iQuantity}

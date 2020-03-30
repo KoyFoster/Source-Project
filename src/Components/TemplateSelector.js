@@ -4,15 +4,11 @@ import {Paper} from '@material-ui/core'
 
 function TemplateSelector(props)
 {
-    var OnTemplateChange = event =>
-    {
-        props.OnTemplateChange(event.target.value);
-    }
 
     return(
         <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}} display='flex'>
         Template
-        <ComboBox defaultValue={props.defaultValue} onChange={e => OnTemplateChange(e)} >
+        <ComboBox defaultValue={props.defaultValue} onChange={e => props.OnTemplateChange(e.target.value)} >
             {props.MenuItems}
         </ComboBox>
         </Paper>
