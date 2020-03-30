@@ -251,6 +251,7 @@ var GetPointTotal = function(Quantity, Comp, Values = 0)
         }
         PointTotal = Comp.state.PointLimit;
     }
+    console.log('Quantity:',Quantity, 'Comp:',Comp, 'Values:',Values, 'PointTotal:',PointTotal);
 
     if(Comp.state.PointDiff){PointTotal -= PointMin;}
     return [PointTotal, PointMin, PointMax];
@@ -435,23 +436,31 @@ class Diagram extends React.Component
     LoadTemplate(state = null, template = defaultTemplates[0])
     {
         if(Object.keys(template).length === 0) {return false;}
+        // Copy Template
+        const newArr = new Array(...template.values);
+        const newPL = Number(template.pntLlimit);
+        const newPD = Boolean(template.pntDiff);
+        for(let i=0; i<newArr.length; i++)
+        {
+            newArr[i] = new Array(...newArr[i]);
+        }
         
         //If State needs to be updated now
         if(state !== null)
         {
             state.iQuantity     = template.values.length;
-            state.Values        = template.values;
-            state.PointLimit    = template.pntLlimit;
-            state.PointDiff     = template.pntDiff
+            state.Values        = newArr;
+            state.PointLimit    = newPL;
+            state.PointDiff     = newPD
         }
         else
         {
             this.setState(
             {
                 iQuantity:  template.values.length,
-                Values:     template.values,
-                PointLimit: template.pntLlimit,
-                PointDiff:  template.pntDiff
+                Values:     newArr,
+                PointLimit: newPL,
+                PointDiff:  newPD
             });
         }
         
@@ -462,17 +471,16 @@ class Diagram extends React.Component
     {
         console.log('OnTemplateChange:' ,template)
         if(!this.LoadTemplate(null, template)) return;
-        var Quantity    = template.values.length;
-        var tempAngles  = this.UpdateAngles(Quantity);
-        var Points = GetPointTotal(Quantity, this, template.values);
-        console.log('Quantity:',Quantity, template);
+        var tempAngles  = this.UpdateAngles(template.values.length);
+        var Points = GetPointTotal(template.values.length, this, template.values);
+        console.log('Quantity:',template.values.length, template);
 
         this.setState({
             iAngles:        tempAngles,
             PointTotal:     Points[0],
             PointMin:       Points[1],
             PointMax:       Points[2],
-            v2StatVectors:  this.UpdateStatVectors(Quantity, tempAngles, template.values)
+            v2StatVectors:  this.UpdateStatVectors(template.values.length, tempAngles, template.values)
         });
     }
 
@@ -529,7 +537,7 @@ class Diagram extends React.Component
         let Quantity    = this.state.iQuantity;
         let tempVal     = this.state.Values;
         let iIndex      = props.target.name.indexOf(',') ? props.target.name.substring(props.target.name.indexOf(',')+1, props.target.name.indexOf(')')) : props.target.name;
-        let sTag        = props.target.name.indexOf('_(') ? props.target.name.substring(0, props.target.name.indexOf('_(')) : props.target.name;
+        let sTag        = props.target.name.indexOf('_(') > -1 ? props.target.name.substring(0, props.target.name.indexOf('_(')) : props.target.name;
         let Points      = [this.state.PointTotal, this.state.PointMin, this.state.PointMax];
 
         if(props.target.name === 'Quantity')
@@ -574,7 +582,8 @@ class Diagram extends React.Component
         }
         else if(sTag === 'PointDiff')
         {
-            //update to new PointsTotal
+             console.log('-PointDiff-');
+            // Update to new PointTotal
             if(props.target.checked)
             { Points[0] = Points[0]-Points[1]; }
             else
