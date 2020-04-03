@@ -426,7 +426,6 @@ class Diagram extends React.Component
         {
             newArr[i] = new Array(...newArr[i]);
         }
-        console.log('newArr:',newArr)
         
         //If State needs to be updated now
         if(state !== null)
@@ -455,7 +454,7 @@ class Diagram extends React.Component
         if(!this.LoadTemplate(null, template)) return;
         var tempAngles  = this.UpdateAngles(template.values.length);
         
-        console.log('GetPointTotal: Quantity:',template.values.length, 'Values:',template.values, 'arrDiff:',template.pntDiff, 'PointLimit:',template.pntLimit);
+        // console.log('GetPointTotal: Quantity:',template.values.length, 'Values:',template.values, 'arrDiff:',template.pntDiff, 'PointLimit:',template.pntLimit);
         var Points = GetPointTotal(this, template.values.length, template.values, template.pntDiff, template.pntLimit);
 
         this.setState({
@@ -474,7 +473,6 @@ class Diagram extends React.Component
         var userDefined = this.props.location.pathname.replace('/','');
         userDefined = this.ParseStringAsStatCard(userDefined);
         const name = !Array.isArray(userDefined[0]) ? userDefined.shift() : '';
-        console.log('name:',name,'userDefined:',userDefined)
 
         if(userDefined !== '')
         {
