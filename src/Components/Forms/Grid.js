@@ -86,10 +86,10 @@ function Grid(props)
             let row = [];
             for(let x=0; x < arr[0].length; x)
             {
-                row.push(<th style={{...cellStyle}}>{arr[y][x]}</th>);
+                row.push(<th key={`th_${x},${y}`} style={{...cellStyle}}>{arr[y][x]}</th>);
                 x += 1;
             }
-            rows.push(<tr style={{...rowStyle}}>{row}</tr>);
+            rows.push(<tr key={`tr_${y}`} style={{...rowStyle}}>{row}</tr>);
             y += 1;
         }
         return rows;
@@ -111,7 +111,7 @@ function Grid(props)
     }
     const getGrid = () => 
     { 
-        return <table style = {{...style, tableLayout: 'fixed'}} onChange={e => {props.onChange(e); }}><thead>{getHeader()}</thead>{getRows()}{getFooter()}</table>; 
+        return <table style = {{...style, tableLayout: 'fixed'}} onChange={e => {props.onChange(e); }}><thead>{getHeader()}</thead><tbody>{getRows()}</tbody><tfoot>{getFooter()}</tfoot></table>; 
     }
 
     // return render

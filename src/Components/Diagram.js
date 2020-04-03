@@ -13,22 +13,22 @@ const edgeSpacer=128;
 const iBaseSize = 256;
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
 
-var IsUnit = function(UnitType)
+let IsUnit = function(UnitType)
 { 
-    var temp = 'X'; 
+    let temp = 'X'; 
     temp = UnitType.toUpperCase();
     return sUnitTypes.includes(temp);
 }
 
 //Grade Function
-var gradeCalc = function(index, Values)
+let gradeCalc = function(index, Values)
 {
-    var result = cLetterGrades[9];//? grade
+    let result = cLetterGrades[9];//? grade
     //Take Values and divide it against it's max range
-    var percentage = (Values[index][1]/Values[index][3])*100;
+    let percentage = (Values[index][1]/Values[index][3])*100;
 
     //Upper or lower value assignment
-    var masymenos = (value) =>
+    let masymenos = (value) =>
     {
         if(value > 10){result += '+';} else if(value < 10){result += '-';}
     };
@@ -80,13 +80,13 @@ var gradeCalc = function(index, Values)
 }
 
 /*Update Diagram*/
-var SetupDiagram = function(Comp)
+let SetupDiagram = function(Comp)
 {
     /*Iterate For Each TriAngles*/
-    var v2Polygon = [new Vector2(0,0), new Vector2(0, -1*Comp.state.WinInfo.iDrawScale), new Vector2(0, -1*Comp.state.WinInfo.iDrawScale)];
-    var mesh = [];
+    let v2Polygon = [new Vector2(0,0), new Vector2(0, -1*Comp.state.WinInfo.iDrawScale), new Vector2(0, -1*Comp.state.WinInfo.iDrawScale)];
+    let mesh = [];
     //The logic here is that a triangle is created and repeated for each number of angles
-    for (var i = 0; i < Comp.state.iQuantity; i++)
+    for (let i = 0; i < Comp.state.iQuantity; i++)
     {
         //Adjust Angles
         if(i === 0)
@@ -114,15 +114,15 @@ var SetupDiagram = function(Comp)
 };
 
 //Stats 2 and 3 are the same everytime
-var SetupStats = function(Comp)
+let SetupStats = function(Comp)
 {
-    var mesh = [];
-    var v2Polygon;
+    let mesh = [];
+    let v2Polygon;
 
     /*Iterate For Each TriAngles*/
-    for (var i = 0; i < Comp.state.iQuantity; i++)
+    for (let i = 0; i < Comp.state.iQuantity; i++)
     {
-        var i2 = i+1;
+        let i2 = i+1;
         if(i2 >= Comp.state.iQuantity){i2 = 0;}
         v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2].x, Comp.state.v2StatVectors[i2].y) ];
 
@@ -134,23 +134,23 @@ var SetupStats = function(Comp)
     return mesh.map(function (arr) { return [Comp.state.WinInfo.Center[0] + arr[0], Comp.state.WinInfo.Center[1] + arr[1]]; });
 };
 
-var SetupTextAndTicks = function(Comp)
+let SetupTextAndTicks = function(Comp)
 {
-    var ticks = 10;
-    var tickWidth = Comp.state.WinInfo.iDrawScale*0.005;
+    let ticks = 10;
+    let tickWidth = Comp.state.WinInfo.iDrawScale*0.005;
 
-    var typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iType];
-    var gradeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iGrade];
-    var strCenter = +Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1];
+    let typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iType];
+    let gradeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iGrade];
+    let strCenter = +Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1];
 
-    var strTypeRotateSelf = ', rotate(180,'+typeCenter[0]+','+(typeCenter[1])+')';
+    let strTypeRotateSelf = ', rotate(180,'+typeCenter[0]+','+(typeCenter[1])+')';
 
-    var htmlResult = [];
-    for (var i = 0; i < Comp.state.iQuantity; i++)
+    let htmlResult = [];
+    for (let i = 0; i < Comp.state.iQuantity; i++)
     {
-        var sTypeFlip = '';
-        var sTickFlip = '';
-        var iFontSize = Math.floor(Comp.state.WinInfo.iDrawScale);
+        let sTypeFlip = '';
+        let sTickFlip = '';
+        let iFontSize = Math.floor(Comp.state.WinInfo.iDrawScale);
         //Rotate text around it's center if upsidedown
         if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
@@ -159,7 +159,7 @@ var SetupTextAndTicks = function(Comp)
 
         //Letter Grades
         htmlResult.push(
-        <text name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}}
+        <text key = {'Grade'+i} name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}}
             x={gradeCenter[0]} y={gradeCenter[1]}
             transform={'rotate('+Comp.state.iAngles[i]+', '+(Comp.state.WinInfo.Center[0])+','+(Comp.state.WinInfo.Center[1])+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')'} > 
             {
@@ -169,30 +169,30 @@ var SetupTextAndTicks = function(Comp)
 
         //Types
         htmlResult.push(
-        <text name={'Type'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/12, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]}
+        <text key={'Type'+i} name={'Type'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/12, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]}
             transform={'rotate('+Comp.state.iAngles[i]+', '+(strCenter)+')'+sTypeFlip}>
             {Comp.state.Values[i][0]}
         </text>);
 
         /*Stat Ticks*/
-        for(var iT = 1; iT<ticks; iT++)
+        for(let iT = 1; iT<ticks; iT++)
         {
             if((iT%2) === 0)
             {
                 //TICKS
-                htmlResult.push(<line x1={(-tickWidth)+Comp.state.WinInfo.Center[0]} y1={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.WinInfo.Center[0]} y2={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} style={{stroke: 'rgb(0,0,0)', strokeWidth: iStrokeWidth*2}} transform={'rotate('+Comp.state.iAngles[i]+', '+Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1]+')'} />);
+                htmlResult.push(<line key={`L_${i}_${iT}`} x1={(-tickWidth)+Comp.state.WinInfo.Center[0]} y1={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.WinInfo.Center[0]} y2={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} style={{stroke: 'rgb(0,0,0)', strokeWidth: iStrokeWidth*2}} transform={'rotate('+Comp.state.iAngles[i]+', '+Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1]+')'} />);
 
                 //Define and round off the TICK VALUES
-                //var tickValue = Math.round(100 * (iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) )/100;
-                var tickValue = Math.ceil((iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) );
-                var tickCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
+                //let tickValue = Math.round(100 * (iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) )/100;
+                let tickValue = Math.ceil((iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) );
+                let tickCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
                 if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
                 {
                     sTickFlip = ', rotate(180,'+tickCenter[0]+','+(tickCenter[1])+')';
                 };
 
                 //Tick Value
-                htmlResult.push(<text textAnchor='middle' dominantBaseline='central' x={tickCenter[0]+ Comp.state.Offsets.iTick} y={tickCenter[1]} style={{stroke: 'rgb(0,0,0)', fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
+                htmlResult.push(<text key={`LT_${i}_${iT}`} textAnchor='middle' dominantBaseline='central' x={tickCenter[0]+ Comp.state.Offsets.iTick} y={tickCenter[1]} style={{stroke: 'rgb(0,0,0)', fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
                     transform={'rotate('+Comp.state.iAngles[i]+', '+(Comp.state.WinInfo.Center[0])+','+(Comp.state.WinInfo.Center[1])+')'+sTickFlip}>
                     {tickValue}
                 </text>);
@@ -202,13 +202,13 @@ var SetupTextAndTicks = function(Comp)
     return htmlResult
 };
 
-var GetPointTotal = function(Comp, Quantity = Comp.state.iQuantity, Values = Comp.state.Values, PointDiff = Comp.state.PointDiff, PointLimit = Comp.state.PointLimit)
+let GetPointTotal = function(Comp, Quantity = Comp.state.iQuantity, Values = Comp.state.Values, PointDiff = Comp.state.PointDiff, PointLimit = Comp.state.PointLimit)
 {
-    var PointTotal  = 0;
-    var PointMin    = 0;
-    var PointMax    = 0;
-    var arrDiff     = Quantity - Comp.state.Values.length;
-    var iI = 0;
+    let PointTotal  = 0;
+    let PointMin    = 0;
+    let PointMax    = 0;
+    let arrDiff     = Quantity - Comp.state.Values.length;
+    let iI = 0;
     for(iI; iI < Quantity; iI++)
     {
             //push additional elements if change in size exceeds current size
@@ -228,7 +228,7 @@ var GetPointTotal = function(Comp, Quantity = Comp.state.iQuantity, Values = Com
     // check if new entry causes the point limit to be exceeded
     if((PointTotal > PointLimit) && (Quantity !== Comp.state.iQuantity))
     {
-        var iDiff = PointLimit - PointTotal;
+        let iDiff = PointLimit - PointTotal;
         Values[iI-1][1] += parseInt(iDiff);
         
         PointTotal = PointLimit;
@@ -238,10 +238,10 @@ var GetPointTotal = function(Comp, Quantity = Comp.state.iQuantity, Values = Com
     return [PointTotal, PointMin, PointMax];
 };
 
-var GetPointMax = function(Quantity, Comp, Values = 0)
+let GetPointMax = function(Quantity, Comp, Values = 0)
 {
-    var PointMax    = 0;
-    for(var iI; iI < Quantity; iI++)
+    let PointMax    = 0;
+    for(let iI; iI < Quantity; iI++)
     {
         if(Values === 0)
         {
@@ -288,11 +288,11 @@ const defaultTemplates = [
 
 function compileMenuItems()
 {
-    var result = [];
+    let result = [];
 
-    for(var i=0; i < defaultTemplates.length; i++)
+    for(let i=0; i < defaultTemplates.length; i++)
     {
-        result.push(<MenuItem value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
+        result.push(<MenuItem key={defaultTemplates[i].label} value={defaultTemplates[i]} >{defaultTemplates[i].label}</MenuItem>);
     }
     return result;
 }
@@ -300,7 +300,7 @@ const tmplMenuItems = compileMenuItems();
 
 function ScaleSlider(props) {
     //Slider Update
-    var OnSliderChange = (event, newValue) => {
+    let OnSliderChange = (event, newValue) => {
         props.OnSliderChange(newValue);
     };
 
@@ -362,10 +362,10 @@ class Diagram extends React.Component
     //Calculate Offsets once per rezise
     CalcOffset(state=null, event=null)
     {
-        var tick = 6;
-        var type = 10;
-        var grade = 35;
-        var scale = this.state.WinInfo.iDrawScale;
+        let tick = 6;
+        let type = 10;
+        let grade = 35;
+        let scale = this.state.WinInfo.iDrawScale;
         if(state !== null)
         {
             state.Offsets.iTick = tick * scale;
@@ -385,7 +385,7 @@ class Diagram extends React.Component
     //Load States
     Initialize(state=null)
     {
-        var Points = GetPointTotal(this, this.state.Values.length);
+        let Points = GetPointTotal(this, this.state.Values.length);
         if(state !== null)
         {
             state.iAngles               = this.UpdateAngles();
@@ -452,10 +452,10 @@ class Diagram extends React.Component
     OnTemplateChange(template)
     {
         if(!this.LoadTemplate(null, template)) return;
-        var tempAngles  = this.UpdateAngles(template.values.length);
+        let tempAngles  = this.UpdateAngles(template.values.length);
         
         // console.log('GetPointTotal: Quantity:',template.values.length, 'Values:',template.values, 'arrDiff:',template.pntDiff, 'PointLimit:',template.pntLimit);
-        var Points = GetPointTotal(this, template.values.length, template.values, template.pntDiff, template.pntLimit);
+        let Points = GetPointTotal(this, template.values.length, template.values, template.pntDiff, template.pntLimit);
 
         this.setState({
             iAngles:        tempAngles,
@@ -470,15 +470,16 @@ class Diagram extends React.Component
     componentDidMount() 
     {
         //window.addEventListener('resize', this.UpdateViewPort);
-        var userDefined = this.props.location.pathname.replace('/','');
+        let userDefined = this.props.location.pathname.replace('/','');
         userDefined = this.ParseStringAsStatCard(userDefined);
-        const name = !Array.isArray(userDefined[0]) ? userDefined.shift() : '';
+        let name = '';
+        if(userDefined !== '') name = !Array.isArray(userDefined[0]) ? userDefined.shift() : ''
 
         if(userDefined !== '')
         {
-            var tempAngles  = this.UpdateAngles(userDefined.length);
-            var Points      = GetPointTotal(this, userDefined.length);
-            var tempVectors = this.UpdateStatVectors(userDefined.length, tempAngles, userDefined);
+            let tempAngles  = this.UpdateAngles(userDefined.length);
+            let Points      = GetPointTotal(this, userDefined.length);
+            let tempVectors = this.UpdateStatVectors(userDefined.length, tempAngles, userDefined);
             this.setState({
                 Name:       name,
                 Values:     userDefined,
@@ -494,10 +495,10 @@ class Diagram extends React.Component
 
     UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, iDrawScale=this.state.WinInfo.iDrawScale)
     {
-        var tempVectors = [];//this.state.v2StatVectors
+        let tempVectors = [];//this.state.v2StatVectors
 
         //Calculate All Point
-        for (var i = 0; i < Quantity; i++)
+        for (let i = 0; i < Quantity; i++)
         {
             tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i][1] * (1/Values[i][3])*iDrawScale) ), new Vector2(0,0), Angles[i]));
         };
@@ -506,9 +507,9 @@ class Diagram extends React.Component
 
     UpdateAngles(Quantity = this.state.iQuantity)
     {
-        var tempArr = [];
-        var iSlice = 360/Quantity;
-        for(var i=0; i<Quantity; i++)
+        let tempArr = [];
+        let iSlice = 360/Quantity;
+        for(let i=0; i<Quantity; i++)
         { tempArr.push(i*iSlice); };
         return tempArr;
     }
@@ -548,7 +549,7 @@ class Diagram extends React.Component
         }
         else if(sTag === 'Min' || sTag === 'Max')
         {
-            var iIndex2 = 3;
+            let iIndex2 = 3;
             if(sTag === 'Min')
             {
                 iIndex2 = 2;
@@ -609,22 +610,22 @@ class Diagram extends React.Component
     RandomizeStats(props)
     {
         //Generate Random Order
-        var randOrder = [];
+        let randOrder = [];
         {//Creating scope here to clear 'tempOrder' when finished
-            var tempOrder = [];
+            let tempOrder = [];
 
             //Compile Order
-            for(var iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
+            for(let iTRO = 0; iTRO < this.state.iQuantity; iTRO++)
             { 
                 if(IsUnit(this.state.Values[iTRO][4]))
                 {tempOrder.push(iTRO);}
             };
             
             //Random Order
-            var iSize = tempOrder.length;
-            for(var iRO = 0; iRO < iSize; iRO++)
+            let iSize = tempOrder.length;
+            for(let iRO = 0; iRO < iSize; iRO++)
             {
-                var randIndex = Math.floor(Math.random()*(tempOrder.length));
+                let randIndex = Math.floor(Math.random()*(tempOrder.length));
 
                 randOrder.push(tempOrder[randIndex]);//Add Index
 
@@ -633,15 +634,15 @@ class Diagram extends React.Component
         }
 
         //Loop Through Random Order
-        var valuesBuffer = this.state.Values;
-        for(var i = 0; i < randOrder.length; i++)
+        let valuesBuffer = this.state.Values;
+        for(let i = 0; i < randOrder.length; i++)
         {
             valuesBuffer[randOrder[i]][1] = Calc.fRNG(valuesBuffer[randOrder[i]][2], valuesBuffer[randOrder[i]][3]);
         };
 
         this.setState({Values: valuesBuffer});
 
-        var Points = GetPointTotal(this, this.state.iQuantity, valuesBuffer);
+        let Points = GetPointTotal(this, this.state.iQuantity, valuesBuffer);
 
         this.setState(
         {
@@ -656,11 +657,11 @@ class Diagram extends React.Component
     UpdateViewPort(Scale=null)
     {
         /*Temp Vars*/
-        var tempScale = iBaseSize;
+        let tempScale = iBaseSize;
         if(Scale!==null){tempScale = Scale;}
-        var tempDrawScale = tempScale;
-        var tempDim = [(tempDrawScale*2)+edgeSpacer, (tempDrawScale*2)+edgeSpacer];
-        var tempCenter = [tempDim[0]/2, tempDim[1]/2];
+        let tempDrawScale = tempScale;
+        let tempDim = [(tempDrawScale*2)+edgeSpacer, (tempDrawScale*2)+edgeSpacer];
+        let tempCenter = [tempDim[0]/2, tempDim[1]/2];
 
         this.setState(
         {WinInfo:
@@ -680,13 +681,13 @@ class Diagram extends React.Component
 
     GetURLCode()
     {
-        var sResult = '';
-        for(var x=0;x<this.state.Values.length;x++)
+        let sResult = '';
+        for(let x=0;x<this.state.Values.length;x++)
         {
-            var xBuffer = '';
-            for(var y=0;y<5;y++)
+            let xBuffer = '';
+            for(let y=0;y<5;y++)
             {
-                var yBuffer = this.state.Values[x][y];
+                let yBuffer = this.state.Values[x][y];
                 {
                     xBuffer += yBuffer+',';
                 }
@@ -699,14 +700,14 @@ class Diagram extends React.Component
     ParseStringAsStatCard(value)
     {
         //Break String Down Into Objects
-        var superElement = [];
-        var element = [];
-        var subElement = '';
-        var bToggle = false;
-        var iElement = 1;
-        var bSuccess = false;
-        var name = 0;
-        for(var i = 0; i < value.length; i++)
+        let superElement = [];
+        let element = [];
+        let subElement = '';
+        let bToggle = false;
+        let iElement = 1;
+        let bSuccess = false;
+        let name = 0;
+        for(let i = 0; i < value.length; i++)
         {
             if(value[i] === '[')//element start
             {
@@ -718,7 +719,7 @@ class Diagram extends React.Component
             else if(value[i] === ']')//element end
             {
                 //1. push sub element
-                var buffer = subElement;                
+                let buffer = subElement;                
                 if(iElement !== 1 && iElement !== 5)
                 {
                     buffer = parseInt(buffer);
@@ -738,7 +739,7 @@ class Diagram extends React.Component
             else if(value[i] === ',')//sub element end/start: at the point a full sub element should have been compiled
             {
                 //push sub element
-                var buffer = subElement;                
+                let buffer = subElement;                
                 if(iElement !== 1 && iElement !== 5)
                 {
                     buffer = parseInt(buffer);
