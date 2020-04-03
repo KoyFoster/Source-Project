@@ -325,6 +325,7 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
+                Name: '',
                 Update: false,
                 iQuantity:  0,
                 iAngles:    [0],
@@ -472,6 +473,8 @@ class Diagram extends React.Component
         //window.addEventListener('resize', this.UpdateViewPort);
         var userDefined = this.props.location.pathname.replace('/','');
         userDefined = this.ParseStringAsStatCard(userDefined);
+        const name = !Array.isArray(userDefined[0]) ? userDefined.shift() : '';
+        console.log('name:',name,'userDefined:',userDefined)
 
         if(userDefined !== '')
         {
@@ -479,6 +482,7 @@ class Diagram extends React.Component
             var Points      = GetPointTotal(this, userDefined.length);
             var tempVectors = this.UpdateStatVectors(userDefined.length, tempAngles, userDefined);
             this.setState({
+                Name:       name,
                 Values:     userDefined,
                 iQuantity: userDefined.length,
                 iAngles:    tempAngles,
@@ -678,8 +682,6 @@ class Diagram extends React.Component
 
     GetURLCode()
     {
-        //if(!this.state.bUpdateUrl){return '';}
-
         var sResult = '';
         for(var x=0;x<this.state.Values.length;x++)
         {
@@ -687,18 +689,13 @@ class Diagram extends React.Component
             for(var y=0;y<5;y++)
             {
                 var yBuffer = this.state.Values[x][y];
-                /*if(y === 0 || y === 4)
-                {
-                    xBuffer += '\''+yBuffer+'\''+',';
-                }
-                else*/
                 {
                     xBuffer += yBuffer+',';
                 }
             }
             sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
         }
-        return 'koyfoster.github.io/'+sResult;
+        return 'koyfoster.github.io/'+this.state.Name+sResult;
     }
 
     ParseStringAsStatCard(value)
@@ -710,10 +707,12 @@ class Diagram extends React.Component
         var bToggle = false;
         var iElement = 1;
         var bSuccess = false;
+        var name = 0;
         for(var i = 0; i < value.length; i++)
         {
             if(value[i] === '[')//element start
             {
+                if(name === 0) name = i;
                 subElement = '';//clear sub element
                 iElement = 1;
                 continue;
@@ -760,6 +759,7 @@ class Diagram extends React.Component
         {
             return '';
         }
+        superElement.unshift(value.slice(0,name));
 
         return superElement;
     }
@@ -769,7 +769,7 @@ class Diagram extends React.Component
             <Box name='body' style={{display: 'inline-flex'}} bgcolor='darkGrey'>
                         <Row alignItems='top'>
                             <Col alignSelf ='top'>
-                                <TemplateSelector defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
+                                <TemplateSelector Name = {this.state.Name} setValue = {val => this.setState({Name: val})} defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
                                 <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                                     <StatInputForm
                                         Quantity    = {this.state.iQuantity}
