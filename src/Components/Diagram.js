@@ -183,11 +183,12 @@ var SetupTextAndTicks = function(Comp)
                 htmlResult.push(<line x1={(-tickWidth)+Comp.state.WinInfo.Center[0]} y1={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.WinInfo.Center[0]} y2={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} style={{stroke: 'rgb(0,0,0)', strokeWidth: iStrokeWidth*2}} transform={'rotate('+Comp.state.iAngles[i]+', '+Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1]+')'} />);
 
                 //Define and round off the TICK VALUES
-                var tickValue = Math.round(100 * (iT*( Comp.state.Values[i][3]/ticks)) )/100;
+                //var tickValue = Math.round(100 * (iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) )/100;
+                var tickValue = Math.ceil((iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) );
                 var tickCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
                 if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
                 {
-                    sTickFlip = ', rotate(180,'+tickCenter[0]+','+(tickCenter[1])+')';;
+                    sTickFlip = ', rotate(180,'+tickCenter[0]+','+(tickCenter[1])+')';
                 };
 
                 //Tick Value
