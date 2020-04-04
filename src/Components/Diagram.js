@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper, Slider, MenuItem/*, makeStyles, createMuiTheme*/ } from '@material-ui/core';
+import { Box, Paper, MenuItem } from '@material-ui/core';
 import {Vector2,  Coll, Calc} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
 import {Row, Col} from './DivGrid'
@@ -10,6 +10,7 @@ const iStrokeWidth = 0.5;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
 const edgeSpacer=128;
 const iBaseSize = 256;
+const iCenter = 128;
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
 
 let IsUnit = function(UnitType)
@@ -82,7 +83,7 @@ let gradeCalc = function(index, Values)
 let SetupDiagram = function(Comp)
 {
     /*Iterate For Each TriAngles*/
-    let v2Polygon = [new Vector2(0,0), new Vector2(0, -1*Comp.state.WinInfo.iDrawScale), new Vector2(0, -1*Comp.state.WinInfo.iDrawScale)];
+    let v2Polygon = [new Vector2(0,0), new Vector2(0, -100), new Vector2(0, -100)];
     let mesh = [];
     //The logic here is that a triangle is created and repeated for each number of angles
     for (let i = 0; i < Comp.state.iQuantity; i++)
@@ -109,7 +110,7 @@ let SetupDiagram = function(Comp)
         }
     }
     //Offset Coordinates
-    return mesh.map(function (arr) { return [Comp.state.WinInfo.Center[0] + arr[0], Comp.state.WinInfo.Center[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [iCenter + arr[0], iCenter + arr[1]]; });
 };
 
 //Stats 2 and 3 are the same everytime
@@ -130,17 +131,17 @@ let SetupStats = function(Comp)
         mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
     };
     //Offset Coordinates
-    return mesh.map(function (arr) { return [Comp.state.WinInfo.Center[0] + arr[0], Comp.state.WinInfo.Center[1] + arr[1]]; });
+    return mesh.map(function (arr) { return [iCenter + arr[0], iCenter + arr[1]]; });
 };
 
 let SetupTextAndTicks = function(Comp)
 {
     let ticks = 10;
-    let tickWidth = Comp.state.WinInfo.iDrawScale*0.005;
+    let tickWidth = 2;
 
-    let typeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iType];
-    let gradeCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-Comp.state.WinInfo.iDrawScale-Comp.state.Offsets.iGrade];
-    let strCenter = +Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1];
+    let typeCenter = [iCenter, iCenter-Comp.state.Offsets.iType];
+    let gradeCenter = [iCenter, iCenter-Comp.state.Offsets.iGrade];
+    let strCenter = +iCenter+','+iCenter;
 
     let strTypeRotateSelf = ', rotate(180,'+typeCenter[0]+','+(typeCenter[1])+')';
 
@@ -149,7 +150,7 @@ let SetupTextAndTicks = function(Comp)
     {
         let sTypeFlip = '';
         let sTickFlip = '';
-        let iFontSize = Math.floor(Comp.state.WinInfo.iDrawScale);
+        let iFontSize = 100;
         //Rotate text around it's center if upsidedown
         if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
         {
@@ -160,7 +161,7 @@ let SetupTextAndTicks = function(Comp)
         htmlResult.push(
         <text key = {'Grade'+i} name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}}
             x={gradeCenter[0]} y={gradeCenter[1]}
-            transform={'rotate('+Comp.state.iAngles[i]+', '+(Comp.state.WinInfo.Center[0])+','+(Comp.state.WinInfo.Center[1])+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')'} > 
+            transform={'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')'} > 
             {
                 gradeCalc(i, Comp.state.Values)
             }
@@ -179,20 +180,21 @@ let SetupTextAndTicks = function(Comp)
             if((iT%2) === 0)
             {
                 //TICKS
-                htmlResult.push(<line key={`L_${i}_${iT}`} x1={(-tickWidth)+Comp.state.WinInfo.Center[0]} y1={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} x2={tickWidth+Comp.state.WinInfo.Center[0]} y2={Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)} style={{stroke: 'rgb(0,0,0)', strokeWidth: iStrokeWidth*2}} transform={'rotate('+Comp.state.iAngles[i]+', '+Comp.state.WinInfo.Center[0]+','+Comp.state.WinInfo.Center[1]+')'} />);
+                htmlResult.push(<line key={`L_${i}_${iT}`} x1={(-tickWidth)+iCenter} y1={iCenter-((ticks)*iT)} x2={tickWidth+iCenter} y2={iCenter-((ticks)*iT)} style={{stroke: 'rgb(0,0,0)', strokeWidth: iStrokeWidth*2}} transform={'rotate('+Comp.state.iAngles[i]+', '+iCenter+','+iCenter+')'} />);
 
                 //Define and round off the TICK VALUES
-                //let tickValue = Math.round(100 * (iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) )/100;
                 let tickValue = Math.ceil((iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) );
-                let tickCenter = [Comp.state.WinInfo.Center[0], Comp.state.WinInfo.Center[1]-((Comp.state.WinInfo.iDrawScale/ticks)*iT)];
+                let tickCenter = [iCenter, iCenter-((ticks)*iT)];
+                let iTick = Comp.state.Offsets.iTick;
                 if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
                 {
                     sTickFlip = ', rotate(180,'+tickCenter[0]+','+(tickCenter[1])+')';
+                    iTick *= -1;
                 };
 
                 //Tick Value
-                htmlResult.push(<text key={`LT_${i}_${iT}`} textAnchor='middle' dominantBaseline='central' x={tickCenter[0]+ Comp.state.Offsets.iTick} y={tickCenter[1]} style={{stroke: 'rgb(0,0,0)', fontSize: tickWidth*9, strokeWidth: iStrokeWidth}} 
-                    transform={'rotate('+Comp.state.iAngles[i]+', '+(Comp.state.WinInfo.Center[0])+','+(Comp.state.WinInfo.Center[1])+')'+sTickFlip}>
+                htmlResult.push(<text key={`LT_${i}_${iT}`} textAnchor='middle' dominantBaseline='central' x={tickCenter[0] + iTick} y={tickCenter[1]} style={{stroke: 'rgb(0,0,0)', fontSize: tickWidth*4, strokeWidth: iStrokeWidth}} 
+                    transform={'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+')'+sTickFlip}>
                     {tickValue}
                 </text>);
             }
@@ -297,25 +299,6 @@ function compileMenuItems()
 }
 const tmplMenuItems = compileMenuItems();
 
-function ScaleSlider(props) {
-    //Slider Update
-    let OnSliderChange = (event, newValue) => {
-        props.OnSliderChange(newValue);
-    };
-
-    //Render
-    return(<div>
-    <Slider name='graphScale' min={iBaseSize/2} max={iBaseSize}
-        marks               =   {[{value: iBaseSize*0.5, label: iBaseSize*0.5},{value: iBaseSize*0.75, label: iBaseSize*0.75},{value: iBaseSize, label: iBaseSize}]}
-        defaultValue        =   {props.Scale}
-        valueLabelDisplay   =   "auto"
-        
-        onChangeCommitted =   {OnSliderChange}
-        orientation =   'vertical'>
-    </Slider>
-    </div>)
-}
-
 class Diagram extends React.Component
 {
     constructor(props){
@@ -335,15 +318,6 @@ class Diagram extends React.Component
                 //User Defined
                 Values:     [['',0,0,0,'']],
                 PointLimit: 0,
-            
-                //Window Dimensions Window Center
-                WinInfo:
-                {
-                    iScale: iBaseSize,
-                    iDrawScale: 1,
-                    iDimension: [],
-                    Center:     [0, 0],
-                },
 
                 Offsets:
                 {
@@ -362,21 +336,20 @@ class Diagram extends React.Component
     CalcOffset(state=null, event=null)
     {
         let tick = 6;
-        let type = 10;
-        let grade = 35;
-        let scale = this.state.WinInfo.iDrawScale;
+        let type = 108;
+        let grade = 120;
         if(state !== null)
         {
-            state.Offsets.iTick = tick * scale;
-            state.Offsets.iType = type * scale;
-            state.Offsets.iGrade = grade * scale;
+            state.Offsets.iTick = tick;
+            state.Offsets.iType = type;
+            state.Offsets.iGrade = grade;
         }
         else
         {
             this.setState({Offsets: {
-                iTick: tick * scale,
-                iType: type * scale,
-                iGrade: grade * scale
+                iTick: tick,
+                iType: type,
+                iGrade: grade
             }})
         }
     }
@@ -388,9 +361,6 @@ class Diagram extends React.Component
         if(state !== null)
         {
             state.iAngles               = this.UpdateAngles();
-            state.WinInfo.iDrawScale    = this.state.WinInfo.iScale;
-            state.WinInfo.iDimension    = [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer];
-            state.WinInfo.Center        = [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2];
             state.PointTotal            = Points[0];
             state.PointMin              = Points[1];
             state.PointMax              = Points[2];
@@ -400,12 +370,6 @@ class Diagram extends React.Component
         {
             this.setState({
                 iAngles: this.UpdateAngles(),
-                WinInfo:
-                {
-                    iDrawScale: this.state.WinInfo.iScale,
-                    iDimension: [(this.state.WinInfo.iScale*2)+edgeSpacer, (this.state.WinInfo.iScale*2)+edgeSpacer],
-                    Center: [this.state.WinInfo.iDimension[0]/2, this.state.WinInfo.iDimension[1]/2],
-                },
                 PointTotal: Points[0],
                 PointMin:   Points[1],
                 PointMax:   Points[2],
@@ -492,14 +456,14 @@ class Diagram extends React.Component
         }
     }
 
-    UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values, iDrawScale=this.state.WinInfo.iDrawScale)
+    UpdateStatVectors(Quantity=this.state.iQuantity, Angles=this.state.iAngles, Values=this.state.Values)
     {
         let tempVectors = [];//this.state.v2StatVectors
 
         //Calculate All Point
         for (let i = 0; i < Quantity; i++)
         {
-            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i][1] * (1/Values[i][3])*iDrawScale) ), new Vector2(0,0), Angles[i]));
+            tempVectors.push(Coll.v2Rotate2D(new Vector2(0, (-Values[i][1] * (1/Values[i][3])*100) ), new Vector2(0,0), Angles[i]));
         };
         return tempVectors;
     }
@@ -658,24 +622,11 @@ class Diagram extends React.Component
         /*Temp Vars*/
         let tempScale = iBaseSize;
         if(Scale!==null){tempScale = Scale;}
-        let tempDrawScale = tempScale;
-        let tempDim = [(tempDrawScale*2)+edgeSpacer, (tempDrawScale*2)+edgeSpacer];
-        let tempCenter = [tempDim[0]/2, tempDim[1]/2];
 
         this.setState(
-        {WinInfo:
-            {
-                iScale:     tempScale,
-                iDrawScale: tempDrawScale,
-                iDimension: tempDim,
-                Center:     tempCenter
-            },
-            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values, tempDrawScale)
+        {
+            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values)
         });
-    }
-
-    OnSliderChange(Scale) {
-       this.UpdateViewPort(Scale);
     }
 
     GetURLCode()
@@ -764,48 +715,37 @@ class Diagram extends React.Component
 
     render(){
         return(
-            <Box name='body' style={{display: 'flex'}} bgcolor='darkGrey'>
-                        <Row alignItems='top'>
-                            <Col alignSelf ='top'>
-                                <TemplateSelector Name = {this.state.Name} setValue = {val => this.setState({Name: val})} defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
-                                <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
-                                    <StatInputForm
-                                        Quantity    = {this.state.iQuantity}
-                                        PointTotal  = {this.state.PointTotal}
-                                        PointMin    = {this.state.PointMin}
-                                        PointMax    = {this.state.PointMax}
-                                        PointLimit  = {this.state.PointLimit}
-                                        Values      = {this.state.Values}
-                                        PointDiff   = {this.state.PointDiff}
-                                            
-                                        UpdateStates  = {this.UpdateStates.bind(this)}
-                                        RandomizeStats  = {this.RandomizeStats.bind(this)}
-                                        UpdatePointLimit  = {this.UpdatePointLimit.bind(this)} >
-                                    </StatInputForm>
-                                </Paper>
-                                <StatCode width='320px' code={this.GetURLCode()}></StatCode>
-                            </Col>
-                            <Paper style={{height: 442, margin: '4px 0px 4px 0px', padding: '8px 4px 8px 0px', display: 'flex', }}>
-                                <ScaleSlider
-                                        Scale           =   {this.state.WinInfo.iScale}
-                                        OnSliderChange  =   {this.OnSliderChange.bind(this)}>
-                                </ScaleSlider>
-                            </Paper>
-                            <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'row'}}>
-                                <svg width={this.state.WinInfo.iDimension[0]} height={this.state.WinInfo.iDimension[1]}>
-                                    <circle cx={this.state.WinInfo.Center[0]} cy={this.state.WinInfo.Center[1]} r={1*this.state.WinInfo.iDrawScale} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
-                                    <defs>
-                                        <linearGradient id = 'grad'>
-                                            <stop offset='0' stopColor='purple'/>
-                                            <stop offset='1' stopColor='lightBlue'/>
-                                        </linearGradient>
-                                    </defs>
-                                    {<polygon points={SetupDiagram(this)} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*2, fillRule: 'evenodd'}} />}
-                                    {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{fillOpacity: 0.66, stroke: 'red', strokeWidth: 0, fillRule: 'evenodd'}} />}
-                                    {SetupTextAndTicks(this)}
-                                </svg>
-                            </Paper>
-                        </Row>
+            <Box name='body' style={{display: 'flex', justifyContent: 'center', overflow: 'auto'}} bgcolor='darkGrey'>
+                <Row alignItems='top'>
+                    <Col alignSelf ='top'>
+                        <TemplateSelector Name = {this.state.Name} setValue = {val => this.setState({Name: val})} defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
+                        <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
+                            <StatInputForm
+                                Quantity    = {this.state.iQuantity}
+                                PointTotal  = {this.state.PointTotal}
+                                PointMin    = {this.state.PointMin}
+                                PointMax    = {this.state.PointMax}
+                                PointLimit  = {this.state.PointLimit}
+                                Values      = {this.state.Values}
+                                PointDiff   = {this.state.PointDiff}
+
+                                UpdateStates  = {this.UpdateStates.bind(this)}
+                                RandomizeStats  = {this.RandomizeStats.bind(this)}
+                                UpdatePointLimit  = {this.UpdatePointLimit.bind(this)}>
+                            </StatInputForm>
+                        </Paper>
+                        <StatCode width='320px' code={this.GetURLCode()}></StatCode>
+                    </Col>
+                    <Paper style={{width: '512px', margin: 4, padding: 4, display: 'flexbox', flexDirection: 'row'}}>
+                        <svg width='100%' viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
+                            <circle cx={iCenter} cy={iCenter} r={100} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
+                            <defs><linearGradient id = 'grad'><stop offset='0' stopColor='purple'/><stop offset='1' stopColor='lightBlue'/></linearGradient></defs>
+                            {<polygon points={SetupDiagram(this)} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*2, fillRule: 'evenodd'}} />}
+                            {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{fillOpacity: 0.66, stroke: 'red', strokeWidth: 0, fillRule: 'evenodd'}} />}
+                            {SetupTextAndTicks(this)}
+                        </svg>
+                    </Paper>
+                </Row>
             </Box>
         );
     }
