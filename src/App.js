@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import Grid from './Components/Forms/Grid';
 import StatCard from './Components/StatCard';
 import NavBar from './Components/NavBar'
 import FootBar from './Components/FootBar'
@@ -55,17 +54,12 @@ const theme = createMuiTheme({
 });//End of theme
 
   return (
-  // <Grid rowStyle ={{ border: '1px solid red'}} cellStyle={{border: '1px solid green'}} iRows = {7} Header = {true}>
-  //   <div name='butts'>One</div><div name='apples'>Two</div><div name='oranges'>Three</div>
-  // </Grid>
-
     <ThemeProvider theme={theme}>
     <Col>
-      <Box name='body' display='flex-box'  width='100%' height={'100%'} align='center' bgcolor='darkGrey'>
+      <Box name='body' display='flex-box' width='100%' height={'100%'} align='center' bgcolor='darkGrey'>
         <Col>
-          <NavBar></NavBar>
-          <StatCard></StatCard>
-          <FootBar></FootBar>
+          <NavBar/>
+          <FootBar/>
         </Col>
       </Box>
     </Col>

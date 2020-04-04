@@ -1,7 +1,7 @@
 import React from "react";
 
 function Col(props) {
-    return (<div style={{display: props.display||"inline", background: props.background,
+    return (<div style={{...props.style, display: props.display||"inline", background: props.background,
         justifyContent: props.justifyContent||'center',
         justifyItems:   props.justifyItems||'center',
         justifySelf:    props.justifySelf||'center',
@@ -13,7 +13,7 @@ function Col(props) {
 };
 
 function Row(props) {
-    return (<div style={{display: props.display||"flex", background: props.background,
+    return (<div style={{...props.style, display: props.display||"flex", background: props.background,
         justifyContent: props.justifyContent||'center',
         justifyItems:   props.justifyItems||'center',
         justifySelf:    props.justifySelf||'center',

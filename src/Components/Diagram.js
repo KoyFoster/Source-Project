@@ -4,7 +4,6 @@ import {Vector2,  Coll, Calc} from './KoyMath.js';
 import StatInputForm from './StatInputForm.js'
 import {Row, Col} from './DivGrid'
 import TemplateSelector from './TemplateSelector'
-import {Link, Redirect} from 'react-router-dom'
 import StatCode from './StatCode'
 
 const iStrokeWidth = 0.5;
@@ -694,7 +693,7 @@ class Diagram extends React.Component
             }
             sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
         }
-        return 'koyfoster.github.io/'+this.state.Name+sResult;
+        return 'koyfoster.github.io/StatCard/'+this.state.Name+sResult;
     }
 
     ParseStringAsStatCard(value)
@@ -765,7 +764,7 @@ class Diagram extends React.Component
 
     render(){
         return(
-            <Box name='body' style={{display: 'inline-flex'}} bgcolor='darkGrey'>
+            <Box name='body' style={{display: 'flex'}} bgcolor='darkGrey'>
                         <Row alignItems='top'>
                             <Col alignSelf ='top'>
                                 <TemplateSelector Name = {this.state.Name} setValue = {val => this.setState({Name: val})} defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>

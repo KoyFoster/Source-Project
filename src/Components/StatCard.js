@@ -6,11 +6,7 @@ import Diagram from "./Diagram.js";
 function StatCard(props)
 {
     //Render and Logic 
-    return( 
-        <Router>
-            {<Route path='/' component={Diagram} />}
-        </Router>
-    )
+    return(<Diagram {...props}></Diagram>)
 };
 
 export default StatCard;
