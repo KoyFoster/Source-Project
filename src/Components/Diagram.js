@@ -757,7 +757,7 @@ class Diagram extends React.Component
         {
             return '';
         }
-        superElement.unshift(value.slice(0,name));
+        superElement.unshift(value.slice(0,name).replace('StatCard/', ''));
 
         return superElement;
     }
