@@ -257,7 +257,7 @@ let GetPointMax = function(Quantity, Comp, Values = 0)
 };
 
 //templates
-const iDefTmpl = 1;
+const iDefTmpl = 0;
 const defaultTemplates = [
     /*{
         label:  'Empty',
