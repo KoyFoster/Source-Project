@@ -4,7 +4,6 @@ import {Paper} from '@material-ui/core'
 
 function TemplateSelector(props)
 {
-
     return(
         <Paper style={{margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}} display='flex'>
         Template

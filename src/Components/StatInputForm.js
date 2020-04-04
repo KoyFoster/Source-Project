@@ -68,7 +68,7 @@ function StatInputForm(props) {
               <TextField type="number" value={props.PointMax} disabled></TextField>,
             <div></div>]} iRows = {props.Quantity} style={{margins: 'none', padding: 'none'}} cellStyle={{margins: 'none', padding: 'none'}} Values={props.Values}>
 
-              <TextField name={"Types"} onChange={event => Update(event)}/>{/*[iRow][0]*/}
+              <TextField name={"Types"}  style={{ width: "100px" }} onChange={event => Update(event)}/>{/*[iRow][0]*/}
               <TextField type="number" name={"Value"} style={{ width: "56px" }}/>{/*[iRow][1]*/}
               <TextField type="number" name={"Min"} style={{ width: "56px" }}/>{/*[iRow][2]*/}
               <TextField type="number" name={"Max"} style={{ width: "56px" }}/>{/*[iRow][3]*/}

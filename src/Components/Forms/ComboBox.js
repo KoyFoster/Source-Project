@@ -4,8 +4,9 @@ import {Select} from '@material-ui/core'
 function ComboBox(props)
 {
     const [value, setValue] = useState(props.value ? props.value : props.defaultValue.label);
-    if(props.value !== value && value !== undefined && props.value !== undefined)
+    if((props.value !== value && value !== undefined) && (props.value !== '' && props.value !== undefined))
     {
+        console.log('pv:',props.value, 'v:',value);
         setValue(props.value);
     };
 
