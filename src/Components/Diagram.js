@@ -693,7 +693,7 @@ class Diagram extends React.Component
             }
             sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
         }
-        return 'koyfoster.github.io/#/StatCard/'+this.state.Name+sResult;
+        return String('koyfoster.github.io/#/StatCard/'+this.state.Name+sResult+'/').replace('//','/');
     }
 
     ParseStringAsStatCard(value)
