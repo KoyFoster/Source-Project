@@ -6,11 +6,22 @@ import {Row, Col} from './DivGrid'
 import TemplateSelector from './TemplateSelector'
 import StatCode from './StatCode'
 
+const iLineWidth = 1;
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
-const iBaseSize = 256;
-const iCenter = 128;
+const iBaseSize = 320;
+const iCenter = 160;
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
+
+const pallete =
+{
+    inner: 'gold',
+    outer: 'black',
+    grade: ['white', 'black'],
+    type: ['white', 'black'],
+    graph: ['purple', 'purple'],
+    grid: ['gold', 'black'],
+}
 
 let IsUnit = function(UnitType)
 { 
@@ -79,11 +90,12 @@ let gradeCalc = function(index, Values)
 }
 
 /*Update Diagram*/
+let diagramMesh = undefined;
 let SetupDiagram = function(Comp)
 {
+    const mesh = [];
     /*Iterate For Each TriAngles*/
     let v2Polygon = [new Vector2(0,0), new Vector2(0, -100), new Vector2(0, -100)];
-    let mesh = [];
     //The logic here is that a triangle is created and repeated for each number of angles
     for (let i = 0; i < Comp.state.iQuantity; i++)
     {
@@ -109,7 +121,8 @@ let SetupDiagram = function(Comp)
         }
     }
     //Offset Coordinates
-    return mesh.map(function (arr) { return [iCenter + arr[0], iCenter + arr[1]]; });
+    diagramMesh = mesh.map(function (arr) { return [iCenter + arr[0], iCenter + arr[1]]; });
+    return diagramMesh;
 };
 
 //Stats 2 and 3 are the same everytime
@@ -157,20 +170,37 @@ let SetupTextAndTicks = function(Comp)
         };
 
         //Letter Grades
+        let transform = 'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')';
+        const gradeSize = iFontSize/5;
+        const typeSize = iFontSize/9;
         htmlResult.push(
-        <text key = {'Grade'+i} name={'Grade'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/9, strokeWidth: iStrokeWidth}}
+        <text key = {'Grade'+i+'_1'} textAnchor='middle' dominantBaseline='central'
+            style={{stroke: 'rgb(0,0,0)', fontSize: gradeSize, strokeWidth: 0, fill: 'black'}}
+            x={gradeCenter[0]+1.5} y={gradeCenter[1]+1.5}
+            transform={transform} 
+        >{gradeCalc(i, Comp.state.Values)}</text>);
+        htmlResult.push(
+        <text key = {'Grade'+i+'_2'} textAnchor='middle' dominantBaseline='central'
+            style={{stroke: 'rgb(0,0,0)', fontSize: gradeSize, strokeWidth: 0, fill: 'white'}}
             x={gradeCenter[0]} y={gradeCenter[1]}
-            transform={'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')'} > 
-            {
-                gradeCalc(i, Comp.state.Values)
-            }
-        </text>);
+            transform={transform} 
+        >{gradeCalc(i, Comp.state.Values)}</text>);
 
         //Types
+        transform = 'rotate('+Comp.state.iAngles[i]+', '+(strCenter)+')'+sTypeFlip;
         htmlResult.push(
-        <text key={'Type'+i} name={'Type'+i} textAnchor='middle' dominantBaseline='central' style={{stroke: 'rgb(0,0,0)', fontSize: iFontSize/12, strokeWidth: iStrokeWidth}} x={typeCenter[0]} y={typeCenter[1]}
-            transform={'rotate('+Comp.state.iAngles[i]+', '+(strCenter)+')'+sTypeFlip}>
-            {Comp.state.Values[i][0]}
+        <text key={'Type'+i+'_1'} textAnchor= {'middle'} dominantBaseline='central' 
+            style={{stroke: 'rgb(0,0,0)', fontSize: typeSize, strokeWidth: 0, fill: pallete.type[1]}} 
+            x={typeCenter[0] +1} y={typeCenter[1] +1}
+            transform={transform}
+        >{Comp.state.Values[i][0]}
+        </text>);
+        htmlResult.push(
+        <text key={'Type'+i+'_2'} textAnchor= {'middle'} dominantBaseline='central' 
+            style={{stroke: 'rgb(0,0,0)', fontSize: typeSize, strokeWidth: 0, fill: pallete.type[0]}} 
+            x={typeCenter[0]} y={typeCenter[1]}
+            transform={transform}
+        >{`${Comp.state.Values[i][0]}`}
         </text>);
 
         /*Stat Ticks*/
@@ -179,27 +209,49 @@ let SetupTextAndTicks = function(Comp)
             if((iT%2) === 0)
             {
                 //TICKS
-                htmlResult.push(<line key={`L_${i}_${iT}`} x1={(-tickWidth)+iCenter} y1={iCenter-((ticks)*iT)} x2={tickWidth+iCenter} y2={iCenter-((ticks)*iT)} style={{stroke: 'rgb(0,0,0)', strokeWidth: iStrokeWidth*2}} transform={'rotate('+Comp.state.iAngles[i]+', '+iCenter+','+iCenter+')'} />);
+                const y = iCenter-((ticks)*iT);
+                const y2 = iCenter-((ticks)*iT);
+                const x2 = tickWidth+iCenter;
+                transform = 'rotate('+Comp.state.iAngles[i]+', '+iCenter+','+iCenter+')';
+                htmlResult.push(<line key={`L_${i}_${iT}_1`} x1={iCenter+0.5} y1={y+0.5} x2={x2+0.5} y2={y2+0.5} style={{strokeWidth: iStrokeWidth*2, stroke: 'black'}} transform={transform} />);
+                htmlResult.push(<line key={`L_${i}_${iT}_2`} x1={iCenter} y1={y} x2={x2} y2={y2} style={{strokeWidth: iStrokeWidth*2, stroke: 'gold'}} transform={transform} />);
 
                 //Define and round off the TICK VALUES
-                let tickValue = Math.ceil((iT*( (Comp.state.Values[i][3]/* +Comp.state.Values[i][2] */)/ticks)) );
+                let tickValue = Math.ceil((iT*( (Comp.state.Values[i][3])/ticks)) );
                 let tickCenter = [iCenter, iCenter-((ticks)*iT)];
-                let iTick = Comp.state.Offsets.iTick;
+                let iTick = 3;
                 if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
                 {
                     sTickFlip = ', rotate(180,'+tickCenter[0]+','+(tickCenter[1])+')';
                     iTick *= -1;
                 };
 
+                transform = 'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+')'+sTickFlip;
+                const x = tickCenter[0] + iTick;
+
                 //Tick Value
-                htmlResult.push(<text key={`LT_${i}_${iT}`} textAnchor='middle' dominantBaseline='central' x={tickCenter[0] + iTick} y={tickCenter[1]} style={{stroke: 'rgb(0,0,0)', fontSize: tickWidth*4, strokeWidth: iStrokeWidth}} 
-                    transform={'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+')'+sTickFlip}>
-                    {tickValue}
-                </text>);
+                let bDraw = i === 0 ? true : (Comp.state.Values[i][3] !== Comp.state.Values[i-1][3]);
+                if(bDraw)
+                {
+                    htmlResult.push(
+                    <text key={`LT_${i}_${iT}_1`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
+                    x={x +0.67} y={tickCenter[1] +0.67} 
+                    style={{stroke: 'rgb(0,0,0)', fontSize: 9, strokeWidth: 0, fill: 'black'}} 
+                        transform={transform}>
+                        {`${tickValue}${Comp.state.Values[i][4]}`}
+                    </text>);
+                    htmlResult.push(
+                    <text key={`LT_${i}_${iT}_2`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
+                    x={x} y={tickCenter[1]}
+                    style={{stroke: 'rgb(0,0,0)', fontSize: 9, strokeWidth: 0, fill: 'gold'}} 
+                        transform={transform}>
+                        {`${tickValue}${Comp.state.Values[i][4]}`}
+                    </text>);
+                }
             }
         };
     }
-    return htmlResult
+    return htmlResult;
 };
 
 let GetPointTotal = function(Comp, Quantity = Comp.state.iQuantity, Values = Comp.state.Values, PointDiff = Comp.state.PointDiff, PointLimit = Comp.state.PointLimit)
@@ -258,32 +310,32 @@ let GetPointMax = function(Quantity, Comp, Values = 0)
 };
 
 //templates
-const iDefTmpl = 0;
+const iDefTmpl = 2;
 const defaultTemplates = [
-    /*{
-        label:  'Empty',
-        defaultValues:  [0, 0],
-        pntLimit:      2
-    },*/
     {
         label:      'Jojo',
-        values:     [['POWER',3.0,1,10,'LVL'], ['SPEED',4.0,1,10,''], ['RANGE',4.0,1,10,''], ['DURABILITY',8.0,1,10,''], ['PRECISION',4.0,1,10,''], ['POTENTIAL',2.0,1,10,'']],
+        values:     [['POWER',3.0,1,10,''], ['SPEED',4.0,1,10,''], ['RANGE',4.0,1,10,''], ['DURABILITY',8.0,1,10,''], ['PRECISION',4.0,1,10,''], ['POTENTIAL',2.0,1,10,'']],
         pntLimit:  60,
         pntDiff: false
     },
     {
         label:  'Dark Souls III',
-        values: [['Vigor',15,1,99,'LVL'],['Attunement',10,1,99,''],['Endurance',15,1,99,''], ['Vitality',15,1,99,''],['Strength',20,1,99,''],['Dexterity',18,1,99,''], ['Intelligence',10,1,99,''],['Faith',10,1,99,''],['Luck',10,1,99,''], ['Hollowing',99,1,99,'X']],
+        values: [['Vigor',15,1,99,''],['Attunement',10,1,99,''],['Endurance',15,1,99,''], ['Vitality',15,1,99,''],['Strength',20,1,99,''],['Dexterity',18,1,99,''], ['Intelligence',10,1,99,''],['Faith',10,1,99,''],['Luck',10,1,99,''], ['Hollowing',99,1,99,'X']],
         pntLimit: 802,
         pntDiff: true
-        //key: ''+values|pntLimit+''
     },
-    /*{
+    {
+        label:  'Kono Subarashii',
+        values: [['Strength',79,79,99,''],['Health',21,21,99,''], ['Magic Power',92,92,99,''],['Dexterity',3,3,99,''],['Agility',42,42,99,''], ['Luck',1,1,99,'']],
+        pntLimit: 802,
+        pntDiff: true
+    },
+    {
         label:  'ArcheAge',
-        values: [['Strength',158,158,2560,'PNT'],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
+        values: [['Strength',158,158,2560,''],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
         pntLimit: 2560,
         pntDiff: false
-    }*/
+    }
 ];
 
 function compileMenuItems()
@@ -328,6 +380,8 @@ class Diagram extends React.Component
             interval: undefined,
             anim: 0,
             animInfo: 0,
+            animTL: iCenter,
+            animBR: 0
         };
         this.CalcOffset(this.state);
         this.LoadTemplate(this.state, defaultTemplates[iDefTmpl]);
@@ -341,13 +395,17 @@ class Diagram extends React.Component
         {
             State.interval = setInterval(() => this.animate(), 33);
             State.anim = 0;
+            State.animTL = iCenter;
+            State.animBR = 0;
         }
         else
         {
             if(this.state.interval) {clearInterval(this.state.interval);}
             this.setState({
             interval: setInterval(() => this.animate(), 33),
-            anim: 0});
+            anim: 0,
+            animTL: iCenter,
+            animBR: 0});
         }
             
     }
@@ -356,12 +414,13 @@ class Diagram extends React.Component
         if(this.state.anim === 1) return;
         if(this.state.anim + 0.1 >= 1)
         {
-            this.setState({anim: 1});
+            this.setState({anim: 1, animTl: 0, animBR: iBaseSize});
             clearInterval(this.state.interval);
         }
         else
         {
-            this.setState({anim: this.state.anim + 0.1});
+            const anim = this.state.anim + 0.1;
+            this.setState({anim: anim, animTL: iCenter - (iCenter*(1/anim)), animBR: iBaseSize*(1/anim) });
         }
     }
 
@@ -370,17 +429,15 @@ class Diagram extends React.Component
     {
         let tick = 6;
         let type = 108;
-        let grade = 120;
+        let grade = 124;
         if(state !== null)
         {
-            state.Offsets.iTick = tick;
             state.Offsets.iType = type;
             state.Offsets.iGrade = grade;
         }
         else
         {
             this.setState({Offsets: {
-                iTick: tick,
                 iType: type,
                 iGrade: grade
             }})
@@ -757,13 +814,27 @@ class Diagram extends React.Component
                         </Paper>
                         <StatCode GetURLCode={this.GetURLCode.bind(this)} />
                     </Col>
-                    <Paper style={{width: '512px', margin: 4, padding: 4, display: 'flexbox', flexDirection: 'row'}}>
+                    <Paper style={{width: '768px', margin: 4, padding: 4, display: 'flexbox', flexDirection: 'row'}}>
                         <svg width='100%' viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
-                            <circle cx={iCenter} cy={iCenter} r={100} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
-                            <defs><linearGradient id = 'grad'><stop offset='0' stopColor='purple'/><stop offset='1' stopColor='lightBlue'/></linearGradient></defs>
-                            {<polygon points={SetupDiagram(this)} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*2, fillRule: 'evenodd'}} />}
-                            <svg viewBox={`${iCenter - (iCenter*this.state.anim)} ${iCenter - (iCenter*this.state.anim)} 
-                            ${iBaseSize*this.state.anim} ${iBaseSize*this.state.anim}`}>{<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{fillOpacity: 0.66, stroke: 'red', strokeWidth: 0, fillRule: 'evenodd'}} />}</svg>
+
+                            <defs><linearGradient gradientTransform="rotate(90)" id = 'grad'><stop offset='0' stopColor={pallete.graph[0]}/><stop offset='1' stopColor='white'/></linearGradient></defs>
+                            <defs><linearGradient gradientTransform="rotate(90)" id = 'goldGrad'><stop offset='0' stopColor='white'/><stop offset='1' stopColor= {pallete.inner}/></linearGradient></defs>
+                            <defs><linearGradient gradientTransform="rotate(90)" id = 'greyGrad'><stop offset='0' stopColor='white'/><stop offset='1' stopColor= {pallete.outer}/></linearGradient></defs>
+
+                            <circle cx={iCenter} cy={iCenter} r={142} style={{fill: 'white', stroke: 'black', strokeWidth: iLineWidth}} />
+                            <circle cx={iCenter} cy={iCenter} r={139} style={{fill: 'url(#greyGrad)', stroke: 'black', strokeWidth: iLineWidth}} />
+                            <circle cx={iCenter} cy={iCenter} r={103} style={{fill: 'white', stroke: 'transparent'}} />
+                            <circle cx={iCenter} cy={iCenter} r={101} style={{fill: 'url(#goldGrad)', stroke: 'transparent', strokeWidth: 0}} />
+
+                            <svg viewBox={  `${this.state.animTL} ${this.state.animTL} ${this.state.animBR} ${this.state.animBR}`}>
+                                {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{stroke: pallete.graph[1], strokeWidth: 1, fillRule: 'evenodd'}} />}
+                            </svg>
+
+                            <svg viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}><polygon points={SetupDiagram(this)} style={{ fill: 'transparent', stroke: pallete.grid[1], strokeWidth: iLineWidth, fillRule: 'evenodd'}} /></svg>
+                            <polygon points={diagramMesh} style={{ fill: 'transparent', stroke: pallete.grid[0], strokeWidth: iLineWidth, fillRule: 'evenodd'}} />
+
+                            <circle cx={iCenter} cy={iCenter} r={101} style={{fill: 'transparent', stroke: 'black', strokeWidth: iLineWidth}} />
+
                             {SetupTextAndTicks(this)}
                         </svg>
                     </Paper>
