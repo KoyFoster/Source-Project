@@ -8,7 +8,6 @@ import StatCode from './StatCode'
 
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F','E','D','C','B','A','S','SS','SSS','?'];
-const edgeSpacer=128;
 const iBaseSize = 256;
 const iCenter = 128;
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
@@ -124,7 +123,7 @@ let SetupStats = function(Comp)
     {
         let i2 = i+1;
         if(i2 >= Comp.state.iQuantity){i2 = 0;}
-        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x*Comp.state.anim, Comp.state.v2StatVectors[i].y*Comp.state.anim), new Vector2(Comp.state.v2StatVectors[i2].x*Comp.state.anim, Comp.state.v2StatVectors[i2].y*Comp.state.anim) ];
+        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2].x, Comp.state.v2StatVectors[i2].y) ];
 
         mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
         mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
@@ -307,47 +306,56 @@ class Diagram extends React.Component
         this.state = 
         {
             //User inputted stats as semi-colin dilimited strings
-                Name: '',
-                Update: false,
-                iQuantity:  0,
-                iAngles:    [0],
-                PointTotal: 0,
-                PointMin:   0,
-                PointDiff: false,//Wether or not to take the difference between PointTotal and Minimum Required Stats
-                v2StatVectors:  [],
-                //User Defined
-                Values:     [['',0,0,0,'']],
-                PointLimit: 0,
+            Name: '',
+            Update: false,
+            iQuantity:  0,
+            iAngles:    [0],
+            PointTotal: 0,
+            PointMin:   0,
+            PointDiff: false,//Wether or not to take the difference between PointTotal and Minimum Required Stats
+            v2StatVectors:  [],
+            //User Defined
+            Values:     [['',0,0,0,'']],
+            PointLimit: 0,
 
-                Offsets:
-                {
-                    iTick:     1,
-                    iType:     1,
-                    iGrade:    1,
-                },
-                delta: 0,
-                interval: undefined,
-                anim: 0
+            Offsets:
+            {
+                iTick:     1,
+                iType:     1,
+                iGrade:    1,
+            },
+            delta: 0,
+            interval: undefined,
+            anim: 0,
+            animInfo: 0,
         };
         this.CalcOffset(this.state);
         this.LoadTemplate(this.state, defaultTemplates[iDefTmpl]);
         this.Initialize(this.state);
-        this.startAnim();
-        //this.UpdateViewPort = this.UpdateViewPort.bind(this);
+        this.startAnim(this.state);
     }
 
-    startAnim()
+    startAnim(State = undefined)
     {
-        this.setState({
-            interval: setInterval(() => this.animate(), 17),
+        if(State)
+        {
+            State.interval = setInterval(() => this.animate(), 33);
+            State.anim = 0;
+        }
+        else
+        {
+            if(this.state.interval) {clearInterval(this.state.interval);}
+            this.setState({
+            interval: setInterval(() => this.animate(), 33),
             anim: 0});
+        }
+            
     }
     animate()
     {
-        console.log('animate');
         if(this.state.anim === 1) return;
         if(this.state.anim + 0.1 >= 1)
-        { 
+        {
             this.setState({anim: 1});
             clearInterval(this.state.interval);
         }
@@ -442,7 +450,6 @@ class Diagram extends React.Component
         if(!this.LoadTemplate(null, template)) return;
         let tempAngles  = this.UpdateAngles(template.values.length);
         
-        // console.log('GetPointTotal: Quantity:',template.values.length, 'Values:',template.values, 'arrDiff:',template.pntDiff, 'PointLimit:',template.pntLimit);
         let Points = GetPointTotal(this, template.values.length, template.values, template.pntDiff, template.pntLimit);
 
         this.setState({
@@ -458,7 +465,6 @@ class Diagram extends React.Component
     //Setup Listener Events
     componentDidMount() 
     {
-        //window.addEventListener('resize', this.UpdateViewPort);
         let userDefined = this.props.location.pathname.replace('/','');
         userDefined = this.ParseStringAsStatCard(userDefined);
         let name = '';
@@ -640,19 +646,8 @@ class Diagram extends React.Component
             PointMax:       Points[2],
             v2StatVectors:  this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, valuesBuffer)
         });
-    }
-    
-    //Just Update
-    UpdateViewPort(Scale=null)
-    {
-        /*Temp Vars*/
-        let tempScale = iBaseSize;
-        if(Scale!==null){tempScale = Scale;}
 
-        this.setState(
-        {
-            v2StatVectors: this.UpdateStatVectors(this.state.iQuantity, this.state.iAngles, this.state.Values)
-        });
+        this.startAnim();
     }
 
     GetURLCode()
@@ -664,9 +659,7 @@ class Diagram extends React.Component
             for(let y=0;y<5;y++)
             {
                 let yBuffer = this.state.Values[x][y];
-                {
-                    xBuffer += yBuffer+',';
-                }
+                xBuffer += yBuffer+',';
             }
             sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
         }
@@ -679,7 +672,6 @@ class Diagram extends React.Component
         let superElement = [];
         let element = [];
         let subElement = '';
-        let bToggle = false;
         let iElement = 1;
         let bSuccess = false;
         let name = 0;
@@ -742,9 +734,12 @@ class Diagram extends React.Component
     render(){
         return(
             <Box name='body' style={{display: 'flex', justifyContent: 'center', overflow: 'auto'}} bgcolor='darkGrey'>
+                {
+                   //<audio ref='audio_tag' src='.\\JoJoStats.mp3' controls></audio>
+                }
                 <Row alignItems='top'>
                     <Col alignSelf ='top'>
-                        <TemplateSelector Name = {this.state.Name} setValue = {val => this.setState({Name: val})} defaultValue={Object.create(defaultTemplates[iDefTmpl])} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
+                        <TemplateSelector Name = {this.state.Name} setValue = {val => this.setState({Name: val})} defaultValue={defaultTemplates[iDefTmpl]} MenuItems={tmplMenuItems} OnTemplateChange={this.OnTemplateChange.bind(this)}></TemplateSelector>
                         <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                             <StatInputForm
                                 Quantity    = {this.state.iQuantity}
@@ -760,14 +755,15 @@ class Diagram extends React.Component
                                 UpdatePointLimit  = {this.UpdatePointLimit.bind(this)}>
                             </StatInputForm>
                         </Paper>
-                        <StatCode width='320px' code={this.GetURLCode()}></StatCode>
+                        <StatCode GetURLCode={this.GetURLCode.bind(this)} />
                     </Col>
                     <Paper style={{width: '512px', margin: 4, padding: 4, display: 'flexbox', flexDirection: 'row'}}>
                         <svg width='100%' viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
                             <circle cx={iCenter} cy={iCenter} r={100} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*4}} />
                             <defs><linearGradient id = 'grad'><stop offset='0' stopColor='purple'/><stop offset='1' stopColor='lightBlue'/></linearGradient></defs>
                             {<polygon points={SetupDiagram(this)} style={{fill: 'white', fillOpacity: 0.5, stroke: 'black', strokeWidth: iStrokeWidth*2, fillRule: 'evenodd'}} />}
-                            {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{fillOpacity: 0.66, stroke: 'red', strokeWidth: 0, fillRule: 'evenodd'}} />}
+                            <svg viewBox={`${iCenter - (iCenter*this.state.anim)} ${iCenter - (iCenter*this.state.anim)} 
+                            ${iBaseSize*this.state.anim} ${iBaseSize*this.state.anim}`}>{<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{fillOpacity: 0.66, stroke: 'red', strokeWidth: 0, fillRule: 'evenodd'}} />}</svg>
                             {SetupTextAndTicks(this)}
                         </svg>
                     </Paper>

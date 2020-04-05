@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Paper } from '@material-ui/core';
 import {HashRouter, Link, Route} from 'react-router-dom'
 import StatCard from './StatCard';
-import {Row, Col} from './DivGrid'
+import {Row} from './DivGrid'
 
 function NavBar(props)
 {
