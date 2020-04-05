@@ -124,7 +124,7 @@ let SetupStats = function(Comp)
     {
         let i2 = i+1;
         if(i2 >= Comp.state.iQuantity){i2 = 0;}
-        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x, Comp.state.v2StatVectors[i].y), new Vector2(Comp.state.v2StatVectors[i2].x, Comp.state.v2StatVectors[i2].y) ];
+        v2Polygon = [new Vector2(0,0), new Vector2(Comp.state.v2StatVectors[i].x*Comp.state.anim, Comp.state.v2StatVectors[i].y*Comp.state.anim), new Vector2(Comp.state.v2StatVectors[i2].x*Comp.state.anim, Comp.state.v2StatVectors[i2].y*Comp.state.anim) ];
 
         mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
         mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
@@ -324,12 +324,37 @@ class Diagram extends React.Component
                     iTick:     1,
                     iType:     1,
                     iGrade:    1,
-                }
+                },
+                delta: 0,
+                interval: undefined,
+                anim: 0
         };
         this.CalcOffset(this.state);
         this.LoadTemplate(this.state, defaultTemplates[iDefTmpl]);
         this.Initialize(this.state);
+        this.startAnim();
         //this.UpdateViewPort = this.UpdateViewPort.bind(this);
+    }
+
+    startAnim()
+    {
+        this.setState({
+            interval: setInterval(() => this.animate(), 17),
+            anim: 0});
+    }
+    animate()
+    {
+        console.log('animate');
+        if(this.state.anim === 1) return;
+        if(this.state.anim + 0.1 >= 1)
+        { 
+            this.setState({anim: 1});
+            clearInterval(this.state.interval);
+        }
+        else
+        {
+            this.setState({anim: this.state.anim + 0.1});
+        }
     }
 
     //Calculate Offsets once per rezise
@@ -427,6 +452,7 @@ class Diagram extends React.Component
             PointMax:       Points[2],
             v2StatVectors:  this.UpdateStatVectors(template.values.length, tempAngles, template.values)
         });
+        this.startAnim();
     }
 
     //Setup Listener Events
