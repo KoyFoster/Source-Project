@@ -235,14 +235,14 @@ let SetupTextAndTicks = function(Comp)
                     htmlResult.push(
                     <text key={`LT_${i}_${iT}_1`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
                     x={x +0.67} y={tickCenter[1] +0.67} 
-                    style={{fontSize: 8, strokeWidth: 0, fill: pallete.grid[1]}} 
+                    style={{fontSize: 10, strokeWidth: 0, fill: pallete.grid[1]}} 
                         transform={transform}>
                         {`${tickValue}${Comp.state.Values[i][4]}`}
                     </text>);
                     htmlResult.push(
                     <text key={`LT_${i}_${iT}_2`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
                     x={x} y={tickCenter[1]}
-                    style={{fontSize: 8, strokeWidth: 0, fill: pallete.grid[0]}} 
+                    style={{fontSize: 10, stroke: 'rgb(0,0,0)', strokeWidth: 0.5, fill: pallete.grid[0]}} 
                         transform={transform}>
                         {`${tickValue}${Comp.state.Values[i][4]}`}
                     </text>);
