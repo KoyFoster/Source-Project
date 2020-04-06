@@ -331,7 +331,7 @@ const defaultTemplates = [
     },
     {
         label:  'ArcheAge',
-        values: [['Strength',158,158,2560,''],['Agility',158,158,2560,''],['Stamina',158,158,2560,''],['Spirit',158,158,2560,''],['Intelligence',158,158,2560,''], ['Cast Time',10,0,100,'%'],['Attack Speed',10,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
+        values: [['Strength',1380,3,2560,''],['Agility',58,3,2560,''],['Stamina',158,3,2560,''],['Spirit',58,3,2560,''],['Intelligence',158,58,2560,''], ['Cast Time',100,0,100,'%'],['Attack Speed',50,0,100,'%'],['Move Speed',5.4,5.4,10,'m/s']],
         pntLimit: 2560,
         pntDiff: false
     }
