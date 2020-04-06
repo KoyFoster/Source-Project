@@ -15,12 +15,12 @@ const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT'
 
 const pallete =
 {
-    inner: 'gold',
-    outer: 'black',
-    grade: ['white', 'black'],
-    type: ['white', 'black'],
-    graph: ['purple', 'purple'],
-    grid: ['gold', 'black'],
+    inner: ['#EEEEEE', 'gold'],
+    outer: ['#EEEEEE','#222222'],
+    gradeText: ['white', '#111111'],
+    typeText: ['white', '#111111'],
+    graph: ['purple', 'white', 'purple'],
+    grid: ['gold', '#111111'],
 }
 
 let IsUnit = function(UnitType)
@@ -160,14 +160,12 @@ let SetupTextAndTicks = function(Comp)
     let htmlResult = [];
     for (let i = 0; i < Comp.state.iQuantity; i++)
     {
+        const bFlip = Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270;
         let sTypeFlip = '';
         let sTickFlip = '';
         let iFontSize = 100;
         //Rotate text around it's center if upsidedown
-        if(Comp.state.iAngles[i] > 90 && Comp.state.iAngles[i] < 270)
-        {
-            sTypeFlip = strTypeRotateSelf;
-        };
+        if(bFlip) sTypeFlip = strTypeRotateSelf;
 
         //Letter Grades
         let transform = 'rotate('+Comp.state.iAngles[i]+', '+(iCenter)+','+(iCenter)+'), rotate('+-Comp.state.iAngles[i]+','+gradeCenter[0]+','+(gradeCenter[1])+')';
@@ -175,13 +173,13 @@ let SetupTextAndTicks = function(Comp)
         const typeSize = iFontSize/9;
         htmlResult.push(
         <text key = {'Grade'+i+'_1'} textAnchor='middle' dominantBaseline='central'
-            style={{stroke: 'rgb(0,0,0)', fontSize: gradeSize, strokeWidth: 0, fill: 'black'}}
+            style={{stroke: 'rgb(0,0,0)', fontSize: gradeSize, strokeWidth: 0, fill: pallete.gradeText[1]}}
             x={gradeCenter[0]+1.5} y={gradeCenter[1]+1.5}
             transform={transform} 
         >{gradeCalc(i, Comp.state.Values)}</text>);
         htmlResult.push(
         <text key = {'Grade'+i+'_2'} textAnchor='middle' dominantBaseline='central'
-            style={{stroke: 'rgb(0,0,0)', fontSize: gradeSize, strokeWidth: 0, fill: 'white'}}
+            style={{stroke: 'rgb(0,0,0)', fontSize: gradeSize, strokeWidth: 0, fill: pallete.gradeText[0]}}
             x={gradeCenter[0]} y={gradeCenter[1]}
             transform={transform} 
         >{gradeCalc(i, Comp.state.Values)}</text>);
@@ -190,14 +188,14 @@ let SetupTextAndTicks = function(Comp)
         transform = 'rotate('+Comp.state.iAngles[i]+', '+(strCenter)+')'+sTypeFlip;
         htmlResult.push(
         <text key={'Type'+i+'_1'} textAnchor= {'middle'} dominantBaseline='central' 
-            style={{stroke: 'rgb(0,0,0)', fontSize: typeSize, strokeWidth: 0, fill: pallete.type[1]}} 
+            style={{fontSize: typeSize, strokeWidth: 0, fill: pallete.typeText[1]}} 
             x={typeCenter[0] +1} y={typeCenter[1] +1}
             transform={transform}
         >{Comp.state.Values[i][0]}
         </text>);
         htmlResult.push(
         <text key={'Type'+i+'_2'} textAnchor= {'middle'} dominantBaseline='central' 
-            style={{stroke: 'rgb(0,0,0)', fontSize: typeSize, strokeWidth: 0, fill: pallete.type[0]}} 
+            style={{fontSize: typeSize, strokeWidth: 0, fill: pallete.typeText[0]}} 
             x={typeCenter[0]} y={typeCenter[1]}
             transform={transform}
         >{`${Comp.state.Values[i][0]}`}
@@ -213,8 +211,9 @@ let SetupTextAndTicks = function(Comp)
                 const y2 = iCenter-((ticks)*iT);
                 const x2 = tickWidth+iCenter;
                 transform = 'rotate('+Comp.state.iAngles[i]+', '+iCenter+','+iCenter+')';
-                htmlResult.push(<line key={`L_${i}_${iT}_1`} x1={iCenter+0.5} y1={y+0.5} x2={x2+0.5} y2={y2+0.5} style={{strokeWidth: iStrokeWidth*2, stroke: 'black'}} transform={transform} />);
-                htmlResult.push(<line key={`L_${i}_${iT}_2`} x1={iCenter} y1={y} x2={x2} y2={y2} style={{strokeWidth: iStrokeWidth*2, stroke: 'gold'}} transform={transform} />);
+                
+                htmlResult.push(<line key={`L_${i}_${iT}_1`} x1={iCenter + (!bFlip ? 0.5 : 0.5)} y1={y + (!bFlip ? 0.5 : -0.5)} x2={x2 + (!bFlip ? 0.5 : 0.5)} y2={y2 + (!bFlip ? 0.5 : -0.5)} style={{strokeWidth: iStrokeWidth*2, stroke: pallete.grid[1]}} transform={transform} />);
+                htmlResult.push(<line key={`L_${i}_${iT}_2`} x1={iCenter} y1={y} x2={x2} y2={y2} style={{strokeWidth: iStrokeWidth*2, stroke: pallete.grid[0]}} transform={transform} />);
 
                 //Define and round off the TICK VALUES
                 let tickValue = Math.ceil((iT*( (Comp.state.Values[i][3])/ticks)) );
@@ -236,14 +235,14 @@ let SetupTextAndTicks = function(Comp)
                     htmlResult.push(
                     <text key={`LT_${i}_${iT}_1`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
                     x={x +0.67} y={tickCenter[1] +0.67} 
-                    style={{stroke: 'rgb(0,0,0)', fontSize: 9, strokeWidth: 0, fill: 'black'}} 
+                    style={{fontSize: 9, strokeWidth: 0, fill: pallete.grid[1]}} 
                         transform={transform}>
                         {`${tickValue}${Comp.state.Values[i][4]}`}
                     </text>);
                     htmlResult.push(
                     <text key={`LT_${i}_${iT}_2`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
                     x={x} y={tickCenter[1]}
-                    style={{stroke: 'rgb(0,0,0)', fontSize: 9, strokeWidth: 0, fill: 'gold'}} 
+                    style={{fontSize: 9, strokeWidth: 0, fill: pallete.grid[0]}} 
                         transform={transform}>
                         {`${tickValue}${Comp.state.Values[i][4]}`}
                     </text>);
@@ -310,7 +309,7 @@ let GetPointMax = function(Quantity, Comp, Values = 0)
 };
 
 //templates
-const iDefTmpl = 2;
+const iDefTmpl = 0;
 const defaultTemplates = [
     {
         label:      'Jojo',
@@ -327,7 +326,7 @@ const defaultTemplates = [
     {
         label:  'Kono Subarashii',
         values: [['Strength',79,79,99,''],['Health',21,21,99,''], ['Magic Power',92,92,99,''],['Dexterity',3,3,99,''],['Agility',42,42,99,''], ['Luck',1,1,99,'']],
-        pntLimit: 802,
+        pntLimit: 0,
         pntDiff: true
     },
     {
@@ -427,7 +426,6 @@ class Diagram extends React.Component
     //Calculate Offsets once per rezise
     CalcOffset(state=null, event=null)
     {
-        let tick = 6;
         let type = 108;
         let grade = 124;
         if(state !== null)
@@ -523,6 +521,7 @@ class Diagram extends React.Component
     componentDidMount() 
     {
         let userDefined = this.props.location.pathname.replace('/','');
+        const pointDiff = userDefined.search('Min=true') > -1;
         userDefined = this.ParseStringAsStatCard(userDefined);
         let name = '';
         if(userDefined !== '') name = !Array.isArray(userDefined[0]) ? userDefined.shift() : ''
@@ -541,6 +540,7 @@ class Diagram extends React.Component
                 PointTotal: Points[0],
                 PointMin:   Points[1],
                 PointMax:   Points[2],
+                PointDiff: pointDiff,
             });
         }
     }
@@ -720,7 +720,7 @@ class Diagram extends React.Component
             }
             sResult += '['+xBuffer.slice(0,xBuffer.length-1)+']';
         }
-        return String('koyfoster.github.io/#/StatCard/'+this.state.Name+sResult+'/').replace('//','/');
+        return String('koyfoster.github.io/#/StatCard/'+this.state.Name+sResult+(this.state.PointDiff ? 'Min=true' : '')+'/').replace('//','/');
     }
 
     ParseStringAsStatCard(value)
@@ -817,23 +817,23 @@ class Diagram extends React.Component
                     <Paper style={{width: '768px', margin: 4, padding: 4, display: 'flexbox', flexDirection: 'row'}}>
                         <svg width='100%' viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
 
-                            <defs><linearGradient gradientTransform="rotate(90)" id = 'grad'><stop offset='0' stopColor={pallete.graph[0]}/><stop offset='1' stopColor='white'/></linearGradient></defs>
-                            <defs><linearGradient gradientTransform="rotate(90)" id = 'goldGrad'><stop offset='0' stopColor='white'/><stop offset='1' stopColor= {pallete.inner}/></linearGradient></defs>
-                            <defs><linearGradient gradientTransform="rotate(90)" id = 'greyGrad'><stop offset='0' stopColor='white'/><stop offset='1' stopColor= {pallete.outer}/></linearGradient></defs>
+                            <defs><linearGradient gradientTransform="rotate(90)" id = 'grad'><stop offset='0' stopColor={pallete.graph[0]}/><stop offset='1' stopColor={pallete.graph[1]}/></linearGradient></defs>
+                            <defs><linearGradient gradientTransform="rotate(90)" id = 'goldGrad'><stop offset='0' stopColor={pallete.inner[0]}/><stop offset='1' stopColor= {pallete.inner[1]}/></linearGradient></defs>
+                            <defs><linearGradient gradientTransform="rotate(90)" id = 'greyGrad'><stop offset='0' stopColor={pallete.outer[0]}/><stop offset='1' stopColor= {pallete.outer[1]}/></linearGradient></defs>
 
-                            <circle cx={iCenter} cy={iCenter} r={142} style={{fill: 'white', stroke: 'black', strokeWidth: iLineWidth}} />
-                            <circle cx={iCenter} cy={iCenter} r={139} style={{fill: 'url(#greyGrad)', stroke: 'black', strokeWidth: iLineWidth}} />
+                            <circle cx={iCenter} cy={iCenter} r={142} style={{fill: 'white', stroke: '#111111', strokeWidth: iLineWidth}} />
+                            <circle cx={iCenter} cy={iCenter} r={139} style={{fill: 'url(#greyGrad)', stroke: '#111111', strokeWidth: iLineWidth}} />
                             <circle cx={iCenter} cy={iCenter} r={103} style={{fill: 'white', stroke: 'transparent'}} />
                             <circle cx={iCenter} cy={iCenter} r={101} style={{fill: 'url(#goldGrad)', stroke: 'transparent', strokeWidth: 0}} />
 
                             <svg viewBox={  `${this.state.animTL} ${this.state.animTL} ${this.state.animBR} ${this.state.animBR}`}>
-                                {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{stroke: pallete.graph[1], strokeWidth: 1, fillRule: 'evenodd'}} />}
+                                {<polygon points={SetupStats(this)} fill = 'url(#grad)' style={{stroke: pallete.graph[2], strokeWidth: 1, fillRule: 'evenodd'}} />}
                             </svg>
 
                             <svg viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}><polygon points={SetupDiagram(this)} style={{ fill: 'transparent', stroke: pallete.grid[1], strokeWidth: iLineWidth, fillRule: 'evenodd'}} /></svg>
                             <polygon points={diagramMesh} style={{ fill: 'transparent', stroke: pallete.grid[0], strokeWidth: iLineWidth, fillRule: 'evenodd'}} />
 
-                            <circle cx={iCenter} cy={iCenter} r={101} style={{fill: 'transparent', stroke: 'black', strokeWidth: iLineWidth}} />
+                            <circle cx={iCenter} cy={iCenter} r={101} style={{fill: 'transparent', stroke: '#111111', strokeWidth: iLineWidth}} />
 
                             {SetupTextAndTicks(this)}
                         </svg>
