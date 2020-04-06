@@ -63,9 +63,9 @@ function StatInputForm(props) {
             
             <Grid onChange={event => Update(event)} hHeader={[<div>Stats</div>,<div>Value</div>,<div>Min</div>,<div>Max</div>,<div>LVL</div>]}
               hFooter={[<div>Totals</div>,
-              <TextField type="number" value={props.PointTotal} disabled></TextField>,
-              <TextField type="number" value={props.PointMin} disabled></TextField>,
-              <TextField type="number" value={props.PointMax} disabled></TextField>,
+              <TextField value={props.PointTotal} disabled></TextField>,
+              <TextField value={props.PointMin} disabled></TextField>,
+              <TextField value={props.PointMax} disabled></TextField>,
             <div></div>]} iRows = {props.Quantity} style={{margins: 'none', padding: 'none'}} cellStyle={{margins: 'none', padding: 'none'}} Values={props.Values}>
 
               <TextField name={"Types"}  style={{ width: "100px" }} onChange={event => Update(event)}/>{/*[iRow][0]*/}

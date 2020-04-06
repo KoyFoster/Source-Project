@@ -229,20 +229,20 @@ let SetupTextAndTicks = function(Comp)
                 const x = tickCenter[0] + iTick;
 
                 //Tick Value
-                let bDraw = i === 0 ? true : (Comp.state.Values[i][3] !== Comp.state.Values[i-1][3]);
+                let bDraw = i === 0 ? true : (`${Comp.state.Values[i][3]}${Comp.state.Values[i][4]}` !== `${Comp.state.Values[i-1][3]}${Comp.state.Values[i-1][4]}`);
                 if(bDraw)
                 {
                     htmlResult.push(
                     <text key={`LT_${i}_${iT}_1`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
                     x={x +0.67} y={tickCenter[1] +0.67} 
-                    style={{fontSize: 9, strokeWidth: 0, fill: pallete.grid[1]}} 
+                    style={{fontSize: 8, strokeWidth: 0, fill: pallete.grid[1]}} 
                         transform={transform}>
                         {`${tickValue}${Comp.state.Values[i][4]}`}
                     </text>);
                     htmlResult.push(
                     <text key={`LT_${i}_${iT}_2`} textAnchor= {iTick > 0 ? 'start' : 'end'} dominantBaseline='central' 
                     x={x} y={tickCenter[1]}
-                    style={{fontSize: 9, strokeWidth: 0, fill: pallete.grid[0]}} 
+                    style={{fontSize: 8, strokeWidth: 0, fill: pallete.grid[0]}} 
                         transform={transform}>
                         {`${tickValue}${Comp.state.Values[i][4]}`}
                     </text>);
