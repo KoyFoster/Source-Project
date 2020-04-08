@@ -13,6 +13,7 @@ import Grid from './Forms/Grid';
 
 //User Input Class
 function StatInputForm(props) {
+  
   //On Slices Change, update form
   var RandomizeStats = event => {
     if (event.target.name === "Limit") {
@@ -35,24 +36,24 @@ function StatInputForm(props) {
             label="Stats"
             type="number"
             name="Quantity"
-            value={props.Quantity}
+            value={props.data.Size}
             onChange={event => Update(event)}
           ></TextField>
           <InputLabel style={{ display: "flexBox" }}> Limit: </InputLabel>
           <TextField
             type="number"
             name="Limit"
-            value={props.PointLimit}
+            value={props.data.PointLimit}
             onChange={event => RandomizeStats(event)}
           ></TextField>
         </Row>
         <Row>
           <Checkbox
             name="PointDiff"
-            checked={props.PointDiff}
+            checked={props.data.PointDiff}
             onChange={event => Update(event)}
           />
-          <InputLabel>Min - Total Points: {props.PointTotal} </InputLabel>
+          <InputLabel>Min - Total Points: {props.data.PointTotal} </InputLabel>
         </Row>
       </Col>
       <Row>
@@ -63,10 +64,10 @@ function StatInputForm(props) {
             
             <Grid onChange={event => Update(event)} hHeader={[<div>Stats</div>,<div>Value</div>,<div>Min</div>,<div>Max</div>,<div>LVL</div>]}
               hFooter={[<div>Totals</div>,
-              <TextField value={props.PointTotal} disabled></TextField>,
-              <TextField value={props.PointMin} disabled></TextField>,
-              <TextField value={props.PointMax} disabled></TextField>,
-            <div></div>]} iRows = {props.Quantity} style={{margins: 'none', padding: 'none'}} cellStyle={{margins: 'none', padding: 'none'}} Values={props.Values}>
+              <TextField value={props.data.PointTotal} disabled></TextField>,
+              <TextField value={props.data.PointMin} disabled></TextField>,
+              <TextField value={props.data.PointMax} disabled></TextField>,
+            <div></div>]} iRows = {props.data.Size} style={{margins: 'none', padding: 'none'}} cellStyle={{margins: 'none', padding: 'none'}} Values={props.data.Values}>
 
               <TextField name={"Types"}  style={{ width: "100px" }} onChange={event => Update(event)}/>{/*[iRow][0]*/}
               <TextField type="number" name={"Value"} style={{ width: "56px" }}/>{/*[iRow][1]*/}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import TemplateSelector from './TemplateSelector'
 import { Box, Paper, MenuItem } from '@material-ui/core';
 import StatInputForm from './StatInputForm.js'
@@ -82,42 +82,55 @@ function LoadTemplateData(statData = null, template = this.props.defaultTemplate
     return true;
 }
 
+const defaultData = 
+{
+    Name: '',
+    Size: 3,
+    Values:     [['one',1,1,10,'x'], ['two',1,1,10,''],['three',1,1,10,'']],
+    PointMin:   3,
+    PointMax:   30,
+    PointTotal: 3,
+    PointLimit: 100,
+    PointDiff: false,
+};
+
+function reducer(data, newData)
+{
+    // console.log('reducer(data, newData):',data);
+    // if(newData.Size)        {data.Size          = newData.Size;}
+    // if(newData.Name)        {data.Name          = newData.Name;}
+    // if(newData.Values)      {data.Values        = newData.Values;}
+    // if(newData.PointTotal)  {data.PointTotal    = newData.PointTotal;}
+    // if(newData.PointMin)    {data.PointMin      = newData.PointMin;}
+    // if(newData.PointMax)    {data.PointMax      = newData.PointMax;}
+    // if(newData.PointLimit)  {data.PointLimit    = newData.PointLimit;}
+    // if(newData.PointDiff)   {data.PointDiff     = newData.PointDiff;}
+    
+    return {...data, ...newData};
+}
+
 // Stat Card
 function StatCard(props)
 {
-    const [data, setData] = useState({
-        Name: '',
-        Size: 0,
-        Values:     [['',0,0,0,'']],
-        PointMin:   0,
-        PointDiff: false,
-        PointTotal: 0,
-        PointLimit: 0,
-    });
+    const [data, setData] = useReducer(reducer, defaultData);
+    const [funcs, setFunc] = useState({update: undefined, randomize: undefined, updateLimit: undefined});
 
     // Render and Logic
-    console.log('data:', data);
+    // console.log('funcs:', funcs);
+    // console.log('data:', data);
     return(
     <Box name='body' style={{display: 'flex', justifyContent: 'center', overflow: 'auto'}} bgcolor='darkGrey'>
-        <StatData {...props} data={data} /* onChange={e => setData(e)} */ />
+        <StatData {...props} data={data} setData = {setData} funcs = {funcs} />
         <Row alignItems='top'>
             <Col alignSelf ='top'>
-                <TemplateSelector Name = {data.Name} /* setValue = {val => setData({...data, Name: val})} */ defaultValue={defaultTemplates[iDefTmpl]} MenuItems={tmplMenuItems} /* OnTemplateChange={data.SetNewData.bind(this)} */ />
+                <TemplateSelector Name = {data.Name} setValue = {val => setData({...data, Name: val})} defaultValue={defaultTemplates[iDefTmpl]} MenuItems={tmplMenuItems} /* OnTemplateChange={data.SetNewData.bind(this)} */ />
                 <Paper style={{width: '320px', margin: 4, padding: 4, display: 'flex', flexDirection: 'column'}}>
                 <StatInputForm
-                    Quantity    = {data.Size}
-                    PointTotal  = {data.PointTotal}
+                    data = {data}
 
-                    PointMin    = {data.PointMin}
-                    PointMax    = {data.PointMax}
-                    PointLimit  = {data.PointLimit}
-                    Values      = {data.Values}
-
-                    PointDiff   = {data.PointDiff}
-
-                    // UpdateStates  = {this.UpdateStates.bind(this)}
-                    // RandomizeStats  = {this.RandomizeStats.bind(this)}
-                    // UpdatePointLimit  = {this.UpdatePointLimit.bind(this)}
+                    UpdateStates = { funcs.update }
+                    RandomizeStats  = { funcs.randomize }
+                    UpdatePointLimit  = { funcs.updateLimit }
                 />
                 </Paper>
                 <StatCode /* GetURLCode={ GetURLCode.bind(this) } */  />
