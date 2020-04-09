@@ -22,7 +22,7 @@ function StatInputForm(props) {
     }
   };
 
-  var Update = (event) => {
+  const Update = (event) => {
     //Update Diagram
     console.log('StatData 3:', props.data());
     props.UpdateStates(event);

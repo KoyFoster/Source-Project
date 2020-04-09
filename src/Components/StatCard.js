@@ -186,8 +186,6 @@ function StatCard(props) {
   });
 
   // Render and Logic
-  // console.log('funcs:', funcs);
-  // console.log('data:', data);
   return (
     <Box
       name="body"
@@ -225,8 +223,8 @@ function StatCard(props) {
             }}
           >
             <StatInputForm
-              name={'StatDataForm'}
-              key={'StatDataForm'}
+              key="StatDataForm1"
+              name="StatDataForm"
               data={getData}
               UpdateStates={funcs.update}
               RandomizeStats={funcs.randomize}

@@ -77,8 +77,8 @@ function StatData(sdProps) {
       let tempOrder = [];
 
       //Compile Order
-      for (let iTRO = 0; iTRO < data().Size; iTRO++) {
-        if (IsUnit(data().Values[iTRO][4])) {
+      for (let iTRO = 0; iTRO < this.data().Size; iTRO++) {
+        if (IsUnit(this.data().Values[iTRO][4])) {
           tempOrder.push(iTRO);
         }
       }
@@ -93,14 +93,14 @@ function StatData(sdProps) {
     }
 
     //Loop Through Random Order
-    let valuesBuffer = data().Values;
+    let valuesBuffer = this.data().Values;
     for (let i = 0; i < randOrder.length; i++) {
       valuesBuffer[randOrder[i]][1] = Calc.fRNG(
         valuesBuffer[randOrder[i]][2],
         valuesBuffer[randOrder[i]][3],
       );
     }
-    let Points = GetPointTotal(Number(data().Size), valuesBuffer);
+    let Points = GetPointTotal(Number(this.data().Size), valuesBuffer);
 
     setData.setValues(valuesBuffer);
     setData.setPointTotal(Points[0]);
@@ -118,10 +118,9 @@ function StatData(sdProps) {
 
   //Update Functions
   function UpdateStates(props) {
-    console.log('UpdateStates:', sdProps.data());
     //vars
-    let tempSize = Number(data().Size);
-    let tempVal = data().Values;
+    let tempSize = Number(this.data().Size);
+    let tempVal = this.data().Values;
     let iIndex = props.target.name.indexOf(',')
       ? props.target.name.substring(
           props.target.name.indexOf(',') + 1,
@@ -132,7 +131,11 @@ function StatData(sdProps) {
       props.target.name.indexOf('_(') > -1
         ? props.target.name.substring(0, props.target.name.indexOf('_('))
         : props.target.name;
-    let Points = [data().PointTotal, data().PointMin, data().PointMax];
+    let Points = [
+      this.data().PointTotal,
+      this.data().PointMin,
+      this.data().PointMax,
+    ];
 
     if (props.target.name === 'Quantity') {
       tempSize = parseInt(props.target.value);
@@ -147,7 +150,7 @@ function StatData(sdProps) {
 
       //Check Point Limit Range
       Points = GetPointTotal(tempSize, tempVal);
-      if (Points[0] > data().PointLimit) {
+      if (Points[0] > this.data().PointLimit) {
         return;
       }
     } else if (sTag === 'Types') {
@@ -276,7 +279,10 @@ function StatData(sdProps) {
 
   function UpdatePointLimit(props) {
     //Limit Cannot be less then the minimum or the point total
-    const val = Coll.iAATest(parseInt(props.target.value), data().PointTotal);
+    const val = Coll.iAATest(
+      parseInt(props.target.value),
+      this.data().PointTotal,
+    );
     setData.setPointLimit(val);
   }
 
