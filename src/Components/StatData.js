@@ -106,6 +106,7 @@ function StatData(sdProps) {
     setData.setPointTotal(Points[0]);
     setData.setPointMin(Points[1]);
     setData.setPointMax(Points[2]);
+    sdProps.funcs.redraw('Stats, Animate');
   }
 
   //Load States
@@ -119,6 +120,7 @@ function StatData(sdProps) {
   //Update Functions
   function UpdateStates(props) {
     //vars
+
     let tempSize = Number(this.data().Size);
     let tempVal = this.data().Values;
     let iIndex = props.target.name.indexOf(',')
@@ -185,8 +187,8 @@ function StatData(sdProps) {
         Points[0] = Points[0] + Points[1];
       }
 
-      setData.setPointDiff(props.target.checked);
-      setData.setPointTotal(Points[0]);
+      this.setData.setPointDiff(props.target.checked);
+      this.setData.setPointTotal(Points[0]);
 
       return;
     } else if (sTag === 'Unit') {
@@ -199,11 +201,12 @@ function StatData(sdProps) {
       }
     }
 
-    setData.setSize(tempSize);
-    setData.setValues(tempVal);
-    setData.setPointTotal(Points[0]);
-    setData.setPointMin(Points[1]);
-    setData.setPointMax(Points[2]);
+    sdProps.funcs.redraw('All');
+    this.setData.setSize(tempSize);
+    this.setData.setValues(tempVal);
+    this.setData.setPointTotal(Points[0]);
+    this.setData.setPointMin(Points[1]);
+    this.setData.setPointMax(Points[2]);
   }
 
   // function SetNewData(newData) {
@@ -288,7 +291,6 @@ function StatData(sdProps) {
 
   //Setup Listener Events
   useEffect(() => {
-    // Link Functions
     sdProps.funcs.update = UpdateStates;
     sdProps.funcs.randomize = RandomizeStats;
     sdProps.funcs.updateLimit = UpdatePointLimit;

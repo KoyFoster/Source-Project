@@ -61,49 +61,10 @@ let gradeCalc = function (index, Values) {
   return result; //Return '?'
 };
 
-/*Update Diagram*/
-let diagramMesh = undefined;
-let SetupDiagram = function (Angles) {
-  const mesh = [];
-  /*Iterate For Each TriAngles*/
-  let v2Polygon = [
-    new Vector2(0, 0),
-    new Vector2(0, -100),
-    new Vector2(0, -100),
-  ];
-  //The logic here is that a triangle is created and repeated for each number of angles
-  for (let i = 0; i < Angles.length; i++) {
-    //Adjust angle
-    if (i === 0) {
-      Coll.v2Rotate2D(v2Polygon[2], v2Polygon[0], Angles[i + 1]); //Rotate Second Point Over
-
-      //Push First Triangle
-      mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
-      mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
-      mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
-    } else {
-      Coll.v2Rotate2D(v2Polygon[1], v2Polygon[0], Angles[1]); //Rotate First Point Over
-      Coll.v2Rotate2D(v2Polygon[2], v2Polygon[0], Angles[1]); //Rotate Second Point Over
-
-      //Push Current Triangle
-      mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
-      mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
-      mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
-    }
-  }
-  //Offset Coordinates
-  diagramMesh = mesh.map(function (arr) {
-    return [iCenter + arr[0], iCenter + arr[1]];
-  });
-  return diagramMesh;
-};
-
 //Stats 2 and 3 are the same everytime
 let SetupStats = function (vectors) {
   let mesh = [];
   let v2Polygon;
-
-  // console.log('Vectors:',vectors);
 
   /*Iterate For Each TriAngles*/
   for (let i = 0; i < vectors.length; i++) {
@@ -139,7 +100,7 @@ let SetupTextAndTicks = function (Angles, data) {
     ', rotate(180,' + typeCenter[0] + ',' + typeCenter[1] + ')';
 
   let htmlResult = [];
-  for (let i = 0; i < Angles[i]; i++) {
+  for (let i = 0; i < Angles.length; i++) {
     const bFlip = Angles[i] > 90 && Angles[i] < 270;
     let sTypeFlip = '';
     let sTickFlip = '';
@@ -338,68 +299,108 @@ let SetupTextAndTicks = function (Angles, data) {
 };
 
 function Diagram(props) {
-  const [Angles, setAngles] = useState([0]);
+  const [Angles, setAngles] = useState([0, 120, 240]);
   const [Vectors, setVectors] = useState([]);
+  const [redraw, setRedraw] = useState('');
 
   const [interval, setInterval] = useState(undefined);
-  const [anim, setAnim] = useState(0);
+  const [anim, setAnim] = useState(1);
   const [animTL, setAnimTL] = useState(iCenter);
   const [animBR, setAnimBR] = useState(0);
-  const [bInit, setInit] = useState(false);
 
-  function startAnim() {
-    if (interval) {
-      clearInterval(interval);
-    }
-    setInterval(() => animate(), 33);
-    setAnim(0);
-    setAnimTL(iCenter);
-    setAnimBR(0);
-  }
-  function animate() {
-    if (anim === 1) return;
-    if (anim + 0.1 >= 1) {
-      clearInterval(interval);
-      setInterval(undefined);
-      setAnim(1);
-      setAnimTL(0);
-      setAnimBR(iBaseSize);
-    } else {
-      const newAnim = anim + 0.1;
-      setAnim(newAnim);
-      setAnimTL(iCenter - iCenter * (1 / newAnim));
-      setAnimBR(iBaseSize * (1 / newAnim));
-    }
-  }
+  let vector = [];
+  const angle = (1 / props.data.Size) * 360;
+  const CreateVector = function () {
+    /*Iterate For Each TriAngles*/
+    const v2Polygon = [
+      new Vector2(0, 0),
+      new Vector2(0, -100),
+      new Vector2(0, -100),
+    ];
 
-  function UpdateStatVectors(
-    size = props.data.Size,
-    angles = Angles,
-    Values = props.data.Values,
-  ) {
-    let tempVectors = []; //Vectors
+    //The logic here is that a triangle is created and repeated for each number of angles
+    Coll.v2Rotate2D(v2Polygon[2], v2Polygon[0], angle); //Rotate Second Point Over
 
-    //Calculate All Point
-    // console.log(size, angles, Values);
-    for (let i = 0; i < size; i++) {
-      tempVectors.push(
-        Coll.v2Rotate2D(
-          new Vector2(0, -Values[i][1] * (1 / Values[i][3]) * 100),
-          new Vector2(0, 0),
-          angles[i],
-        ),
+    //Push First Triangle
+    vector.push([v2Polygon[0].x, v2Polygon[0].y]);
+    vector.push([v2Polygon[1].x, v2Polygon[1].y]);
+    vector.push([v2Polygon[2].x, v2Polygon[2].y]);
+
+    //Offset Coordinates
+    vector = vector.map(function (arr) {
+      return [iCenter + arr[0], iCenter + arr[1]];
+    });
+  }; // end of CreateVector
+
+  function GetsStats() {
+    const html = [];
+
+    for (let i = 0; i < props.data.Size; i++) {
+      const length =
+        props.data.Values[i][1] * (1 / props.data.Values[i][3]) * 1;
+      const temp = 1 - length;
+      const center = iCenter * temp;
+
+      const transform = `translate(${center}, ${center}) scale(${length}) rotate(${
+        angle * i
+      },${vector[0][0]},${vector[0][1]})`;
+
+      html.push(
+        <polygon // Vector Test
+          key={`${props.name}_v_${i}`}
+          points={vector}
+          transform={transform}
+          style={{
+            fill: 'red',
+            stroke: pallete.grid[0],
+            strokeWidth: iLineWidth,
+            fillRule: 'evenodd',
+          }}
+        />,
       );
     }
-    return tempVectors;
+    return html;
   }
+
+  /*Update Diagram*/
+  let baseDiagramMesh = undefined;
+  let SetupBaseDiagram = function () {
+    const html = [];
+
+    let tempVectors = []; //Vectors
+    console.log('vector2:', vector);
+
+    //Calculate All Point
+    for (let i = 0; i < props.data.Size; i++) {
+      const transform = `rotate(${angle * i},${vector[0][0]},${vector[0][1]})`;
+
+      html.push(
+        <polygon // Vector Test
+          key={`${props.name}_bv_${i}`}
+          points={vector}
+          transform={transform}
+          style={{
+            fill: 'transparent',
+            strokeWidth: iLineWidth,
+            fillRule: 'evenodd',
+          }}
+        />,
+      );
+    }
+    baseDiagramMesh = html;
+    return baseDiagramMesh;
+  };
+
   function UpdateAngles(size = props.data.Size) {
     let tempArr = [];
     let iSlice = 360 / size;
     for (let i = 0; i < size; i++) {
       tempArr.push(i * iSlice);
     }
+
     return tempArr;
   }
+
   // function GetURLCode() {
   //   let sResult = '';
   //   for (let x = 0; x < props.data.Values.length; x++) {
@@ -419,44 +420,50 @@ function Diagram(props) {
   //   ).replace('//', '/');
   // }
 
-  function OnChange() {
-    let angles = undefined;
-    if (Angles.length !== props.data.Size) {
-      angles = UpdateAngles(props.data.Size);
-      setAngles(angles);
-    }
-    if (Angles.length !== props.data.Size) {
-      setVectors(
-        UpdateStatVectors(
-          props.data.Size,
-          angles ? angles : Angles,
-          props.data.Values,
-        ),
-      );
-      startAnim();
+  function animate() {
+    setRedraw('Stats: ', anim);
+    if (anim === 1) return;
+    if (anim + 0.1 >= 1) {
+      clearInterval(interval);
+      setInterval(undefined);
+      setAnim(1);
+      setAnimTL(0);
+      setAnimBR(iBaseSize);
+    } else {
+      const newAnim = anim + 0.1;
+      setAnim(newAnim);
+      setAnimTL(iCenter - iCenter * (1 / newAnim));
+      setAnimBR(iBaseSize * (1 / newAnim));
     }
   }
-
-  // Update
-  if (bInit) {
-    OnChange();
+  function startAnim() {
+    setRedraw('Stats: ', anim);
+    if (interval) {
+      clearInterval(interval);
+    }
+    setInterval(() => animate(), 33);
+    setAnim(0);
+    setAnimTL(iCenter);
+    setAnimBR(0);
   }
 
   useEffect(() => {
+    props.funcs.redraw = setRedraw;
     const tempAngles = UpdateAngles(props.data.Values.length);
     setAngles(tempAngles);
-    setVectors(
-      UpdateStatVectors(
-        props.data.Values.length,
-        tempAngles,
-        props.data.Values,
-      ),
-    );
-    startAnim();
+    // const vectors = GetsStats(
+    //   props.data.Values.length,
+    //   tempAngles,
+    //   props.data.Values,
+    // );
 
-    setInit(true);
+    // setVectors(vectors);
+    // startAnim();
   }, []);
 
+  // Update
+  // Update();
+  CreateVector();
   return (
     <svg width="100%" viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
       <defs>
@@ -477,7 +484,6 @@ function Diagram(props) {
           <stop offset="1" stopColor={pallete.outer[1]} />
         </linearGradient>
       </defs>
-
       <circle
         cx={iCenter}
         cy={iCenter}
@@ -510,42 +516,17 @@ function Diagram(props) {
           strokeWidth: 0,
         }}
       />
-
-      <svg viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}>
-        {
-          <polygon
-            points={SetupStats(Vectors)}
-            fill="url(#grad)"
-            style={{
-              stroke: pallete.graph[2],
-              strokeWidth: 1,
-              fillRule: 'evenodd',
-            }}
-          />
-        }
-      </svg>
-
-      <svg viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}>
-        <polygon
-          points={SetupDiagram(Angles)}
-          style={{
-            fill: 'transparent',
-            stroke: pallete.grid[1],
-            strokeWidth: iLineWidth,
-            fillRule: 'evenodd',
-          }}
-        />
-      </svg>
-      <polygon
-        points={diagramMesh}
+      <svg viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}></svg>
+      {GetsStats()}
+      <svg
+        viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}
         style={{
-          fill: 'transparent',
-          stroke: pallete.grid[0],
-          strokeWidth: iLineWidth,
-          fillRule: 'evenodd',
+          stroke: pallete.grid[1],
         }}
-      />
-
+      >
+        {SetupBaseDiagram()}
+      </svg>
+      <svg style={{ stroke: pallete.grid[0] }}>{baseDiagramMesh}</svg>
       <circle
         cx={iCenter}
         cy={iCenter}
@@ -556,8 +537,7 @@ function Diagram(props) {
           strokeWidth: iLineWidth,
         }}
       />
-
-      {SetupTextAndTicks(Angles)}
+      {SetupTextAndTicks(Angles, props.data)}
     </svg>
   );
 }

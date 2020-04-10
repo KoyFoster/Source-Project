@@ -167,7 +167,6 @@ function StatCard(props) {
   const getData = () => {
     return data;
   };
-  console.log('StateData 1:', data);
 
   const dataFuncs = {
     setName,
@@ -183,6 +182,7 @@ function StatCard(props) {
     update: undefined,
     randomize: undefined,
     updateLimit: undefined,
+    redraw: undefined,
   });
 
   // Render and Logic
@@ -226,6 +226,7 @@ function StatCard(props) {
               key="StatDataForm1"
               name="StatDataForm"
               data={getData}
+              setData={dataFuncs}
               UpdateStates={funcs.update}
               RandomizeStats={funcs.randomize}
               UpdatePointLimit={funcs.updateLimit}
@@ -246,6 +247,7 @@ function StatCard(props) {
             name={'StatDataDiagram'}
             key={'StatDataDiagram'}
             data={data}
+            funcs={funcs}
           />
         </Paper>
       </Row>
