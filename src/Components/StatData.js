@@ -3,7 +3,7 @@ import { Coll, Calc } from './KoyMath.js';
 
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT';
 
-let IsUnit = function (UnitType) {
+const IsUnit = function (UnitType) {
   let temp = 'X';
   temp = UnitType.toUpperCase();
   return sUnitTypes.includes(temp);
@@ -26,7 +26,7 @@ function StatData(sdProps) {
     let pointMax = 0;
     let arrDiff = size - values.length;
     let iI = 0;
-    for (iI; iI < size; iI++) {
+    for (iI; iI < size; iI) {
       //push additional elements if change in size exceeds current size
       if (arrDiff > 0) {
         values.push(['???', 0, 0, 10, '']);
@@ -38,6 +38,7 @@ function StatData(sdProps) {
         pointMin += parseInt(values[iI][2]);
         pointMax += parseInt(values[iI][3]);
       }
+      iI += 1;
     }
     // check if new entry causes the point limit to be exceeded
     if (data().PointTotal > pointLimit && size !== data().Size) {
@@ -55,7 +56,7 @@ function StatData(sdProps) {
 
   const GetPointMax = function (iSize, values = 0) {
     let PointMax = 0;
-    for (let iI; iI < iSize; iI++) {
+    for (let iI; iI < iSize; iI) {
       if (values === 0) {
         if (IsUnit(values[iI][4])) {
           PointMax += parseInt(values[iI][3]);
@@ -65,48 +66,51 @@ function StatData(sdProps) {
           PointMax += parseInt(values[iI][3]);
         }
       }
+      iI += 1;
     }
     return PointMax;
   };
 
   function RandomizeStats() {
     //Generate Random Order
-    let randOrder = [];
+    const randOrder = [];
     {
       //Creating scope here to clear 'tempOrder' when finished
-      let tempOrder = [];
+      const tempOrder = [];
 
       //Compile Order
-      for (let iTRO = 0; iTRO < this.data().Size; iTRO++) {
+      for (let iTRO = 0; iTRO < this.data().Size; iTRO) {
         if (IsUnit(this.data().Values[iTRO][4])) {
           tempOrder.push(iTRO);
         }
+        iTRO += 1;
       }
 
       //Random Order
       let iSize = tempOrder.length;
-      for (let iRO = 0; iRO < iSize; iRO++) {
+      for (let iRO = 0; iRO < iSize; iRO) {
         let randIndex = Math.floor(Math.random() * tempOrder.length);
         randOrder.push(tempOrder[randIndex]); //Add Index
         tempOrder.splice(randIndex, 1); //Sub Temp Index
+        iRO += 1;
       }
     }
 
     //Loop Through Random Order
     let valuesBuffer = this.data().Values;
-    for (let i = 0; i < randOrder.length; i++) {
+    for (let i = 0; i < randOrder.length; i) {
       valuesBuffer[randOrder[i]][1] = Calc.fRNG(
         valuesBuffer[randOrder[i]][2],
         valuesBuffer[randOrder[i]][3],
       );
+      i += 1;
     }
     let Points = GetPointTotal(Number(this.data().Size), valuesBuffer);
 
-    setData.setValues(valuesBuffer);
-    setData.setPointTotal(Points[0]);
-    setData.setPointMin(Points[1]);
-    setData.setPointMax(Points[2]);
-    sdProps.funcs.redraw('Stats, Animate');
+    this.setData.setValues(valuesBuffer);
+    this.setData.setPointTotal(Points[0]);
+    this.setData.setPointMin(Points[1]);
+    this.setData.setPointMax(Points[2]);
   }
 
   //Load States
@@ -201,7 +205,6 @@ function StatData(sdProps) {
       }
     }
 
-    sdProps.funcs.redraw('All');
     this.setData.setSize(tempSize);
     this.setData.setValues(tempVal);
     this.setData.setPointTotal(Points[0]);
@@ -230,7 +233,7 @@ function StatData(sdProps) {
     let iElement = 1;
     let bSuccess = false;
     let name = 0;
-    for (let i = 0; i < value.length; i++) {
+    for (let i = 0; i < value.length; i) {
       if (value[i] === '[') {
         //element start
         if (name === 0) name = i;
@@ -270,6 +273,7 @@ function StatData(sdProps) {
         continue;
       }
       subElement += value[i];
+      i += 1;
     }
 
     if (bSuccess === false) {

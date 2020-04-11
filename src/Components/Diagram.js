@@ -61,252 +61,12 @@ let gradeCalc = function (index, Values) {
   return result; //Return '?'
 };
 
-//Stats 2 and 3 are the same everytime
-let SetupStats = function (vectors) {
-  let mesh = [];
-  let v2Polygon;
-
-  /*Iterate For Each TriAngles*/
-  for (let i = 0; i < vectors.length; i++) {
-    let i2 = i + 1;
-    if (i2 >= vectors.length) {
-      i2 = 0;
-    }
-    v2Polygon = [
-      new Vector2(0, 0),
-      new Vector2(vectors[i].x, vectors[i].y),
-      new Vector2(vectors[i2].x, vectors[i2].y),
-    ];
-
-    mesh.push([v2Polygon[0].x, v2Polygon[0].y]);
-    mesh.push([v2Polygon[1].x, v2Polygon[1].y]);
-    mesh.push([v2Polygon[2].x, v2Polygon[2].y]);
-  }
-  //Offset Coordinates
-  return mesh.map(function (arr) {
-    return [iCenter + arr[0], iCenter + arr[1]];
-  });
-};
-
-let SetupTextAndTicks = function (Angles, data) {
-  let ticks = 10;
-  let tickWidth = 2;
-
-  let typeCenter = [iCenter, iCenter - 100];
-  let gradeCenter = [iCenter, iCenter - 124];
-  let strCenter = +iCenter + ',' + iCenter;
-
-  let strTypeRotateSelf =
-    ', rotate(180,' + typeCenter[0] + ',' + typeCenter[1] + ')';
-
-  let htmlResult = [];
-  for (let i = 0; i < Angles.length; i++) {
-    const bFlip = Angles[i] > 90 && Angles[i] < 270;
-    let sTypeFlip = '';
-    let sTickFlip = '';
-    let iFontSize = 100;
-    //Rotate text around it's center if upsidedown
-    if (bFlip) sTypeFlip = strTypeRotateSelf;
-
-    //Letter Grades
-    let transform =
-      'rotate(' +
-      Angles[i] +
-      ', ' +
-      iCenter +
-      ',' +
-      iCenter +
-      '), rotate(' +
-      -Angles[i] +
-      ',' +
-      gradeCenter[0] +
-      ',' +
-      gradeCenter[1] +
-      ')';
-    const gradeSize = iFontSize / 5;
-    const typeSize = iFontSize / 9;
-    htmlResult.push(
-      <text
-        key={'Grade' + i + '_1'}
-        textAnchor="middle"
-        dominantBaseline="central"
-        style={{
-          stroke: 'rgb(0,0,0)',
-          fontSize: gradeSize,
-          strokeWidth: 0,
-          fill: pallete.gradeText[1],
-        }}
-        x={gradeCenter[0] + 1.5}
-        y={gradeCenter[1] + 1.5}
-        transform={transform}
-      >
-        {gradeCalc(i, data.Values)}
-      </text>,
-    );
-    htmlResult.push(
-      <text
-        key={'Grade' + i + '_2'}
-        textAnchor="middle"
-        dominantBaseline="central"
-        style={{
-          stroke: 'rgb(0,0,0)',
-          fontSize: gradeSize,
-          strokeWidth: 0,
-          fill: pallete.gradeText[0],
-        }}
-        x={gradeCenter[0]}
-        y={gradeCenter[1]}
-        transform={transform}
-      >
-        {gradeCalc(i, data.Values)}
-      </text>,
-    );
-
-    //Types
-    transform = 'rotate(' + Angles[i] + ', ' + strCenter + ')' + sTypeFlip;
-    htmlResult.push(
-      <text
-        key={'Type' + i + '_1'}
-        textAnchor={'middle'}
-        dominantBaseline="central"
-        style={{
-          fontSize: typeSize,
-          strokeWidth: 0,
-          fill: pallete.typeText[1],
-        }}
-        x={typeCenter[0] + 1}
-        y={typeCenter[1] + 1}
-        transform={transform}
-      >
-        {data.Values[i][0]}
-      </text>,
-    );
-    htmlResult.push(
-      <text
-        key={'Type' + i + '_2'}
-        textAnchor={'middle'}
-        dominantBaseline="central"
-        style={{
-          fontSize: typeSize,
-          strokeWidth: 0,
-          fill: pallete.typeText[0],
-        }}
-        x={typeCenter[0]}
-        y={typeCenter[1]}
-        transform={transform}
-      >
-        {`${data.Values[i][0]}`}
-      </text>,
-    );
-
-    /*Stat Ticks*/
-    for (let iT = 1; iT < ticks; iT++) {
-      if (iT % 2 === 0) {
-        //TICKS
-        const y = iCenter - ticks * iT;
-        const y2 = iCenter - ticks * iT;
-        const x2 = tickWidth + iCenter;
-        transform =
-          'rotate(' + Angles[i] + ', ' + iCenter + ',' + iCenter + ')';
-
-        htmlResult.push(
-          <line
-            key={`L_${i}_${iT}_1`}
-            x1={iCenter + (!bFlip ? 0.5 : 0.5)}
-            y1={y + (!bFlip ? 0.5 : -0.5)}
-            x2={x2 + (!bFlip ? 0.5 : 0.5)}
-            y2={y2 + (!bFlip ? 0.5 : -0.5)}
-            style={{ strokeWidth: iStrokeWidth * 2, stroke: pallete.grid[1] }}
-            transform={transform}
-          />,
-        );
-        htmlResult.push(
-          <line
-            key={`L_${i}_${iT}_2`}
-            x1={iCenter}
-            y1={y}
-            x2={x2}
-            y2={y2}
-            style={{ strokeWidth: iStrokeWidth * 2, stroke: pallete.grid[0] }}
-            transform={transform}
-          />,
-        );
-
-        //Define and round off the TICK VALUES
-        let tickValue = Math.ceil(iT * (data.Values[i][3] / ticks));
-        let tickCenter = [iCenter, iCenter - ticks * iT];
-        let iTick = 3;
-        if (Angles[i] > 90 && Angles[i] < 270) {
-          sTickFlip =
-            ', rotate(180,' + tickCenter[0] + ',' + tickCenter[1] + ')';
-          iTick *= -1;
-        }
-
-        transform =
-          'rotate(' +
-          Angles[i] +
-          ', ' +
-          iCenter +
-          ',' +
-          iCenter +
-          ')' +
-          sTickFlip;
-        const x = tickCenter[0] + iTick;
-
-        //Tick Value
-        let bDraw =
-          i === 0
-            ? true
-            : `${data.Values[i][3]}${data.Values[i][4]}` !==
-              `${data.Values[i - 1][3]}${data.Values[i - 1][4]}`;
-        if (bDraw) {
-          htmlResult.push(
-            <text
-              key={`LT_${i}_${iT}_1`}
-              textAnchor={iTick > 0 ? 'start' : 'end'}
-              dominantBaseline="central"
-              x={x + 0.67}
-              y={tickCenter[1] + 0.67}
-              style={{ fontSize: 10, strokeWidth: 0, fill: pallete.grid[1] }}
-              transform={transform}
-            >
-              {`${tickValue}${data.Values[i][4]}`}
-            </text>,
-          );
-          htmlResult.push(
-            <text
-              key={`LT_${i}_${iT}_2`}
-              textAnchor={iTick > 0 ? 'start' : 'end'}
-              dominantBaseline="central"
-              x={x}
-              y={tickCenter[1]}
-              style={{
-                fontSize: 10,
-                stroke: 'rgb(0,0,0)',
-                strokeWidth: 0.5,
-                fill: pallete.grid[0],
-              }}
-              transform={transform}
-            >
-              {`${tickValue}${data.Values[i][4]}`}
-            </text>,
-          );
-        }
-      }
-    }
-  }
-  return htmlResult;
-};
-
 function Diagram(props) {
-  const [Angles, setAngles] = useState([0, 120, 240]);
-  const [Vectors, setVectors] = useState([]);
-  const [redraw, setRedraw] = useState('');
-
-  const [interval, setInterval] = useState(undefined);
-  const [anim, setAnim] = useState(1);
-  const [animTL, setAnimTL] = useState(iCenter);
-  const [animBR, setAnimBR] = useState(0);
+  const [phase, setPhase] = useState(0.1);
+  const [animTL, setAnimTL] = useState(iCenter - iCenter * (1 / 0.1));
+  const [animBR, setAnimBR] = useState(iBaseSize * (1 / 0.1));
+  const [intervalID, setIntervalID] = useState(Number(0));
+  const animInfo = { phase, animTL, animBR, intervalID, bClearInterval: false };
 
   let vector = [];
   const angle = (1 / props.data.Size) * 360;
@@ -351,9 +111,6 @@ function Diagram(props) {
           points={vector}
           transform={transform}
           style={{
-            fill: 'red',
-            stroke: pallete.grid[0],
-            strokeWidth: iLineWidth,
             fillRule: 'evenodd',
           }}
         />,
@@ -366,9 +123,6 @@ function Diagram(props) {
   let baseDiagramMesh = undefined;
   let SetupBaseDiagram = function () {
     const html = [];
-
-    let tempVectors = []; //Vectors
-    console.log('vector2:', vector);
 
     //Calculate All Point
     for (let i = 0; i < props.data.Size; i++) {
@@ -391,16 +145,6 @@ function Diagram(props) {
     return baseDiagramMesh;
   };
 
-  function UpdateAngles(size = props.data.Size) {
-    let tempArr = [];
-    let iSlice = 360 / size;
-    for (let i = 0; i < size; i++) {
-      tempArr.push(i * iSlice);
-    }
-
-    return tempArr;
-  }
-
   // function GetURLCode() {
   //   let sResult = '';
   //   for (let x = 0; x < props.data.Values.length; x++) {
@@ -420,45 +164,254 @@ function Diagram(props) {
   //   ).replace('//', '/');
   // }
 
+  const SetupTextAndTicks = function (data) {
+    let ticks = 10;
+    let tickWidth = 2;
+
+    let typeCenter = [iCenter, iCenter - 100];
+    let gradeCenter = [iCenter, iCenter - 124];
+    let strCenter = +iCenter + ',' + iCenter;
+
+    let strTypeRotateSelf =
+      ', rotate(180,' + typeCenter[0] + ',' + typeCenter[1] + ')';
+
+    let htmlResult = [];
+    for (let i = 0; i < data.Size; i++) {
+      const curAngle = angle * i;
+
+      const bFlip = curAngle > 90 && curAngle < 270;
+      let sTypeFlip = '';
+      let sTickFlip = '';
+      let iFontSize = 100;
+      //Rotate text around it's center if upsidedown
+      if (bFlip) sTypeFlip = strTypeRotateSelf;
+
+      //Letter Grades
+      let transform =
+        'rotate(' +
+        curAngle +
+        ', ' +
+        iCenter +
+        ',' +
+        iCenter +
+        '), rotate(' +
+        -curAngle +
+        ',' +
+        gradeCenter[0] +
+        ',' +
+        gradeCenter[1] +
+        ')';
+      const gradeSize = iFontSize / 5;
+      const typeSize = iFontSize / 9;
+      htmlResult.push(
+        <text
+          key={'Grade' + i + '_1'}
+          textAnchor="middle"
+          dominantBaseline="central"
+          style={{
+            stroke: 'rgb(0,0,0)',
+            fontSize: gradeSize,
+            strokeWidth: 0,
+            fill: pallete.gradeText[1],
+          }}
+          x={gradeCenter[0] + 1.5}
+          y={gradeCenter[1] + 1.5}
+          transform={transform}
+        >
+          {gradeCalc(i, data.Values)}
+        </text>,
+      );
+      htmlResult.push(
+        <text
+          key={'Grade' + i + '_2'}
+          textAnchor="middle"
+          dominantBaseline="central"
+          style={{
+            stroke: 'rgb(0,0,0)',
+            fontSize: gradeSize,
+            strokeWidth: 0,
+            fill: pallete.gradeText[0],
+          }}
+          x={gradeCenter[0]}
+          y={gradeCenter[1]}
+          transform={transform}
+        >
+          {gradeCalc(i, data.Values)}
+        </text>,
+      );
+
+      //Types
+      transform = 'rotate(' + curAngle + ', ' + strCenter + ')' + sTypeFlip;
+      htmlResult.push(
+        <text
+          key={'Type' + i + '_1'}
+          textAnchor={'middle'}
+          dominantBaseline="central"
+          style={{
+            fontSize: typeSize,
+            strokeWidth: 0,
+            fill: pallete.typeText[1],
+          }}
+          x={typeCenter[0] + 1}
+          y={typeCenter[1] + 1}
+          transform={transform}
+        >
+          {data.Values[i][0]}
+        </text>,
+      );
+      htmlResult.push(
+        <text
+          key={'Type' + i + '_2'}
+          textAnchor={'middle'}
+          dominantBaseline="central"
+          style={{
+            fontSize: typeSize,
+            strokeWidth: 0,
+            fill: pallete.typeText[0],
+          }}
+          x={typeCenter[0]}
+          y={typeCenter[1]}
+          transform={transform}
+        >
+          {`${data.Values[i][0]}`}
+        </text>,
+      );
+
+      /*Stat Ticks*/
+      for (let iT = 1; iT < ticks; iT++) {
+        if (iT % 2 === 0) {
+          //TICKS
+          const y = iCenter - ticks * iT;
+          const y2 = iCenter - ticks * iT;
+          const x2 = tickWidth + iCenter;
+          transform =
+            'rotate(' + curAngle + ', ' + iCenter + ',' + iCenter + ')';
+
+          htmlResult.push(
+            <line
+              key={`L_${i}_${iT}_1`}
+              x1={iCenter + (!bFlip ? 0.5 : 0.5)}
+              y1={y + (!bFlip ? 0.5 : -0.5)}
+              x2={x2 + (!bFlip ? 0.5 : 0.5)}
+              y2={y2 + (!bFlip ? 0.5 : -0.5)}
+              style={{ strokeWidth: iStrokeWidth * 2, stroke: pallete.grid[1] }}
+              transform={transform}
+            />,
+          );
+          htmlResult.push(
+            <line
+              key={`L_${i}_${iT}_2`}
+              x1={iCenter}
+              y1={y}
+              x2={x2}
+              y2={y2}
+              style={{ strokeWidth: iStrokeWidth * 2, stroke: pallete.grid[0] }}
+              transform={transform}
+            />,
+          );
+
+          //Define and round off the TICK VALUES
+          let tickValue = Math.ceil(iT * (data.Values[i][3] / ticks));
+          let tickCenter = [iCenter, iCenter - ticks * iT];
+          let iTick = 3;
+          if (curAngle > 90 && curAngle < 270) {
+            sTickFlip =
+              ', rotate(180,' + tickCenter[0] + ',' + tickCenter[1] + ')';
+            iTick *= -1;
+          }
+
+          transform =
+            'rotate(' +
+            curAngle +
+            ', ' +
+            iCenter +
+            ',' +
+            iCenter +
+            ')' +
+            sTickFlip;
+          const x = tickCenter[0] + iTick;
+
+          //Tick Value
+          let bDraw =
+            i === 0
+              ? true
+              : `${data.Values[i][3]}${data.Values[i][4]}` !==
+                `${data.Values[i - 1][3]}${data.Values[i - 1][4]}`;
+          if (bDraw) {
+            htmlResult.push(
+              <text
+                key={`LT_${i}_${iT}_1`}
+                textAnchor={iTick > 0 ? 'start' : 'end'}
+                dominantBaseline="central"
+                x={x + 0.67}
+                y={tickCenter[1] + 0.67}
+                style={{ fontSize: 10, strokeWidth: 0, fill: pallete.grid[1] }}
+                transform={transform}
+              >
+                {`${tickValue}${data.Values[i][4]}`}
+              </text>,
+            );
+            htmlResult.push(
+              <text
+                key={`LT_${i}_${iT}_2`}
+                textAnchor={iTick > 0 ? 'start' : 'end'}
+                dominantBaseline="central"
+                x={x}
+                y={tickCenter[1]}
+                style={{
+                  fontSize: 10,
+                  stroke: 'rgb(0,0,0)',
+                  strokeWidth: 0.5,
+                  fill: pallete.grid[0],
+                }}
+                transform={transform}
+              >
+                {`${tickValue}${data.Values[i][4]}`}
+              </text>,
+            );
+          }
+        }
+      }
+    }
+    return htmlResult;
+  };
+
   function animate() {
-    setRedraw('Stats: ', anim);
-    if (anim === 1) return;
-    if (anim + 0.1 >= 1) {
-      clearInterval(interval);
-      setInterval(undefined);
-      setAnim(1);
-      setAnimTL(0);
-      setAnimBR(iBaseSize);
+    if (animInfo.phase + 0.1 >= 1) {
+      animInfo.bClearInterval = true;
+      animInfo.phase = 1;
+      animInfo.animTL = 0;
+      animInfo.animBR = iBaseSize;
     } else {
-      const newAnim = anim + 0.1;
-      setAnim(newAnim);
-      setAnimTL(iCenter - iCenter * (1 / newAnim));
-      setAnimBR(iBaseSize * (1 / newAnim));
+      const newAnim = Number(animInfo.phase) + 0.1;
+      animInfo.phase = newAnim;
+      animInfo.animTL = iCenter - iCenter * (1 / newAnim);
+      animInfo.animBR = iBaseSize * (1 / newAnim);
     }
+    // Set States
+    if (animInfo.bClearInterval) {
+      console.log('intervalID:', animInfo.intervalID);
+      clearInterval(animInfo.intervalID);
+    }
+    setPhase(animInfo.phase);
+    setAnimTL(animInfo.animTL);
+    setAnimBR(animInfo.animBR);
   }
-  function startAnim() {
-    setRedraw('Stats: ', anim);
-    if (interval) {
-      clearInterval(interval);
+
+  const startAnim = () => {
+    if (intervalID) {
+      clearInterval(intervalID);
     }
-    setInterval(() => animate(), 33);
-    setAnim(0);
+    const val = setInterval(() => animate(), 66);
+    setPhase(0);
     setAnimTL(iCenter);
     setAnimBR(0);
-  }
+    setIntervalID(val);
+    console.log('Inverval Val:', val);
+  };
 
   useEffect(() => {
-    props.funcs.redraw = setRedraw;
-    const tempAngles = UpdateAngles(props.data.Values.length);
-    setAngles(tempAngles);
-    // const vectors = GetsStats(
-    //   props.data.Values.length,
-    //   tempAngles,
-    //   props.data.Values,
-    // );
-
-    // setVectors(vectors);
-    // startAnim();
+    startAnim();
   }, []);
 
   // Update
@@ -516,8 +469,14 @@ function Diagram(props) {
           strokeWidth: 0,
         }}
       />
-      <svg viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}></svg>
-      {GetsStats()}
+      <svg
+        viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}
+        style={{
+          fill: 'url(#grad)',
+        }}
+      >
+        {GetsStats()}
+      </svg>
       <svg
         viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}
         style={{
@@ -537,7 +496,7 @@ function Diagram(props) {
           strokeWidth: iLineWidth,
         }}
       />
-      {SetupTextAndTicks(Angles, props.data)}
+      {SetupTextAndTicks(props.data)}
     </svg>
   );
 }

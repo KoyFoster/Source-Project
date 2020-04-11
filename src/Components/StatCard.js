@@ -121,11 +121,11 @@ const defaultData = {
   Name: '',
   Size: 5,
   Values: [
-    ['one', 1, 1, 10, 'x'],
-    ['two', 1, 1, 10, ''],
-    ['three', 1, 1, 10, ''],
-    ['Four', 1, 1, 10, ''],
-    ['Five', 1, 1, 10, ''],
+    ['one', 10, 1, 10, ''],
+    ['two', 10, 1, 10, ''],
+    ['three', 10, 1, 10, ''],
+    ['Four', 10, 1, 10, ''],
+    ['Five', 10, 1, 10, ''],
   ],
   PointMin: 5,
   PointMax: 50,
@@ -182,7 +182,6 @@ function StatCard(props) {
     update: undefined,
     randomize: undefined,
     updateLimit: undefined,
-    redraw: undefined,
   });
 
   // Render and Logic

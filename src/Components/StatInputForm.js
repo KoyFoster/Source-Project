@@ -85,8 +85,8 @@ function StatInputForm(props) {
                 <div></div>,
               ]}
               iRows={props.data().Size}
-              style={{ margins: 'none', padding: 'none' }}
-              cellStyle={{ margins: 'none', padding: 'none' }}
+              style={{ margin: 'none', padding: 'none' }}
+              cellStyle={{ margin: 'none', padding: 'none' }}
               Values={props.data().Values}
             >
               <TextField
