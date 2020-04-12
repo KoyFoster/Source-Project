@@ -111,6 +111,7 @@ function StatData(sdProps) {
     this.setData.setPointTotal(Points[0]);
     this.setData.setPointMin(Points[1]);
     this.setData.setPointMax(Points[2]);
+    sdProps.funcs.randAnim();
   }
 
   // function GetURLCode() {

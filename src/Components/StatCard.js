@@ -181,6 +181,7 @@ function StatCard(props) {
   const [funcs] = useState({
     update: undefined,
     randomize: undefined,
+    randAnim: undefined,
     updateLimit: undefined,
   });
 

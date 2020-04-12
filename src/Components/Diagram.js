@@ -74,11 +74,17 @@ function Diagram(props) {
   const [intervalID, setIntervalID] = useState(0);
 
   function startAnimation() {
+    // Clear
+    setPhase(0);
+    setAnimTL(0);
+    setAnimBR(0);
+
     const interval = setInterval(() => {
-      setIntervalID(interval);
       setPhase((phase) => {
         if (phase + speed >= 1) {
+          setIntervalID(interval);
           clearInterval(interval);
+          return phase;
         }
         setAnimTL(() => {
           return iCenter - iCenter / (Number(phase) + speed);
@@ -403,6 +409,7 @@ function Diagram(props) {
   };
 
   useEffect(() => {
+    props.funcs.randAnim = startAnimation;
     startAnimation();
   }, []);
 
