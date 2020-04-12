@@ -113,6 +113,25 @@ function StatData(sdProps) {
     this.setData.setPointMax(Points[2]);
   }
 
+  // function GetURLCode() {
+  //   let sResult = '';
+  //   for (let x = 0; x < props.data.Values.length; x++) {
+  //     let xBuffer = '';
+  //     for (let y = 0; y < 5; y++) {
+  //       let yBuffer = props.data.Values[x][y];
+  //       xBuffer += yBuffer + ',';
+  //     }
+  //     sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
+  //   }
+  //   return String(
+  //     'koyfoster.github.io/#/StatCard/' +
+  //       props.data.Name +
+  //       sResult +
+  //       (props.data.PointDiff ? 'Min=true' : '') +
+  //       '/',
+  //   ).replace('//', '/');
+  // }
+
   //Load States
   // function Initialize() {
   //   let Points = GetPointTotal(data().Values.length);

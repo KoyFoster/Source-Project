@@ -169,30 +169,11 @@ function Diagram(props) {
     return baseDiagramMesh;
   };
 
-  // function GetURLCode() {
-  //   let sResult = '';
-  //   for (let x = 0; x < props.data.Values.length; x++) {
-  //     let xBuffer = '';
-  //     for (let y = 0; y < 5; y++) {
-  //       let yBuffer = props.data.Values[x][y];
-  //       xBuffer += yBuffer + ',';
-  //     }
-  //     sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
-  //   }
-  //   return String(
-  //     'koyfoster.github.io/#/StatCard/' +
-  //       props.data.Name +
-  //       sResult +
-  //       (props.data.PointDiff ? 'Min=true' : '') +
-  //       '/',
-  //   ).replace('//', '/');
-  // }
-
   const SetupTextAndTicks = function (data) {
     let ticks = 10;
     let tickWidth = 2;
 
-    let typeCenter = [iCenter, iCenter - 100];
+    let typeCenter = [iCenter, iCenter - 108];
     let gradeCenter = [iCenter, iCenter - 124];
     let strCenter = +iCenter + ',' + iCenter;
 
@@ -409,12 +390,12 @@ function Diagram(props) {
   CreateVector();
   return (
     <div>
-      <div>
+      {/* <div>
         Info: <div>intervalID: {intervalID}</div>
         <div>phase: {phase}</div>
         <div>animTL: {animTL}</div>
         animBR: {animBR}
-      </div>
+      </div> */}
       <svg width="100%" viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
         <defs>
           <linearGradient gradientTransform="rotate(90)" id="grad">
