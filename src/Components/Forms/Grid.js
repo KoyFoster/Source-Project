@@ -31,8 +31,8 @@ function Grid(props) {
         y += 1;
       }
     }
-    // Multiple rows based on row size
-    if (iRows)
+    // Multiply rows based on row size
+    if (iRows) {
       if (hRows.length < iRows) {
         // Clear first row as it will be replaced
         if (hRows.length === 1) hRows.splice(0, 1);
@@ -45,6 +45,19 @@ function Grid(props) {
             const name = `${hRows[y][x].props.name}_(${x},${y})`;
             // value
             const bDefined = Values !== undefined && x - plus > -1;
+            // console.log(
+            //   y,
+            //   x,
+            //   'pr:',
+            //   props.iRows,
+            //   'ir:',
+            //   iRows,
+            //   plus,
+            //   'Values:',
+            //   Values,
+            //   'Values[y][x]:',
+            //   Values[y][x],
+            // );
             const hasValue =
               bDefined && Values[y][x - plus] !== ''
                 ? Values[y][x - plus] !== 'undefined'
@@ -75,6 +88,10 @@ function Grid(props) {
           y += 1;
         }
       }
+    } // End of row cloning
+    else {
+      return [];
+    }
     return hRows;
   };
 
@@ -86,12 +103,13 @@ function Grid(props) {
   ); // An Array of components
   const [iRows, setRowSize] = useState(initRowSize());
   const [iCols, setColSize] = useState(initColSize());
-  if (props.Values !== Values && Values !== undefined) {
+  if (iRows !== props.iRows) {
+    // console.log(iRows, '!==', props.iRows, props.Values);
+    setValues(props.Values);
+    setRowSize(props.iRows);
+  } else if (props.Values !== Values && Values !== undefined) {
     setValues(props.Values);
     setColSize(props.Values.length > 0 ? props.Values[0].length : 0);
-  }
-  if (iRows !== props.iRows) {
-    setRowSize(props.iRows);
   }
   // Rerender Vars
   const hFooter = props.hFooter ? [props.hFooter] : undefined; // An Array of components

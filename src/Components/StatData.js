@@ -145,7 +145,7 @@ function StatData(sdProps) {
   // }
 
   //Update Functions
-  function UpdateStates(props) {
+  function Update(props) {
     //vars
 
     let tempSize = Number(this.data().Values.size);
@@ -167,10 +167,11 @@ function StatData(sdProps) {
     ];
 
     if (props.target.name === 'Quantity') {
+      if (props.target.value < 0) return;
       tempSize = parseInt(props.target.value);
       Points = GetPointTotal(
         tempSize,
-        data().Values.value,
+        tempVal,
         data().PointDiff,
         data().PointLimit,
       );
@@ -249,10 +250,11 @@ function StatData(sdProps) {
     }
 
     this.setData.setSize(tempSize);
-    this.setData.setValues({
+    const Values = {
       value: tempVal,
       size: tempSize,
-    });
+    };
+    this.setData.setValues(Values);
     this.setData.setPointTotal(Points[0]);
     this.setData.setPointMin(Points[1]);
     this.setData.setPointMax(Points[2]);
@@ -328,7 +330,7 @@ function StatData(sdProps) {
 
   //Setup Listener Events
   useEffect(() => {
-    sdProps.funcs.update = UpdateStates;
+    sdProps.funcs.update = Update;
     sdProps.funcs.randomize = RandomizeStats;
     sdProps.funcs.updateLimit = UpdatePointLimit;
 

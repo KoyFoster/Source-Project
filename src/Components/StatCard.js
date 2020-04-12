@@ -120,20 +120,9 @@ const tmplMenuItems = compileMenuItems();
 const defaultData = {
   Name: '',
   Values: {
-    value: [
-      ['one', 1, 1, 10, ''],
-      ['two', 2, 1, 10, ''],
-      ['three', 3, 1, 10, ''],
-      ['Four', 4, 1, 10, ''],
-      ['Five', 5, 1, 10, ''],
-    ],
-    size: 5,
+    value: [],
+    size: 0,
   },
-  PointMin: 5,
-  PointMax: 50,
-  PointTotal: 5,
-  PointLimit: 100,
-  PointDiff: false,
 };
 
 // function reducer(data, newData) {
