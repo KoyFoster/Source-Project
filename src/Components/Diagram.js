@@ -126,20 +126,6 @@ function Diagram(props) {
       vector[1][0],
       vector[1][1] * (props.data.Values[1][1] * (1 / props.data.Values[1][3])),
     );
-    // Coll.v2Rotate2D(
-    //   new Vector2(Number(lastPoint[0]), Number(lastPoint[1])),
-    //   new Vector2(0, 0),
-    //   angle,
-    // ); //Rotate Second Point Over
-    console.log(
-      'lastPoint:',
-      lastPoint,
-      'nextPoint:',
-      nextPoint,
-      'vector[1]:',
-      vector,
-      props.data.Values[0][1] * (1 / props.data.Values[0][3]),
-    );
     for (let i = 0; i < props.data.Size; i) {
       const length =
         props.data.Values[i][1] * (1 / props.data.Values[i][3]) * 1;
@@ -168,7 +154,6 @@ function Diagram(props) {
             (props.data.Values[i][1] * (1 / props.data.Values[i][3])),
         );
         const iNext = i + 1 !== props.data.Size ? i + 1 : 0;
-        console.log('iNext:', iNext, 'Values:', props.data.Values);
         nextPoint = new Vector2(
           vector[1][0],
           vector[1][1] *
