@@ -111,34 +111,70 @@ function Diagram(props) {
     vector.push([v2Polygon[2].x, v2Polygon[2].y]);
 
     //Offset Coordinates
-    vector = vector.map(function (arr) {
-      return [iCenter + arr[0], iCenter + arr[1]];
-    });
+    return vector;
   }; // end of CreateVector
 
   function GetsStats() {
+    if (props.data.Size <= 1) return;
     const html = [];
 
-    for (let i = 0; i < props.data.Size; i++) {
+    let lastPoint = new Vector2(
+      vector[1][0],
+      vector[1][1] * (props.data.Values[0][1] * (1 / props.data.Values[0][3])),
+    );
+    let nextPoint = new Vector2(
+      vector[1][0],
+      vector[1][1] * (props.data.Values[1][1] * (1 / props.data.Values[1][3])),
+    );
+    // Coll.v2Rotate2D(
+    //   new Vector2(Number(lastPoint[0]), Number(lastPoint[1])),
+    //   new Vector2(0, 0),
+    //   angle,
+    // ); //Rotate Second Point Over
+    console.log(
+      'lastPoint:',
+      lastPoint,
+      'nextPoint:',
+      nextPoint,
+      'vector[1]:',
+      vector,
+      props.data.Values[0][1] * (1 / props.data.Values[0][3]),
+    );
+    for (let i = 0; i < props.data.Size; i) {
       const length =
         props.data.Values[i][1] * (1 / props.data.Values[i][3]) * 1;
       const temp = 1 - length;
       const center = iCenter * temp;
 
-      const transform = `translate(${center}, ${center}) scale(${length}) rotate(${
-        angle * i
-      },${vector[0][0]},${vector[0][1]})`;
+      const transform = `rotate(${angle * i},${vector[0][0]},${vector[0][1]})`;
+      // Rotate Neighboring Stat Point
+      Coll.v2Rotate2D(nextPoint, new Vector2(0, 0), angle); //Rotate Second Point Over
 
       html.push(
         <polygon // Vector Test
           key={`${props.name}_v_${i}`}
-          points={vector}
+          points={`${vector[0][0]},${vector[0][1]} ${lastPoint.x},${lastPoint.y} ${nextPoint.x},${nextPoint.y}`}
           transform={transform}
           style={{
             fillRule: 'evenodd',
           }}
         />,
       );
+      i += 1;
+      if (i !== props.data.Size) {
+        lastPoint = new Vector2(
+          vector[1][0],
+          vector[1][1] *
+            (props.data.Values[i][1] * (1 / props.data.Values[i][3])),
+        );
+        const iNext = i + 1 !== props.data.Size ? i + 1 : 0;
+        console.log('iNext:', iNext, 'Values:', props.data.Values);
+        nextPoint = new Vector2(
+          vector[1][0],
+          vector[1][1] *
+            (props.data.Values[iNext][1] * (1 / props.data.Values[iNext][3])),
+        );
+      }
     }
     return html;
   }
@@ -386,7 +422,6 @@ function Diagram(props) {
   }, []);
 
   // Update
-  // Update();
   CreateVector();
   return (
     <div>
@@ -448,22 +483,32 @@ function Diagram(props) {
           }}
         />
         <svg
-          viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}
+          viewBox={`${animTL - iCenter} ${
+            animTL - iCenter
+          } ${animBR} ${animBR}`}
           style={{
             fill: 'url(#grad)',
           }}
         >
           {GetsStats()}
         </svg>
+
         <svg
-          viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}
+          viewBox={`${-0.5 - iCenter} ${
+            -0.25 - iCenter
+          } ${iBaseSize} ${iBaseSize}`}
           style={{
             stroke: pallete.grid[1],
           }}
         >
           {SetupBaseDiagram()}
         </svg>
-        <svg style={{ stroke: pallete.grid[0] }}>{baseDiagramMesh}</svg>
+        <svg
+          viewBox={`${-iCenter} ${-iCenter} ${iBaseSize} ${iBaseSize}`}
+          style={{ stroke: pallete.grid[0] }}
+        >
+          {baseDiagramMesh}
+        </svg>
         <circle
           cx={iCenter}
           cy={iCenter}
