@@ -16,8 +16,8 @@ function StatData(sdProps) {
   const setData = sdProps.setData;
 
   const GetPointTotal = (
-    size = Number(data().Size),
-    values = data().Values,
+    size = Number(data().Values.size),
+    values = data().Values.value,
     pointDiff = data().PointDiff,
     pointLimit = data().PointLimit,
   ) => {
@@ -41,7 +41,7 @@ function StatData(sdProps) {
       iI += 1;
     }
     // check if new entry causes the point limit to be exceeded
-    if (data().PointTotal > pointLimit && size !== data().Size) {
+    if (data().PointTotal > pointLimit && size !== data().Values.size) {
       let iDiff = pointLimit - pointTotal;
       values[iI - 1][1] += parseInt(iDiff);
 
@@ -79,8 +79,8 @@ function StatData(sdProps) {
       const tempOrder = [];
 
       //Compile Order
-      for (let iTRO = 0; iTRO < this.data().Size; iTRO) {
-        if (IsUnit(this.data().Values[iTRO][4])) {
+      for (let iTRO = 0; iTRO < this.data().Values.size; iTRO) {
+        if (IsUnit(this.data().Values.value[iTRO][4])) {
           tempOrder.push(iTRO);
         }
         iTRO += 1;
@@ -97,7 +97,7 @@ function StatData(sdProps) {
     }
 
     //Loop Through Random Order
-    let valuesBuffer = this.data().Values;
+    let valuesBuffer = this.data().Values.value;
     for (let i = 0; i < randOrder.length; i) {
       valuesBuffer[randOrder[i]][1] = Calc.fRNG(
         valuesBuffer[randOrder[i]][2],
@@ -105,9 +105,12 @@ function StatData(sdProps) {
       );
       i += 1;
     }
-    let Points = GetPointTotal(Number(this.data().Size), valuesBuffer);
+    let Points = GetPointTotal(Number(this.data().Values.size), valuesBuffer);
 
-    this.setData.setValues(valuesBuffer);
+    this.setData.setValues({
+      value: valuesBuffer,
+      size: this.data().Values.size,
+    });
     this.setData.setPointTotal(Points[0]);
     this.setData.setPointMin(Points[1]);
     this.setData.setPointMax(Points[2]);
@@ -145,8 +148,8 @@ function StatData(sdProps) {
   function UpdateStates(props) {
     //vars
 
-    let tempSize = Number(this.data().Size);
-    let tempVal = this.data().Values;
+    let tempSize = Number(this.data().Values.size);
+    let tempVal = this.data().Values.value;
     let iIndex = props.target.name.indexOf(',')
       ? props.target.name.substring(
           props.target.name.indexOf(',') + 1,
@@ -226,24 +229,14 @@ function StatData(sdProps) {
     }
 
     this.setData.setSize(tempSize);
-    this.setData.setValues(tempVal);
+    this.setData.setValues({
+      value: tempVal,
+      size: tempSize,
+    });
     this.setData.setPointTotal(Points[0]);
     this.setData.setPointMin(Points[1]);
     this.setData.setPointMax(Points[2]);
   }
-
-  // function SetNewData(newData) {
-  //   let Points = GetPointTotal(
-  //     newData.Size,
-  //     newData.values,
-  //     newData.pntDiff,
-  //     newData.pntLimit,
-  //   );
-
-  //   setData.setPointTotal(Points[0]);
-  //   setData.setPointMin(Points[1]);
-  //   setData.setPointMax(Points[2]);
-  // }
 
   function ParseStringAsStatCard(value) {
     //Break String Down Into Objects
@@ -331,8 +324,8 @@ function StatData(sdProps) {
     if (userDefined !== '') {
       let Points = GetPointTotal(userDefined.length);
       data().Name = name;
-      data().Size = userDefined.length;
-      data().Values = userDefined;
+      data().Values.size = userDefined.length;
+      data().Values.value = userDefined;
       data().PointTotal = Points[0];
       data().PointMin = Points[1];
       data().PointMax = Points[2];

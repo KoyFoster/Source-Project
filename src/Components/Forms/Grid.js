@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 function Grid(props) {
   // init functions
-  //   const initRowSize = (iSize = -1) => {
-  //     let size = props.iRows ? props.iRows : -1;
-  //     if (size === -1) size = iSize;
-  //     if (size === -1) size = props.hRows ? props.hRows.length : 0;
-  //     return size;
-  //   };
+  const initRowSize = (iSize = -1) => {
+    let size = props.iRows ? props.iRows : -1;
+    if (size === -1) size = iSize;
+    if (size === -1) size = props.hRows ? props.hRows.length : 0;
+    return size;
+  };
   const initColSize = (iSize = -1) => {
     let size = props.iCols ? props.iCols : -1;
     if (size === -1) size = iSize;
@@ -25,20 +25,20 @@ function Grid(props) {
     const hRow = hRows.length === 1 ? [...hRows] : [];
 
     // Validate
-    if (hRows.length === 0 && props.iRows) {
-      for (let y = 0; y < props.iRows; y) {
+    if (hRows.length === 0 && iRows) {
+      for (let y = 0; y < iRows; y) {
         hRows.push([new Array(iCols)]);
         y += 1;
       }
     }
     // Multiple rows based on row size
-    if (props.iRows)
-      if (hRows.length < props.iRows) {
+    if (iRows)
+      if (hRows.length < iRows) {
         // Clear first row as it will be replaced
         if (hRows.length === 1) hRows.splice(0, 1);
         const plus = props.bRowHeader ? 1 : 0;
         // Add Rows and Update Names
-        for (let y = 0; y < props.iRows; y) {
+        for (let y = 0; y < iRows; y) {
           hRows.push([...hRow[0]]);
           for (let x = 0; x < hRows[0].length; x) {
             // name
@@ -54,13 +54,6 @@ function Grid(props) {
               : hRows[y][x].props.value;
             // Reserved tags
             tags.push(hRows[y][x].props.name);
-
-            // console.log(
-            //   'value:',
-            //   name,
-            //   Values[y][x - plus],
-            //   hRows[y][x].props.value,
-            // );
 
             // define new row
             hRows[y][x] = {
@@ -91,12 +84,14 @@ function Grid(props) {
   const [hHeader /* , setHeader */] = useState(
     props.hHeader ? [props.hHeader] : undefined,
   ); // An Array of components
-  // const [iRows, setRowSize] = useState(initRowSize());
+  const [iRows, setRowSize] = useState(initRowSize());
   const [iCols, setColSize] = useState(initColSize());
   if (props.Values !== Values && Values !== undefined) {
     setValues(props.Values);
-    // setRowSize(props.Values.length);
     setColSize(props.Values.length > 0 ? props.Values[0].length : 0);
+  }
+  if (iRows !== props.iRows) {
+    setRowSize(props.iRows);
   }
   // Rerender Vars
   const hFooter = props.hFooter ? [props.hFooter] : undefined; // An Array of components

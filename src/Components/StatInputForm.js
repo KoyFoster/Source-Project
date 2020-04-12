@@ -35,7 +35,7 @@ function StatInputForm(props) {
             label="Stats"
             type="number"
             name="Quantity"
-            value={Number(props.data().Size)}
+            value={Number(props.data().Values.size)}
             onChange={(event) => Update(event)}
           ></TextField>
           <InputLabel style={{ display: 'flexBox' }}> Limit: </InputLabel>
@@ -84,10 +84,10 @@ function StatInputForm(props) {
                 <TextField value={props.data().PointMax} disabled></TextField>,
                 <div></div>,
               ]}
-              iRows={props.data().Size}
+              iRows={props.data().Values.size}
               style={{ margin: 'none', padding: 'none' }}
               cellStyle={{ margin: 'none', padding: 'none' }}
-              Values={props.data().Values}
+              Values={props.data().Values.value}
             >
               <TextField
                 name={'Types'}

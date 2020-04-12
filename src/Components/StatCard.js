@@ -12,7 +12,7 @@ const iDefTmpl = 0;
 const defaultTemplates = [
   {
     label: 'Jojo',
-    values: [
+    Values: [
       ['POWER', 3.0, 1, 10, ''],
       ['SPEED', 4.0, 1, 10, ''],
       ['RANGE', 4.0, 1, 10, ''],
@@ -20,12 +20,12 @@ const defaultTemplates = [
       ['PRECISION', 4.0, 1, 10, ''],
       ['POTENTIAL', 2.0, 1, 10, ''],
     ],
-    pntLimit: 60,
-    pntDiff: false,
+    PointTotal: 60,
+    PointDiff: false,
   },
   {
     label: 'Dark Souls III',
-    values: [
+    Values: [
       ['Vigor', 15, 1, 99, ''],
       ['Attunement', 10, 1, 99, ''],
       ['Endurance', 15, 1, 99, ''],
@@ -37,12 +37,12 @@ const defaultTemplates = [
       ['Luck', 10, 1, 99, ''],
       ['Hollowing', 99, 1, 99, 'X'],
     ],
-    pntLimit: 802,
-    pntDiff: true,
+    PointTotal: 802,
+    PointDiff: true,
   },
   {
     label: 'Kono Subarashii',
-    values: [
+    Values: [
       ['Strength', 79, 79, 99, ''],
       ['Health', 21, 21, 99, ''],
       ['Magic Power', 92, 92, 99, ''],
@@ -50,12 +50,12 @@ const defaultTemplates = [
       ['Agility', 42, 42, 99, ''],
       ['Luck', 1, 1, 99, ''],
     ],
-    pntLimit: 0,
-    pntDiff: true,
+    PointTotal: 0,
+    PointDiff: true,
   },
   {
     label: 'ArcheAge',
-    values: [
+    Values: [
       ['Strength', 1380, 3, 2560, ''],
       ['Agility', 58, 3, 2560, ''],
       ['Stamina', 158, 3, 2560, ''],
@@ -65,8 +65,8 @@ const defaultTemplates = [
       ['Attack Speed', 50, 0, 100, '%'],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
     ],
-    pntLimit: 2560,
-    pntDiff: false,
+    PointTotal: 2560,
+    PointDiff: false,
   },
 ];
 
@@ -119,14 +119,16 @@ const tmplMenuItems = compileMenuItems();
 
 const defaultData = {
   Name: '',
-  Size: 5,
-  Values: [
-    ['one', 1, 1, 10, ''],
-    ['two', 2, 1, 10, ''],
-    ['three', 3, 1, 10, ''],
-    ['Four', 4, 1, 10, ''],
-    ['Five', 5, 1, 10, ''],
-  ],
+  Values: {
+    value: [
+      ['one', 1, 1, 10, ''],
+      ['two', 2, 1, 10, ''],
+      ['three', 3, 1, 10, ''],
+      ['Four', 4, 1, 10, ''],
+      ['Five', 5, 1, 10, ''],
+    ],
+    size: 5,
+  },
   PointMin: 5,
   PointMax: 50,
   PointTotal: 5,
@@ -205,9 +207,8 @@ function StatCard(props) {
           {
             <TemplateSelector
               Name={data.Name}
-              /* setValue = {val => setData({...data, Name: val})} */ defaultValue={
-                defaultTemplates[iDefTmpl]
-              }
+              setData={dataFuncs}
+              defaultValue={defaultTemplates[iDefTmpl]}
               MenuItems={
                 tmplMenuItems
               } /* OnTemplateChange={data.SetNewData.bind(this)} */
