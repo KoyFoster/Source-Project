@@ -6,6 +6,8 @@ const iStrokeWidth = 0.5;
 const cLetterGrades = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', '?'];
 const iBaseSize = 320;
 const iCenter = 160;
+const tickrate = 33; //33
+const speed = 0.05;
 // const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT';
 
 const pallete = {
@@ -61,15 +63,37 @@ let gradeCalc = function (index, Values) {
   return result; //Return '?'
 };
 
+// -------------------------------------------------------------------
 function Diagram(props) {
-  const [phase, setPhase] = useState(0.1);
-  const [animTL, setAnimTL] = useState(iCenter - iCenter * (1 / 0.1));
-  const [animBR, setAnimBR] = useState(iBaseSize * (1 / 0.1));
-  const [intervalID, setIntervalID] = useState(Number(0));
-  const animInfo = { phase, animTL, animBR, intervalID, bClearInterval: false };
-
   let vector = [];
   const angle = (1 / props.data.Size) * 360;
+
+  const [phase, setPhase] = useState(0);
+  const [animTL, setAnimTL] = useState(0);
+  const [animBR, setAnimBR] = useState(0);
+  const [intervalID, setIntervalID] = useState(0);
+
+  function startAnimation() {
+    const interval = setInterval(() => {
+      setIntervalID(interval);
+      setPhase((phase) => {
+        if (phase + speed >= 1) {
+          clearInterval(interval);
+        }
+        setAnimTL(() => {
+          return iCenter - iCenter / (Number(phase) + speed);
+        });
+        setAnimBR(() => {
+          return iBaseSize / (Number(phase) + speed);
+        });
+
+        return Number(phase) + speed;
+      });
+    }, tickrate);
+
+    return () => clearInterval(interval);
+  }
+
   const CreateVector = function () {
     /*Iterate For Each TriAngles*/
     const v2Polygon = [
@@ -376,128 +400,102 @@ function Diagram(props) {
     return htmlResult;
   };
 
-  function animate() {
-    if (animInfo.phase + 0.1 >= 1) {
-      animInfo.bClearInterval = true;
-      animInfo.phase = 1;
-      animInfo.animTL = 0;
-      animInfo.animBR = iBaseSize;
-    } else {
-      const newAnim = Number(animInfo.phase) + 0.1;
-      animInfo.phase = newAnim;
-      animInfo.animTL = iCenter - iCenter * (1 / newAnim);
-      animInfo.animBR = iBaseSize * (1 / newAnim);
-    }
-    // Set States
-    if (animInfo.bClearInterval) {
-      console.log('intervalID:', animInfo.intervalID);
-      clearInterval(animInfo.intervalID);
-    }
-    setPhase(animInfo.phase);
-    setAnimTL(animInfo.animTL);
-    setAnimBR(animInfo.animBR);
-  }
-
-  const startAnim = () => {
-    if (intervalID) {
-      clearInterval(intervalID);
-    }
-    const val = setInterval(() => animate(), 66);
-    setPhase(0);
-    setAnimTL(iCenter);
-    setAnimBR(0);
-    setIntervalID(val);
-    console.log('Inverval Val:', val);
-  };
-
   useEffect(() => {
-    startAnim();
+    startAnimation();
   }, []);
 
   // Update
   // Update();
   CreateVector();
   return (
-    <svg width="100%" viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
-      <defs>
-        <linearGradient gradientTransform="rotate(90)" id="grad">
-          <stop offset="0" stopColor={pallete.graph[0]} />
-          <stop offset="1" stopColor={pallete.graph[1]} />
-        </linearGradient>
-      </defs>
-      <defs>
-        <linearGradient gradientTransform="rotate(90)" id="goldGrad">
-          <stop offset="0" stopColor={pallete.inner[0]} />
-          <stop offset="1" stopColor={pallete.inner[1]} />
-        </linearGradient>
-      </defs>
-      <defs>
-        <linearGradient gradientTransform="rotate(90)" id="greyGrad">
-          <stop offset="0" stopColor={pallete.outer[0]} />
-          <stop offset="1" stopColor={pallete.outer[1]} />
-        </linearGradient>
-      </defs>
-      <circle
-        cx={iCenter}
-        cy={iCenter}
-        r={142}
-        style={{ fill: 'white', stroke: '#111111', strokeWidth: iLineWidth }}
-      />
-      <circle
-        cx={iCenter}
-        cy={iCenter}
-        r={139}
-        style={{
-          fill: 'url(#greyGrad)',
-          stroke: '#111111',
-          strokeWidth: iLineWidth,
-        }}
-      />
-      <circle
-        cx={iCenter}
-        cy={iCenter}
-        r={103}
-        style={{ fill: 'white', stroke: 'transparent' }}
-      />
-      <circle
-        cx={iCenter}
-        cy={iCenter}
-        r={101}
-        style={{
-          fill: 'url(#goldGrad)',
-          stroke: 'transparent',
-          strokeWidth: 0,
-        }}
-      />
-      <svg
-        viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}
-        style={{
-          fill: 'url(#grad)',
-        }}
-      >
-        {GetsStats()}
+    <div>
+      <div>
+        Info: <div>intervalID: {intervalID}</div>
+        <div>phase: {phase}</div>
+        <div>animTL: {animTL}</div>
+        animBR: {animBR}
+      </div>
+      <svg width="100%" viewBox={`0 0 ${iBaseSize} ${iBaseSize}`}>
+        <defs>
+          <linearGradient gradientTransform="rotate(90)" id="grad">
+            <stop offset="0" stopColor={pallete.graph[0]} />
+            <stop offset="1" stopColor={pallete.graph[1]} />
+          </linearGradient>
+        </defs>
+        <defs>
+          <linearGradient gradientTransform="rotate(90)" id="goldGrad">
+            <stop offset="0" stopColor={pallete.inner[0]} />
+            <stop offset="1" stopColor={pallete.inner[1]} />
+          </linearGradient>
+        </defs>
+        <defs>
+          <linearGradient gradientTransform="rotate(90)" id="greyGrad">
+            <stop offset="0" stopColor={pallete.outer[0]} />
+            <stop offset="1" stopColor={pallete.outer[1]} />
+          </linearGradient>
+        </defs>
+        <circle
+          cx={iCenter}
+          cy={iCenter}
+          r={142}
+          style={{ fill: 'white', stroke: '#111111', strokeWidth: iLineWidth }}
+        />
+        <circle
+          cx={iCenter}
+          cy={iCenter}
+          r={139}
+          style={{
+            fill: 'url(#greyGrad)',
+            stroke: '#111111',
+            strokeWidth: iLineWidth,
+          }}
+        />
+        <circle
+          cx={iCenter}
+          cy={iCenter}
+          r={103}
+          style={{ fill: 'white', stroke: 'transparent' }}
+        />
+        <circle
+          cx={iCenter}
+          cy={iCenter}
+          r={101}
+          style={{
+            fill: 'url(#goldGrad)',
+            stroke: 'transparent',
+            strokeWidth: 0,
+          }}
+        />
+        <svg
+          viewBox={`${animTL} ${animTL} ${animBR} ${animBR}`}
+          style={{
+            fill: 'url(#grad)',
+          }}
+        >
+          {GetsStats()}
+        </svg>
+        <svg
+          viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}
+          style={{
+            stroke: pallete.grid[1],
+          }}
+        >
+          {SetupBaseDiagram()}
+        </svg>
+        <svg style={{ stroke: pallete.grid[0] }}>{baseDiagramMesh}</svg>
+        <circle
+          cx={iCenter}
+          cy={iCenter}
+          r={101}
+          style={{
+            fill: 'transparent',
+            stroke: '#111111',
+            strokeWidth: iLineWidth,
+          }}
+        />
+        {SetupTextAndTicks(props.data)}
       </svg>
-      <svg
-        viewBox={`-0.5 -0.25 ${iBaseSize} ${iBaseSize}`}
-        style={{
-          stroke: pallete.grid[1],
-        }}
-      >
-        {SetupBaseDiagram()}
-      </svg>
-      <svg style={{ stroke: pallete.grid[0] }}>{baseDiagramMesh}</svg>
-      <circle
-        cx={iCenter}
-        cy={iCenter}
-        r={101}
-        style={{
-          fill: 'transparent',
-          stroke: '#111111',
-          strokeWidth: iLineWidth,
-        }}
-      />
-      {SetupTextAndTicks(props.data)}
-    </svg>
+    </div>
   );
 }
 
