@@ -7,7 +7,7 @@ const cLetterGrades = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', '?'];
 const iBaseSize = 320;
 const iCenter = 160;
 const tickrate = 33; //33
-const speed = 0.05;
+const speed = 0.1;
 // const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT';
 
 const pallete = {

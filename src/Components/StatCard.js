@@ -20,7 +20,7 @@ const defaultTemplates = [
       ['PRECISION', 4.0, 1, 10, ''],
       ['POTENTIAL', 2.0, 1, 10, ''],
     ],
-    PointTotal: 60,
+    PointLimit: 60,
     PointDiff: false,
   },
   {
@@ -37,7 +37,7 @@ const defaultTemplates = [
       ['Luck', 10, 1, 99, ''],
       ['Hollowing', 99, 1, 99, 'X'],
     ],
-    PointTotal: 802,
+    PointLimit: 802,
     PointDiff: true,
   },
   {
@@ -50,7 +50,7 @@ const defaultTemplates = [
       ['Agility', 42, 42, 99, ''],
       ['Luck', 1, 1, 99, ''],
     ],
-    PointTotal: 0,
+    PointLimit: 238,
     PointDiff: true,
   },
   {
@@ -65,7 +65,7 @@ const defaultTemplates = [
       ['Attack Speed', 50, 0, 100, '%'],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
     ],
-    PointTotal: 2560,
+    PointLimit: 2560,
     PointDiff: false,
   },
 ];
@@ -185,6 +185,7 @@ function StatCard(props) {
     randomize: undefined,
     randAnim: undefined,
     updateLimit: undefined,
+    getPointTotal: undefined,
   });
 
   // Render and Logic
@@ -208,6 +209,7 @@ function StatCard(props) {
             <TemplateSelector
               Name={data.Name}
               setData={dataFuncs}
+              funcs={funcs}
               defaultValue={defaultTemplates[iDefTmpl]}
               MenuItems={
                 tmplMenuItems

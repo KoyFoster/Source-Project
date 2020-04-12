@@ -9,50 +9,45 @@ const IsUnit = function (UnitType) {
   return sUnitTypes.includes(temp);
 };
 
+const GetPointTotal = (size, values, pointDiff, pointLimit) => {
+  let pointTotal = 0;
+  let pointMin = 0;
+  let pointMax = 0;
+  let arrDiff = size - values.length;
+  let iI = 0;
+  for (iI; iI < size; iI) {
+    //push additional elements if change in size exceeds current size
+    if (arrDiff > 0) {
+      values.push(['???', 0, 0, 10, '']);
+      arrDiff--;
+    }
+    //Only Include Only Point Defined Stats
+    if (IsUnit(values[iI][4])) {
+      pointTotal += parseInt(values[iI][1]);
+      pointMin += parseInt(values[iI][2]);
+      pointMax += parseInt(values[iI][3]);
+    }
+    iI += 1;
+  }
+  // check if new entry causes the point limit to be exceeded
+  if (pointTotal > pointLimit && size !== size) {
+    let iDiff = pointLimit - pointTotal;
+    values[iI - 1][1] += parseInt(iDiff);
+
+    pointTotal = pointLimit;
+  }
+
+  if (pointDiff) {
+    pointTotal -= pointMin;
+  }
+  return [pointTotal, pointMin, pointMax];
+};
+
 //Stat Card
 function StatData(sdProps) {
   // const { control } = sdProps;
   const data = sdProps.data;
   const setData = sdProps.setData;
-
-  const GetPointTotal = (
-    size = Number(data().Values.size),
-    values = data().Values.value,
-    pointDiff = data().PointDiff,
-    pointLimit = data().PointLimit,
-  ) => {
-    let pointTotal = 0;
-    let pointMin = 0;
-    let pointMax = 0;
-    let arrDiff = size - values.length;
-    let iI = 0;
-    for (iI; iI < size; iI) {
-      //push additional elements if change in size exceeds current size
-      if (arrDiff > 0) {
-        values.push(['???', 0, 0, 10, '']);
-        arrDiff--;
-      }
-      //Only Include Only Point Defined Stats
-      if (IsUnit(values[iI][4])) {
-        pointTotal += parseInt(values[iI][1]);
-        pointMin += parseInt(values[iI][2]);
-        pointMax += parseInt(values[iI][3]);
-      }
-      iI += 1;
-    }
-    // check if new entry causes the point limit to be exceeded
-    if (data().PointTotal > pointLimit && size !== data().Values.size) {
-      let iDiff = pointLimit - pointTotal;
-      values[iI - 1][1] += parseInt(iDiff);
-
-      pointTotal = pointLimit;
-    }
-
-    if (pointDiff) {
-      pointTotal -= pointMin;
-    }
-    return [pointTotal, pointMin, pointMax];
-  };
 
   const GetPointMax = function (iSize, values = 0) {
     let PointMax = 0;
@@ -105,7 +100,12 @@ function StatData(sdProps) {
       );
       i += 1;
     }
-    let Points = GetPointTotal(Number(this.data().Values.size), valuesBuffer);
+    let Points = GetPointTotal(
+      Number(this.data().Values.size),
+      valuesBuffer,
+      data().PointDiff,
+      data().PointLimit,
+    );
 
     this.setData.setValues({
       value: valuesBuffer,
@@ -168,7 +168,12 @@ function StatData(sdProps) {
 
     if (props.target.name === 'Quantity') {
       tempSize = parseInt(props.target.value);
-      Points = GetPointTotal(tempSize);
+      Points = GetPointTotal(
+        tempSize,
+        data().Values.value,
+        data().PointDiff,
+        data().PointLimit,
+      );
     } else if (sTag === 'Value') {
       //Value Range Check
       tempVal[iIndex][1] = Coll.iAATest(
@@ -178,7 +183,12 @@ function StatData(sdProps) {
       );
 
       //Check Point Limit Range
-      Points = GetPointTotal(tempSize, tempVal);
+      Points = GetPointTotal(
+        tempSize,
+        tempVal,
+        data().PointDiff,
+        data().PointLimit,
+      );
       if (Points[0] > this.data().PointLimit) {
         return;
       }
@@ -205,7 +215,12 @@ function StatData(sdProps) {
         Points[2] = GetPointMax(tempSize, props.target.value);
       }
       tempVal[iIndex][iIndex2] = parseInt(props.target.value);
-      Points = GetPointTotal(tempSize, tempVal);
+      Points = GetPointTotal(
+        tempSize,
+        tempVal,
+        data().PointDiff,
+        data().PointLimit,
+      );
     } else if (sTag === 'PointDiff') {
       // Update to new PointTotal
       if (props.target.checked) {
@@ -222,7 +237,12 @@ function StatData(sdProps) {
       tempVal[iIndex][4] = props.target.value;
 
       //Check Point Limit Range
-      Points = GetPointTotal(tempSize, tempVal);
+      Points = GetPointTotal(
+        tempSize,
+        tempVal,
+        data().PointDiff,
+        data().PointLimit,
+      );
       if (Points[0] > data().PointLimit) {
         return;
       }
@@ -312,6 +332,8 @@ function StatData(sdProps) {
     sdProps.funcs.randomize = RandomizeStats;
     sdProps.funcs.updateLimit = UpdatePointLimit;
 
+    sdProps.funcs.getPointTotal = GetPointTotal;
+
     let userDefined = sdProps.location.pathname.replace('/', '');
     const pointDiff = userDefined.search('Min=true') > -1;
 
@@ -322,14 +344,19 @@ function StatData(sdProps) {
       name = !Array.isArray(userDefined[0]) ? userDefined.shift() : '';
 
     if (userDefined !== '') {
-      let Points = GetPointTotal(userDefined.length);
+      let Points = GetPointTotal(
+        userDefined.length,
+        userDefined,
+        pointDiff,
+        1000,
+      );
       data().Name = name;
       data().Values.size = userDefined.length;
       data().Values.value = userDefined;
       data().PointTotal = Points[0];
       data().PointMin = Points[1];
       data().PointMax = Points[2];
-      data().PointLimit = 0;
+      data().PointLimit = 1000;
       data().PointDiff = pointDiff;
     }
   }, []);

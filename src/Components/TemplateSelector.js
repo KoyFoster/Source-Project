@@ -20,14 +20,37 @@ function TemplateSelector(props) {
         onChange={(e) => {
           if (props.OnChange) props.OnChange(e.target.value);
           if (props.setData) {
+            const Size = e.target.value.Values.length;
+            const newValues = () => {
+              const val = [];
+              for (let i = 0; i < Size; i) {
+                val.push([...e.target.value.Values[i]]);
+                i += 1;
+              }
+              return val;
+            };
+            const Values = newValues();
+
             props.setData.setValues({
-              value: new Array(...e.target.value.Values),
-              size: e.target.value.Values.length,
+              value: Values,
+              size: Size,
             });
+
             props.setData.setName(String(e.target.value.label));
+            const Points = props.funcs.getPointTotal(
+              Size,
+              Values,
+              e.target.value.PointDiff,
+              e.target.value.PointLimit,
+            );
             props.setData.setPointLimit(Number(e.target.value.PointLimit));
             props.setData.setPointDiff(Boolean(e.target.value.PointDiff));
-            props.setData.setSize(Number(e.target.value.Values.length));
+            props.setData.setSize(Size);
+
+            props.setData.setPointTotal(Number(Points[0]));
+            props.setData.setPointMin(Number(Points[1]));
+            props.setData.setPointMax(Number(Points[2]));
+            props.funcs.randAnim();
           }
         }}
       >
