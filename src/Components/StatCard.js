@@ -84,39 +84,6 @@ function compileMenuItems() {
 }
 const tmplMenuItems = compileMenuItems();
 
-// function LoadTemplateData(
-//   statData = null,
-//   template = this.props.defaultTemplates[0],
-// ) {
-//   if (Object.keys(template).length === 0) {
-//     return false;
-//   }
-//   // Copy Template
-//   const newArr = new Array(...template.values);
-//   const newPL = Number(template.pntLimit);
-//   const newPD = Boolean(template.pntDiff);
-//   for (let i = 0; i < newArr.length; i++) {
-//     newArr[i] = new Array(...newArr[i]);
-//   }
-
-//   //If data needs to be updated now
-//   if (statData !== null) {
-//     statData.data.iQuantity = template.values.length;
-//     statData.data.Values = newArr;
-//     statData.data.PointLimit = newPL;
-//     statData.data.PointDiff = newPD;
-//   } else {
-//     statData.setData({
-//       iQuantity: template.values.length,
-//       Values: newArr,
-//       PointLimit: newPL,
-//       PointDiff: newPD,
-//     });
-//   }
-
-//   return true;
-// }
-
 const defaultData = {
   Name: '',
   Values: {
@@ -177,6 +144,25 @@ function StatCard(props) {
     getPointTotal: undefined,
   });
 
+  function GetURLCode() {
+    let sResult = '';
+    for (let x = 0; x < data.Values.size; x++) {
+      let xBuffer = '';
+      for (let y = 0; y < 5; y++) {
+        let yBuffer = data.Values.value[x][y];
+        xBuffer += yBuffer + ',';
+      }
+      sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
+    }
+    return String(
+      'koyfoster.github.io/#/StatCard/' +
+        data.Name +
+        sResult +
+        (data.PointDiff ? 'Min=true' : '') +
+        '/',
+    ).replace('//', '/');
+  }
+
   // Render and Logic
   return (
     <Box
@@ -224,7 +210,7 @@ function StatCard(props) {
               UpdatePointLimit={funcs.updateLimit}
             />
           </Paper>
-          <StatCode /* GetURLCode={ GetURLCode.bind(this) } */ />
+          <StatCode GetURLCode={GetURLCode.bind(this)} />
         </Col>
         <Paper
           style={{

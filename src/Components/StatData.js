@@ -117,37 +117,9 @@ function StatData(sdProps) {
     sdProps.funcs.randAnim();
   }
 
-  // function GetURLCode() {
-  //   let sResult = '';
-  //   for (let x = 0; x < props.data.Values.length; x++) {
-  //     let xBuffer = '';
-  //     for (let y = 0; y < 5; y++) {
-  //       let yBuffer = props.data.Values[x][y];
-  //       xBuffer += yBuffer + ',';
-  //     }
-  //     sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
-  //   }
-  //   return String(
-  //     'koyfoster.github.io/#/StatCard/' +
-  //       props.data.Name +
-  //       sResult +
-  //       (props.data.PointDiff ? 'Min=true' : '') +
-  //       '/',
-  //   ).replace('//', '/');
-  // }
-
-  //Load States
-  // function Initialize() {
-  //   let Points = GetPointTotal(data().Values.length);
-  //   setData.setPointTotal(Points[0]);
-  //   setData.setPointMin(Points[1]);
-  //   setData.setPointMax(Points[2]);
-  // }
-
-  //Update Functions
+  // Update Functions
   function Update(props) {
-    //vars
-
+    // vars
     let tempSize = Number(this.data().Values.size);
     let tempVal = this.data().Values.value;
     let iIndex = props.target.name.indexOf(',')

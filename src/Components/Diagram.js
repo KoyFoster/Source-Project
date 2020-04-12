@@ -145,11 +145,13 @@ function Diagram(props) {
       Coll.v2Rotate2D(nextPoint, new Vector2(0, 0), angle); //Rotate Second Point Over
 
       html.push(
-        <polygon // Vector Test
+        <polygon
           key={`${props.name}_v_${i}`}
           points={`${vector[0][0]},${vector[0][1]} ${lastPoint.x},${lastPoint.y} ${nextPoint.x},${nextPoint.y}`}
           transform={transform}
           style={{
+            strokeWidth: iLineWidth,
+            stroke: pallete.graph[2],
             fillRule: 'evenodd',
           }}
         />,
@@ -184,7 +186,7 @@ function Diagram(props) {
       const transform = `rotate(${angle * i},${vector[0][0]},${vector[0][1]})`;
 
       html.push(
-        <polygon // Vector Test
+        <polygon
           key={`${props.name}_bv_${i}`}
           points={vector}
           transform={transform}

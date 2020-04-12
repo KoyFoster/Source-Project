@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ComboBox from './Forms/ComboBox';
 import { Paper } from '@material-ui/core';
 
@@ -33,8 +33,11 @@ function TemplateSelector(props) {
     props.setData.setPointTotal(Number(Points[0]));
     props.setData.setPointMin(Number(Points[1]));
     props.setData.setPointMax(Number(Points[2]));
-    props.funcs.randAnim();
   }
+
+  useEffect(() => {
+    setTemplate(props.defaultValue);
+  }, []);
 
   return (
     <Paper
@@ -54,6 +57,7 @@ function TemplateSelector(props) {
           if (props.OnChange) props.OnChange(e.target.value);
           if (props.setData) {
             setTemplate(e.target.value);
+            props.funcs.randAnim();
           }
         }}
       >
