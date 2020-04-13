@@ -2,22 +2,7 @@ import React, { useState } from 'react';
 import { Select } from '@material-ui/core';
 
 function ComboBox(props) {
-  const [value, setValue] = useState(() => {
-    let val = props.value;
-    if (props.defaultValue && val === undefined) {
-      val = props.defaultValue ? props.defaultValue.value : '';
-    }
-
-    return val;
-  });
-  if (
-    props.value !== value &&
-    value !== undefined &&
-    props.value !== '' &&
-    props.value !== undefined
-  ) {
-    setValue(props.value);
-  }
+  const [value, setValue] = useState(props.value);
 
   return (
     <div style={{ display: 'flex', alignItems: 'stretch' }}>

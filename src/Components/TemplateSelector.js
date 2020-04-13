@@ -37,7 +37,7 @@ function TemplateSelector(props) {
     props.setData.setPointTotal(Number(Points[0]));
     props.setData.setPointMin(Number(Points[1]));
     props.setData.setPointMax(Number(Points[2]));
-    props.funcs.randAnim();
+    if (props.funcs.randAnim) props.funcs.randAnim();
   }
 
   useEffect(() => {
@@ -56,8 +56,12 @@ function TemplateSelector(props) {
     >
       Name
       <ComboBox
-        value={props.Name}
-        defaultValue={props.defaultValue}
+        value={() => {
+          let val = props.Name ? props.Name : '';
+          if (val === '')
+            val = props.defaultValue ? props.defaultValue.label : '';
+          return val;
+        }}
         onChange={(e) => {
           if (props.OnChange) props.OnChange(e.target.value);
           setTemplate(e.target.value);

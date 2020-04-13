@@ -115,10 +115,16 @@ const defaultData = {
 
 // Stat Card
 function StatCard(props) {
-  // const [data, setData] = useState(reducer, defaultData);
-  // const [data, setData] = useReducer(reducer, defaultData);
+  const [Name, setName] = useState(() => {
+    let val = props.location.pathname
+      .replace('/', '')
+      .replace('StatCard', '')
+      .replace('/', '');
+    let iEnd = val.search(`\\[`);
+    if (iEnd === -1) iEnd = undefined;
 
-  const [Name, setName] = useState(defaultData.Name);
+    return val.slice(0, iEnd);
+  });
   const [Size, setSize] = useState(defaultData.Size);
   const [Values, setValues] = useState(defaultData.Values);
 
@@ -162,10 +168,8 @@ function StatCard(props) {
     getPointTotal: undefined,
   });
 
-  let userDefined = props.location.pathname.replace('/', '');
-  console.log('userDefined:', userDefined);
-
   // Needs to find a way to properly handling '%' and '?'
+  // console.log('data.Name:', data.Name);
   const GetURLCode = () => {
     let sResult = '';
     for (let x = 0; x < Values.size; x++) {
@@ -176,7 +180,7 @@ function StatCard(props) {
       }
       sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
     }
-    console.log('data.Values:', Values, 'Name:', Name);
+    //console.log('data.Values:', Values, 'Name:', Name);
 
     return String(
       //'koyfoster.github.io/#/StatCard/' +
@@ -210,7 +214,7 @@ function StatCard(props) {
               Name={data.Name}
               setData={dataFuncs}
               funcs={funcs}
-              // defaultValue={defaultTemplates[iDefTmpl]}
+              defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
               MenuItems={tmplMenuItems}
             />
           }
