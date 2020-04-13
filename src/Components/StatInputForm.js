@@ -49,8 +49,10 @@ function StatInputForm(props) {
         <Row>
           <Checkbox
             name="PointDiff"
-            checked={props.data().PointDiff}
-            onChange={(event) => Update(event)}
+            checked={Boolean(props.data().PointDiff)}
+            onChange={(event) => {
+              Update(event);
+            }}
           />
           <InputLabel>
             Min - Total Points: {props.data().PointTotal}{' '}

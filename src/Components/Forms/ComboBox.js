@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import { Select } from '@material-ui/core';
 
 function ComboBox(props) {
-  const [value, setValue] = useState(
-    props.value ? props.value : props.defaultValue.label,
-  );
+  const [value, setValue] = useState(() => {
+    let val = props.value;
+    if (props.defaultValue && val === undefined) {
+      val = props.defaultValue ? props.defaultValue.value : '';
+    }
+
+    return val;
+  });
   if (
     props.value !== value &&
     value !== undefined &&
@@ -30,9 +35,11 @@ function ComboBox(props) {
         }}
         type="text"
         value={value}
+        // This needs to be fixed as it becomes readonly when applying templates
         onChange={(e) => {
           setValue(e.target.value);
           if (props.setValue) props.setValue(e.target.value);
+          if (props.onEdit) props.onEdit(e);
         }}
       />
       <Select

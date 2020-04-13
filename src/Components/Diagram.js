@@ -68,6 +68,7 @@ function Diagram(props) {
   let vector = [];
   const angle = (1 / props.data.Values.size) * 360;
 
+  // Animation States
   const [phase, setPhase] = useState(0);
   const [animTL, setAnimTL] = useState(0);
   const [animBR, setAnimBR] = useState(0);

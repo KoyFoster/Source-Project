@@ -54,6 +54,23 @@ const defaultTemplates = [
     PointDiff: true,
   },
   {
+    label: 'Final Fantasy 7 Remake',
+    Values: [
+      ['Attack', 105, 1, 200, ''],
+      ['Magic Attack', 97, 1, 200, ''],
+      ['Defense', 34, 1, 200, ''],
+      ['Magic Defense', 26, 1, 200, ''],
+      ['Strength', 35, 1, 200, ''],
+      ['Magic', 31, 1, 200, ''],
+      ['Vitality', 26, 1, 200, ''],
+      ['Spirit', 23, 1, 200, ''],
+      ['Luck', 27, 1, 200, ''],
+      ['Speed', 19, 1, 200, ''],
+    ],
+    PointLimit: 10000,
+    PointDiff: false,
+  },
+  {
     label: 'ArcheAge',
     Values: [
       ['Strength', 1380, 3, 2560, ''],
@@ -126,6 +143,7 @@ function StatCard(props) {
     return data;
   };
 
+  // Used for init load state to prevent the template template selecter from overriding the user defined URL. Probably another way of doing this.
   const dataFuncs = {
     setName,
     setSize,
@@ -144,24 +162,31 @@ function StatCard(props) {
     getPointTotal: undefined,
   });
 
-  function GetURLCode() {
+  let userDefined = props.location.pathname.replace('/', '');
+  console.log('userDefined:', userDefined);
+
+  // Needs to find a way to properly handling '%' and '?'
+  const GetURLCode = () => {
     let sResult = '';
-    for (let x = 0; x < data.Values.size; x++) {
+    for (let x = 0; x < Values.size; x++) {
       let xBuffer = '';
       for (let y = 0; y < 5; y++) {
-        let yBuffer = data.Values.value[x][y];
+        let yBuffer = Values.value[x][y];
         xBuffer += yBuffer + ',';
       }
       sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
     }
+    console.log('data.Values:', Values, 'Name:', Name);
+
     return String(
-      'koyfoster.github.io/#/StatCard/' +
-        data.Name +
+      //'koyfoster.github.io/#/StatCard/' +
+      'localhost:3000/#/StatCard/' +
+        Name +
         sResult +
-        (data.PointDiff ? 'Min=true' : '') +
+        (PointDiff ? 'Min=true' : '') +
         '/',
     ).replace('//', '/');
-  }
+  };
 
   // Render and Logic
   return (
@@ -185,10 +210,8 @@ function StatCard(props) {
               Name={data.Name}
               setData={dataFuncs}
               funcs={funcs}
-              defaultValue={defaultTemplates[iDefTmpl]}
-              MenuItems={
-                tmplMenuItems
-              } /* OnTemplateChange={data.SetNewData.bind(this)} */
+              // defaultValue={defaultTemplates[iDefTmpl]}
+              MenuItems={tmplMenuItems}
             />
           }
           <Paper
@@ -210,7 +233,7 @@ function StatCard(props) {
               UpdatePointLimit={funcs.updateLimit}
             />
           </Paper>
-          <StatCode GetURLCode={GetURLCode.bind(this)} />
+          <StatCode GetURLCode={GetURLCode} />
         </Col>
         <Paper
           style={{

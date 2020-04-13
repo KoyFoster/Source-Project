@@ -4,6 +4,10 @@ import { Paper } from '@material-ui/core';
 
 function TemplateSelector(props) {
   function setTemplate(value) {
+    // validation
+    if (props.setData === undefined) return;
+    if (value === undefined) return;
+
     const Size = value.Values.length;
     const newValues = () => {
       const val = [];
@@ -33,6 +37,7 @@ function TemplateSelector(props) {
     props.setData.setPointTotal(Number(Points[0]));
     props.setData.setPointMin(Number(Points[1]));
     props.setData.setPointMax(Number(Points[2]));
+    props.funcs.randAnim();
   }
 
   useEffect(() => {
@@ -55,10 +60,11 @@ function TemplateSelector(props) {
         defaultValue={props.defaultValue}
         onChange={(e) => {
           if (props.OnChange) props.OnChange(e.target.value);
-          if (props.setData) {
-            setTemplate(e.target.value);
-            props.funcs.randAnim();
-          }
+          setTemplate(e.target.value);
+        }}
+        onEdit={(e) => {
+          console.log('e.target.value:', e.target.value);
+          props.setData.setName(String(e.target.value));
         }}
       >
         {props.MenuItems}

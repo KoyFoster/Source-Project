@@ -246,6 +246,7 @@ function StatData(sdProps) {
         if (name === 0) name = i;
         subElement = ''; //clear sub element
         iElement = 1;
+        i += 1;
         continue;
       } else if (value[i] === ']') {
         //element end
@@ -264,6 +265,7 @@ function StatData(sdProps) {
 
         bSuccess = true;
 
+        i += 1;
         continue;
       } else if (value[i] === ',') {
         //sub element end/start: at the point a full sub element should have been compiled
@@ -277,11 +279,12 @@ function StatData(sdProps) {
         subElement = ''; //clear sub element
         iElement++;
 
+        i += 1;
         continue;
       }
       subElement += value[i];
       i += 1;
-    }
+    } // end of for loop
 
     if (bSuccess === false) {
       return '';
@@ -324,14 +327,19 @@ function StatData(sdProps) {
         pointDiff,
         1000,
       );
-      data().Name = name;
-      data().Values.size = userDefined.length;
-      data().Values.value = userDefined;
-      data().PointTotal = Points[0];
-      data().PointMin = Points[1];
-      data().PointMax = Points[2];
-      data().PointLimit = 1000;
-      data().PointDiff = pointDiff;
+
+      sdProps.setData.setName(name);
+      sdProps.setData.setValues({
+        value: userDefined,
+        size: userDefined.length,
+      });
+
+      sdProps.setData.setPointTotal(Points[0]);
+      sdProps.setData.setPointMin(Points[1]);
+      sdProps.setData.setPointMax(Points[2]);
+
+      sdProps.setData.setPointLimit(1000);
+      sdProps.setData.setPointDiff(pointDiff);
     }
   }, []);
 
