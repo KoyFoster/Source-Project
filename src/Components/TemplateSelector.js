@@ -67,7 +67,6 @@ function TemplateSelector(props) {
           setTemplate(e.target.value);
         }}
         onEdit={(e) => {
-          console.log('e.target.value:', e.target.value);
           props.setData.setName(String(e.target.value));
         }}
       >
