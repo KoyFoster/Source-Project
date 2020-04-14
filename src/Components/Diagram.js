@@ -4,11 +4,10 @@ import { Vector2, Coll } from './KoyMath.js';
 const iLineWidth = 1;
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', '?'];
-const iBaseSize = 320;
-const iCenter = 160;
+const iBaseSize = 285;
+const iCenter = iBaseSize / 2;
 const tickrate = 33; //33
 const speed = 0.1;
-// const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT';
 
 const pallete = {
   inner: ['#EEEEEE', 'gold'],
