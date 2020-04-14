@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 
 function Grid(props) {
   // init functions
+  const getStart = () => {
+    return props.iStrt ? props.iStrt : 0;
+  };
   const initRowSize = (iSize = -1) => {
-    let size = props.iRows ? props.iRows : -1;
+    let size = props.iRows ? props.iRows - getStart() : -1;
     if (size === -1) size = iSize;
-    if (size === -1) size = props.hRows ? props.hRows.length : 0;
+    if (size === -1) size = props.hRows ? props.hRows.length - getStart() : 0;
     return size;
   };
   const initColSize = (iSize = -1) => {
@@ -39,6 +42,7 @@ function Grid(props) {
         const plus = props.bRowHeader ? 1 : 0;
         // Add Rows and Update Names
         for (let y = 0; y < iRows; y) {
+          const iV = y + getStart();
           hRows.push([...hRow[0]]);
           for (let x = 0; x < hRows[0].length; x) {
             // name
@@ -59,11 +63,11 @@ function Grid(props) {
             //   Values[y][x],
             // );
             const hasValue =
-              bDefined && Values[y][x - plus] !== ''
-                ? Values[y][x - plus] !== 'undefined'
+              bDefined && Values[iV][x - plus] !== ''
+                ? Values[iV][x - plus] !== 'undefined'
                 : false;
             const value = hasValue
-              ? Values[y][x - plus]
+              ? Values[iV][x - plus]
               : hRows[y][x].props.value;
             // Reserved tags
             tags.push(hRows[y][x].props.name);
@@ -103,10 +107,10 @@ function Grid(props) {
   ); // An Array of components
   const [iRows, setRowSize] = useState(initRowSize());
   const [iCols, setColSize] = useState(initColSize());
-  if (iRows !== props.iRows) {
+  if (iRows !== props.iRows - getStart()) {
     // console.log(iRows, '!==', props.iRows, props.Values);
     setValues(props.Values);
-    setRowSize(props.iRows);
+    setRowSize(props.iRows - getStart());
   } else if (props.Values !== Values && Values !== undefined) {
     setValues(props.Values);
     setColSize(props.Values.length > 0 ? props.Values[0].length : 0);

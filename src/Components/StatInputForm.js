@@ -28,8 +28,30 @@ function StatInputForm(props) {
   };
 
   /* Validate Presence of stats */
+  const hLimit =
+    props.bCalc === true ? (
+      ''
+    ) : (
+      <div>
+        <InputLabel style={{ display: 'flexBox' }}> Limit: </InputLabel>
+        <TextField
+          type="number"
+          name="Limit"
+          value={props.data().PointLimit}
+          onChange={(event) => RandomizeStats(event)}
+        ></TextField>
+      </div>
+    );
+  const hTotal =
+    props.bCalc === true ? (
+      ''
+    ) : (
+      <InputLabel>Min - Total Points: {props.data().PointTotal} </InputLabel>
+    );
   const hPointDiff =
-    props.data().PointDiff !== undefined ? (
+    props.bCalc === true || props.data().PointDiff === undefined ? (
+      ''
+    ) : (
       <Checkbox
         name="PointDiff"
         checked={Boolean(props.data().PointDiff)}
@@ -37,11 +59,9 @@ function StatInputForm(props) {
           Update(event);
         }}
       />
-    ) : (
-      ''
     );
   const hRandom =
-    props.data().bCalc !== true ? (
+    props.bCalc !== true ? (
       <Button name="RNG" onClick={(event) => RandomizeStats(event)}>
         {' '}
         Random{' '}
@@ -51,7 +71,7 @@ function StatInputForm(props) {
     );
 
   const hFooter =
-    props.data().bCalc !== true
+    props.bCalc !== true
       ? [
           <div>Totals</div>,
           <TextField value={props.data().PointTotal} disabled></TextField>,
@@ -69,22 +89,14 @@ function StatInputForm(props) {
             label="Stats"
             type="number"
             name="Quantity"
-            value={Number(props.data().Values[props.di].length)}
+            value={Number(props.Values.length)}
             onChange={(event) => Update(event)}
           ></TextField>
-          <InputLabel style={{ display: 'flexBox' }}> Limit: </InputLabel>
-          <TextField
-            type="number"
-            name="Limit"
-            value={props.data().PointLimit}
-            onChange={(event) => RandomizeStats(event)}
-          ></TextField>
+          {hLimit}
         </Row>
         <Row>
           {hPointDiff}
-          <InputLabel>
-            Min - Total Points: {props.data().PointTotal}{' '}
-          </InputLabel>
+          {hTotal}
         </Row>
       </Col>
       <Row>
@@ -92,6 +104,7 @@ function StatInputForm(props) {
           <Col>
             {hRandom}
             <Grid
+              iStrt={1}
               onChange={(event) => Update(event)}
               hHeader={[
                 <div>Stats</div>,
@@ -101,10 +114,10 @@ function StatInputForm(props) {
                 <div>LVL</div>,
               ]}
               hFooter={hFooter}
-              iRows={props.data().Values[props.di].length}
+              iRows={props.Values.length}
               style={{ margin: 'none', padding: 'none' }}
               cellStyle={{ margin: 'none', padding: 'none' }}
-              Values={props.data().Values[props.di]}
+              Values={props.Values}
             >
               <TextField
                 name={'Types'}

@@ -89,7 +89,7 @@ const defaultTemplates = [
     label: 'ArcheAge 2.0',
     Values: [
       [
-        ['Primary Stats', 'Fixed'],
+        ['Primary Stats', 'Fixed', '#4ab8c5'],
         ['Strength', 1882, 3, 2560, ''],
         ['Agility', 22, 3, 2560, ''],
         ['Stamina', 260, 3, 2560, ''],
@@ -98,22 +98,23 @@ const defaultTemplates = [
       ],
 
       [
-        ['Secondary Stats', 'Calculated'],
-        ['Health', 1735.47 /* ([0][2] * 12) */, 264, 2560, ''],
-        ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
-        ['Range Attack', 4.4 /* ([0][2] * 0.2) */, 4.4, 2560, ''],
-        ['Magic Attack', 4.4 /* ([0][3] * 0.2) */, 4.4, 2560, ''],
+        ['Secondary Stats', 'Calculated', '#c0f311'],
+        ['Health', 2064 /* ([0][2] * 12) */, 264, 2560, ''],
+        ['Mana', 264 /* ([5][2] * 12) */, 264, 2560, ''],
+        ['Melee Attack', 376.4 /* ([1][1] * 0.2) */, 4.4, 2560, ''],
+        ['Range Attack', 4.4 /* ([3][2] * 0.2) */, 4.4, 2560, ''],
+        ['Magic Attack', 4.4 /* ([5][3] * 0.2) */, 4.4, 2560, ''],
         ['Healing Power', 34.4 /* ([0][4] * 0.2) */, 4.4, 2560, ''],
         ['Physical Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 71.35%
-        ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''],
-      ], // 23.81%
+        ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 23.81%
+      ],
 
       [
-        ['Misc Stats', 'Fixed'],
+        ['Misc Stats', 'Fixed', '#1d6614'],
         ['Move Speed', 5.4, 5.4, 10, 'm/s'],
         ['Cast Time', 93, 0, 100, '%'],
-        ['Attack Speed', 190, 0, 100, ''],
-      ], // (84.0%)
+        ['Attack Speed', 190, 0, 100, ''], // (84.0%)
+      ],
     ],
     PointLimit: 2560,
     PointDiff: false,
@@ -139,7 +140,7 @@ const defaultData = {
 
   Values: [
     [
-      ['Primary Stats', 'Fixed'],
+      ['Primary Stats', 'Fixed', '#4ab8c5'],
       ['Strength', 1882, 3, 2560, ''],
       ['Agility', 22, 3, 2560, ''],
       ['Stamina', 260, 3, 2560, ''],
@@ -148,30 +149,27 @@ const defaultData = {
     ],
 
     [
-      ['Secondary Stats', 'Calculated'],
+      ['Secondary Stats', 'Calculated', '#c03311'],
       ['Health', 1735.47 /* ([0][2] * 12) */, 264, 2560, ''],
+      ['Mana', 264 /* ([5][2] * 12) */, 264, 2560, ''],
       ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
       ['Range Attack', 4.4 /* ([0][2] * 0.2) */, 4.4, 2560, ''],
       ['Magic Attack', 4.4 /* ([0][3] * 0.2) */, 4.4, 2560, ''],
       ['Healing Power', 34.4 /* ([0][4] * 0.2) */, 4.4, 2560, ''],
       ['Physical Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 71.35%
-      ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''],
-    ], // 23.81%
+      ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 23.81%
+    ],
 
     [
-      ['Misc Stats', 'Fixed'],
+      ['Misc Stats', 'Fixed', '#1d3314'],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
       ['Cast Time', 93, 0, 100, '%'],
-      ['Attack Speed', 190, 0, 100, ''],
-    ], // (84.0%)
+      ['Attack Speed', 190, 0, 100, ''], // (84.0%)
+    ],
   ],
   PointLimit: 2560,
   PointDiff: false,
 };
-
-// function reducer(data, newData) {
-//   return { ...data, ...newData };
-// }
 
 // Stat Card
 function StatCard(props) {
@@ -254,6 +252,69 @@ function StatCard(props) {
   //   ).replace('//', '/');
   // };
 
+  const hForms = () => {
+    const hBuffer = [];
+    for (let i = 0; i < data.Values.length; i) {
+      hBuffer.push(
+        <Paper
+          style={{
+            width: '320px',
+            margin: 4,
+            padding: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: getData().Values[i][0][2],
+            // fontColor: getData().Values[i][0][2],
+          }}
+        >
+          <StatInputForm
+            key={`StatDataForm_${i}`}
+            name={`StatDataForm_${i}`}
+            bCalc={getData().Values[i][0][1] === 'Calculated'}
+            Values={getData().Values[i]}
+            data={getData}
+            setData={dataFuncs}
+            UpdateStates={funcs.update}
+            RandomizeStats={funcs.randomize}
+            UpdatePointLimit={funcs.updateLimit}
+          />
+        </Paper>,
+      );
+      i += 1;
+    }
+    return hBuffer;
+  };
+
+  const hDiagrams = () => {
+    const hBuffer = [];
+
+    for (let i = 0; i < data.Values.length; i) {
+      hBuffer.push(
+        <Paper
+          style={{
+            // width: '768px',
+            width: '564px',
+            margin: 4,
+            padding: 4,
+            display: 'flexbox',
+            flexDirection: 'row',
+            backgroundColor: getData().Values[i][0][2],
+            // fontColor: getData().Values[i][0][2],
+          }}
+        >
+          <Diagram
+            name={'StatDataDiagram'}
+            key={'StatDataDiagram'}
+            data={{ Values: Values[i] }}
+            funcs={funcs}
+          />
+        </Paper>,
+      );
+      i += 1;
+    }
+    return hBuffer;
+  };
+
   // Render and Logic
   return (
     <Box
@@ -281,45 +342,10 @@ function StatCard(props) {
             // />
           }
 
-          <Paper
-            style={{
-              width: '320px',
-              margin: 4,
-              padding: 4,
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <StatInputForm
-              key="StatDataForm1"
-              name="StatDataForm"
-              data={getData}
-              di={0}
-              setData={dataFuncs}
-              UpdateStates={funcs.update}
-              RandomizeStats={funcs.randomize}
-              UpdatePointLimit={funcs.updateLimit}
-            />
-          </Paper>
+          {hForms()}
           {/* {<StatCode GetURLCode={GetURLCode} />} */}
         </Col>
-        <Paper
-          style={{
-            // width: '768px',
-            width: '564px',
-            margin: 4,
-            padding: 4,
-            display: 'flexbox',
-            flexDirection: 'row',
-          }}
-        >
-          <Diagram
-            name={'StatDataDiagram'}
-            key={'StatDataDiagram'}
-            data={{ Values: Values[0] }}
-            funcs={funcs}
-          />
-        </Paper>
+        {hDiagrams()}
       </Row>
     </Box>
   );
