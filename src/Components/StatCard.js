@@ -176,6 +176,11 @@ function StatCard(props) {
       let xBuffer = '';
       for (let y = 0; y < 5; y++) {
         let yBuffer = Values.value[x][y];
+        /* Check for UnitType column and encode and '%' that appear fdor the URL*/
+        if (y === 4 && yBuffer) {
+          console.log('yBuffer:', x, y, yBuffer);
+          yBuffer = yBuffer.replace('%', '%25');
+        }
         xBuffer += yBuffer + ',';
       }
       sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
@@ -183,7 +188,7 @@ function StatCard(props) {
     //console.log('data.Values:', Values, 'Name:', Name);
 
     return String(
-      //'koyfoster.github.io/#/StatCard/' +
+      // 'koyfoster.github.io/#/StatCard/' +
       'localhost:3000/#/StatCard/' +
         Name +
         sResult +
@@ -209,15 +214,13 @@ function StatCard(props) {
             setData={dataFuncs}
             funcs={funcs}
           />
-          {
-            <TemplateSelector
-              Name={data.Name}
-              setData={dataFuncs}
-              funcs={funcs}
-              defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
-              MenuItems={tmplMenuItems}
-            />
-          }
+          <TemplateSelector
+            Name={data.Name}
+            setData={dataFuncs}
+            funcs={funcs}
+            defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
+            MenuItems={tmplMenuItems}
+          />
           <Paper
             style={{
               width: '320px',
@@ -241,13 +244,20 @@ function StatCard(props) {
         </Col>
         <Paper
           style={{
-            width: '768px',
+            // width: '768px',
+            width: '564px',
             margin: 4,
             padding: 4,
             display: 'flexbox',
             flexDirection: 'row',
           }}
         >
+          <Diagram
+            name={'StatDataDiagram'}
+            key={'StatDataDiagram'}
+            data={data}
+            funcs={funcs}
+          />
           <Diagram
             name={'StatDataDiagram'}
             key={'StatDataDiagram'}
