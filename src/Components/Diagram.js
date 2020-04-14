@@ -65,7 +65,8 @@ let gradeCalc = function (index, values) {
 // -------------------------------------------------------------------
 function Diagram(props) {
   let vector = [];
-  const angle = (1 / props.data.Values.size) * 360;
+  const iLen = props.data.Values.length - 1;
+  const angle = (1 / iLen) * 360;
 
   // Animation States
   const [phase, setPhase] = useState(0);
@@ -121,22 +122,20 @@ function Diagram(props) {
   }; // end of CreateVector
 
   function GetsStats() {
-    if (props.data.Values.size <= 1) return;
+    if (iLen <= 1) return;
     const html = [];
 
     let lastPoint = new Vector2(
       vector[1][0],
-      vector[1][1] *
-        (props.data.Values.value[0][1] * (1 / props.data.Values.value[0][3])),
+      vector[1][1] * (props.data.Values[1][1] * (1 / props.data.Values[1][3])),
     );
     let nextPoint = new Vector2(
       vector[1][0],
-      vector[1][1] *
-        (props.data.Values.value[1][1] * (1 / props.data.Values.value[1][3])),
+      vector[1][1] * (props.data.Values[2][1] * (1 / props.data.Values[2][3])),
     );
-    for (let i = 0; i < props.data.Values.size; i) {
+    for (let i = 0; i < iLen; i) {
       const length =
-        props.data.Values.value[i][1] * (1 / props.data.Values.value[i][3]) * 1;
+        props.data.Values[i + 1][1] * (1 / props.data.Values[i + 1][3]) * 1;
       const temp = 1 - length;
       const center = iCenter * temp;
 
@@ -157,19 +156,17 @@ function Diagram(props) {
         />,
       );
       i += 1;
-      if (i !== props.data.Values.size) {
+      if (i !== iLen) {
         lastPoint = new Vector2(
           vector[1][0],
           vector[1][1] *
-            (props.data.Values.value[i][1] *
-              (1 / props.data.Values.value[i][3])),
+            (props.data.Values[i + 1][1] * (1 / props.data.Values[i + 1][3])),
         );
-        const iNext = i + 1 !== props.data.Values.size ? i + 1 : 0;
+        const iNext = i + 1 !== iLen ? i + 1 : 1;
         nextPoint = new Vector2(
           vector[1][0],
           vector[1][1] *
-            (props.data.Values.value[iNext][1] *
-              (1 / props.data.Values.value[iNext][3])),
+            (props.data.Values[iNext][1] * (1 / props.data.Values[iNext][3])),
         );
       }
     }
@@ -182,7 +179,7 @@ function Diagram(props) {
     const html = [];
 
     //Calculate All Point
-    for (let i = 0; i < props.data.Values.size; i++) {
+    for (let i = 0; i < iLen; i++) {
       const transform = `rotate(${angle * i},${vector[0][0]},${vector[0][1]})`;
 
       html.push(
@@ -214,7 +211,7 @@ function Diagram(props) {
       ', rotate(180,' + typeCenter[0] + ',' + typeCenter[1] + ')';
 
     let htmlResult = [];
-    for (let i = 0; i < data.Values.size; i++) {
+    for (let i = 0; i < data.Values.length - 1; i++) {
       const curAngle = angle * i;
 
       const bFlip = curAngle > 90 && curAngle < 270;
@@ -256,7 +253,7 @@ function Diagram(props) {
           y={gradeCenter[1] + 1.5}
           transform={transform}
         >
-          {gradeCalc(i, data.Values.value)}
+          {gradeCalc(i + 1, data.Values)}
         </text>,
       );
       htmlResult.push(
@@ -274,7 +271,7 @@ function Diagram(props) {
           y={gradeCenter[1]}
           transform={transform}
         >
-          {gradeCalc(i, data.Values.value)}
+          {gradeCalc(i + 1, data.Values)}
         </text>,
       );
 
@@ -294,7 +291,7 @@ function Diagram(props) {
           y={typeCenter[1] + 1}
           transform={transform}
         >
-          {data.Values.value[i][0]}
+          {data.Values[i + 1][0]}
         </text>,
       );
       htmlResult.push(
@@ -311,12 +308,12 @@ function Diagram(props) {
           y={typeCenter[1]}
           transform={transform}
         >
-          {`${data.Values.value[i][0]}`}
+          {`${data.Values[i + 1][0]}`}
         </text>,
       );
 
       /*Stat Ticks*/
-      for (let iT = 1; iT < ticks; iT++) {
+      for (let iT = 0; iT < ticks; iT++) {
         if (iT % 2 === 0) {
           //TICKS
           const y = iCenter - ticks * iT;
@@ -349,7 +346,7 @@ function Diagram(props) {
           );
 
           //Define and round off the TICK VALUES
-          let tickValue = Math.ceil(iT * (data.Values.value[i][3] / ticks));
+          let tickValue = Math.ceil(iT * (data.Values[i + 1][3] / ticks));
           let tickCenter = [iCenter, iCenter - ticks * iT];
           let iTick = 3;
           if (curAngle > 90 && curAngle < 270) {
@@ -373,8 +370,8 @@ function Diagram(props) {
           let bDraw =
             i === 0
               ? true
-              : `${data.Values.value[i][3]}${data.Values.value[i][4]}` !==
-                `${data.Values.value[i - 1][3]}${data.Values.value[i - 1][4]}`;
+              : `${data.Values[i + 1][3]}${data.Values[i + 1][4]}` !==
+                `${data.Values[i - 1][3]}${data.Values[i - 1][4]}`;
           if (bDraw) {
             htmlResult.push(
               <text
@@ -386,7 +383,7 @@ function Diagram(props) {
                 style={{ fontSize: 10, strokeWidth: 0, fill: pallete.grid[1] }}
                 transform={transform}
               >
-                {`${tickValue}${data.Values.value[i][4]}`}
+                {`${tickValue}${data.Values[i + 1][4]}`}
               </text>,
             );
             htmlResult.push(
@@ -404,7 +401,7 @@ function Diagram(props) {
                 }}
                 transform={transform}
               >
-                {`${tickValue}${data.Values.value[i][4]}`}
+                {`${tickValue}${data.Values[i + 1][4]}`}
               </text>,
             );
           }

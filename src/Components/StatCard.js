@@ -85,6 +85,39 @@ const defaultTemplates = [
     PointLimit: 2560,
     PointDiff: false,
   },
+  {
+    label: 'ArcheAge 2.0',
+    Values: [
+      [
+        ['Primary Stats', 'Fixed'],
+        ['Strength', 1882, 3, 2560, ''],
+        ['Agility', 22, 3, 2560, ''],
+        ['Stamina', 260, 3, 2560, ''],
+        ['Spirit', 172, 3, 2560, ''],
+        ['Intelligence', 22, 58, 2560, ''],
+      ],
+
+      [
+        ['Secondary Stats', 'Calculated'],
+        ['Health', 1735.47 /* ([0][2] * 12) */, 264, 2560, ''],
+        ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
+        ['Range Attack', 4.4 /* ([0][2] * 0.2) */, 4.4, 2560, ''],
+        ['Magic Attack', 4.4 /* ([0][3] * 0.2) */, 4.4, 2560, ''],
+        ['Healing Power', 34.4 /* ([0][4] * 0.2) */, 4.4, 2560, ''],
+        ['Physical Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 71.35%
+        ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''],
+      ], // 23.81%
+
+      [
+        ['Misc Stats', 'Fixed'],
+        ['Move Speed', 5.4, 5.4, 10, 'm/s'],
+        ['Cast Time', 93, 0, 100, '%'],
+        ['Attack Speed', 190, 0, 100, ''],
+      ], // (84.0%)
+    ],
+    PointLimit: 2560,
+    PointDiff: false,
+  },
 ];
 
 function compileMenuItems() {
@@ -102,11 +135,38 @@ function compileMenuItems() {
 const tmplMenuItems = compileMenuItems();
 
 const defaultData = {
-  Name: '',
-  Values: {
-    value: [],
-    size: 0,
-  },
+  Name: 'Default Data',
+
+  Values: [
+    [
+      ['Primary Stats', 'Fixed'],
+      ['Strength', 1882, 3, 2560, ''],
+      ['Agility', 22, 3, 2560, ''],
+      ['Stamina', 260, 3, 2560, ''],
+      ['Spirit', 172, 3, 2560, ''],
+      ['Intelligence', 22, 58, 2560, ''],
+    ],
+
+    [
+      ['Secondary Stats', 'Calculated'],
+      ['Health', 1735.47 /* ([0][2] * 12) */, 264, 2560, ''],
+      ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
+      ['Range Attack', 4.4 /* ([0][2] * 0.2) */, 4.4, 2560, ''],
+      ['Magic Attack', 4.4 /* ([0][3] * 0.2) */, 4.4, 2560, ''],
+      ['Healing Power', 34.4 /* ([0][4] * 0.2) */, 4.4, 2560, ''],
+      ['Physical Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 71.35%
+      ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''],
+    ], // 23.81%
+
+    [
+      ['Misc Stats', 'Fixed'],
+      ['Move Speed', 5.4, 5.4, 10, 'm/s'],
+      ['Cast Time', 93, 0, 100, '%'],
+      ['Attack Speed', 190, 0, 100, ''],
+    ], // (84.0%)
+  ],
+  PointLimit: 2560,
+  PointDiff: false,
 };
 
 // function reducer(data, newData) {
@@ -125,7 +185,6 @@ function StatCard(props) {
 
     return val.slice(0, iEnd);
   });
-  const [Size, setSize] = useState(defaultData.Size);
   const [Values, setValues] = useState(defaultData.Values);
 
   const [PointMin, setPointMin] = useState(defaultData.PointMin);
@@ -137,7 +196,6 @@ function StatCard(props) {
 
   const data = {
     Name,
-    Size,
     Values,
     PointMin,
     PointMax,
@@ -152,7 +210,6 @@ function StatCard(props) {
   // Used for init load state to prevent the template template selecter from overriding the user defined URL. Probably another way of doing this.
   const dataFuncs = {
     setName,
-    setSize,
     setValues,
     setPointMin,
     setPointMax,
@@ -170,32 +227,32 @@ function StatCard(props) {
 
   // Needs to find a way to properly handling '%' and '?'
   // console.log('data.Name:', data.Name);
-  const GetURLCode = () => {
-    let sResult = '';
-    for (let x = 0; x < Values.size; x++) {
-      let xBuffer = '';
-      for (let y = 0; y < 5; y++) {
-        let yBuffer = Values.value[x][y];
-        /* Check for UnitType column and encode and '%' that appear fdor the URL*/
-        if (y === 4 && yBuffer) {
-          console.log('yBuffer:', x, y, yBuffer);
-          yBuffer = yBuffer.replace('%', '%25');
-        }
-        xBuffer += yBuffer + ',';
-      }
-      sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
-    }
-    //console.log('data.Values:', Values, 'Name:', Name);
+  // const GetURLCode = () => {
+  //   let sResult = '';
+  //   for (let x = 0; x < Values.length; x++) {
+  //     let xBuffer = '';
+  //     for (let y = 0; y < 5; y++) {
+  //       let yBuffer = Values.value[x][y];
+  //       /* Check for UnitType column and encode and '%' that appear fdor the URL*/
+  //       if (y === 4 && yBuffer) {
+  //         console.log('yBuffer:', x, y, yBuffer);
+  //         yBuffer = yBuffer.replace('%', '%25');
+  //       }
+  //       xBuffer += yBuffer + ',';
+  //     }
+  //     sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
+  //   }
+  //   //console.log('data.Values:', Values, 'Name:', Name);
 
-    return String(
-      // 'koyfoster.github.io/#/StatCard/' +
-      'localhost:3000/#/StatCard/' +
-        Name +
-        sResult +
-        (PointDiff ? 'Min=true' : '') +
-        '/',
-    ).replace('//', '/');
-  };
+  //   return String(
+  //     // 'koyfoster.github.io/#/StatCard/' +
+  //     'localhost:3000/#/StatCard/' +
+  //       Name +
+  //       sResult +
+  //       (PointDiff ? 'Min=true' : '') +
+  //       '/',
+  //   ).replace('//', '/');
+  // };
 
   // Render and Logic
   return (
@@ -206,21 +263,24 @@ function StatCard(props) {
     >
       <Row alignItems="top">
         <Col alignSelf="top">
-          <StatData
-            name={'StatData'}
-            key={'StatData'}
-            {...props}
-            data={getData}
-            setData={dataFuncs}
-            funcs={funcs}
-          />
-          <TemplateSelector
-            Name={data.Name}
-            setData={dataFuncs}
-            funcs={funcs}
-            defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
-            MenuItems={tmplMenuItems}
-          />
+          {
+            //   <StatData
+            //   name={'StatData'}
+            //   key={'StatData'}
+            //   {...props}
+            //   data={getData}
+            //   setData={dataFuncs}
+            //   funcs={funcs}
+            // />
+            //   <TemplateSelector
+            //   Name={data.Name}
+            //   setData={dataFuncs}
+            //   funcs={funcs}
+            //   defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
+            //   MenuItems={tmplMenuItems}
+            // />
+          }
+
           <Paper
             style={{
               width: '320px',
@@ -234,13 +294,14 @@ function StatCard(props) {
               key="StatDataForm1"
               name="StatDataForm"
               data={getData}
+              di={0}
               setData={dataFuncs}
               UpdateStates={funcs.update}
               RandomizeStats={funcs.randomize}
               UpdatePointLimit={funcs.updateLimit}
             />
           </Paper>
-          <StatCode GetURLCode={GetURLCode} />
+          {/* {<StatCode GetURLCode={GetURLCode} />} */}
         </Col>
         <Paper
           style={{
@@ -255,13 +316,7 @@ function StatCard(props) {
           <Diagram
             name={'StatDataDiagram'}
             key={'StatDataDiagram'}
-            data={data}
-            funcs={funcs}
-          />
-          <Diagram
-            name={'StatDataDiagram'}
-            key={'StatDataDiagram'}
-            data={data}
+            data={{ Values: Values[0] }}
             funcs={funcs}
           />
         </Paper>
