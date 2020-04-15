@@ -13,6 +13,9 @@ import Grid from './Forms/Grid';
 
 //User Input Class
 function StatInputForm(props) {
+  const Table = props.data().vTable(props.iD);
+  const Header = props.data().vTableHeader(props.iD);
+
   //On Slices Change, update form
   var RandomizeStats = (event) => {
     if (event.target.name === 'Limit') {
@@ -24,7 +27,7 @@ function StatInputForm(props) {
 
   const Update = (event) => {
     //Update Diagram
-    props.UpdateStates(event);
+    props.UpdateStates(props.iD, event);
   };
 
   /* Validate Presence of stats */
@@ -37,7 +40,7 @@ function StatInputForm(props) {
         <TextField
           type="number"
           name="Limit"
-          value={props.data().PointLimit}
+          value={props.PointLimit}
           onChange={(event) => RandomizeStats(event)}
         ></TextField>
       </div>
@@ -46,15 +49,15 @@ function StatInputForm(props) {
     props.bCalc === true ? (
       ''
     ) : (
-      <InputLabel>Min - Total Points: {props.data().PointTotal} </InputLabel>
+      <InputLabel>Min - Total Points: {Header[3]} </InputLabel>
     );
   const hPointDiff =
-    props.bCalc === true || props.data().PointDiff === undefined ? (
+    props.bCalc === true || props.PointDiff === undefined ? (
       ''
     ) : (
       <Checkbox
         name="PointDiff"
-        checked={Boolean(props.data().PointDiff)}
+        checked={Boolean(props.PointDiff)}
         onChange={(event) => {
           Update(event);
         }}
@@ -74,9 +77,9 @@ function StatInputForm(props) {
     props.bCalc !== true
       ? [
           <div>Totals</div>,
-          <TextField value={props.data().PointTotal} disabled></TextField>,
-          <TextField value={props.data().PointMin} disabled></TextField>,
-          <TextField value={props.data().PointMax} disabled></TextField>,
+          <TextField value={Header[3]} disabled></TextField>,
+          <TextField value={Header[4]} disabled></TextField>,
+          <TextField value={Header[5]} disabled></TextField>,
           <div></div>,
         ]
       : undefined;
@@ -89,7 +92,7 @@ function StatInputForm(props) {
             label="Stats"
             type="number"
             name="Quantity"
-            value={Number(props.Values.length)}
+            value={Number(Table.length)}
             onChange={(event) => Update(event)}
           ></TextField>
           {hLimit}
@@ -104,7 +107,6 @@ function StatInputForm(props) {
           <Col>
             {hRandom}
             <Grid
-              iStrt={1}
               onChange={(event) => Update(event)}
               hHeader={[
                 <div>Stats</div>,
@@ -114,10 +116,10 @@ function StatInputForm(props) {
                 <div>LVL</div>,
               ]}
               hFooter={hFooter}
-              iRows={props.Values.length}
+              iRows={Table.length}
               style={{ margin: 'none', padding: 'none' }}
               cellStyle={{ margin: 'none', padding: 'none' }}
-              Values={props.Values}
+              Values={Table}
             >
               <TextField
                 name={'Types'}

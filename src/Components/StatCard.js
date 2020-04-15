@@ -174,6 +174,12 @@ function StatCard(props) {
   const data = {
     update,
     Values,
+    vTableHeader: (index) => {
+      return Values[index][0];
+    },
+    vTable: (index) => {
+      return Values[index].slice(1, Values[index].length);
+    },
     PointTotal: (index) => {
       return Values[index][0][3][0];
     },

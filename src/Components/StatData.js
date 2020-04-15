@@ -44,10 +44,9 @@ const GetPointTotal = (size, values, pointDiff, pointLimit) => {
 };
 
 //Stat Card
-function StatData(sdProps) {
-  // const { control } = sdProps;
-  const data = sdProps.data;
-  const setData = sdProps.setData;
+function StatData(dataProps) {
+  const data = dataProps.data;
+  const setData = dataProps.setData;
 
   const GetPointMax = function (iSize, values = 0) {
     let PointMax = 0;
@@ -67,6 +66,9 @@ function StatData(sdProps) {
   };
 
   function RandomizeStats(index /* table index */) {
+    const Header = this.data().vTableHeader(index);
+    const Table = this.data().vTable(index);
+
     //Generate Random Order
     const randOrder = [];
     {
@@ -74,8 +76,8 @@ function StatData(sdProps) {
       const tempOrder = [];
 
       //Compile Order
-      for (let iTRO = 0; iTRO < this.data().Values[index].length - 1; iTRO) {
-        if (IsUnit(this.data().Values[index][iTRO + 1][4])) {
+      for (let iTRO = 0; iTRO < Table.length; iTRO) {
+        if (IsUnit(Table[iTRO][4])) {
           tempOrder.push(iTRO);
         }
         iTRO += 1;
@@ -92,32 +94,31 @@ function StatData(sdProps) {
     }
 
     //Loop Through Random Order
-    let valuesBuffer = this.data().Values[index].slice(
-      1,
-      this.data().Values[index].length,
-    );
+    let valuesBuffer = Table;
     for (let i = 0; i < randOrder.length; i) {
       const iI = randOrder[i];
       valuesBuffer[iI][1] = Calc.fRNG(valuesBuffer[iI][2], valuesBuffer[iI][3]);
       i += 1;
     }
-    this.data().Values[index][0][3] = GetPointTotal(
+    Header[3] = GetPointTotal(
       Number(valuesBuffer.length),
       valuesBuffer,
-      this.data().Values[index][0][5],
-      this.data().Values[index][0][4],
+      Header[5],
+      Header[4],
     );
 
-    // this.setData.setValues(this.data().Values);
     this.setData.setUpdate(!this.data().update);
-    sdProps.funcs.randAnim();
-  }
+    dataProps.funcs.randAnim();
+  } // end of randomizer
 
   // Update Functions
-  function Update(props) {
+  function Update(index, props) {
+    const Header = this.data().vTableHeader(index);
+    const Table = this.data().vTable(index);
+
     // vars
-    let tempSize = Number(this.data().Values.size);
-    let tempVal = this.data().Values.value;
+    let tempSize = Number(Table.length);
+    let tempVal = Table;
     let iIndex = props.target.name.indexOf(',')
       ? props.target.name.substring(
           props.target.name.indexOf(',') + 1,
@@ -128,11 +129,7 @@ function StatData(sdProps) {
       props.target.name.indexOf('_(') > -1
         ? props.target.name.substring(0, props.target.name.indexOf('_('))
         : props.target.name;
-    let Points = [
-      this.data().PointTotal,
-      this.data().PointMin,
-      this.data().PointMax,
-    ];
+    let Points = Table[0][3];
 
     if (props.target.name === 'Quantity') {
       if (props.target.value < 0) return;
@@ -198,8 +195,8 @@ function StatData(sdProps) {
         Points[0] = Points[0] + Points[1];
       }
 
-      this.setData.setPointDiff(props.target.checked);
-      this.setData.setPointTotal(Points[0]);
+      this.setData.setPointDiff(index, props.target.checked);
+      this.setData.setPointTotal(index, Points[0]);
 
       return;
     } else if (sTag === 'Unit') {
@@ -217,15 +214,10 @@ function StatData(sdProps) {
       }
     }
 
-    this.setData.setSize(tempSize);
-    const Values = {
-      value: tempVal,
-      size: tempSize,
-    };
-    this.setData.setValues(Values);
-    this.setData.setPointTotal(Points[0]);
-    this.setData.setPointMin(Points[1]);
-    this.setData.setPointMax(Points[2]);
+    // this.setData.setValue(this.data().Values);
+    // this.setData.setSize(intempSize);
+    Header[3] = Points;
+    this.setData.setUpdate(!this.data().update);
   }
 
   function ParseStringAsStatCard(value) {
@@ -301,13 +293,13 @@ function StatData(sdProps) {
 
   //Setup Listener Events
   useEffect(() => {
-    sdProps.funcs.update = Update;
-    sdProps.funcs.randomize = RandomizeStats;
-    sdProps.funcs.updateLimit = UpdatePointLimit;
+    dataProps.funcs.update = Update;
+    dataProps.funcs.randomize = RandomizeStats;
+    dataProps.funcs.updateLimit = UpdatePointLimit;
 
-    sdProps.funcs.getPointTotal = GetPointTotal;
+    dataProps.funcs.getPointTotal = GetPointTotal;
 
-    let userDefined = sdProps.location.pathname.replace('/', '');
+    let userDefined = dataProps.location.pathname.replace('/', '');
     const pointDiff = userDefined.search('Min=true') > -1;
 
     userDefined = ParseStringAsStatCard(userDefined);
@@ -324,18 +316,18 @@ function StatData(sdProps) {
         1000,
       );
 
-      sdProps.setData.setName(name);
-      sdProps.setData.setValues({
+      dataProps.setData.setName(name);
+      dataProps.setData.setValues({
         value: userDefined,
         size: userDefined.length,
       });
 
-      sdProps.setData.setPointTotal(Points[0]);
-      sdProps.setData.setPointMin(Points[1]);
-      sdProps.setData.setPointMax(Points[2]);
+      dataProps.setData.setPointTotal(Points[0]);
+      dataProps.setData.setPointMin(Points[1]);
+      dataProps.setData.setPointMax(Points[2]);
 
-      sdProps.setData.setPointLimit(1000);
-      sdProps.setData.setPointDiff(pointDiff);
+      dataProps.setData.setPointLimit(1000);
+      dataProps.setData.setPointDiff(pointDiff);
     }
   }, []);
 
