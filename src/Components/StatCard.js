@@ -140,7 +140,7 @@ const defaultData = {
 
   Values: [
     [
-      ['Primary Stats', 'Fixed', '#4ab8c5'],
+      ['Primary Stats', 'Fixed', '{ "background": "#4ab8c5"}'],
       ['Strength', 1882, 3, 2560, ''],
       ['Agility', 22, 3, 2560, ''],
       ['Stamina', 260, 3, 2560, ''],
@@ -149,7 +149,7 @@ const defaultData = {
     ],
 
     [
-      ['Secondary Stats', 'Calculated', '#c03311'],
+      ['Secondary Stats', 'Calculated', '{ "background": "#c03311" }'],
       ['Health', 1735.47 /* ([0][2] * 12) */, 264, 2560, ''],
       ['Mana', 264 /* ([5][2] * 12) */, 264, 2560, ''],
       ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
@@ -161,10 +161,14 @@ const defaultData = {
     ],
 
     [
-      ['Misc Stats', 'Fixed', '#1d3314'],
+      [
+        'Misc Stats',
+        'Fixed',
+        '{ "background": "#1d3314", "width": 480, "height": 480 }',
+      ],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
       ['Cast Time', 93, 0, 100, '%'],
-      ['Attack Speed', 190, 0, 100, ''], // (84.0%)
+      ['Attack Speed', 190, 0, 1200, ''], // (84.0%)
     ],
   ],
   PointLimit: 2560,
@@ -259,11 +263,11 @@ function StatCard(props) {
         <Paper
           style={{
             width: '320px',
-            margin: 4,
-            padding: 4,
+            margin: 2,
+            padding: 2,
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: getData().Values[i][0][2],
+            backgroundColor: JSON.parse(getData().Values[i][0][2]).background,
             // fontColor: getData().Values[i][0][2],
           }}
         >
@@ -293,18 +297,20 @@ function StatCard(props) {
         <Paper
           style={{
             // width: '768px',
-            width: '564px',
-            margin: 4,
-            padding: 4,
+            width: `${564}px`,
+            height: `${564}px`,
+            margin: 2,
+            padding: 2,
             display: 'flexbox',
             flexDirection: 'row',
-            backgroundColor: getData().Values[i][0][2],
+            ...JSON.parse(getData().Values[i][0][2]),
             // fontColor: getData().Values[i][0][2],
           }}
         >
           <Diagram
             name={'StatDataDiagram'}
             key={'StatDataDiagram'}
+            iStrt={1}
             data={{ Values: Values[i] }}
             funcs={funcs}
           />

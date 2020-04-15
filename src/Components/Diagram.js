@@ -64,8 +64,13 @@ let gradeCalc = function (index, values) {
 
 // -------------------------------------------------------------------
 function Diagram(props) {
+  // init functions
+  const getStart = () => {
+    return props.iStrt ? props.iStrt : 0;
+  };
   let vector = [];
-  const iLen = props.data.Values.length - 1;
+  const { Values } = props.data;
+  const iLen = Values.length - getStart();
   const angle = (1 / iLen) * 360;
 
   // Animation States
@@ -121,23 +126,31 @@ function Diagram(props) {
     return vector;
   }; // end of CreateVector
 
-  function GetsStats() {
+  function GetStats() {
     if (iLen <= 1) return;
     const html = [];
 
-    let lastPoint = new Vector2(
-      vector[1][0],
-      vector[1][1] * (props.data.Values[1][1] * (1 / props.data.Values[1][3])),
-    );
-    let nextPoint = new Vector2(
-      vector[1][0],
-      vector[1][1] * (props.data.Values[2][1] * (1 / props.data.Values[2][3])),
-    );
+    let iFlip = Values[getStart()][4] === '%' ? 1 : 0;
+    let vecScale = Values[getStart()][1] * (1 / Values[getStart()][3]);
+    if (iFlip) {
+      vecScale -= iFlip;
+      vecScale *= -1;
+    }
+
+    let lastPoint = new Vector2(vector[1][0], vector[1][1] * vecScale);
+
+    iFlip = Values[1 + getStart()][4] === '%' ? 1 : 0;
+    vecScale = Values[1 + getStart()][1] * (1 / Values[1 + getStart()][3]);
+    if (iFlip) {
+      vecScale -= iFlip;
+      vecScale *= -1;
+    }
+
+    let nextPoint = new Vector2(vector[1][0], vector[1][1] * vecScale);
+
+    // Create Stats
     for (let i = 0; i < iLen; i) {
-      const length =
-        props.data.Values[i + 1][1] * (1 / props.data.Values[i + 1][3]) * 1;
-      const temp = 1 - length;
-      const center = iCenter * temp;
+      const iV = i + getStart();
 
       const transform = `rotate(${angle * i},${vector[0][0]},${vector[0][1]})`;
       // Rotate Neighboring Stat Point
@@ -157,17 +170,27 @@ function Diagram(props) {
       );
       i += 1;
       if (i !== iLen) {
-        lastPoint = new Vector2(
-          vector[1][0],
-          vector[1][1] *
-            (props.data.Values[i + 1][1] * (1 / props.data.Values[i + 1][3])),
-        );
-        const iNext = i + 1 !== iLen ? i + 1 : 1;
-        nextPoint = new Vector2(
-          vector[1][0],
-          vector[1][1] *
-            (props.data.Values[iNext][1] * (1 / props.data.Values[iNext][3])),
-        );
+        let iFlip = Values[i + getStart()][4] === '%' ? 1 : 0;
+        let vecScale =
+          Values[i + getStart()][1] * (1 / Values[i + getStart()][3]);
+        if (iFlip) {
+          vecScale -= iFlip;
+          vecScale *= -1;
+        }
+
+        // Get Previous Point
+        lastPoint = new Vector2(vector[1][0], vector[1][1] * vecScale);
+
+        // Get NExt Point
+        const iNext = i + 1 < iLen ? i + 1 : 0;
+        iFlip = Values[iNext + getStart()][4] === '%' ? 1 : 0;
+        vecScale =
+          Values[iNext + getStart()][1] * (1 / Values[iNext + getStart()][3]);
+        if (iFlip) {
+          vecScale -= iFlip;
+          vecScale *= -1;
+        }
+        nextPoint = new Vector2(vector[1][0], vector[1][1] * vecScale);
       }
     }
     return html;
@@ -211,7 +234,7 @@ function Diagram(props) {
       ', rotate(180,' + typeCenter[0] + ',' + typeCenter[1] + ')';
 
     let htmlResult = [];
-    for (let i = 0; i < data.Values.length - 1; i++) {
+    for (let i = 0; i < iLen; i++) {
       const curAngle = angle * i;
 
       const bFlip = curAngle > 90 && curAngle < 270;
@@ -253,7 +276,7 @@ function Diagram(props) {
           y={gradeCenter[1] + 1.5}
           transform={transform}
         >
-          {gradeCalc(i + 1, data.Values)}
+          {gradeCalc(i + 1, Values)}
         </text>,
       );
       htmlResult.push(
@@ -271,7 +294,7 @@ function Diagram(props) {
           y={gradeCenter[1]}
           transform={transform}
         >
-          {gradeCalc(i + 1, data.Values)}
+          {gradeCalc(i + 1, Values)}
         </text>,
       );
 
@@ -291,7 +314,7 @@ function Diagram(props) {
           y={typeCenter[1] + 1}
           transform={transform}
         >
-          {data.Values[i + 1][0]}
+          {Values[i + getStart()][0]}
         </text>,
       );
       htmlResult.push(
@@ -308,12 +331,12 @@ function Diagram(props) {
           y={typeCenter[1]}
           transform={transform}
         >
-          {`${data.Values[i + 1][0]}`}
+          {`${Values[i + getStart()][0]}`}
         </text>,
       );
 
       /*Stat Ticks*/
-      for (let iT = 0; iT < ticks; iT++) {
+      for (let iT = 1; iT < ticks; iT++) {
         if (iT % 2 === 0) {
           //TICKS
           const y = iCenter - ticks * iT;
@@ -346,7 +369,7 @@ function Diagram(props) {
           );
 
           //Define and round off the TICK VALUES
-          let tickValue = Math.ceil(iT * (data.Values[i + 1][3] / ticks));
+          let tickValue = Math.ceil(iT * (Values[i + getStart()][3] / ticks));
           let tickCenter = [iCenter, iCenter - ticks * iT];
           let iTick = 3;
           if (curAngle > 90 && curAngle < 270) {
@@ -370,8 +393,10 @@ function Diagram(props) {
           let bDraw =
             i === 0
               ? true
-              : `${data.Values[i + 1][3]}${data.Values[i + 1][4]}` !==
-                `${data.Values[i - 1][3]}${data.Values[i - 1][4]}`;
+              : `${Values[i + getStart()][3]}${Values[i + getStart()][4]}` !==
+                `${Values[i - 1 + getStart()][3]}${
+                  Values[i - 1 + getStart()][4]
+                }`;
           if (bDraw) {
             htmlResult.push(
               <text
@@ -383,7 +408,7 @@ function Diagram(props) {
                 style={{ fontSize: 10, strokeWidth: 0, fill: pallete.grid[1] }}
                 transform={transform}
               >
-                {`${tickValue}${data.Values[i + 1][4]}`}
+                {`${tickValue}${Values[i + 1][4]}`}
               </text>,
             );
             htmlResult.push(
@@ -401,7 +426,7 @@ function Diagram(props) {
                 }}
                 transform={transform}
               >
-                {`${tickValue}${data.Values[i + 1][4]}`}
+                {`${tickValue}${Values[i + 1][4]}`}
               </text>,
             );
           }
@@ -485,7 +510,7 @@ function Diagram(props) {
             fill: 'url(#grad)',
           }}
         >
-          {GetsStats()}
+          {GetStats()}
         </svg>
 
         <svg
