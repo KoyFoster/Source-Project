@@ -332,8 +332,8 @@ function StatCard(props) {
       style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}
       bgcolor="darkGrey"
     >
-      <Row alignItems="top">
-        <Col alignSelf="top">
+      <Col>
+        <Row alignSelf="top">
           {
             //   <StatData
             //   name={'StatData'}
@@ -354,9 +354,9 @@ function StatCard(props) {
 
           {hForms()}
           {/* {<StatCode GetURLCode={GetURLCode} />} */}
-        </Col>
-        {hDiagrams()}
-      </Row>
+        </Row>
+        <Row alignItems="top">{hDiagrams()}</Row>
+      </Col>
     </Box>
   );
 }
