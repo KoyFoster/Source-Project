@@ -19,10 +19,12 @@ const pallete = {
 };
 
 //Grade Function
-let gradeCalc = function (index, values) {
+let gradeCalc = function (index, values, bFlip) {
   let result = cLetterGrades[9]; //? grade
   //Take Values and divide it against it's max range
-  let percentage = (values[index][1] / values[index][3]) * 100;
+  let percentage = !bFlip
+    ? (values[index][1] / values[index][3]) * 100
+    : -1 * ((values[index][1] / values[index][3]) * 100 - 100);
 
   //Upper or lower value assignment
   let masymenos = (value) => {
@@ -261,6 +263,8 @@ function Diagram(props) {
         ')';
       const gradeSize = iFontSize / 5;
       const typeSize = iFontSize / 9;
+      const bPercentage = Values[i + 1][4] === '%';
+      const grade = gradeCalc(i + 1, Values, bPercentage);
       htmlResult.push(
         <text
           key={'Grade' + i + '_1'}
@@ -276,7 +280,7 @@ function Diagram(props) {
           y={gradeCenter[1] + 1.5}
           transform={transform}
         >
-          {gradeCalc(i + 1, Values)}
+          {grade}
         </text>,
       );
       htmlResult.push(
@@ -294,7 +298,7 @@ function Diagram(props) {
           y={gradeCenter[1]}
           transform={transform}
         >
-          {gradeCalc(i + 1, Values)}
+          {grade}
         </text>,
       );
 
@@ -369,7 +373,10 @@ function Diagram(props) {
           );
 
           //Define and round off the TICK VALUES
-          let tickValue = Math.ceil(iT * (Values[i + getStart()][3] / ticks));
+          let tickValue = Math.ceil(
+            (bPercentage ? -iT + ticks : iT) *
+              (Values[i + getStart()][3] / ticks),
+          );
           let tickCenter = [iCenter, iCenter - ticks * iT];
           let iTick = 3;
           if (curAngle > 90 && curAngle < 270) {

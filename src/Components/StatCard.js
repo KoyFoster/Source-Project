@@ -85,40 +85,6 @@ const defaultTemplates = [
     PointLimit: 2560,
     PointDiff: false,
   },
-  {
-    label: 'ArcheAge 2.0',
-    Values: [
-      [
-        ['Primary Stats', 'Fixed', '#4ab8c5'],
-        ['Strength', 1882, 3, 2560, ''],
-        ['Agility', 22, 3, 2560, ''],
-        ['Stamina', 260, 3, 2560, ''],
-        ['Spirit', 172, 3, 2560, ''],
-        ['Intelligence', 22, 58, 2560, ''],
-      ],
-
-      [
-        ['Secondary Stats', 'Calculated', '#c0f311'],
-        ['Health', 2064 /* ([0][2] * 12) */, 264, 2560, ''],
-        ['Mana', 264 /* ([5][2] * 12) */, 264, 2560, ''],
-        ['Melee Attack', 376.4 /* ([1][1] * 0.2) */, 4.4, 2560, ''],
-        ['Range Attack', 4.4 /* ([3][2] * 0.2) */, 4.4, 2560, ''],
-        ['Magic Attack', 4.4 /* ([5][3] * 0.2) */, 4.4, 2560, ''],
-        ['Healing Power', 34.4 /* ([0][4] * 0.2) */, 4.4, 2560, ''],
-        ['Physical Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 71.35%
-        ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 23.81%
-      ],
-
-      [
-        ['Misc Stats', 'Fixed', '#1d6614'],
-        ['Move Speed', 5.4, 5.4, 10, 'm/s'],
-        ['Cast Time', 93, 0, 100, '%'],
-        ['Attack Speed', 190, 0, 100, ''], // (84.0%)
-      ],
-    ],
-    PointLimit: 2560,
-    PointDiff: false,
-  },
 ];
 
 function compileMenuItems() {
@@ -150,8 +116,8 @@ const defaultData = {
 
     [
       ['Secondary Stats', 'Calculated', '{ "background": "#c03311" }'],
-      ['Health', 1735.47 /* ([0][2] * 12) */, 264, 2560, ''],
-      ['Mana', 264 /* ([5][2] * 12) */, 264, 2560, ''],
+      ['Health', 2064 /* ([0][2] * 12) */, 264, 30720, ''],
+      ['Mana', 264 /* ([5][2] * 12) */, 264, 30720, ''],
       ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
       ['Range Attack', 4.4 /* ([0][2] * 0.2) */, 4.4, 2560, ''],
       ['Magic Attack', 4.4 /* ([0][3] * 0.2) */, 4.4, 2560, ''],
@@ -164,7 +130,7 @@ const defaultData = {
       [
         'Misc Stats',
         'Fixed',
-        '{ "background": "#1d3314", "width": 480, "height": 480 }',
+        '{ "background": "#1d3314" }' /* , "width": 480 , "height": 480 */,
       ],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
       ['Cast Time', 93, 0, 100, '%'],
