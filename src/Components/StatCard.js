@@ -261,6 +261,8 @@ function StatCard(props) {
     for (let i = 0; i < data.Values.length; i) {
       hBuffer.push(
         <Paper
+          key={`PaperForm_${i}`}
+          name={`PaperForm_${i}`}
           style={{
             width: '320px',
             margin: 2,
@@ -295,6 +297,8 @@ function StatCard(props) {
     for (let i = 0; i < data.Values.length; i) {
       hBuffer.push(
         <Paper
+          key={`PaperDiagram_${i}`}
+          name={`PaperDiagram_${i}`}
           style={{
             // width: '768px',
             width: `${564}px`,
@@ -308,8 +312,8 @@ function StatCard(props) {
           }}
         >
           <Diagram
-            name={'StatDataDiagram'}
-            key={'StatDataDiagram'}
+            key={`StatDataDiagram_${i}`}
+            name={`StatDataDiagram_${i}`}
             iStrt={1}
             data={{ Values: Values[i] }}
             funcs={funcs}
