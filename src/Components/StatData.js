@@ -66,7 +66,7 @@ function StatData(sdProps) {
     return PointMax;
   };
 
-  function RandomizeStats() {
+  function RandomizeStats(index /* table index */) {
     //Generate Random Order
     const randOrder = [];
     {
@@ -74,8 +74,8 @@ function StatData(sdProps) {
       const tempOrder = [];
 
       //Compile Order
-      for (let iTRO = 0; iTRO < this.data().Values.size; iTRO) {
-        if (IsUnit(this.data().Values.value[iTRO][4])) {
+      for (let iTRO = 0; iTRO < this.data().Values[index].length - 1; iTRO) {
+        if (IsUnit(this.data().Values[index][iTRO + 1][4])) {
           tempOrder.push(iTRO);
         }
         iTRO += 1;
@@ -92,28 +92,24 @@ function StatData(sdProps) {
     }
 
     //Loop Through Random Order
-    let valuesBuffer = this.data().Values.value;
+    let valuesBuffer = this.data().Values[index].slice(
+      1,
+      this.data().Values[index].length,
+    );
     for (let i = 0; i < randOrder.length; i) {
-      valuesBuffer[randOrder[i]][1] = Calc.fRNG(
-        valuesBuffer[randOrder[i]][2],
-        valuesBuffer[randOrder[i]][3],
-      );
+      const iI = randOrder[i];
+      valuesBuffer[iI][1] = Calc.fRNG(valuesBuffer[iI][2], valuesBuffer[iI][3]);
       i += 1;
     }
-    let Points = GetPointTotal(
-      Number(this.data().Values.size),
+    this.data().Values[index][0][3] = GetPointTotal(
+      Number(valuesBuffer.length),
       valuesBuffer,
-      data().PointDiff,
-      data().PointLimit,
+      this.data().Values[index][0][5],
+      this.data().Values[index][0][4],
     );
 
-    this.setData.setValues({
-      value: valuesBuffer,
-      size: this.data().Values.size,
-    });
-    this.setData.setPointTotal(Points[0]);
-    this.setData.setPointMin(Points[1]);
-    this.setData.setPointMax(Points[2]);
+    // this.setData.setValues(this.data().Values);
+    this.setData.setUpdate(!this.data().update);
     sdProps.funcs.randAnim();
   }
 

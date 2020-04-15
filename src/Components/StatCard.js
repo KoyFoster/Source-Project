@@ -106,7 +106,13 @@ const defaultData = {
 
   Values: [
     [
-      ['Primary Stats', 'Fixed', '{ "background": "#4ab8c5"}'],
+      [
+        'Primary Stats',
+        'Fixed',
+        '{ "background": "#4ab8c5"}',
+        2560 /* PointLimit */,
+        false /* PointDiff */,
+      ],
       ['Strength', 1882, 3, 2560, ''],
       ['Agility', 22, 3, 2560, ''],
       ['Stamina', 260, 3, 2560, ''],
@@ -115,7 +121,13 @@ const defaultData = {
     ],
 
     [
-      ['Secondary Stats', 'Calculated', '{ "background": "#c03311" }'],
+      [
+        'Secondary Stats',
+        'Calculated',
+        '{ "background": "#c03311", "doNotGraph": true }',
+        2560 /* PointLimit */,
+        false /* PointDiff */,
+      ],
       ['Health', 2064 /* ([0][2] * 12) */, 264, 30720, ''],
       ['Mana', 264 /* ([5][2] * 12) */, 264, 30720, ''],
       ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
@@ -131,6 +143,9 @@ const defaultData = {
         'Misc Stats',
         'Fixed',
         '{ "background": "#1d3314" }' /* , "width": 480 , "height": 480 */,
+        [0, 0, 0] /* Totals(val, min, max) */,
+        2560 /* PointLimit */,
+        false /* PointDiff */,
       ],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
       ['Cast Time', 93, 0, 100, '%'],
@@ -154,22 +169,26 @@ function StatCard(props) {
     return val.slice(0, iEnd);
   });
   const [Values, setValues] = useState(defaultData.Values);
-
-  const [PointMin, setPointMin] = useState(defaultData.PointMin);
-  const [PointMax, setPointMax] = useState(defaultData.PointMax);
-  const [PointTotal, setPointTotal] = useState(defaultData.PointTotal);
-
-  const [PointLimit, setPointLimit] = useState(defaultData.PointLimit);
-  const [PointDiff, setPointDiff] = useState(defaultData.PointDiff);
+  const [update, setUpdate] = useState(false);
 
   const data = {
-    Name,
+    update,
     Values,
-    PointMin,
-    PointMax,
-    PointTotal,
-    PointLimit,
-    PointDiff,
+    PointTotal: (index) => {
+      return Values[index][0][3][0];
+    },
+    PointMin: (index) => {
+      return Values[index][0][3][1];
+    },
+    PointMax: (index) => {
+      return Values[index][0][3][2];
+    },
+    PointLimit: (index) => {
+      return Values[index][0][4];
+    },
+    PointDiff: (index) => {
+      return Values[index][0][5];
+    },
   };
   const getData = () => {
     return data;
@@ -177,13 +196,23 @@ function StatCard(props) {
 
   // Used for init load state to prevent the template template selecter from overriding the user defined URL. Probably another way of doing this.
   const dataFuncs = {
-    setName,
     setValues,
-    setPointMin,
-    setPointMax,
-    setPointTotal,
-    setPointLimit,
-    setPointDiff,
+    setUpdate,
+    setPointTotal: (index, val) => {
+      Values[index][0][3][0] = val;
+    },
+    setPointMin: (index, val) => {
+      Values[index][0][3][1] = val;
+    },
+    setPointMax: (index, val) => {
+      Values[index][0][3][2] = val;
+    },
+    setPointLimit: (index, val) => {
+      Values[index][0][4] = val;
+    },
+    setPointDiff: (index, val) => {
+      Values[index][0][5] = val;
+    },
   };
   const [funcs] = useState({
     update: undefined,
@@ -193,8 +222,6 @@ function StatCard(props) {
     getPointTotal: undefined,
   });
 
-  // Needs to find a way to properly handling '%' and '?'
-  // console.log('data.Name:', data.Name);
   // const GetURLCode = () => {
   //   let sResult = '';
   //   for (let x = 0; x < Values.length; x++) {
@@ -240,6 +267,8 @@ function StatCard(props) {
           }}
         >
           <StatInputForm
+            iD={i}
+            doNotGraph={JSON.parse(getData().Values[i][0][2]).doNotGraph}
             key={`StatDataForm_${i}`}
             name={`StatDataForm_${i}`}
             bCalc={getData().Values[i][0][1] === 'Calculated'}
@@ -300,15 +329,15 @@ function StatCard(props) {
     >
       <Col>
         <Row alignSelf="top">
+          <StatData
+            name={'StatData'}
+            key={'StatData'}
+            {...props}
+            data={getData}
+            setData={dataFuncs}
+            funcs={funcs}
+          />
           {
-            //   <StatData
-            //   name={'StatData'}
-            //   key={'StatData'}
-            //   {...props}
-            //   data={getData}
-            //   setData={dataFuncs}
-            //   funcs={funcs}
-            // />
             //   <TemplateSelector
             //   Name={data.Name}
             //   setData={dataFuncs}

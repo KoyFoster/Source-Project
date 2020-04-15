@@ -18,7 +18,7 @@ function StatInputForm(props) {
     if (event.target.name === 'Limit') {
       props.UpdatePointLimit(event);
     } else {
-      props.RandomizeStats(event);
+      props.RandomizeStats(props.iD);
     }
   };
 
