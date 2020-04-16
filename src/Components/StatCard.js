@@ -225,7 +225,6 @@ function StatCard(props) {
       Values[index][0][4] = val;
     },
     setPointDiff: (index, val) => {
-      console.log('setPointDiff:', index, val);
       Values[index][0][5] = val;
     },
   };

@@ -200,14 +200,11 @@ function StatData(dataProps) {
       );
     } else if (sTag === 'PointDiff') {
       // Update to new PointTotal
-      console.log('Points 1:', Points, props.target.checked);
       if (props.target.checked) {
         Points[0] = Points[0] - Points[1];
       } else {
         Points[0] = Points[0] + Points[1];
       }
-
-      console.log('Points 2:', Points, props.target.checked);
 
       this.setData.setPointDiff(index, props.target.checked);
       this.setData.setPointTotal(index, Points[0]);
