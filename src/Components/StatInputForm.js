@@ -30,18 +30,36 @@ function StatInputForm(props) {
     props.UpdateStates(props.iD, event);
   };
 
+  const inputProps = {
+    'aria-label': 'naked',
+    disableUnderline: true,
+    style: { textAlign: 'center' },
+  };
+  const FIELD = (PROPS) => {
+    // if (props.bCalc) return <div style={{ ...PROPS.style }}>{PROPS.value}</div>;
+    // else
+    const disabled = props.bCalc === true ? { disabled: true } : undefined;
+    return (
+      <TextField
+        inputProps={{ ...inputProps }}
+        {...PROPS}
+        {...disabled}
+      ></TextField>
+    );
+  };
+
   /* Validate Presence of stats */
   const hLimit =
     props.bCalc === true ? (
       ''
     ) : (
       <div>
-        <InputLabel style={{ display: 'flexBox' }}> Limit: </InputLabel>
         <TextField
+          label="Limit:"
           type="number"
           name="Limit"
-          value={props.PointLimit}
-          onChange={(event) => RandomizeStats(event)}
+          value={props.data().PointLimit(props.iD)}
+          onChange={(event) => Update(event)}
         ></TextField>
       </div>
     );
@@ -49,15 +67,18 @@ function StatInputForm(props) {
     props.bCalc === true ? (
       ''
     ) : (
-      <InputLabel>Min - Total Points: {Header[3]} </InputLabel>
+      <InputLabel>
+        :Min - Total Points: {props.data().PointTotal(props.iD)}{' '}
+      </InputLabel>
     );
   const hPointDiff =
-    props.bCalc === true || props.PointDiff === undefined ? (
+    props.bCalc === true || props.data().PointDiff(props.iD) === undefined ? (
       ''
     ) : (
       <Checkbox
         name="PointDiff"
-        checked={Boolean(props.PointDiff)}
+        checked={Boolean(props.data().PointDiff(props.iD))}
+        style={{ width: 10, height: 0 }}
         onChange={(event) => {
           Update(event);
         }}
@@ -76,10 +97,28 @@ function StatInputForm(props) {
   const hFooter =
     props.bCalc !== true
       ? [
-          <div>Totals</div>,
-          <TextField value={Header[3]} disabled></TextField>,
-          <TextField value={Header[4]} disabled></TextField>,
-          <TextField value={Header[5]} disabled></TextField>,
+          <div
+            style={{
+              background: '#00000033',
+            }}
+          >
+            Totals
+          </div>,
+          <TextField
+            value={props.data().PointTotal(props.iD)}
+            disabled
+          ></TextField>,
+          <TextField
+            value={props.data().PointMin(props.iD)}
+            style={{
+              background: '#FFFFFF33',
+            }}
+            disabled
+          ></TextField>,
+          <TextField
+            value={props.data().PointMax(props.iD)}
+            disabled
+          ></TextField>,
           <div></div>,
         ]
       : undefined;
@@ -97,7 +136,7 @@ function StatInputForm(props) {
           ></TextField>
           {hLimit}
         </Row>
-        <Row>
+        <Row alignItems="center">
           {hPointDiff}
           {hTotal}
         </Row>
@@ -105,42 +144,76 @@ function StatInputForm(props) {
       <Row>
         <Box name="FormBody" align="center">
           <Col>
-            {hRandom}
+            <TextField
+              label="Name"
+              name={`Name_${props.iD}`}
+              value={props.data().Name(props.iD)}
+            />
             <Grid
+              colOrder={[0, 1, 4, 2, 3]}
               onChange={(event) => Update(event)}
               hHeader={[
-                <div>Stats</div>,
+                <div
+                  style={{
+                    background: '#00000033',
+                  }}
+                >
+                  Stats
+                </div>,
                 <div>Value</div>,
-                <div>Min</div>,
+                <div
+                  style={{
+                    background: '#FFFFFF33',
+                  }}
+                >
+                  Min
+                </div>,
                 <div>Max</div>,
-                <div>LVL</div>,
+                <div>(unit)</div>,
               ]}
               hFooter={hFooter}
               iRows={Table.length}
-              style={{ margin: 'none', padding: 'none' }}
-              cellStyle={{ margin: 'none', padding: 'none' }}
+              cellStyle={{ borderBottom: '2px solid white' }}
               Values={Table}
             >
               <TextField
                 name={'Types'}
-                style={{ width: '100px' }}
+                style={{
+                  width: '136px',
+                  background: '#00000033',
+                }}
                 onChange={(event) => Update(event)}
+                inputProps={{ ...inputProps, style: { textAlign: 'center' } }}
               />
               {/*[iRow][0]*/}
-              <TextField
+              <FIELD
                 type="number"
                 name={'Value'}
-                style={{ width: '56px' }}
+                style={{}}
+                inputProps={{ ...inputProps, style: { textAlign: 'right' } }}
               />
               {/*[iRow][1]*/}
-              <TextField type="number" name={'Min'} style={{ width: '56px' }} />
+              <FIELD
+                type="number"
+                name={'Min'}
+                style={{
+                  width: '56px',
+                  borderBottom: 'none',
+                  background: '#FFFFFF33',
+                }}
+              />
               {/*[iRow][2]*/}
-              <TextField type="number" name={'Max'} style={{ width: '56px' }} />
+              <FIELD type="number" name={'Max'} style={{ width: '56px' }} />
               {/*[iRow][3]*/}
-              <TextField name={'Unit'} style={{ width: '32px' }} />
+              <TextField
+                name={'Unit'}
+                style={{}}
+                inputProps={{ ...inputProps, style: { textAlign: 'left' } }}
+              />
               {/*[iRow][4]*/}
             </Grid>
           </Col>
+          {hRandom}
         </Box>
       </Row>
     </div>

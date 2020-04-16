@@ -34,14 +34,19 @@ function App() {
       MuiTextField: {
         inputProps: {
           //Contents of the TextField
-          style: { textAlign: 'center' },
+          style: {
+            textAlign: 'center',
+            padding: '0px 0px 0px 0px',
+            margin: '0px 0px 0px 0px',
+          },
         },
       },
 
       MuiButton: {
         style: {
           border: 'primary',
-          padding: '0 30px',
+          padding: '0px 0px 0px 0px',
+          margin: '0px 0px 0px 0px',
           fontSize: '1rem',
         },
       },

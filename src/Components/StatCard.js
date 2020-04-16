@@ -110,6 +110,7 @@ const defaultData = {
         'Primary Stats',
         'Fixed',
         '{ "background": "#4ab8c5"}',
+        [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
@@ -125,17 +126,18 @@ const defaultData = {
         'Secondary Stats',
         'Calculated',
         '{ "background": "#c03311", "doNotGraph": true }',
+        [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Health', 2064 /* ([0][2] * 12) */, 264, 30720, ''],
-      ['Mana', 264 /* ([5][2] * 12) */, 264, 30720, ''],
-      ['Melee Attack', 376.4 /* ([0][1] * 0.2) */, 4.4, 2560, ''],
-      ['Range Attack', 4.4 /* ([0][2] * 0.2) */, 4.4, 2560, ''],
-      ['Magic Attack', 4.4 /* ([0][3] * 0.2) */, 4.4, 2560, ''],
-      ['Healing Power', 34.4 /* ([0][4] * 0.2) */, 4.4, 2560, ''],
-      ['Physical Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 71.35%
-      ['Magic Defense', 260 /* ([0][2] * 1) */, 44, 2560, ''], // 23.81%
+      ['Health', 2064, 264, 30720, '', [0, 3] * 12],
+      ['Mana', 264, 264, 30720, '', [0, 5] * 12],
+      ['Melee Attack', 376.4, 4.4, 2560, '', [0, 1] * 0.2],
+      ['Range Attack', 4.4, 4.4, 2560, '', [0, 2] * 0.2],
+      ['Magic Attack', 4.4, 4.4, 2560, '', [0, 5] * 0.2],
+      ['Healing Power', 34.4, 4.4, 2560, '', [0, 4] * 0.2],
+      ['Physical Defense', 260, 44, 2560, '', [0, 3] * 1], // 71.35%
+      ['Magic Defense', 260, 44, 2560, '', [0, 3] * 1], // 23.81%
     ],
 
     [
@@ -173,6 +175,9 @@ function StatCard(props) {
 
   const data = {
     update,
+    Name: (index) => {
+      return Values[index][0][0];
+    },
     Values,
     vTableHeader: (index) => {
       return Values[index][0];
@@ -203,6 +208,9 @@ function StatCard(props) {
   // Used for init load state to prevent the template template selecter from overriding the user defined URL. Probably another way of doing this.
   const dataFuncs = {
     setValues,
+    setTable: (index, val) => {
+      Values[index] = val;
+    },
     setUpdate,
     setPointTotal: (index, val) => {
       Values[index][0][3][0] = val;
@@ -217,6 +225,7 @@ function StatCard(props) {
       Values[index][0][4] = val;
     },
     setPointDiff: (index, val) => {
+      console.log('setPointDiff:', index, val);
       Values[index][0][5] = val;
     },
   };
@@ -263,11 +272,13 @@ function StatCard(props) {
           key={`PaperForm_${i}`}
           name={`PaperForm_${i}`}
           style={{
-            width: '320px',
+            placeContent: 'top',
+            alignItems: 'top',
+            justifyItems: 'top',
+            // width: '320px',
             margin: 2,
             padding: 2,
-            display: 'flex',
-            flexDirection: 'column',
+            flexBasis: 0,
             backgroundColor: JSON.parse(getData().Values[i][0][2]).background,
             // fontColor: getData().Values[i][0][2],
           }}
@@ -306,8 +317,6 @@ function StatCard(props) {
             height: `${564}px`,
             margin: 2,
             padding: 2,
-            display: 'flexbox',
-            flexDirection: 'row',
             ...JSON.parse(getData().Values[i][0][2]),
             // fontColor: getData().Values[i][0][2],
           }}
@@ -330,34 +339,41 @@ function StatCard(props) {
   return (
     <Box
       name="body"
-      style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        overflow: 'auto',
+        border: '3px solid red',
+      }}
       bgcolor="darkGrey"
     >
+      <StatData
+        name={'StatData'}
+        key={'StatData'}
+        {...props}
+        data={getData}
+        setData={dataFuncs}
+        funcs={funcs}
+      />
+      {
+        //   <TemplateSelector
+        //   Name={data.Name}
+        //   setData={dataFuncs}
+        //   funcs={funcs}
+        //   defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
+        //   MenuItems={tmplMenuItems}
+        // />
+      }
       <Col>
-        <Row alignSelf="top">
-          <StatData
-            name={'StatData'}
-            key={'StatData'}
-            {...props}
-            data={getData}
-            setData={dataFuncs}
-            funcs={funcs}
-          />
-          {
-            //   <TemplateSelector
-            //   Name={data.Name}
-            //   setData={dataFuncs}
-            //   funcs={funcs}
-            //   defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
-            //   MenuItems={tmplMenuItems}
-            // />
-          }
-
+        <Row
+          alignItems="top"
+          style={{ border: '3px solid green', flexBasis: 0 }}
+        >
           {hForms()}
-          {/* {<StatCode GetURLCode={GetURLCode} />} */}
         </Row>
         <Row alignItems="top">{hDiagrams()}</Row>
       </Col>
+      {/* {<StatCode GetURLCode={GetURLCode} />} */}
     </Box>
   );
 }

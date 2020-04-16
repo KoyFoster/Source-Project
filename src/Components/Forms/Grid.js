@@ -129,9 +129,10 @@ function Grid(props) {
     for (let y = 0; y < arr.length; y) {
       const row = [];
       for (let x = 0; x < arr[0].length; x) {
+        const iX = props.colOrder[x];
         row.push(
-          <th key={`th_${x},${y}`} style={{ ...tcs, padding: 'none' }}>
-            {arr[y][x]}
+          <th key={`th_${iX},${y}`} style={{ ...tcs, padding: 'none' }}>
+            {arr[y][iX]}
           </th>,
         );
         x += 1;

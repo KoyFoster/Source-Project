@@ -15,6 +15,8 @@ const GetPointTotal = (size, values, pointDiff, pointLimit) => {
   let pointMax = 0;
   let arrDiff = size - values.length;
   let iI = 0;
+
+  // Interate
   for (iI; iI < size; iI) {
     //push additional elements if change in size exceeds current size
     if (arrDiff > 0) {
@@ -113,6 +115,9 @@ function StatData(dataProps) {
 
   // Update Functions
   function Update(index, props) {
+    // Early Validation
+    if (props.target.value < 0 && props.target.name === 'Quantity') return;
+
     const Header = this.data().vTableHeader(index);
     const Table = this.data().vTable(index);
 
@@ -129,16 +134,22 @@ function StatData(dataProps) {
       props.target.name.indexOf('_(') > -1
         ? props.target.name.substring(0, props.target.name.indexOf('_('))
         : props.target.name;
-    let Points = Table[0][3];
+    let Points = Header[3];
 
     if (props.target.name === 'Quantity') {
       if (props.target.value < 0) return;
       tempSize = parseInt(props.target.value);
+
+      // Subtract row difference
+      if (tempSize < tempVal.length && tempSize >= 0) {
+        tempVal = tempVal.slice(0, tempSize);
+      }
+
       Points = GetPointTotal(
         tempSize,
         tempVal,
-        data().PointDiff,
-        data().PointLimit,
+        this.data().PointDiff(index),
+        this.data().PointLimit(index),
       );
     } else if (sTag === 'Value') {
       //Value Range Check
@@ -152,10 +163,10 @@ function StatData(dataProps) {
       Points = GetPointTotal(
         tempSize,
         tempVal,
-        data().PointDiff,
-        data().PointLimit,
+        this.data().PointDiff(index),
+        this.data().PointLimit(index),
       );
-      if (Points[0] > this.data().PointLimit) {
+      if (Points[0] > this.data().PointLimit(index)) {
         return;
       }
     } else if (sTag === 'Types') {
@@ -184,20 +195,24 @@ function StatData(dataProps) {
       Points = GetPointTotal(
         tempSize,
         tempVal,
-        data().PointDiff,
-        data().PointLimit,
+        this.data().PointDiff(index),
+        this.data().PointLimit(index),
       );
     } else if (sTag === 'PointDiff') {
       // Update to new PointTotal
+      console.log('Points 1:', Points, props.target.checked);
       if (props.target.checked) {
         Points[0] = Points[0] - Points[1];
       } else {
         Points[0] = Points[0] + Points[1];
       }
 
+      console.log('Points 2:', Points, props.target.checked);
+
       this.setData.setPointDiff(index, props.target.checked);
       this.setData.setPointTotal(index, Points[0]);
 
+      this.setData.setUpdate(!this.data().update);
       return;
     } else if (sTag === 'Unit') {
       tempVal[iIndex][4] = props.target.value;
@@ -206,16 +221,18 @@ function StatData(dataProps) {
       Points = GetPointTotal(
         tempSize,
         tempVal,
-        data().PointDiff,
-        data().PointLimit,
+        this.data().PointDiff(index),
+        this.data().PointLimit(index),
       );
-      if (Points[0] > data().PointLimit) {
+      if (Points[0] > this.data().PointLimit(index)) {
         return;
       }
     }
 
-    // this.setData.setValue(this.data().Values);
-    // this.setData.setSize(intempSize);
+    tempVal.unshift(Header);
+    if (tempSize !== Table.length) {
+      this.setData.setTable(index, tempVal);
+    }
     Header[3] = Points;
     this.setData.setUpdate(!this.data().update);
   }
