@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Coll, Calc } from './KoyMath.js';
+import { evaluate } from 'mathjs';
 
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT';
 
@@ -112,6 +113,34 @@ function StatData(dataProps) {
     this.setData.setUpdate(!this.data().update);
     dataProps.funcs.randAnim();
   } // end of randomizer
+
+  const GetCalculatedValue = (iElem, mTable, Table) => {
+    if (Table[iElem][6] && !Table[iElem][5])
+      return mTable[Table[iElem][5][0]][Table[iElem][5][1]][1];
+    if (!Table[iElem][6] && Table[iElem][5]) return -1;
+
+    const expression = Table[iElem][6];
+    const miT = Table[iElem][5][0];
+    const miTI = Table[iElem][5][1];
+    const miTVal = mTable[miT][miTI][1];
+    console.log(
+      'GCV:',
+      'iElem:',
+      iElem,
+      'miTVal:',
+      miTVal,
+      'miT:',
+      miT,
+      'miTI:',
+      miTI,
+      'expression:',
+      expression,
+    );
+    const scope = { a: miTVal };
+    const result = evaluate(expression, scope);
+    console.log('GCV:', 'result:', result);
+    return result;
+  };
 
   // Update Functions
   function Update(index, props) {
@@ -226,13 +255,22 @@ function StatData(dataProps) {
       }
     }
 
+    /* Update Calculated Stats */
+    if (Header[1] === 'Calculated' && iIndex) {
+      tempVal[iIndex][1] = GetCalculatedValue(
+        iIndex,
+        this.data().Values,
+        Table,
+      );
+    }
+
     tempVal.unshift(Header);
     if (tempSize !== Table.length) {
       this.setData.setTable(index, tempVal);
     }
     Header[3] = Points;
     this.setData.setUpdate(!this.data().update);
-  }
+  } // End of Update
 
   function ParseStringAsStatCard(value) {
     //Break String Down Into Objects
