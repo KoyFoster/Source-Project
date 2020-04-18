@@ -6,6 +6,16 @@ function ComboBox(props) {
 
   return (
     <div style={{ display: 'flex', alignItems: 'stretch' }}>
+      <Select
+        style={{ width: '24px', height: 'auto', color: 'transparent' }}
+        defaultValue={props.defaultValue}
+        onChange={(e) => {
+          setValue(e.target.value.label);
+          if (props.onChange) props.onChange(e);
+        }}
+      >
+        {props.children}
+      </Select>
       <input
         style={{
           height: 'auto',
@@ -27,16 +37,6 @@ function ComboBox(props) {
           if (props.onEdit) props.onEdit(e);
         }}
       />
-      <Select
-        style={{ width: '24px', height: 'auto', color: 'transparent' }}
-        defaultValue={props.defaultValue}
-        onChange={(e) => {
-          setValue(e.target.value.label);
-          if (props.onChange) props.onChange(e);
-        }}
-      >
-        {props.children}
-      </Select>
     </div>
   );
 }

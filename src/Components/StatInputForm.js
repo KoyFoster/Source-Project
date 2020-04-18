@@ -4,10 +4,10 @@ import {
   Button,
   TextField,
   InputLabel,
+  Select,
   Checkbox,
 } from '@material-ui/core';
 import { Row, Col } from './DivGrid.js';
-//import { purple, orange, green, red } from '@material-ui/core/colors';
 import '../App.css';
 import Grid from './Forms/Grid';
 
@@ -269,13 +269,24 @@ function StatInputForm(props) {
                 bMUI={true}
                 style={{ width: '56px' }}
               />
+
               {/*[iRow][3]*/}
-              <TextField
+              <Select
                 name={'Unit'}
                 bMUI={true}
-                style={{}}
+                style={{ width: '24px', height: 'auto', color: 'transparent' }}
                 inputProps={{ ...inputProps, style: { textAlign: 'left' } }}
-              />
+                onChange={(e) => {
+                  Update({ name: 'Unit', value: e.target.value });
+                }}
+              >
+                {/* <MenuItem key="" value="">
+                  %
+                </MenuItem>
+                <MenuItem key="" value="">
+                  %
+                </MenuItem> */}
+              </Select>
               {/*[iRow][4]*/}
             </Grid>
           </Col>

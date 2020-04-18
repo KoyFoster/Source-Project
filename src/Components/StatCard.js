@@ -266,41 +266,73 @@ function StatCard(props) {
 
   const hForms = () => {
     const hBuffer = [];
-    for (let i = 0; i < data.Values.length; i) {
-      hBuffer.push(
-        <Paper
-          key={`PaperForm_${i}`}
-          name={`PaperForm_${i}`}
-          style={{
-            placeContent: 'top',
-            alignItems: 'top',
-            justifyItems: 'top',
-            // width: '320px',
-            margin: 2,
-            padding: 2,
-            flexBasis: 0,
-            backgroundColor: JSON.parse(getData().Values[i][0][2]).background,
-            // fontColor: getData().Values[i][0][2],
-          }}
-        >
-          <StatInputForm
-            iD={i}
-            doNotGraph={JSON.parse(getData().Values[i][0][2]).doNotGraph}
-            key={`StatDataForm_${i}`}
-            name={`StatDataForm_${i}`}
-            bCalc={getData().Values[i][0][1] === 'Calculated'}
-            Values={getData().Values[i]}
-            data={getData}
-            setData={dataFuncs}
-            Update={funcs.update}
-            RandomizeStats={funcs.randomize}
-            UpdatePointLimit={funcs.updateLimit}
-          />
-        </Paper>,
-      );
+    for (let i = 0; i < data.Values.length * 2; i) {
+      const iI = i / 2;
+      if (i % 2 === 0)
+        hBuffer.push(
+          <div
+            style={{
+              flexShrink: 0,
+              flex: 0,
+              alignSelf: 'top', //'flex-start'
+
+              display: 'flex',
+            }}
+          >
+            <Col
+              style={
+                {
+                  // alignSelf: 'flex-start', //'flex-start'
+                }
+              }
+            >
+              <Paper
+                key={`PaperForm_${iI}`}
+                name={`PaperForm_${iI}`}
+                style={{
+                  margin: 2,
+                  padding: 2,
+
+                  backgroundColor: JSON.parse(getData().Values[iI][0][2])
+                    .background,
+                }}
+              >
+                <StatInputForm
+                  iD={iI}
+                  doNotGraph={JSON.parse(getData().Values[iI][0][2]).doNotGraph}
+                  key={`StatDataForm_${iI}`}
+                  name={`StatDataForm_${iI}`}
+                  bCalc={getData().Values[iI][0][1] === 'Calculated'}
+                  Values={getData().Values[iI]}
+                  data={getData}
+                  setData={dataFuncs}
+                  Update={funcs.update}
+                  RandomizeStats={funcs.randomize}
+                  UpdatePointLimit={funcs.updateLimit}
+                />
+              </Paper>
+            </Col>
+          </div>,
+        );
+      else hBuffer.push(<div name={`Spacer_${i}`} style={{}}></div>);
       i += 1;
     }
-    return hBuffer;
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+
+          margin: 2,
+          padding: 2,
+
+          // border: '3px solid cyan',
+        }}
+      >
+        {hBuffer}
+      </div>
+    );
   };
 
   const hDiagrams = () => {
@@ -308,31 +340,61 @@ function StatCard(props) {
 
     for (let i = 0; i < data.Values.length; i) {
       hBuffer.push(
-        <Paper
-          key={`PaperDiagram_${i}`}
-          name={`PaperDiagram_${i}`}
+        <div
           style={{
-            // width: '768px',
-            width: `${564}px`,
-            height: `${564}px`,
-            margin: 2,
-            padding: 2,
-            ...JSON.parse(getData().Values[i][0][2]),
-            // fontColor: getData().Values[i][0][2],
+            flexShrink: 1,
+            alignSelf: 'flex-start', //'flex-start'
+
+            display: 'flex',
           }}
         >
-          <Diagram
-            key={`StatDataDiagram_${i}`}
-            name={`StatDataDiagram_${i}`}
-            iStrt={1}
-            data={{ Values: Values[i] }}
-            funcs={funcs}
-          />
-        </Paper>,
+          <Col
+            style={{
+              alignSelf: 'flex-start', //'flex-start'
+            }}
+          >
+            <Paper
+              key={`PaperDiagram_${i}`}
+              name={`PaperDiagram_${i}`}
+              style={{
+                width: `${564}px`,
+                height: `${564}px`,
+
+                margin: 2,
+                padding: 2,
+
+                ...JSON.parse(getData().Values[i][0][2]),
+                // fontColor: getData().Values[i][0][2],
+              }}
+            >
+              <Diagram
+                key={`StatDataDiagram_${i}`}
+                name={`StatDataDiagram_${i}`}
+                iStrt={1}
+                data={{ Values: Values[i] }}
+                funcs={funcs}
+              />
+            </Paper>
+          </Col>
+        </div>,
       );
       i += 1;
     }
-    return hBuffer;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+
+          margin: 2,
+          padding: 2,
+
+          // border: '3px solid cyan',
+        }}
+      >
+        {hBuffer}
+      </div>
+    );
   };
 
   // Render and Logic
@@ -342,8 +404,8 @@ function StatCard(props) {
       style={{
         display: 'flex',
         justifyContent: 'center',
-        overflow: 'auto',
-        border: '3px solid red',
+
+        // border: '3px solid gold',
       }}
       bgcolor="darkGrey"
     >
@@ -355,23 +417,42 @@ function StatCard(props) {
         setData={dataFuncs}
         funcs={funcs}
       />
-      {
-        //   <TemplateSelector
-        //   Name={data.Name}
-        //   setData={dataFuncs}
-        //   funcs={funcs}
-        //   defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
-        //   MenuItems={tmplMenuItems}
-        // />
-      }
-      <Col>
+      <Col name="mainColumn">
+        <TemplateSelector
+          Name={data.Name}
+          setData={dataFuncs}
+          funcs={funcs}
+          defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
+          MenuItems={tmplMenuItems}
+        />
         <Row
-          alignItems="top"
-          style={{ border: '3px solid green', flexBasis: 0 }}
+          name="mainRow"
+          style={
+            {
+              // border: '3px solid red',
+            }
+          }
         >
-          {hForms()}
+          <Col
+            alignItems="top"
+            style={{
+              flex: 1,
+              // border: '3px solid orange',
+            }}
+          >
+            <Row style={{}}>{hForms()}</Row>
+          </Col>
+
+          <Col
+            alignItems="top"
+            style={{
+              flex: 1.75,
+              // border: '3px solid purple',
+            }}
+          >
+            <Row style={{}}>{hDiagrams()}</Row>
+          </Col>
         </Row>
-        <Row alignItems="top">{hDiagrams()}</Row>
       </Col>
       {/* {<StatCode GetURLCode={GetURLCode} />} */}
     </Box>

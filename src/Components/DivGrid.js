@@ -18,8 +18,8 @@ function Row(props) {
   return (
     <div
       style={{
-        ...props.style,
         display: 'flex',
+        ...props.style,
         justifyContent: props.justifyContent || 'center',
         alignItems: props.alignItems || 'top',
       }}
