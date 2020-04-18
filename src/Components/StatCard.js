@@ -110,7 +110,7 @@ const defaultData = {
         'Primary Stats',
         'Fixed',
         '{ "background": "#4ab8c5"}',
-        [0, 0, 0] /* Totals(val, min, max) */,
+        [2358, 70, 12800] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
@@ -130,14 +130,14 @@ const defaultData = {
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Health', 0, 264, 30720, '', [0, 3], 'a * 12'],
-      ['Mana', 0, 264, 30720, '', [0, 5] * 12],
-      ['Melee Attack', 0, 4.4, 2560, '', [0, 1] * 0.2],
-      ['Range Attack', 0, 4.4, 2560, '', [0, 2] * 0.2],
-      ['Magic Attack', 0, 4.4, 2560, '', [0, 5] * 0.2],
-      ['Healing Power', 0, 4.4, 2560, '', [0, 4] * 0.2],
-      ['Physical Defense', 0, 44, 2560, '', [0, 3] * 1], // 71.35%
-      ['Magic Defense', 0, 44, 2560, '', [0, 3] * 1], // 23.81%
+      ['Health', 3120, 264, 30720, '', [0, 3], 'a * 12'],
+      ['Mana', 4.4, 264, 30720, '', [0, 5], 'a * 0.2'],
+      ['Melee Attack', 376.40000000000003, 4.4, 2560, '', [0, 1], 'a * 0.2'],
+      ['Range Attack', 4.4, 4.4, 2560, '', [0, 2], 'a * 0.2'],
+      ['Magic Attack', 4.4, 4.4, 2560, '', [0, 5], 'a * 0.2'],
+      ['Healing Power', 34.4, 4.4, 2560, '', [0, 4], 'a * 0.2'],
+      ['Physical Defense', 260, 44, 2560, '', [0, 3], 'a * 1'], // 71.35%
+      ['Magic Defense', 260, 44, 2560, '', [0, 3], 'a * 1'], // 23.81%
     ],
 
     [
@@ -145,8 +145,8 @@ const defaultData = {
         'Misc Stats',
         'Fixed',
         '{ "background": "#1d3314" }' /* , "width": 480 , "height": 480 */,
-        [0, 0, 0] /* Totals(val, min, max) */,
-        2560 /* PointLimit */,
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
         false /* PointDiff */,
       ],
       ['Move Speed', 5.4, 5.4, 10, 'm/s'],
@@ -154,8 +154,6 @@ const defaultData = {
       ['Attack Speed', 190, 0, 1200, ''], // (84.0%)
     ],
   ],
-  PointLimit: 2560,
-  PointDiff: false,
 };
 
 // Stat Card

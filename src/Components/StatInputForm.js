@@ -27,7 +27,7 @@ function StatInputForm(props) {
 
   const Update = (event) => {
     //Update Diagram
-    props.UpdateStates(props.iD, event);
+    if (props.UpdateStates) props.UpdateStates(props.iD, event);
   };
 
   const inputProps = {
@@ -38,19 +38,42 @@ function StatInputForm(props) {
   const FIELD = (PROPS) => {
     // if (props.bCalc) return <div style={{ ...PROPS.style }}>{PROPS.value}</div>;
     // else
-    const disabled = props.bCalc === true ? { disabled: true } : undefined;
+    const events = props.bCalc
+      ? {
+          onFocus: (event) => {
+            // event.stopPropagation();
+            // event.preventDefault();
+            event.target.value = 'butts';
+          },
+          onBlur: (e) => {
+            // e.stopPropagation();
+            // e.preventDefault();
+            e.target.value = 234523;
+            console.log('e:', e.target.value);
+          },
+        }
+      : props.onChange; // onChange={(event) => Update(event)}
+
     return (
       <TextField
         inputProps={{ ...inputProps }}
         {...PROPS}
-        {...disabled}
+        onFocus={(e) => {
+          if (events) if (events.onFocus) events.onFocus(e);
+        }}
+        onBlur={(e) => {
+          if (events) if (events.onBlur) events.onBlur(e);
+        }}
+        onChange={(e) => {
+          if (events) if (events.onChange) events.onChange(e);
+        }}
       ></TextField>
     );
   };
 
   /* Validate Presence of stats */
   const hLimit =
-    props.bCalc === true ? (
+    props.bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
       <div>
@@ -64,7 +87,7 @@ function StatInputForm(props) {
       </div>
     );
   const hTotal =
-    props.bCalc === true ? (
+    props.bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
       <InputLabel>
@@ -72,7 +95,9 @@ function StatInputForm(props) {
       </InputLabel>
     );
   const hPointDiff =
-    props.bCalc === true || props.data().PointDiff(props.iD) === undefined ? (
+    props.bCalc === true ||
+    props.data().PointDiff(props.iD) === undefined ||
+    props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
       <Checkbox
@@ -95,8 +120,12 @@ function StatInputForm(props) {
     );
 
   const hFooter =
-    props.bCalc !== true
-      ? [
+    props.bCalc === true ||
+    (props.data().PointTotal(props.iD) === -1 &&
+      props.data().PointMin(props.iD) === -1 &&
+      props.data().PointMax(props.iD) === -1)
+      ? undefined
+      : [
           <div
             style={{
               background: '#00000033',
@@ -104,24 +133,36 @@ function StatInputForm(props) {
           >
             Totals
           </div>,
-          <TextField
-            value={props.data().PointTotal(props.iD)}
-            disabled
-          ></TextField>,
-          <TextField
-            value={props.data().PointMin(props.iD)}
-            style={{
-              background: '#FFFFFF33',
-            }}
-            disabled
-          ></TextField>,
-          <TextField
-            value={props.data().PointMax(props.iD)}
-            disabled
-          ></TextField>,
+          props.data().PointTotal(props.iD) !== -1 ? (
+            <TextField
+              value={props.data().PointTotal(props.iD)}
+              disabled
+            ></TextField>
+          ) : (
+            <div></div>
+          ),
+          props.data().PointMin(props.iD) !== -1 ? (
+            <TextField
+              value={props.data().PointMin(props.iD)}
+              style={{
+                background: '#FFFFFF33',
+              }}
+              disabled
+            ></TextField>
+          ) : (
+            <div></div>
+          ),
+          props.data().PointMax(props.iD) !== -1 ? (
+            <TextField
+              value={props.data().PointMax(props.iD)}
+              disabled
+            ></TextField>
+          ) : (
+            <div></div>
+          ),
+          ,
           <div></div>,
-        ]
-      : undefined;
+        ];
 
   return (
     <div>
@@ -150,6 +191,7 @@ function StatInputForm(props) {
               value={props.data().Name(props.iD)}
             />
             <Grid
+              bRowHeader={false}
               colOrder={[0, 1, 4, 2, 3]}
               onChange={(event) => Update(event)}
               hHeader={[
@@ -178,6 +220,7 @@ function StatInputForm(props) {
             >
               <TextField
                 name={'Types'}
+                bMUI={true}
                 style={{
                   width: '136px',
                   background: '#00000033',
@@ -189,6 +232,7 @@ function StatInputForm(props) {
               <FIELD
                 type="number"
                 name={'Value'}
+                bMUI={true}
                 style={{}}
                 inputProps={{ ...inputProps, style: { textAlign: 'right' } }}
               />
@@ -196,6 +240,7 @@ function StatInputForm(props) {
               <FIELD
                 type="number"
                 name={'Min'}
+                bMUI={true}
                 style={{
                   width: '56px',
                   borderBottom: 'none',
@@ -203,10 +248,16 @@ function StatInputForm(props) {
                 }}
               />
               {/*[iRow][2]*/}
-              <FIELD type="number" name={'Max'} style={{ width: '56px' }} />
+              <FIELD
+                type="number"
+                name={'Max'}
+                bMUI={true}
+                style={{ width: '56px' }}
+              />
               {/*[iRow][3]*/}
               <TextField
                 name={'Unit'}
+                bMUI={true}
                 style={{}}
                 inputProps={{ ...inputProps, style: { textAlign: 'left' } }}
               />

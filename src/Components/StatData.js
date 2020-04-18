@@ -123,22 +123,8 @@ function StatData(dataProps) {
     const miT = Table[iElem][5][0];
     const miTI = Table[iElem][5][1];
     const miTVal = mTable[miT][miTI][1];
-    console.log(
-      'GCV:',
-      'iElem:',
-      iElem,
-      'miTVal:',
-      miTVal,
-      'miT:',
-      miT,
-      'miTI:',
-      miTI,
-      'expression:',
-      expression,
-    );
     const scope = { a: miTVal };
     const result = evaluate(expression, scope);
-    console.log('GCV:', 'result:', result);
     return result;
   };
 
