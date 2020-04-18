@@ -210,6 +210,9 @@ function StatCard(props) {
       Values[index] = val;
     },
     setUpdate,
+    setName: (index, val) => {
+      Values[index][0][0] = val;
+    },
     setPointTotal: (index, val) => {
       Values[index][0][3][0] = val;
     },
@@ -289,7 +292,7 @@ function StatCard(props) {
             Values={getData().Values[i]}
             data={getData}
             setData={dataFuncs}
-            UpdateStates={funcs.update}
+            Update={funcs.update}
             RandomizeStats={funcs.randomize}
             UpdatePointLimit={funcs.updateLimit}
           />

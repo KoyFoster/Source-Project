@@ -150,10 +150,12 @@ function Grid(props) {
       const row = [];
       for (let x = 0; x < arr[0].length; x) {
         const plus = props.bRowHeader === true ? 1 : 0;
-        const iX = x;
+        const iX = props.colOrder
+          ? props.colOrder[x] + (plus ? 1 : 0)
+          : x + (plus ? 1 : 0);
         const bSelect = // Note: this is ignoring ordering on purpose
           (selection[1] === y + (props.hHeader ? 1 : 0) && x === 0) ||
-          (selection[0] === x && noStyle);
+          (selection[0] === iX && noStyle);
         row.push(
           <th
             key={`th_${iX},${iY}`}
@@ -202,6 +204,8 @@ function Grid(props) {
               x: x,
               y: y,
               value: e.target.value,
+              checked: e.target.checked,
+              name: e.target.name,
             });
         }}
         onClick={(e) => {

@@ -16,18 +16,24 @@ function StatInputForm(props) {
   const Table = props.data().vTable(props.iD);
   const Header = props.data().vTableHeader(props.iD);
 
-  //On Slices Change, update form
-  var RandomizeStats = (event) => {
-    if (event.target.name === 'Limit') {
-      props.UpdatePointLimit(event);
-    } else {
-      props.RandomizeStats(props.iD);
+  const Update = (e) => {
+    // console.log('e:', e);
+    if (e.name === 'Name') {
+      props.setData.setName(props.iD, e.value);
+      props.setData.setUpdate(!props.data().update);
+      return;
     }
-  };
+    if (e.name === 'Level Cap') {
+      props.UpdatePointLimit(props.iD, e.value);
+      return;
+    }
+    if (e.name === 'RNG') {
+      props.RandomizeStats(props.iD);
+      return;
+    }
 
-  const Update = (event) => {
     //Update Diagram
-    if (props.UpdateStates) props.UpdateStates(props.iD, event);
+    if (props.Update) props.Update(props.iD, { ...e, y: e.y - 1 });
   };
 
   const inputProps = {
@@ -38,21 +44,22 @@ function StatInputForm(props) {
   const FIELD = (PROPS) => {
     // if (props.bCalc) return <div style={{ ...PROPS.style }}>{PROPS.value}</div>;
     // else
-    const events = props.bCalc
-      ? {
-          onFocus: (event) => {
-            // event.stopPropagation();
-            // event.preventDefault();
-            event.target.value = 'butts';
-          },
-          onBlur: (e) => {
-            // e.stopPropagation();
-            // e.preventDefault();
-            e.target.value = 234523;
-            console.log('e:', e.target.value);
-          },
-        }
-      : props.onChange; // onChange={(event) => Update(event)}
+    const events = undefined;
+    // = props.bCalc
+    // ? {
+    //     onFocus: (event) => {
+    //       // event.stopPropagation();
+    //       // event.preventDefault();
+    //       event.target.value = 'butts';
+    //     },
+    //     onBlur: (e) => {
+    //       // e.stopPropagation();
+    //       // e.preventDefault();
+    //       e.target.value = 234523;
+    //       console.log('e:', e.target.value);
+    //     },
+    //   }
+    // : props.onChange; // onChange={(event) => Update(event)}
 
     return (
       <TextField
@@ -82,7 +89,12 @@ function StatInputForm(props) {
           type="number"
           name="Limit"
           value={props.data().PointLimit(props.iD)}
-          onChange={(event) => Update(event)}
+          onChange={(event) =>
+            Update({
+              name: 'Level Cap',
+              value: parseFloat(event.target.value, 10),
+            })
+          }
         ></TextField>
       </div>
     );
@@ -111,7 +123,7 @@ function StatInputForm(props) {
     );
   const hRandom =
     props.bCalc !== true ? (
-      <Button name="RNG" onClick={(event) => RandomizeStats(event)}>
+      <Button name="RNG" onClick={() => Update({ name: 'RNG' })}>
         {' '}
         Random{' '}
       </Button>
@@ -189,6 +201,9 @@ function StatInputForm(props) {
               label="Name"
               name={`Name_${props.iD}`}
               value={props.data().Name(props.iD)}
+              onChange={(event) =>
+                Update({ name: 'Name', value: event.target.value })
+              }
             />
             <Grid
               bRowHeader={false}

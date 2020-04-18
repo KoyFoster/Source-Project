@@ -26,16 +26,16 @@ const GetPointTotal = (size, values, pointDiff, pointLimit) => {
     }
     //Only Include Only Point Defined Stats
     if (IsUnit(values[iI][4])) {
-      pointTotal += parseInt(values[iI][1]);
-      pointMin += parseInt(values[iI][2]);
-      pointMax += parseInt(values[iI][3]);
+      pointTotal += parseFloat(values[iI][1], 10);
+      pointMin += parseFloat(values[iI][2], 10);
+      pointMax += parseFloat(values[iI][3], 10);
     }
     iI += 1;
   }
   // check if new entry causes the point limit to be exceeded
   if (pointTotal > pointLimit && size !== size) {
     let iDiff = pointLimit - pointTotal;
-    values[iI - 1][1] += parseInt(iDiff);
+    values[iI - 1][1] += parseFloat(iDiff, 10);
 
     pointTotal = pointLimit;
   }
@@ -56,11 +56,11 @@ function StatData(dataProps) {
     for (let iI; iI < iSize; iI) {
       if (values === 0) {
         if (IsUnit(values[iI][4])) {
-          PointMax += parseInt(values[iI][3]);
+          PointMax += parseFloat(values[iI][3], 10);
         }
       } else {
         if (IsUnit(values[iI][4])) {
-          PointMax += parseInt(values[iI][3]);
+          PointMax += parseFloat(values[iI][3], 10);
         }
       }
       iI += 1;
@@ -129,130 +129,119 @@ function StatData(dataProps) {
   };
 
   // Update Functions
-  function Update(index, props) {
+  function Update(iT, e) {
+    const { x } = e;
+    const { y } = e;
+    let { value } = e;
+    const { checked } = e;
+    const { name } = e;
+    const iIndex = y;
+    const sTag = name ? name.substring(0, name.indexOf('_')) : name;
+    if (
+      x === undefined ||
+      y === undefined ||
+      value === undefined ||
+      name === undefined
+    )
+      return;
+
     // Early Validation
-    if (props.target.value < 0 && props.target.name === 'Quantity') return;
+    if (value < 0 && name === 'Quantity') return;
 
-    const Header = this.data().vTableHeader(index);
-    const Table = this.data().vTable(index);
+    const Header = this.data().vTableHeader(iT);
+    const Table = this.data().vTable(iT);
 
-    // vars
-    let tempSize = Number(Table.length);
-    let tempVal = Table;
-    let iIndex = props.target.name.indexOf(',')
-      ? props.target.name.substring(
-          props.target.name.indexOf(',') + 1,
-          props.target.name.indexOf(')'),
-        )
-      : props.target.name;
-    let sTag =
-      props.target.name.indexOf('_(') > -1
-        ? props.target.name.substring(0, props.target.name.indexOf('_('))
-        : props.target.name;
     let Points = Header[3];
 
-    if (props.target.name === 'Quantity') {
-      if (props.target.value < 0) return;
-      tempSize = parseInt(props.target.value);
+    if (name === 'Quantity') {
+      Table.length = parseFloat(value, 10);
 
       // Subtract row difference
-      if (tempSize < tempVal.length && tempSize >= 0) {
-        tempVal = tempVal.slice(0, tempSize);
+      if (Table.length < Table.length && Table.length >= 0) {
+        Table = Table.slice(0, Table.length);
       }
 
       Points = GetPointTotal(
-        tempSize,
-        tempVal,
-        this.data().PointDiff(index),
-        this.data().PointLimit(index),
+        Table.length,
+        Table,
+        this.data().PointDiff(iT),
+        this.data().PointLimit(iT),
       );
     } else if (sTag === 'Value') {
       //Value Range Check
-      tempVal[iIndex][1] = Coll.iAATest(
-        parseInt(props.target.value),
-        tempVal[iIndex][2],
-        tempVal[iIndex][3],
+      Table[iIndex][1] = Coll.iAATest(
+        parseFloat(value, 10),
+        Table[iIndex][2],
+        Table[iIndex][3],
       );
 
       //Check Point Limit Range
       Points = GetPointTotal(
-        tempSize,
-        tempVal,
-        this.data().PointDiff(index),
-        this.data().PointLimit(index),
+        Table.length,
+        Table,
+        this.data().PointDiff(iT),
+        this.data().PointLimit(iT),
       );
-      if (Points[0] > this.data().PointLimit(index)) {
+      if (Points[0] > this.data().PointLimit(iT)) {
         return;
       }
     } else if (sTag === 'Types') {
-      iIndex = parseInt(iIndex.replace('Types_(', '')[0]);
-      tempVal[iIndex][0] = props.target.value;
+      Table[iIndex][0] = value;
     } else if (sTag === 'Min' || sTag === 'Max') {
       let iIndex2 = 3;
       if (sTag === 'Min') {
         iIndex2 = 2;
 
         //Check if min exceeds then current value or is less then zero
-        props.target.value = Coll.iAATest(
-          parseInt(props.target.value),
-          0,
-          tempVal[iIndex][1],
-        );
+        value = Coll.iAATest(parseFloat(value, 10), 0, Table[iIndex][1]);
       } else if (sTag === 'Max') {
         //Check if max is less then current value
-        props.target.value = Coll.iAATest(
-          parseInt(props.target.value),
-          tempVal[iIndex][1],
-        );
-        Points[2] = GetPointMax(tempSize, props.target.value);
+        value = Coll.iAATest(parseFloat(value, 10), Table[iIndex][1]);
+        Points[2] = GetPointMax(Table.length, value);
       }
-      tempVal[iIndex][iIndex2] = parseInt(props.target.value);
+      Table[iIndex][iIndex2] = parseFloat(value, 10);
       Points = GetPointTotal(
-        tempSize,
-        tempVal,
-        this.data().PointDiff(index),
-        this.data().PointLimit(index),
+        Table.length,
+        Table,
+        this.data().PointDiff(iT),
+        this.data().PointLimit(iT),
       );
     } else if (sTag === 'PointDiff') {
       // Update to new PointTotal
-      if (props.target.checked) {
+      if (checked) {
         Points[0] = Points[0] - Points[1];
       } else {
         Points[0] = Points[0] + Points[1];
       }
 
-      this.setData.setPointDiff(index, props.target.checked);
-      this.setData.setPointTotal(index, Points[0]);
+      this.setData.setPointDiff(iT, checked);
+      this.setData.setPointTotal(iT, Points[0]);
 
       this.setData.setUpdate(!this.data().update);
       return;
     } else if (sTag === 'Unit') {
-      tempVal[iIndex][4] = props.target.value;
+      Table[iIndex][4] = value;
 
       //Check Point Limit Range
       Points = GetPointTotal(
-        tempSize,
-        tempVal,
-        this.data().PointDiff(index),
-        this.data().PointLimit(index),
+        Table.length,
+        Table,
+        this.data().PointDiff(iT),
+        this.data().PointLimit(iT),
       );
-      if (Points[0] > this.data().PointLimit(index)) {
+      if (Points[0] > this.data().PointLimit(iT)) {
         return;
       }
     }
 
     /* Update Calculated Stats */
     if (Header[1] === 'Calculated' && iIndex) {
-      tempVal[iIndex][1] = GetCalculatedValue(
-        iIndex,
-        this.data().Values,
-        Table,
-      );
+      Table[iIndex][1] = GetCalculatedValue(iIndex, this.data().Values, Table);
     }
 
-    tempVal.unshift(Header);
-    if (tempSize !== Table.length) {
-      this.setData.setTable(index, tempVal);
+    Table.unshift(Header);
+    if (Table.length !== Table.length) {
+      this.setData.setTable(iT, Table);
     }
     Header[3] = Points;
     this.setData.setUpdate(!this.data().update);
@@ -279,7 +268,7 @@ function StatData(dataProps) {
         //1. push sub element
         let buffer = subElement;
         if (iElement !== 1 && iElement !== 5) {
-          buffer = parseInt(buffer);
+          buffer = parseFloat(buffer, 10);
         }
         element.push(buffer);
 
@@ -298,7 +287,7 @@ function StatData(dataProps) {
         //push sub element
         let buffer = subElement;
         if (iElement !== 1 && iElement !== 5) {
-          buffer = parseInt(buffer);
+          buffer = parseFloat(buffer, 10);
         }
         element.push(buffer); //push sub element
 
@@ -320,13 +309,11 @@ function StatData(dataProps) {
     return superElement;
   }
 
-  function UpdatePointLimit(props) {
+  function UpdatePointLimit(iT, value) {
     //Limit Cannot be less then the minimum or the point total
-    const val = Coll.iAATest(
-      parseInt(props.target.value),
-      this.data().PointTotal,
-    );
-    setData.setPointLimit(val);
+    const val = Coll.iAATest(value, 10, this.data().PointTotal(iT));
+    this.setData.setPointLimit(iT, val);
+    this.setData.setUpdate(!this.data().update);
   }
 
   //Setup Listener Events
