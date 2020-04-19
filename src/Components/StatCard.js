@@ -158,16 +158,6 @@ const defaultData = {
 
 // Stat Card
 function StatCard(props) {
-  const [Name, setName] = useState(() => {
-    let val = props.location.pathname
-      .replace('/', '')
-      .replace('StatCard', '')
-      .replace('/', '');
-    let iEnd = val.search(`\\[`);
-    if (iEnd === -1) iEnd = undefined;
-
-    return val.slice(0, iEnd);
-  });
   const [Values, setValues] = useState(defaultData.Values);
   const [update, setUpdate] = useState(false);
 
@@ -264,6 +254,10 @@ function StatCard(props) {
   //   ).replace('//', '/');
   // };
 
+  // Temp Styles
+  const padding = 3;
+  const margin = 3;
+
   const hForms = () => {
     const hBuffer = [];
     for (let i = 0; i < data.Values.length * 2; i) {
@@ -271,27 +265,25 @@ function StatCard(props) {
       if (i % 2 === 0)
         hBuffer.push(
           <div
+            key={`FormDiv2_${iI}`}
             style={{
               flexShrink: 0,
               flex: 0,
-              alignSelf: 'top', //'flex-start'
 
               display: 'flex',
             }}
           >
             <Col
-              style={
-                {
-                  // alignSelf: 'flex-start', //'flex-start'
-                }
-              }
+              style={{
+                alignSelf: 'flex-start', //'flex-start'
+              }}
             >
               <Paper
                 key={`PaperForm_${iI}`}
                 name={`PaperForm_${iI}`}
                 style={{
-                  margin: 2,
-                  padding: 2,
+                  margin: margin,
+                  padding: padding,
 
                   backgroundColor: JSON.parse(getData().Values[iI][0][2])
                     .background,
@@ -314,18 +306,16 @@ function StatCard(props) {
             </Col>
           </div>,
         );
-      else hBuffer.push(<div name={`Spacer_${i}`} style={{}}></div>);
+      else hBuffer.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>);
       i += 1;
     }
 
     return (
       <div
+        key={`FormDiv`}
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-
-          margin: 2,
-          padding: 2,
 
           // border: '3px solid cyan',
         }}
@@ -341,6 +331,7 @@ function StatCard(props) {
     for (let i = 0; i < data.Values.length; i) {
       hBuffer.push(
         <div
+          key={`GiagDiv2_${i}`}
           style={{
             flexShrink: 1,
             alignSelf: 'flex-start', //'flex-start'
@@ -359,9 +350,8 @@ function StatCard(props) {
               style={{
                 width: `${564}px`,
                 height: `${564}px`,
-
-                margin: 2,
-                padding: 2,
+                margin: margin,
+                padding: padding,
 
                 ...JSON.parse(getData().Values[i][0][2]),
                 // fontColor: getData().Values[i][0][2],
@@ -382,14 +372,10 @@ function StatCard(props) {
     }
     return (
       <div
+        key={`DiagDiv`}
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-
-          margin: 2,
-          padding: 2,
-
-          // border: '3px solid cyan',
         }}
       >
         {hBuffer}
@@ -404,8 +390,6 @@ function StatCard(props) {
       style={{
         display: 'flex',
         justifyContent: 'center',
-
-        // border: '3px solid gold',
       }}
       bgcolor="darkGrey"
     >
@@ -418,43 +402,52 @@ function StatCard(props) {
         funcs={funcs}
       />
       <Col name="mainColumn">
-        <TemplateSelector
-          Name={data.Name}
-          setData={dataFuncs}
-          funcs={funcs}
-          defaultValue={data.Name ? undefined : defaultTemplates[iDefTmpl]}
-          MenuItems={tmplMenuItems}
-        />
-        <Row
-          name="mainRow"
-          style={
-            {
-              // border: '3px solid red',
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <TemplateSelector
+            Name={defaultData.Name}
+            setData={dataFuncs}
+            funcs={funcs}
+            defaultValue={
+              defaultData.Name ? undefined : defaultTemplates[iDefTmpl]
             }
-          }
-        >
-          <Col
+            MenuItems={tmplMenuItems}
+            style={{
+              flexGrow: 1,
+              margin: margin,
+              marginBottom: 0,
+              padding: padding,
+            }}
+          />
+          <StatCode /* GetURLCode={GetURLCode} */ />
+        </div>
+        <Row name="mainRow">
+          <Paper
             alignItems="top"
             style={{
+              margin: margin,
+              marginRight: 0,
+              padding: padding,
+
               flex: 1,
-              // border: '3px solid orange',
             }}
           >
             <Row style={{}}>{hForms()}</Row>
-          </Col>
+          </Paper>
 
-          <Col
+          <Paper
             alignItems="top"
             style={{
-              flex: 1.75,
-              // border: '3px solid purple',
+              margin: margin,
+              marginLeft: 0,
+              padding: padding,
+
+              flex: 1.62,
             }}
           >
             <Row style={{}}>{hDiagrams()}</Row>
-          </Col>
+          </Paper>
         </Row>
       </Col>
-      {/* {<StatCode GetURLCode={GetURLCode} />} */}
     </Box>
   );
 }

@@ -47,8 +47,7 @@ function TemplateSelector(props) {
   return (
     <Paper
       style={{
-        margin: 4,
-        padding: 4,
+        ...props.style,
         display: 'flex',
         flexDirection: 'column',
       }}

@@ -76,10 +76,10 @@ function Diagram(props) {
   const angle = (1 / iLen) * 360;
 
   // Animation States
-  const [phase, setPhase] = useState(0);
+  const [, setPhase] = useState(0);
   const [animTL, setAnimTL] = useState(0);
   const [animBR, setAnimBR] = useState(0);
-  const [intervalID, setIntervalID] = useState(0);
+  const [, setIntervalID] = useState(0);
 
   function startAnimation() {
     // Clear
@@ -152,8 +152,6 @@ function Diagram(props) {
 
     // Create Stats
     for (let i = 0; i < iLen; i) {
-      const iV = i + getStart();
-
       const transform = `rotate(${angle * i},${vector[0][0]},${vector[0][1]})`;
       // Rotate Neighboring Stat Point
       Coll.v2Rotate2D(nextPoint, new Vector2(0, 0), angle); //Rotate Second Point Over
@@ -224,7 +222,7 @@ function Diagram(props) {
     return baseDiagramMesh;
   };
 
-  const SetupTextAndTicks = function (data) {
+  const SetupTextAndTicks = function () {
     let ticks = 10;
     let tickWidth = 2;
 

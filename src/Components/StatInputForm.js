@@ -4,7 +4,6 @@ import {
   Button,
   TextField,
   InputLabel,
-  Select,
   Checkbox,
 } from '@material-ui/core';
 import { Row, Col } from './DivGrid.js';
@@ -14,26 +13,28 @@ import Grid from './Forms/Grid';
 //User Input Class
 function StatInputForm(props) {
   const Table = props.data().vTable(props.iD);
-  const Header = props.data().vTableHeader(props.iD);
 
-  const Update = (e) => {
-    // console.log('e:', e);
-    if (e.name === 'Name') {
-      props.setData.setName(props.iD, e.value);
+  const Update = (dataObj) => {
+    // console.log('dataObj:', dataObj);
+    if (dataObj.name === 'Name') {
+      props.setData.setName(props.iD, dataObj.value);
       props.setData.setUpdate(!props.data().update);
       return;
     }
-    if (e.name === 'Level Cap') {
-      props.UpdatePointLimit(props.iD, e.value);
+    if (dataObj.name === 'Level Cap') {
+      props.UpdatePointLimit(props.iD, dataObj.value);
       return;
     }
-    if (e.name === 'RNG') {
+    if (dataObj.name === 'RNG') {
       props.RandomizeStats(props.iD);
       return;
     }
-
+    if (dataObj.name === 'PointDiff') {
+      props.Update(props.iD, dataObj);
+      return;
+    }
     //Update Diagram
-    if (props.Update) props.Update(props.iD, { ...e, y: e.y - 1 });
+    props.Update(props.iD, { ...dataObj, y: dataObj.y - 1 });
   };
 
   const inputProps = {
@@ -44,7 +45,7 @@ function StatInputForm(props) {
   const FIELD = (PROPS) => {
     // if (props.bCalc) return <div style={{ ...PROPS.style }}>{PROPS.value}</div>;
     // else
-    const events = undefined;
+    // const events = undefined;
     // = props.bCalc
     // ? {
     //     onFocus: (event) => {
@@ -52,7 +53,7 @@ function StatInputForm(props) {
     //       // event.preventDefault();
     //       event.target.value = 'butts';
     //     },
-    //     onBlur: (e) => {
+    //     onChange: (e) => {
     //       // e.stopPropagation();
     //       // e.preventDefault();
     //       e.target.value = 234523;
@@ -61,21 +62,7 @@ function StatInputForm(props) {
     //   }
     // : props.onChange; // onChange={(event) => Update(event)}
 
-    return (
-      <TextField
-        inputProps={{ ...inputProps }}
-        {...PROPS}
-        onFocus={(e) => {
-          if (events) if (events.onFocus) events.onFocus(e);
-        }}
-        onBlur={(e) => {
-          if (events) if (events.onBlur) events.onBlur(e);
-        }}
-        onChange={(e) => {
-          if (events) if (events.onChange) events.onChange(e);
-        }}
-      ></TextField>
-    );
+    return <TextField {...inputProps} {...PROPS} bMUI={true}></TextField>;
   };
 
   /* Validate Presence of stats */
@@ -116,8 +103,11 @@ function StatInputForm(props) {
         name="PointDiff"
         checked={Boolean(props.data().PointDiff(props.iD))}
         style={{ width: 10, height: 0 }}
-        onChange={(event) => {
-          Update(event);
+        onChange={(e) => {
+          Update({
+            name: 'PointDiff',
+            checked: e.target.checked,
+          });
         }}
       />
     );
@@ -172,7 +162,6 @@ function StatInputForm(props) {
           ) : (
             <div></div>
           ),
-          ,
           <div></div>,
         ];
 
@@ -185,7 +174,9 @@ function StatInputForm(props) {
             type="number"
             name="Quantity"
             value={Number(Table.length)}
-            onChange={(event) => Update(event)}
+            onChange={(e) =>
+              Update({ name: 'Quantity', value: e.target.value })
+            }
           ></TextField>
           {hLimit}
         </Row>
@@ -201,14 +192,12 @@ function StatInputForm(props) {
               label="Name"
               name={`Name_${props.iD}`}
               value={props.data().Name(props.iD)}
-              onChange={(event) =>
-                Update({ name: 'Name', value: event.target.value })
-              }
+              onChange={(e) => Update({ name: 'Name', value: e.target.value })}
             />
             <Grid
               bRowHeader={false}
               colOrder={[0, 1, 4, 2, 3]}
-              onChange={(event) => Update(event)}
+              onChange={(e) => Update(e)}
               hHeader={[
                 <div
                   style={{
@@ -235,19 +224,16 @@ function StatInputForm(props) {
             >
               <TextField
                 name={'Types'}
-                bMUI={true}
                 style={{
                   width: '136px',
                   background: '#00000033',
                 }}
-                onChange={(event) => Update(event)}
                 inputProps={{ ...inputProps, style: { textAlign: 'center' } }}
               />
               {/*[iRow][0]*/}
               <FIELD
                 type="number"
                 name={'Value'}
-                bMUI={true}
                 style={{}}
                 inputProps={{ ...inputProps, style: { textAlign: 'right' } }}
               />
@@ -255,7 +241,6 @@ function StatInputForm(props) {
               <FIELD
                 type="number"
                 name={'Min'}
-                bMUI={true}
                 style={{
                   width: '56px',
                   borderBottom: 'none',
@@ -263,30 +248,26 @@ function StatInputForm(props) {
                 }}
               />
               {/*[iRow][2]*/}
-              <FIELD
-                type="number"
-                name={'Max'}
-                bMUI={true}
-                style={{ width: '56px' }}
-              />
+              <FIELD type="number" name={'Max'} style={{ width: '56px' }} />
 
               {/*[iRow][3]*/}
-              <Select
+
+              <FIELD name={'Unit'} style={{ width: '56px' }} />
+              {/* <Select
                 name={'Unit'}
-                bMUI={true}
                 style={{ width: '24px', height: 'auto', color: 'transparent' }}
                 inputProps={{ ...inputProps, style: { textAlign: 'left' } }}
                 onChange={(e) => {
                   Update({ name: 'Unit', value: e.target.value });
                 }}
-              >
-                {/* <MenuItem key="" value="">
+              > */}
+              {/* <MenuItem key="" value="">
                   %
                 </MenuItem>
                 <MenuItem key="" value="">
                   %
                 </MenuItem> */}
-              </Select>
+              {/* </Select> */}
               {/*[iRow][4]*/}
             </Grid>
           </Col>

@@ -89,14 +89,13 @@ function Grid(props) {
               props: {
                 ...hTable[y][x].props,
                 dataset: { ...dataset },
-                inputProps,
+                inputProps: { ...hTable[y][x].props.inputProps, ...dataset },
                 children:
                   x === 0 && props.bRowHeader === true
                     ? `${y + 1}`
                     : hTable[y][x].props.children,
                 value,
                 name,
-                // key: name,
               },
             };
             hTable[y][x] = newRow;
