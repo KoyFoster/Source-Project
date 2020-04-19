@@ -141,7 +141,7 @@ function StatInputForm(props) {
               disabled
             ></TextField>
           ) : (
-            <div></div>
+            <div>-</div>
           ),
           props.data().PointMin(props.iD) !== -1 ? (
             <TextField
@@ -152,7 +152,7 @@ function StatInputForm(props) {
               disabled
             ></TextField>
           ) : (
-            <div></div>
+            <div>-</div>
           ),
           props.data().PointMax(props.iD) !== -1 ? (
             <TextField
@@ -160,9 +160,9 @@ function StatInputForm(props) {
               disabled
             ></TextField>
           ) : (
-            <div></div>
+            <div>-</div>
           ),
-          <div></div>,
+          <div>-</div>,
         ];
 
   return (
@@ -195,7 +195,7 @@ function StatInputForm(props) {
               onChange={(e) => Update({ name: 'Name', value: e.target.value })}
             />
             <Grid
-              bRowHeader={false}
+              bAddRowHeader={true}
               colOrder={[0, 1, 4, 2, 3]}
               onChange={(e) => Update(e)}
               hHeader={[
