@@ -83,15 +83,15 @@ function Grid(props) {
               'data-x': x + (props.bAddRowHeader ? 1 : 0),
               'data-y': y + (props.hHeader ? 1 : 0),
             };
-            const inputProps = hTable[y][x].props.bMUI
-              ? { ...hTable[y][x].props.inputProps, ...dataset }
-              : undefined;
+            // const inputProps = hTable[y][x].props.bMUI
+            //   ? { ...hTable[y][x].props.inputProps, ...dataset }
+            //   : undefined;
             const newRow = {
               ...hTable[y][x],
               props: {
                 ...hTable[y][x].props,
-                dataset: { ...dataset },
-                inputProps: { ...hTable[y][x].props.inputProps, ...dataset },
+                ...dataset,
+                // inputProps: { ...hTable[y][x].props.inputProps, ...dataset },
                 children:
                   x === 0 && props.bRowHeader === true
                     ? `${y + 1}`
@@ -231,22 +231,22 @@ function Grid(props) {
   const compileGrid = () => {
     // Must be in this order
     if (hHeader) parseRows(hHeader, undefined);
-    if (hRows) parseRows(hRows, props.rowStyle ? props.rowStyle : cellStyle);
+    if (hRows) parseRows(hRows, rowStyle ? rowStyle : cellStyle);
     if (hFooter) parseRows(hFooter, undefined, true);
   };
   const getHeader = () => {
-    if (!hHeader) return '';
+    if (!hHeader) return [];
     return gridObj.rows.slice(0, 1);
   };
   const getRows = () => {
-    if (!hRows) return '';
+    if (!hRows) return [];
     return gridObj.rows.slice(
       hHeader ? 1 : 0,
       gridObj.rows.length - (hFooter ? 1 : 0),
     );
   };
   const getFooter = () => {
-    if (!hFooter) return '';
+    if (!hFooter) return [];
     return gridObj.rows.slice(gridObj.rows.length - 1, gridObj.rows.length);
   };
   const getGrid = () => {
@@ -297,7 +297,7 @@ function Grid(props) {
         <tfoot>{getFooter()}</tfoot> */}
           <thead style={{ ...props.headerStyle }}>{getHeader()}</thead>
           <tbody style={{ ...props.bodyStyle }}>{getRows()}</tbody>
-          <tfoot>{getFooter()}</tfoot>
+          <tfoot style={{ ...props.footerStyle }}>{getFooter()}</tfoot>
         </table>
       </div>
     );

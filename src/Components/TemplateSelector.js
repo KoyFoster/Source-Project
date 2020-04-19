@@ -42,6 +42,7 @@ function TemplateSelector(props) {
 
   useEffect(() => {
     setTemplate(props.defaultValue);
+    // eslint-disable-next-line
   }, []);
 
   return (

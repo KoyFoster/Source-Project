@@ -108,93 +108,157 @@ function StatData(dataProps) {
 
     let Points = Header[3];
 
-    if (name === 'Quantity') {
-      value = parseFloat(value, 10);
+    console.log('Tag:', sTag);
+    switch (sTag) {
+      case 'Quantity':
+        {
+          value = parseFloat(value, 10);
 
-      // Subtract row difference
-      if (value < Table.length && value >= 0) {
-        // Table =
-        Table = Table.slice(0, value);
-      }
+          // Subtract row difference
+          if (value < Table.length && value >= 0) {
+            // Table =
+            Table = Table.slice(0, value);
+          }
 
-      // console.log('value:', value);
-      Points = GetPointTotal(
-        value,
-        Table,
-        this.data().PointDiff(iT),
-        this.data().PointLimit(iT),
-      );
-    } else if (sTag === 'Value') {
-      //Value Range Check
-      Table[iIndex][1] = Coll.iAATest(
-        parseFloat(value, 10),
-        Table[iIndex][2],
-        Table[iIndex][3],
-      );
+          Points = GetPointTotal(
+            value,
+            Table,
+            this.data().PointDiff(iT),
+            this.data().PointLimit(iT),
+          );
+        }
+        break;
+      case 'Value':
+        {
+          //Value Range Check
+          Table[iIndex][1] = Coll.iAATest(
+            parseFloat(value, 10),
+            Table[iIndex][2],
+            Table[iIndex][3],
+          );
 
-      //Check Point Limit Range
-      Points = GetPointTotal(
-        Table.length,
-        Table,
-        this.data().PointDiff(iT),
-        this.data().PointLimit(iT),
-      );
-      if (Points[0] > this.data().PointLimit(iT)) {
-        return;
-      }
-    } else if (sTag === 'Types') {
-      Table[iIndex][0] = value;
-    } else if (sTag === 'Min' || sTag === 'Max') {
-      let iIndex2 = 3;
-      if (sTag === 'Min') {
-        iIndex2 = 2;
+          //Check Point Limit Range
+          Points = GetPointTotal(
+            Table.length,
+            Table,
+            this.data().PointDiff(iT),
+            this.data().PointLimit(iT),
+          );
+          if (Points[0] > this.data().PointLimit(iT)) {
+            this.setData.setUpdate(!this.data().update);
+            return;
+          }
+        }
+        break;
+      case 'Min':
+        {
+          const iIndex2 = 2;
+          //Check if min exceeds then current value or is less then zero
+          value = Coll.iAATest(parseFloat(value, 10), 0, Table[iIndex][1]);
 
-        //Check if min exceeds then current value or is less then zero
-        value = Coll.iAATest(parseFloat(value, 10), 0, Table[iIndex][1]);
-      } else if (sTag === 'Max') {
-        //Check if max is less then current value
-        value = Coll.iAATest(parseFloat(value, 10), Table[iIndex][1]);
-        Points[2] = GetPointMax(Table.length, value);
-      }
-      Table[iIndex][iIndex2] = parseFloat(value, 10);
-      Points = GetPointTotal(
-        Table.length,
-        Table,
-        this.data().PointDiff(iT),
-        this.data().PointLimit(iT),
-      );
-    } else if (sTag === 'PointDiff') {
-      // Update to new PointTotal
-      if (checked) {
-        Points[0] = Points[0] - Points[1];
-      } else {
-        Points[0] = Points[0] + Points[1];
-      }
+          Table[iIndex][iIndex2] = parseFloat(value, 10);
+          Points = GetPointTotal(
+            Table.length,
+            Table,
+            this.data().PointDiff(iT),
+            this.data().PointLimit(iT),
+          );
+        }
+        break;
+      case 'Max':
+        {
+          const iIndex2 = 3;
+          //Check if max is less then current value
+          value = Coll.iAATest(parseFloat(value, 10), Table[iIndex][1]);
+          Points[2] = GetPointMax(Table.length, value);
 
-      this.setData.setPointDiff(iT, checked);
-      // console.log('PointDiff:', iT, checked, this.data().PointDiff(iT));
-      this.setData.setPointTotal(iT, Points[0]);
+          Table[iIndex][iIndex2] = parseFloat(value, 10);
+          Points = GetPointTotal(
+            Table.length,
+            Table,
+            this.data().PointDiff(iT),
+            this.data().PointLimit(iT),
+          );
+        }
+        break;
+      case 'PointDiff':
+        {
+          // Update to new PointTotal
+          if (checked) {
+            Points[0] = Points[0] - Points[1];
+          } else {
+            Points[0] = Points[0] + Points[1];
+          }
 
-      this.setData.setUpdate(!this.data().update);
-      return;
-    } else if (sTag === 'Unit') {
-      Table[iIndex][4] = value;
+          this.setData.setPointDiff(iT, checked);
+          // console.log('PointDiff:', iT, checked, this.data().PointDiff(iT));
+          this.setData.setPointTotal(iT, Points[0]);
 
-      //Check Point Limit Range
-      Points = GetPointTotal(
-        Table.length,
-        Table,
-        this.data().PointDiff(iT),
-        this.data().PointLimit(iT),
-      );
-      if (Points[0] > this.data().PointLimit(iT)) {
-        return;
-      }
-    }
+          this.setData.setUpdate(!this.data().update);
+          return;
+        }
+        break;
+      case 'Unit':
+        {
+          Table[iIndex][4] = value;
 
-    /* Update Calculated Stats */
-    if (Header[1] === 'Calculated' && iIndex) {
-      Table[iIndex][1] = GetCalculatedValue(iIndex, this.data().Values, Table);
+          //Check Point Limit Range
+          Points = GetPointTotal(
+            Table.length,
+            Table,
+            this.data().PointDiff(iT),
+            this.data().PointLimit(iT),
+          );
+          if (Points[0] > this.data().PointLimit(iT)) {
+            this.setData.setUpdate(!this.data().update);
+            return;
+          }
+        }
+        break;
+      case 'Reference':
+        {
+          /* Update Calculated Stats */
+          console.log(
+            'IsCalculated:',
+            Header[1],
+            'iIndex:',
+            iIndex !== undefined,
+          );
+          if (Header[1] === 'Calculated' && iIndex) {
+            const calcValue = GetCalculatedValue(
+              iIndex,
+              this.data().Values,
+              Table,
+            );
+            console.log('calcVal:', calcValue);
+            Table[iIndex][1] = calcValue;
+          }
+        }
+        break;
+      case 'Expression':
+        {
+          /* Update Calculated Stats */
+          console.log(
+            'IsCalculated:',
+            Header[1],
+            'iIndex:',
+            iIndex !== undefined,
+          );
+          if (Header[1] === 'Calculated' && iIndex !== undefined) {
+            const calcValue = GetCalculatedValue(
+              iIndex,
+              this.data().Values,
+              Table,
+            );
+            console.log('calcVal:', calcValue);
+            Table[iIndex][1] = calcValue;
+          }
+        }
+        break;
+      default:
+        {
+        }
+        break;
     }
 
     Table.unshift(Header);
@@ -204,8 +268,9 @@ function StatData(dataProps) {
   } // End of Update
 
   const GetCalculatedValue = (iElem, mTable, Table) => {
-    if (Table[iElem][6] && !Table[iElem][5])
+    if (Table[iElem][6] && !Table[iElem][5]) {
       return mTable[Table[iElem][5][0]][Table[iElem][5][1]][1];
+    }
     if (!Table[iElem][6] && Table[iElem][5]) return -1;
 
     const expression = Table[iElem][6];
@@ -373,6 +438,7 @@ function StatData(dataProps) {
       setData.setPointLimit(1000);
       setData.setPointDiff(pointDiff);
     }
+    // eslint-disable-next-line
   }, []);
 
   return <div></div>;

@@ -444,6 +444,7 @@ function Diagram(props) {
   useEffect(() => {
     props.funcs.randAnim = startAnimation;
     startAnimation();
+    // eslint-disable-next-line
   }, []);
 
   // Update

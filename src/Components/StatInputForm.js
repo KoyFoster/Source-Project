@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  TextField,
-  InputLabel,
-  Checkbox,
-} from '@material-ui/core';
+import { Box, Button, TextField, Checkbox } from '@material-ui/core';
 import { Row, Col } from './DivGrid.js';
 import '../App.css';
 import Grid from './Forms/Grid';
@@ -37,32 +31,39 @@ function StatInputForm(props) {
     props.Update(props.iD, { ...dataObj, y: dataObj.y - 1 });
   };
 
-  const inputProps = {
-    'aria-label': 'naked',
-    disableUnderline: true,
-    style: { textAlign: 'center' },
-  };
   const FIELD = (PROPS) => {
-    // if (props.bCalc) return <div style={{ ...PROPS.style }}>{PROPS.value}</div>;
-    // else
-    // const events = undefined;
-    // = props.bCalc
-    // ? {
-    //     onFocus: (event) => {
-    //       // event.stopPropagation();
-    //       // event.preventDefault();
-    //       event.target.value = 'butts';
-    //     },
-    //     onChange: (e) => {
-    //       // e.stopPropagation();
-    //       // e.preventDefault();
-    //       e.target.value = 234523;
-    //       console.log('e:', e.target.value);
-    //     },
-    //   }
-    // : props.onChange; // onChange={(event) => Update(event)}
+    return (
+      <input
+        {...PROPS}
+        onChange={(e) => {
+          console.log(
+            'e:',
+            'dataset:',
+            e.target.dataset,
+            'Name:',
+            e.target.name,
+            'value:',
+            e.target.value,
+          );
+          /* Validation: Skip if no coordinate are returned */
+          if (
+            e.target.dataset.x === undefined ||
+            e.target.dataset.y === undefined
+          )
+            return;
+          const x = parseInt(e.target.dataset.x, 10);
+          const y = parseInt(e.target.dataset.y, 10) - 1;
 
-    return <TextField {...inputProps} {...PROPS} bMUI={true}></TextField>;
+          props.Update(props.iD, {
+            x: x,
+            y: y,
+            value: e.target.value,
+            checked: e.target.checked,
+            name: e.target.name,
+          });
+        }}
+      />
+    );
   };
 
   /* Validate Presence of stats */
@@ -70,28 +71,24 @@ function StatInputForm(props) {
     props.bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
-      <div>
-        <TextField
-          label="Limit:"
-          type="number"
-          name="Limit"
-          value={props.data().PointLimit(props.iD)}
-          onChange={(event) =>
-            Update({
-              name: 'Level Cap',
-              value: parseFloat(event.target.value, 10),
-            })
-          }
-        ></TextField>
-      </div>
+      <TextField
+        label="Limit:"
+        type="number"
+        name="Limit"
+        value={props.data().PointLimit(props.iD)}
+        onChange={(event) =>
+          Update({
+            name: 'Level Cap',
+            value: parseFloat(event.target.value, 10),
+          })
+        }
+      />
     );
   const hTotal =
     props.bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
-      <InputLabel>
-        :Min - Total Points: {props.data().PointTotal(props.iD)}{' '}
-      </InputLabel>
+      <label>:Min - Total Points: {props.data().PointTotal(props.iD)} </label>
     );
   const hPointDiff =
     props.bCalc === true ||
@@ -128,41 +125,37 @@ function StatInputForm(props) {
       props.data().PointMax(props.iD) === -1)
       ? undefined
       : [
-          <div
-            style={{
-              background: '#00000033',
-            }}
-          >
-            Totals
-          </div>,
+          <label style={{}}>Totals</label>,
           props.data().PointTotal(props.iD) !== -1 ? (
-            <TextField
-              value={props.data().PointTotal(props.iD)}
-              disabled
-            ></TextField>
+            <label>{props.data().PointTotal(props.iD)}</label>
           ) : (
-            <div>-</div>
+            <label>-</label>
           ),
           props.data().PointMin(props.iD) !== -1 ? (
-            <TextField
-              value={props.data().PointMin(props.iD)}
-              style={{
-                background: '#FFFFFF33',
-              }}
-              disabled
-            ></TextField>
+            <label style={{}}>{props.data().PointMin(props.iD)}</label>
           ) : (
-            <div>-</div>
+            <label>-</label>
           ),
           props.data().PointMax(props.iD) !== -1 ? (
-            <TextField
-              value={props.data().PointMax(props.iD)}
-              disabled
-            ></TextField>
+            <label>{props.data().PointMax(props.iD)}</label>
           ) : (
-            <div>-</div>
+            <label>-</label>
           ),
-          <div>-</div>,
+          <label>-</label>,
+          <label
+            style={{
+              display: props.bCalc ? 'initial' : 'none',
+            }}
+          >
+            -
+          </label>,
+          <label
+            style={{
+              display: props.bCalc ? 'initial' : 'none',
+            }}
+          >
+            -
+          </label>,
         ];
 
   return (
@@ -196,46 +189,46 @@ function StatInputForm(props) {
             />
             <Grid
               bAddRowHeader={true}
-              colOrder={[0, 1, 4, 2, 3]}
-              onChange={(e) => Update(e)}
+              colOrder={[0, 1, 4, 2, 3, 5, 6]}
               hHeader={[
-                <div
+                <label style={{}}>Stats</label>,
+                <label>Value</label>,
+                <label style={{}}>Min</label>,
+                <label>Max</label>,
+                <label>(unit)</label>,
+                <label
                   style={{
-                    background: '#00000033',
+                    display: props.bCalc ? 'initial' : 'none',
                   }}
                 >
-                  Stats
-                </div>,
-                <div>Value</div>,
-                <div
+                  [ref]
+                </label>,
+                <label
                   style={{
-                    background: '#FFFFFF33',
+                    display: props.bCalc ? 'initial' : 'none',
                   }}
                 >
-                  Min
-                </div>,
-                <div>Max</div>,
-                <div>(unit)</div>,
+                  (expression)
+                </label>,
               ]}
               hFooter={hFooter}
               iRows={Table.length}
               cellStyle={{ borderBottom: '2px solid white' }}
               Values={Table}
             >
-              <TextField
+              <FIELD
                 name={'Types'}
                 style={{
                   width: '136px',
-                  background: '#00000033',
+                  textAlign: 'center',
                 }}
-                inputProps={{ ...inputProps, style: { textAlign: 'center' } }}
               />
               {/*[iRow][0]*/}
               <FIELD
                 type="number"
                 name={'Value'}
-                style={{}}
-                inputProps={{ ...inputProps, style: { textAlign: 'right' } }}
+                disabled={props.bCalc}
+                style={{ textAlign: 'right' }}
               />
               {/*[iRow][1]*/}
               <FIELD
@@ -243,32 +236,29 @@ function StatInputForm(props) {
                 name={'Min'}
                 style={{
                   width: '56px',
-                  borderBottom: 'none',
-                  background: '#FFFFFF33',
                 }}
               />
               {/*[iRow][2]*/}
               <FIELD type="number" name={'Max'} style={{ width: '56px' }} />
-
               {/*[iRow][3]*/}
-
               <FIELD name={'Unit'} style={{ width: '56px' }} />
-              {/* <Select
-                name={'Unit'}
-                style={{ width: '24px', height: 'auto', color: 'transparent' }}
-                inputProps={{ ...inputProps, style: { textAlign: 'left' } }}
-                onChange={(e) => {
-                  Update({ name: 'Unit', value: e.target.value });
-                }}
-              > */}
-              {/* <MenuItem key="" value="">
-                  %
-                </MenuItem>
-                <MenuItem key="" value="">
-                  %
-                </MenuItem> */}
-              {/* </Select> */}
               {/*[iRow][4]*/}
+              <FIELD
+                name={'References'}
+                style={{
+                  display: props.bCalc ? 'initial' : 'none',
+                  width: '64px',
+                }}
+              />
+              {/*[iRow][5]*/}
+              <FIELD
+                name={'Expression'}
+                style={{
+                  display: props.bCalc ? 'initial' : 'none',
+                  width: '128px',
+                }}
+              />
+              {/*[iRow][6]*/}
             </Grid>
           </Col>
           {hRandom}
