@@ -196,6 +196,9 @@ function StatCard(props) {
   // Used for init load state to prevent the template template selecter from overriding the user defined URL. Probably another way of doing this.
   const dataFuncs = {
     setValues,
+    setValue: (index, x, val) => {
+      Values[index][x][1] = val;
+    },
     setTable: (index, val) => {
       Values[index] = val;
     },

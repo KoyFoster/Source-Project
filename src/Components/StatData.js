@@ -119,8 +119,16 @@ function StatData(dataProps) {
       case 'Value': // eslint-disable-next-line
         {
           //Value Range Check
-          Table[iIndex][1] = Coll.iAATest(
-            parseFloat(value, 10),
+          console.log(
+            'value:',
+            value,
+            'Min:',
+            Table[iIndex][2],
+            'Max:',
+            Table[iIndex][3],
+          );
+          value = Coll.iAATest(
+            parseFloat(value ? value : 0, 10),
             Table[iIndex][2],
             Table[iIndex][3],
           );
@@ -132,19 +140,21 @@ function StatData(dataProps) {
             this.data().PointDiff(iT),
             this.data().PointLimit(iT),
           );
-          if (Points[0] > this.data().PointLimit(iT)) {
-            this.setData.setUpdate(!this.data().update);
-            return;
-          }
+
+          this.setData.setValue(iT, iIndex + 1, value);
         }
         break;
       case 'Min': // eslint-disable-next-line
         {
           const iIndex2 = 2;
           //Check if min exceeds then current value or is less then zero
-          value = Coll.iAATest(parseFloat(value, 10), 0, Table[iIndex][1]);
+          value = Coll.iAATest(
+            parseFloat(value ? value : 0, 10),
+            0,
+            Table[iIndex][1],
+          );
 
-          Table[iIndex][iIndex2] = parseFloat(value, 10);
+          Table[iIndex][iIndex2] = value;
           Points = GetPointTotal(
             Table.length,
             Table,
@@ -157,10 +167,14 @@ function StatData(dataProps) {
         {
           const iIndex2 = 3;
           //Check if max is less then current value
-          value = Coll.iAATest(parseFloat(value, 10), Table[iIndex][1]);
+          value = Coll.iAATest(
+            parseFloat(value ? value : 0, 10),
+            Table[iIndex][1],
+          );
+
           Points[2] = GetPointMax(Table.length, value);
 
-          Table[iIndex][iIndex2] = parseFloat(value, 10);
+          Table[iIndex][iIndex2] = value;
           Points = GetPointTotal(
             Table.length,
             Table,
@@ -181,8 +195,7 @@ function StatData(dataProps) {
         this.setData.setPointDiff(iT, checked);
         this.setData.setPointTotal(iT, Points[0]);
 
-        this.setData.setUpdate(!this.data().update);
-        return;
+        return checked;
       }
       case 'Unit': // eslint-disable-next-line
         {
@@ -196,8 +209,7 @@ function StatData(dataProps) {
             this.data().PointLimit(iT),
           );
           if (Points[0] > this.data().PointLimit(iT)) {
-            this.setData.setUpdate(!this.data().update);
-            return;
+            return value;
           }
         }
         break;
@@ -243,7 +255,9 @@ function StatData(dataProps) {
     Table.unshift(Header);
     this.setData.setTable(iT, Table);
     Header[3] = Points;
-    this.setData.setUpdate(!this.data().update);
+    // this.setData.setUpdate(!this.data().update);
+
+    return value;
     // const elem = document.getElementsByName(name)[0];
     // console.log('elem:', elem, 'name:', name);
     // elem.focus();

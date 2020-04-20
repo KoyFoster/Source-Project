@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, TextField, Checkbox } from '@material-ui/core';
 import { Row, Col } from './DivGrid.js';
 import '../App.css';
@@ -11,30 +11,28 @@ function StatInputForm(props) {
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
     if (dataObj.name === 'Name') {
-      props.setData.setName(props.iD, dataObj.value);
-      props.setData.setUpdate(!props.data().update);
-      return;
+      return props.setData.setName(props.iD, dataObj.value);
     }
     if (dataObj.name === 'Level Cap') {
-      props.UpdatePointLimit(props.iD, dataObj.value);
-      return;
+      return props.UpdatePointLimit(props.iD, dataObj.value);
     }
     if (dataObj.name === 'RNG') {
-      props.RandomizeStats(props.iD);
-      return;
+      return props.RandomizeStats(props.iD);
     }
     if (dataObj.name === 'PointDiff') {
-      props.Update(props.iD, dataObj);
-      return;
+      return props.Update(props.iD, dataObj);
     }
     //Update Diagram
-    props.Update(props.iD, { ...dataObj, y: dataObj.y - 1 });
+    return props.Update(props.iD, { ...dataObj, y: dataObj.y - 1 });
   };
 
-  const FIELD = (PROPS) => {
+  const Field = (PROPS) => {
+    const [value, setValue] = useState(PROPS.value);
+
     return (
       <input
         {...PROPS}
+        value={value}
         onChange={(e) => {
           // console.log('e:', 'dataset:', e.target.dataset, 'Name:', e.target.name, 'value:', e.target.value, );
           /* Validation: Skip if no coordinate are returned */
@@ -46,13 +44,41 @@ function StatInputForm(props) {
           const x = parseInt(e.target.dataset.x, 10);
           const y = parseInt(e.target.dataset.y, 10) - 1;
 
-          props.Update(props.iD, {
-            x: x,
-            y: y,
-            value: e.target.value,
-            checked: e.target.checked,
-            name: e.target.name,
-          });
+          setValue(
+            props.Update(props.iD, {
+              x: x,
+              y: y,
+              value: e.target.value,
+              checked: e.target.checked,
+              name: e.target.name,
+            }),
+          );
+        }}
+      />
+    );
+  };
+
+  const PointDiff = (PROPS) => {
+    const [checked, setChecked] = useState(
+      Boolean(props.data().PointDiff(props.iD)),
+    );
+
+    return props.bCalc === true ||
+      props.data().PointDiff(props.iD) === undefined ||
+      props.data().PointLimit(props.iD) === -1 ? (
+      ''
+    ) : (
+      <Checkbox
+        name="PointDiff"
+        checked={checked}
+        style={{ width: 10, height: 0 }}
+        onChange={(e) => {
+          setChecked(
+            Update({
+              name: 'PointDiff',
+              checked: e.target.checked,
+            }),
+          );
         }}
       />
     );
@@ -82,24 +108,7 @@ function StatInputForm(props) {
     ) : (
       <label>:Min - Total Points: {props.data().PointTotal(props.iD)} </label>
     );
-  const hPointDiff =
-    props.bCalc === true ||
-    props.data().PointDiff(props.iD) === undefined ||
-    props.data().PointLimit(props.iD) === -1 ? (
-      ''
-    ) : (
-      <Checkbox
-        name="PointDiff"
-        checked={Boolean(props.data().PointDiff(props.iD))}
-        style={{ width: 10, height: 0 }}
-        onChange={(e) => {
-          Update({
-            name: 'PointDiff',
-            checked: e.target.checked,
-          });
-        }}
-      />
-    );
+
   const hRandom =
     props.bCalc !== true ? (
       <Button name="RNG" onClick={() => Update({ name: 'RNG' })}>
@@ -166,7 +175,7 @@ function StatInputForm(props) {
           {hLimit}
         </Row>
         <Row alignItems="center">
-          {hPointDiff}
+          {PointDiff()}
           {hTotal}
         </Row>
       </Col>
@@ -208,7 +217,7 @@ function StatInputForm(props) {
               cellStyle={{ borderBottom: '2px solid white' }}
               Values={Table}
             >
-              <FIELD
+              <Field
                 name={'Types'}
                 style={{
                   width: '136px',
@@ -216,14 +225,14 @@ function StatInputForm(props) {
                 }}
               />
               {/*[iRow][0]*/}
-              <FIELD
+              <Field
                 type="number"
                 name={'Value'}
                 disabled={props.bCalc}
                 style={{ textAlign: 'right' }}
               />
               {/*[iRow][1]*/}
-              <FIELD
+              <Field
                 type="number"
                 name={'Min'}
                 style={{
@@ -231,11 +240,11 @@ function StatInputForm(props) {
                 }}
               />
               {/*[iRow][2]*/}
-              <FIELD type="number" name={'Max'} style={{ width: '56px' }} />
+              <Field type="number" name={'Max'} style={{ width: '56px' }} />
               {/*[iRow][3]*/}
-              <FIELD name={'Unit'} style={{ width: '56px' }} />
+              <Field name={'Unit'} style={{ width: '56px' }} />
               {/*[iRow][4]*/}
-              <FIELD
+              <Field
                 name={'References'}
                 style={{
                   display: props.bCalc ? 'initial' : 'none',
@@ -243,7 +252,7 @@ function StatInputForm(props) {
                 }}
               />
               {/*[iRow][5]*/}
-              <FIELD
+              <Field
                 name={'Expression'}
                 style={{
                   display: props.bCalc ? 'initial' : 'none',
