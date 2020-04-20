@@ -119,14 +119,14 @@ function StatData(dataProps) {
       case 'Value': // eslint-disable-next-line
         {
           //Value Range Check
-          console.log(
-            'value:',
-            value,
-            'Min:',
-            Table[iIndex][2],
-            'Max:',
-            Table[iIndex][3],
-          );
+          // console.log(
+          //   'value:',
+          //   value,
+          //   'Min:',
+          //   Table[iIndex][2],
+          //   'Max:',
+          //   Table[iIndex][3],
+          // );
           value = Coll.iAATest(
             parseFloat(value ? value : 0, 10),
             Table[iIndex][2],
@@ -255,7 +255,7 @@ function StatData(dataProps) {
     Table.unshift(Header);
     this.setData.setTable(iT, Table);
     Header[3] = Points;
-    // this.setData.setUpdate(!this.data().update);
+    // this.setData.Update();
 
     return value;
     // const elem = document.getElementsByName(name)[0];
@@ -326,9 +326,32 @@ function StatData(dataProps) {
       Header[4],
     );
 
-    this.setData.setUpdate(!this.data().update);
+    this.setData.Update();
     funcs.randAnim();
   } // end of randomizer
+
+  // Update All Calculations
+  function UpdateCalculations() {
+    const iTables = this.data().Values.length;
+    for (let i = 0; i < iTables; i) {
+      const Header = this.data().vTableHeader(i);
+      if (Header[1] !== 'Calculated') {
+        i += 1;
+        continue;
+      }
+      const Table = this.data().vTable(i);
+      for (let r = 0; r < Table.length; r) {
+        // console.log('Calculating:', Header[0], Table[r]);
+        const calcValue = GetCalculatedValue(r, this.data().Values, Table);
+        /* set updated value */
+        Table[r][1] = calcValue;
+
+        r += 1;
+      }
+
+      i += 1;
+    }
+  }
 
   function ParseStringAsStatCard(value) {
     //Break String Down Into Objects
@@ -396,12 +419,13 @@ function StatData(dataProps) {
     //Limit Cannot be less then the minimum or the point total
     const val = Coll.iAATest(value, 10, data().PointTotal(iT));
     this.setData.setPointLimit(iT, val);
-    this.setData.setUpdate(!data().update);
+    this.setData.Update();
   }
 
   //Setup Listener Events
   useEffect(() => {
     funcs.update = Update;
+    funcs.updateCalcs = UpdateCalculations;
     funcs.randomize = RandomizeStats;
     funcs.updateLimit = UpdatePointLimit;
 

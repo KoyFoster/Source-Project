@@ -202,7 +202,9 @@ function StatCard(props) {
     setTable: (index, val) => {
       Values[index] = val;
     },
-    setUpdate,
+    Update: () => {
+      setUpdate(!update);
+    },
     setName: (index, val) => {
       Values[index][0][0] = val;
     },
@@ -224,6 +226,7 @@ function StatCard(props) {
   };
   const [funcs] = useState({
     update: undefined,
+    updateCalcs: undefined,
     randomize: undefined,
     randAnim: undefined,
     updateLimit: undefined,
@@ -304,6 +307,7 @@ function StatCard(props) {
                   Update={funcs.update}
                   RandomizeStats={funcs.randomize}
                   UpdatePointLimit={funcs.updateLimit}
+                  UpdateCalcs={funcs.updateCalcs}
                 />
               </Paper>
             </Col>

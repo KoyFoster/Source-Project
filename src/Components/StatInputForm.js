@@ -26,6 +26,8 @@ function StatInputForm(props) {
     return props.Update(props.iD, { ...dataObj, y: dataObj.y - 1 });
   };
 
+  /* Update Calculations on rerender */
+  if (props.UpdateCalcs) props.UpdateCalcs();
   const Field = (PROPS) => {
     const [value, setValue] = useState(PROPS.value);
 
@@ -53,6 +55,9 @@ function StatInputForm(props) {
               name: e.target.name,
             }),
           );
+        }}
+        onBlur={() => {
+          props.setData.Update();
         }}
       />
     );
