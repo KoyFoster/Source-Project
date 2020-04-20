@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TemplateSelector from './TemplateSelector';
-import { Box, Paper, MenuItem } from '@material-ui/core';
+import { Box, Paper, MenuItem, Button } from '@material-ui/core';
 import StatInputForm from './StatInputForm.js';
 import Diagram from './Diagram.js';
 import StatData from './StatData.js';
@@ -160,6 +160,7 @@ const defaultData = {
 function StatCard(props) {
   const [Values, setValues] = useState(defaultData.Values);
   const [update, setUpdate] = useState(false);
+  const [editMode, setEditMode] = useState(true);
 
   const data = {
     update,
@@ -308,6 +309,7 @@ function StatCard(props) {
                   RandomizeStats={funcs.randomize}
                   UpdatePointLimit={funcs.updateLimit}
                   UpdateCalcs={funcs.updateCalcs}
+                  editMode={editMode}
                 />
               </Paper>
             </Col>
@@ -410,6 +412,13 @@ function StatCard(props) {
       />
       <Col name="mainColumn">
         <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <Button
+            onClick={() => {
+              setEditMode(!editMode);
+            }}
+          >
+            Edit
+          </Button>
           <TemplateSelector
             Name={defaultData.Name}
             setData={dataFuncs}

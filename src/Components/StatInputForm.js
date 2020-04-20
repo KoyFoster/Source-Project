@@ -7,6 +7,8 @@ import Grid from './Forms/Grid';
 //User Input Class
 function StatInputForm(props) {
   const Table = props.data().vTable(props.iD);
+  const editMode = props.editMode;
+  const bCalc = props.bCalc;
 
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
@@ -39,8 +41,9 @@ function StatInputForm(props) {
           // console.log('e:', 'dataset:', e.target.dataset, 'Name:', e.target.name, 'value:', e.target.value, );
           /* Validation: Skip if no coordinate are returned */
           if (
-            e.target.dataset.x === undefined ||
-            e.target.dataset.y === undefined
+            (e.target.dataset.x === undefined ||
+              e.target.dataset.y === undefined) &&
+            e.target.name !== 'Quantity'
           )
             return;
           const x = parseInt(e.target.dataset.x, 10);
@@ -68,7 +71,7 @@ function StatInputForm(props) {
       Boolean(props.data().PointDiff(props.iD)),
     );
 
-    return props.bCalc === true ||
+    return bCalc === true ||
       props.data().PointDiff(props.iD) === undefined ||
       props.data().PointLimit(props.iD) === -1 ? (
       ''
@@ -91,7 +94,7 @@ function StatInputForm(props) {
 
   /* Validate Presence of stats */
   const hLimit =
-    props.bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
+    bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
       <TextField
@@ -108,14 +111,14 @@ function StatInputForm(props) {
       />
     );
   const hTotal =
-    props.bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
+    bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
       <label>:Min - Total Points: {props.data().PointTotal(props.iD)} </label>
     );
 
   const hRandom =
-    props.bCalc !== true ? (
+    bCalc !== true ? (
       <Button name="RNG" onClick={() => Update({ name: 'RNG' })}>
         {' '}
         Random{' '}
@@ -124,8 +127,144 @@ function StatInputForm(props) {
       ''
     );
 
+  const hHeader = () => {
+    if (editMode)
+      return [
+        <label style={{}}>Stats</label>,
+        <label>Value</label>,
+        <label style={{}}>Min</label>,
+        <label style={{}}>Max</label>,
+        <label>(unit)</label>,
+        <label
+          style={{
+            display: bCalc ? 'initial' : 'none',
+          }}
+        >
+          [ref]
+        </label>,
+        <label
+          style={{
+            display: bCalc ? 'initial' : 'none',
+          }}
+        >
+          (expression)
+        </label>,
+      ];
+    else
+      return [
+        <label style={{ display: 'none' }}></label>,
+        <label></label>,
+        <label style={{ display: 'none' }}></label>,
+        <label style={{ display: 'none' }}></label>,
+        <label></label>,
+        <label
+          style={{
+            display: 'none',
+          }}
+        ></label>,
+        <label
+          style={{
+            display: 'none',
+          }}
+        ></label>,
+      ];
+  };
+
+  const hBody = () => {
+    if (editMode) {
+      return [
+        <Field
+          name={'Types'}
+          style={{
+            width: '136px',
+            textAlign: 'center',
+          }}
+        />,
+        <Field
+          type="number"
+          name={'Value'}
+          disabled={bCalc}
+          style={{ textAlign: 'right' }}
+        />,
+        <Field
+          type="number"
+          name={'Min'}
+          style={{
+            width: '56px',
+          }}
+        />,
+        <Field type="number" name={'Max'} style={{ width: '56px' }} />,
+        <Field name={'Unit'} style={{ width: '56px' }} />,
+        <Field
+          name={'References'}
+          style={{
+            display: bCalc ? 'initial' : 'none',
+            width: '64px',
+          }}
+        />,
+        <Field
+          name={'Expression'}
+          style={{
+            display: bCalc ? 'initial' : 'none',
+            width: '128px',
+          }}
+        />,
+      ];
+    } else {
+      return [
+        <Field
+          disabled
+          name={'Types'}
+          style={{
+            width: '136px',
+            textAlign: 'center',
+          }}
+        />,
+        <Field
+          disabled
+          type="number"
+          name={'Value'}
+          disabled={bCalc}
+          style={{ textAlign: 'right' }}
+        />,
+        <div
+          disabled
+          type="number"
+          name={'Min'}
+          style={{
+            display: 'none',
+          }}
+        />,
+        <div
+          disabled
+          type="number"
+          name={'Max'}
+          style={{
+            display: 'none',
+          }}
+        />,
+        <Field name={'Unit'} style={{ width: '56px' }} />,
+        <div
+          disabled
+          name={'References'}
+          style={{
+            display: 'none',
+          }}
+        />,
+        <div
+          disabled
+          name={'Expression'}
+          style={{
+            display: 'none',
+          }}
+        />,
+      ];
+    }
+  };
+
   const hFooter =
-    props.bCalc === true ||
+    bCalc === true ||
+    !editMode ||
     (props.data().PointTotal(props.iD) === -1 &&
       props.data().PointMin(props.iD) === -1 &&
       props.data().PointMax(props.iD) === -1)
@@ -150,128 +289,111 @@ function StatInputForm(props) {
           <label>-</label>,
           <label
             style={{
-              display: props.bCalc ? 'initial' : 'none',
+              display: bCalc ? 'initial' : 'none',
             }}
           >
             -
           </label>,
           <label
             style={{
-              display: props.bCalc ? 'initial' : 'none',
+              display: bCalc ? 'initial' : 'none',
             }}
           >
             -
           </label>,
         ];
 
-  return (
-    <div>
-      <Col name="GraphBody">
+  if (editMode === true)
+    return (
+      <div>
+        <Col name="GraphBody">
+          <Row>
+            Stats:{' '}
+            <Field
+              type="number"
+              name="Quantity"
+              value={Number(Table.length)}
+            ></Field>
+            {hLimit}
+          </Row>
+          <Row alignItems="center">
+            {PointDiff()}
+            {hTotal}
+          </Row>
+        </Col>
         <Row>
-          <TextField
-            label="Stats"
-            type="number"
-            name="Quantity"
-            value={Number(Table.length)}
-            onChange={(e) =>
-              Update({ name: 'Quantity', value: e.target.value })
-            }
-          ></TextField>
-          {hLimit}
+          <Box name="FormBody" align="center">
+            <Col>
+              <TextField
+                label="Name"
+                name={`Name_${props.iD}`}
+                value={props.data().Name(props.iD)}
+                onChange={(e) =>
+                  Update({ name: 'Name', value: e.target.value })
+                }
+              />
+              <Grid
+                bAddRowHeader={true}
+                colOrder={[0, 1, 4, 2, 3, 5, 6]}
+                hHeader={hHeader()}
+                hFooter={hFooter}
+                iRows={Table.length}
+                cellStyle={{ borderBottom: '2px solid white' }}
+                Values={Table}
+              >
+                {hBody()}
+              </Grid>
+            </Col>
+            {hRandom}
+          </Box>
         </Row>
-        <Row alignItems="center">
-          {PointDiff()}
-          {hTotal}
+      </div>
+    );
+  else {
+    return (
+      <div>
+        <Col name="GraphBody">
+          <Row>
+            Stats:{' '}
+            <Field
+              type="number"
+              name="Quantity"
+              value={Number(Table.length)}
+            ></Field>
+            {hLimit}
+          </Row>
+          <Row alignItems="center">
+            {PointDiff()}
+            {hTotal}
+          </Row>
+        </Col>
+        <Row>
+          <Box name="FormBody" align="center">
+            <Col>
+              <TextField
+                label="Name"
+                name={`Name_${props.iD}`}
+                value={props.data().Name(props.iD)}
+                onChange={(e) =>
+                  Update({ name: 'Name', value: e.target.value })
+                }
+              />
+              <Grid
+                colOrder={[0, 1, 4, 2, 3, 5, 6]}
+                hFooter={hFooter}
+                iRows={Table.length}
+                cellStyle={{ borderBottom: '2px solid white' }}
+                Values={Table}
+              >
+                {hBody()}
+              </Grid>
+            </Col>
+            {hRandom}
+          </Box>
         </Row>
-      </Col>
-      <Row>
-        <Box name="FormBody" align="center">
-          <Col>
-            <TextField
-              label="Name"
-              name={`Name_${props.iD}`}
-              value={props.data().Name(props.iD)}
-              onChange={(e) => Update({ name: 'Name', value: e.target.value })}
-            />
-            <Grid
-              bAddRowHeader={true}
-              colOrder={[0, 1, 4, 2, 3, 5, 6]}
-              hHeader={[
-                <label style={{}}>Stats</label>,
-                <label>Value</label>,
-                <label style={{}}>Min</label>,
-                <label>Max</label>,
-                <label>(unit)</label>,
-                <label
-                  style={{
-                    display: props.bCalc ? 'initial' : 'none',
-                  }}
-                >
-                  [ref]
-                </label>,
-                <label
-                  style={{
-                    display: props.bCalc ? 'initial' : 'none',
-                  }}
-                >
-                  (expression)
-                </label>,
-              ]}
-              hFooter={hFooter}
-              iRows={Table.length}
-              cellStyle={{ borderBottom: '2px solid white' }}
-              Values={Table}
-            >
-              <Field
-                name={'Types'}
-                style={{
-                  width: '136px',
-                  textAlign: 'center',
-                }}
-              />
-              {/*[iRow][0]*/}
-              <Field
-                type="number"
-                name={'Value'}
-                disabled={props.bCalc}
-                style={{ textAlign: 'right' }}
-              />
-              {/*[iRow][1]*/}
-              <Field
-                type="number"
-                name={'Min'}
-                style={{
-                  width: '56px',
-                }}
-              />
-              {/*[iRow][2]*/}
-              <Field type="number" name={'Max'} style={{ width: '56px' }} />
-              {/*[iRow][3]*/}
-              <Field name={'Unit'} style={{ width: '56px' }} />
-              {/*[iRow][4]*/}
-              <Field
-                name={'References'}
-                style={{
-                  display: props.bCalc ? 'initial' : 'none',
-                  width: '64px',
-                }}
-              />
-              {/*[iRow][5]*/}
-              <Field
-                name={'Expression'}
-                style={{
-                  display: props.bCalc ? 'initial' : 'none',
-                  width: '128px',
-                }}
-              />
-              {/*[iRow][6]*/}
-            </Grid>
-          </Col>
-          {hRandom}
-        </Box>
-      </Row>
-    </div>
-  );
+      </div>
+    );
+  }
 }
 
 export default StatInputForm;
