@@ -127,6 +127,28 @@ function StatInputForm(props) {
       ''
     );
 
+  const hStatProps = () => {
+    if (editMode) {
+      return [
+        <Row>
+          Stats:{' '}
+          <Field
+            type="number"
+            name="Quantity"
+            value={Number(Table.length)}
+          ></Field>
+          {hLimit}
+        </Row>,
+        <Row alignItems="center">
+          {PointDiff()}
+          {hTotal}
+        </Row>,
+      ];
+    } else {
+      return '';
+    }
+  };
+
   const hHeader = () => {
     if (editMode)
       return [
@@ -212,23 +234,19 @@ function StatInputForm(props) {
       ];
     } else {
       return [
-        <Field
-          disabled
+        <div
           name={'Types'}
           style={{
-            width: '136px',
-            textAlign: 'center',
+            width: '256px',
+            textAlign: 'left',
           }}
-        />,
-        <Field
-          disabled
-          type="number"
-          name={'Value'}
-          disabled={bCalc}
-          style={{ textAlign: 'right' }}
-        />,
+        >
+          [value]
+        </div>,
+        <div name={'Value'} style={{ textAlign: 'right' }}>
+          [value]
+        </div>,
         <div
-          disabled
           type="number"
           name={'Min'}
           style={{
@@ -236,23 +254,22 @@ function StatInputForm(props) {
           }}
         />,
         <div
-          disabled
           type="number"
           name={'Max'}
           style={{
             display: 'none',
           }}
         />,
-        <Field name={'Unit'} style={{ width: '56px' }} />,
+        <div name={'Unit'} style={{ width: '56px', textAlign: 'left' }}>
+          [value]
+        </div>,
         <div
-          disabled
           name={'References'}
           style={{
             display: 'none',
           }}
         />,
         <div
-          disabled
           name={'Expression'}
           style={{
             display: 'none',
@@ -303,35 +320,33 @@ function StatInputForm(props) {
           </label>,
         ];
 
+  const hName = () => {
+    if (editMode) {
+      return [
+        <TextField
+          label="Name"
+          name={`Name_${props.iD}`}
+          value={props.data().Name(props.iD)}
+          onChange={(e) => Update({ name: 'Name', value: e.target.value })}
+        />,
+      ];
+    } else {
+      return (
+        <div label="Name" name={`Name_${props.iD}`}>
+          {props.data().Name(props.iD)}
+        </div>
+      );
+    }
+  };
+
   if (editMode === true)
     return (
       <div>
-        <Col name="GraphBody">
-          <Row>
-            Stats:{' '}
-            <Field
-              type="number"
-              name="Quantity"
-              value={Number(Table.length)}
-            ></Field>
-            {hLimit}
-          </Row>
-          <Row alignItems="center">
-            {PointDiff()}
-            {hTotal}
-          </Row>
-        </Col>
+        <Col name="GraphBody">{hStatProps()}</Col>
         <Row>
           <Box name="FormBody" align="center">
             <Col>
-              <TextField
-                label="Name"
-                name={`Name_${props.iD}`}
-                value={props.data().Name(props.iD)}
-                onChange={(e) =>
-                  Update({ name: 'Name', value: e.target.value })
-                }
-              />
+              {hName()}
               <Grid
                 bAddRowHeader={true}
                 colOrder={[0, 1, 4, 2, 3, 5, 6]}
@@ -352,33 +367,13 @@ function StatInputForm(props) {
   else {
     return (
       <div>
-        <Col name="GraphBody">
-          <Row>
-            Stats:{' '}
-            <Field
-              type="number"
-              name="Quantity"
-              value={Number(Table.length)}
-            ></Field>
-            {hLimit}
-          </Row>
-          <Row alignItems="center">
-            {PointDiff()}
-            {hTotal}
-          </Row>
-        </Col>
+        <Col name="GraphBody">{hStatProps()}</Col>
         <Row>
           <Box name="FormBody" align="center">
             <Col>
-              <TextField
-                label="Name"
-                name={`Name_${props.iD}`}
-                value={props.data().Name(props.iD)}
-                onChange={(e) =>
-                  Update({ name: 'Name', value: e.target.value })
-                }
-              />
+              {hName()}
               <Grid
+                bNoSel={true}
                 colOrder={[0, 1, 4, 2, 3, 5, 6]}
                 hFooter={hFooter}
                 iRows={Table.length}

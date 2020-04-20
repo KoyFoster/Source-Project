@@ -72,7 +72,7 @@ function Grid(props) {
                 bDefined && Values[iV][x - plus] !== ''
                   ? Values[iV][x - plus] !== 'undefined'
                   : false;
-            const value = hasValue
+            let value = hasValue
               ? Values[iV][x - plus]
               : hTable[y][x].props.value;
             // Reserved tags
@@ -86,16 +86,24 @@ function Grid(props) {
             // const inputProps = hTable[y][x].props.bMUI
             //   ? { ...hTable[y][x].props.inputProps, ...dataset }
             //   : undefined;
+
+            const bValueAsChild = hTable[y][x].props.children === '[value]';
+            const children =
+              x === 0 && props.bRowHeader === true
+                ? `${y + 1}`
+                : bValueAsChild
+                ? value
+                : hTable[y][x].props.children;
+
+            if (bValueAsChild) value = undefined;
+
             const newRow = {
               ...hTable[y][x],
               props: {
                 ...hTable[y][x].props,
                 ...dataset,
                 // inputProps: { ...hTable[y][x].props.inputProps, ...dataset },
-                children:
-                  x === 0 && props.bRowHeader === true
-                    ? `${y + 1}`
-                    : hTable[y][x].props.children,
+                children: children,
                 value,
                 name,
               },
@@ -144,6 +152,7 @@ function Grid(props) {
   const parseRows = (arr, style, noTab) => {
     // Funcs
     const bSelect = (x, y) => {
+      if (props.bNoSel) return false;
       return (selection[0] === x && y === 0) || (selection[1] === y && x === 0); // Select Highlight Header Tabs
       // return selection[0] === x && selection[1] === y; // Highlight only the selected cell
     };
