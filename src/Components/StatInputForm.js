@@ -36,15 +36,7 @@ function StatInputForm(props) {
       <input
         {...PROPS}
         onChange={(e) => {
-          console.log(
-            'e:',
-            'dataset:',
-            e.target.dataset,
-            'Name:',
-            e.target.name,
-            'value:',
-            e.target.value,
-          );
+          // console.log('e:', 'dataset:', e.target.dataset, 'Name:', e.target.name, 'value:', e.target.value, );
           /* Validation: Skip if no coordinate are returned */
           if (
             e.target.dataset.x === undefined ||

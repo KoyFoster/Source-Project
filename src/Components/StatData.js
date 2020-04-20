@@ -81,22 +81,6 @@ function StatData(dataProps) {
     const sTag = name.substring(0, name.indexOf('_'))
       ? name.substring(0, name.indexOf('_'))
       : name;
-    // console.log(
-    //   'name:',
-    //   name,
-    //   'sTag:',
-    //   sTag,
-    //   'x:',
-    //   x,
-    //   'y:',
-    //   y,
-    //   'value:',
-    //   value,
-    //   'checked:',
-    //   checked,
-    //   'iIndex:',
-    //   iIndex,
-    // );
     if ((value === undefined && checked === undefined) || name === undefined)
       return;
 
@@ -108,9 +92,8 @@ function StatData(dataProps) {
 
     let Points = Header[3];
 
-    console.log('Tag:', sTag);
     switch (sTag) {
-      case 'Quantity':
+      case 'Quantity': // eslint-disable-next-line
         {
           value = parseFloat(value, 10);
 
@@ -128,7 +111,12 @@ function StatData(dataProps) {
           );
         }
         break;
-      case 'Value':
+      case 'Types': // eslint-disable-next-line
+        {
+          Table[iIndex][0] = value;
+        }
+        break;
+      case 'Value': // eslint-disable-next-line
         {
           //Value Range Check
           Table[iIndex][1] = Coll.iAATest(
@@ -150,7 +138,7 @@ function StatData(dataProps) {
           }
         }
         break;
-      case 'Min':
+      case 'Min': // eslint-disable-next-line
         {
           const iIndex2 = 2;
           //Check if min exceeds then current value or is less then zero
@@ -165,7 +153,7 @@ function StatData(dataProps) {
           );
         }
         break;
-      case 'Max':
+      case 'Max': // eslint-disable-next-line
         {
           const iIndex2 = 3;
           //Check if max is less then current value
@@ -181,24 +169,22 @@ function StatData(dataProps) {
           );
         }
         break;
-      case 'PointDiff':
-        {
-          // Update to new PointTotal
-          if (checked) {
-            Points[0] = Points[0] - Points[1];
-          } else {
-            Points[0] = Points[0] + Points[1];
-          }
-
-          this.setData.setPointDiff(iT, checked);
-          // console.log('PointDiff:', iT, checked, this.data().PointDiff(iT));
-          this.setData.setPointTotal(iT, Points[0]);
-
-          this.setData.setUpdate(!this.data().update);
-          return;
+      case 'PointDiff': {
+        // eslint-disable-next-line
+        // Update to new PointTotal
+        if (checked) {
+          Points[0] = Points[0] - Points[1];
+        } else {
+          Points[0] = Points[0] + Points[1];
         }
-        break;
-      case 'Unit':
+
+        this.setData.setPointDiff(iT, checked);
+        this.setData.setPointTotal(iT, Points[0]);
+
+        this.setData.setUpdate(!this.data().update);
+        return;
+      }
+      case 'Unit': // eslint-disable-next-line
         {
           Table[iIndex][4] = value;
 
@@ -215,47 +201,40 @@ function StatData(dataProps) {
           }
         }
         break;
-      case 'Reference':
+      case 'References': // eslint-disable-next-line
         {
           /* Update Calculated Stats */
-          console.log(
-            'IsCalculated:',
-            Header[1],
-            'iIndex:',
-            iIndex !== undefined,
-          );
-          if (Header[1] === 'Calculated' && iIndex) {
+          if (Header[1] === 'Calculated' && iIndex !== undefined) {
+            /* set expression */
+            Table[iIndex][5] = value;
             const calcValue = GetCalculatedValue(
               iIndex,
               this.data().Values,
               Table,
             );
-            console.log('calcVal:', calcValue);
+            /* set updated value */
             Table[iIndex][1] = calcValue;
           }
         }
         break;
-      case 'Expression':
+      case 'Expression': // eslint-disable-next-line
         {
           /* Update Calculated Stats */
-          console.log(
-            'IsCalculated:',
-            Header[1],
-            'iIndex:',
-            iIndex !== undefined,
-          );
           if (Header[1] === 'Calculated' && iIndex !== undefined) {
+            /* set expression */
+            Table[iIndex][6] = value;
             const calcValue = GetCalculatedValue(
               iIndex,
               this.data().Values,
               Table,
             );
-            console.log('calcVal:', calcValue);
+            /* set updated value */
             Table[iIndex][1] = calcValue;
           }
         }
         break;
       default:
+        // eslint-disable-next-line
         {
         }
         break;
@@ -265,6 +244,9 @@ function StatData(dataProps) {
     this.setData.setTable(iT, Table);
     Header[3] = Points;
     this.setData.setUpdate(!this.data().update);
+    // const elem = document.getElementsByName(name)[0];
+    // console.log('elem:', elem, 'name:', name);
+    // elem.focus();
   } // End of Update
 
   const GetCalculatedValue = (iElem, mTable, Table) => {
@@ -274,10 +256,14 @@ function StatData(dataProps) {
     if (!Table[iElem][6] && Table[iElem][5]) return -1;
 
     const expression = Table[iElem][6];
-    const miT = Table[iElem][5][0];
-    const miTI = Table[iElem][5][1];
-    const miTVal = mTable[miT][miTI][1];
-    const scope = { a: miTVal };
+
+    let scope = JSON.parse(Table[iElem][5]);
+
+    // parse scope
+    for (let [key, value] of Object.entries(scope)) {
+      scope[key] = mTable[value[0]][value[1]][1]; // table, row, column="always 'Value'""
+    }
+
     const result = evaluate(expression, scope);
     return result;
   };
@@ -319,7 +305,6 @@ function StatData(dataProps) {
       i += 1;
     }
 
-    // console.log('Values:', valuesBuffer);
     Header[3] = GetPointTotal(
       Number(valuesBuffer.length),
       valuesBuffer,
