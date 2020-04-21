@@ -166,3 +166,9 @@ tfoot {
   -webkit-border-horizontal-spacing: 0px;
   -webkit-border-vertical-spacing: 0px;
 }
+
+/* Style Inheritance */
+.inherit div,
+input {
+  color: inherit; /*6e5735*/
+}

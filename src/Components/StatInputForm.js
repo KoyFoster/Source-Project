@@ -98,7 +98,7 @@ function StatInputForm(props) {
       ''
     ) : (
       <TextField
-        label="Limit:"
+        label="Stat Cap:"
         type="number"
         name="Limit"
         value={props.data().PointLimit(props.iD)}
@@ -243,7 +243,14 @@ function StatInputForm(props) {
         >
           [value]
         </div>,
-        <div name={'Value'} style={{ textAlign: 'right' }}>
+        <div
+          name={'Value'}
+          style={{
+            width: '64px',
+            overflow: 'hidden',
+            textAlign: 'right',
+          }}
+        >
           [value]
         </div>,
         <div
@@ -341,7 +348,7 @@ function StatInputForm(props) {
 
   if (editMode === true)
     return (
-      <div>
+      <div class="inherit" style={{ color: 'black' }}>
         <Col name="GraphBody">{hStatProps()}</Col>
         <Row>
           <Box name="FormBody" align="center">
@@ -366,7 +373,7 @@ function StatInputForm(props) {
     );
   else {
     return (
-      <div>
+      <div class="inherit" style={{ color: props.style.color }}>
         <Col name="GraphBody">{hStatProps()}</Col>
         <Row>
           <Box name="FormBody" align="center">
@@ -377,7 +384,6 @@ function StatInputForm(props) {
                 colOrder={[0, 1, 4, 2, 3, 5, 6]}
                 hFooter={hFooter}
                 iRows={Table.length}
-                cellStyle={{ borderBottom: '2px solid white' }}
                 Values={Table}
               >
                 {hBody()}

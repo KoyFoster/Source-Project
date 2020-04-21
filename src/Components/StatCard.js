@@ -109,7 +109,7 @@ const defaultData = {
       [
         'Primary Stats',
         'Fixed',
-        '{ "background": "#4ab8c5"}',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "Times New Roman" }',
         [2358, 70, 12800] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -125,7 +125,7 @@ const defaultData = {
       [
         'Secondary Stats',
         'Calculated',
-        '{ "background": "#c03311", "doNotGraph": true }',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "Helvetica"}',
         [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -144,7 +144,7 @@ const defaultData = {
       [
         'Misc Stats',
         'Fixed',
-        '{ "background": "#1d3314" }' /* , "width": 480 , "height": 480 */,
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "Arial" }',
         [-1, -1, -1] /* Totals(val, min, max) */,
         -1 /* PointLimit */,
         false /* PointDiff */,
@@ -160,7 +160,7 @@ const defaultData = {
 function StatCard(props) {
   const [Values, setValues] = useState(defaultData.Values);
   const [update, setUpdate] = useState(false);
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
   const data = {
     update,
@@ -269,7 +269,8 @@ function StatCard(props) {
     const hBuffer = [];
     for (let i = 0; i < data.Values.length * 2; i) {
       const iI = i / 2;
-      if (i % 2 === 0)
+      if (i % 2 === 0) {
+        const styleObj = JSON.parse(getData().Values[iI][0][2]);
         hBuffer.push(
           <div
             key={`FormDiv2_${iI}`}
@@ -292,8 +293,7 @@ function StatCard(props) {
                   margin: margin,
                   padding: padding,
 
-                  backgroundColor: JSON.parse(getData().Values[iI][0][2])
-                    .background,
+                  ...styleObj,
                 }}
               >
                 <StatInputForm
@@ -310,12 +310,15 @@ function StatCard(props) {
                   UpdatePointLimit={funcs.updateLimit}
                   UpdateCalcs={funcs.updateCalcs}
                   editMode={editMode}
+                  style={{
+                    ...styleObj,
+                  }}
                 />
               </Paper>
             </Col>
           </div>,
         );
-      else hBuffer.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>);
+      } else hBuffer.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>);
       i += 1;
     }
 
@@ -338,6 +341,7 @@ function StatCard(props) {
     const hBuffer = [];
 
     for (let i = 0; i < data.Values.length; i) {
+      const styleObj = JSON.parse(getData().Values[i][0][2]);
       hBuffer.push(
         <div
           key={`GiagDiv2_${i}`}
@@ -362,8 +366,7 @@ function StatCard(props) {
                 margin: margin,
                 padding: padding,
 
-                ...JSON.parse(getData().Values[i][0][2]),
-                // fontColor: getData().Values[i][0][2],
+                ...styleObj,
               }}
             >
               <Diagram

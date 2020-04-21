@@ -2,6 +2,12 @@ import React, { useEffect } from 'react';
 import { Coll, Calc } from './KoyMath.js';
 import { evaluate } from 'mathjs';
 
+const RD = 2; // Round Decimal
+const Round = (val) => {
+  const power = Math.pow(10, RD);
+  // console.log('power:', power);
+  return Math.round(val * power) / power;
+};
 const sUnitTypes = ';;UNIT;LEVEL;LVL;POINT;PNT';
 
 const IsUnit = function (UnitType) {
@@ -219,11 +225,14 @@ function StatData(dataProps) {
           if (Header[1] === 'Calculated' && iIndex !== undefined) {
             /* set expression */
             Table[iIndex][5] = value;
-            const calcValue = GetCalculatedValue(
-              iIndex,
-              this.data().Values,
-              Table,
-            );
+
+            let calcValue;
+            try {
+              calcValue = GetCalculatedValue(iIndex, this.data().Values, Table);
+            } catch {
+              return;
+            }
+
             /* set updated value */
             Table[iIndex][1] = calcValue;
           }
@@ -235,11 +244,14 @@ function StatData(dataProps) {
           if (Header[1] === 'Calculated' && iIndex !== undefined) {
             /* set expression */
             Table[iIndex][6] = value;
-            const calcValue = GetCalculatedValue(
-              iIndex,
-              this.data().Values,
-              Table,
-            );
+
+            let calcValue;
+            try {
+              calcValue = GetCalculatedValue(iIndex, this.data().Values, Table);
+            } catch {
+              return;
+            }
+
             /* set updated value */
             Table[iIndex][1] = calcValue;
           }
@@ -279,7 +291,7 @@ function StatData(dataProps) {
     }
 
     const result = evaluate(expression, scope);
-    return result;
+    return Round(result);
   };
 
   function RandomizeStats(index /* table index */) {
