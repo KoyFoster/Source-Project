@@ -108,20 +108,20 @@ const defaultData = {
     [
       [
         'Visible Player Stats',
-        'Fixed',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginBottom": "0px" }',
+        'Calculated',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginBottom": "0px", "border-top-left-radius": "4px", "border-top-right-radius": "4px" }',
         [0, 0, 0] /* Totals(val, min, max) */,
         61440 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Health', 264, 264, 30720, '', '{"a": [1, 3]}', 'a * 12'],
-      ['Mana', 264, 264, 30720, '', '{"a": [1, 5]}', 'a * 12'],
+      ['Health', , , , '', '{"a": [1, 3]}', 'a * 12'],
+      ['Mana', , , , '', '{"a": [1, 5]}', 'a * 12'],
     ],
     [
       [
         'Primary Stats',
         'Fixed',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderTop": "none", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginTop": "0px", "marginBottom": "0px", "border-top-left-radius": "4px", "border-top-right-radius": "4px" }',
+        '{ "borderTop": "none", "borderBottom": "none", "paddingLeft": "16px", "marginTop": "0px", "border-top-left-radius": "0px", "border-top-right-radius": "0px" }',
         [2358, 70, 12800] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -137,24 +137,24 @@ const defaultData = {
       [
         'Secondary Stats',
         'Calculated',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderTop": "none", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginTop": "0px", "marginBottom": "0px" }',
+        '{ "borderTop": "none", "borderBottom": "none", "paddingLeft": "16px" }',
         [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Melee Attack', 4.4, 4.4, 2560, '', '{"a": [1, 1]}', 'a * 0.2'],
-      ['Range Attack', 4.4, 4.4, 2560, '', '{"a": [1, 2]}', 'a * 0.2'],
-      ['Magic Attack', 4.4, 4.4, 2560, '', '{"a": [1, 5]}', 'a * 0.2'],
-      ['Healing Power', 4.4, 4.4, 2560, '', '{"a": [1, 4]}', 'a * 0.2'],
-      ['Physical Defense', 260, 44, 2560, '', '{"a": [1, 3]}', 'a * 1'], // 71.35%
-      ['Magic Defense', 260, 44, 2560, '', '{"a": [1, 3]}', 'a * 1'], // 23.81%
+      ['Melee Attack', , , , '', '{"a": [1, 1]}', 'a * 0.2'],
+      ['Range Attack', , , , '', '{"a": [1, 2]}', 'a * 0.2'],
+      ['Magic Attack', , , , '', '{"a": [1, 5]}', 'a * 0.2'],
+      ['Healing Power', , , , '', '{"a": [1, 4]}', 'a * 0.2'],
+      ['Physical Defense', , , , '', '{"a": [1, 3]}', 'a * 1'], // 71.35%
+      ['Magic Defense', , , , '', '{"a": [1, 3]}', 'a * 1'], // 23.81%
     ],
 
     [
       [
         'Misc Stats',
         'Fixed',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderTop": "none", "padding": "4px", "margin": "4px", "paddingLeft": "16px", "marginTop": "0px", "border-bottom-left-radius": "4px", "border-bottom-right-radius": "4px"  }',
+        '{ "borderBottom": "4px solid #6e5735", "paddingLeft": "16px", "marginTop": "0px", "border-bottom-left-radius": "4px", "border-bottom-right-radius": "4px"  }',
         [-1, -1, -1] /* Totals(val, min, max) */,
         -1 /* PointLimit */,
         false /* PointDiff */,
@@ -277,10 +277,15 @@ function StatCard(props) {
 
   const hForms = () => {
     const hBuffer = [];
+    let styleObj = undefined;
     for (let i = 0; i < data.Values.length * 2; i) {
       const iI = i / 2;
       if (i % 2 === 0) {
-        const styleObj = JSON.parse(getData().Values[iI][0][2]);
+        try {
+          const tempObj = JSON.parse(getData().Values[iI][0][2]);
+          styleObj = { ...styleObj, ...tempObj };
+          // console.log(`styleObj${iI}:`, styleObj);
+        } catch {}
         hBuffer.push(
           <div
             key={`FormDiv2_${iI}`}

@@ -220,40 +220,39 @@ function StatData(dataProps) {
         }
         break;
       case 'References': // eslint-disable-next-line
-        {
-          /* Update Calculated Stats */
-          if (Header[1] === 'Calculated' && iIndex !== undefined) {
-            /* set expression */
-            Table[iIndex][5] = value;
-
-            let calcValue;
-            try {
-              calcValue = GetCalculatedValue(iIndex, this.data().Values, Table);
-            } catch {
-              return;
-            }
-
-            /* set updated value */
-            Table[iIndex][1] = calcValue;
-          }
-        }
-        break;
       case 'Expression': // eslint-disable-next-line
         {
           /* Update Calculated Stats */
           if (Header[1] === 'Calculated' && iIndex !== undefined) {
             /* set expression */
-            Table[iIndex][6] = value;
+            if (sTag === 'Expression') Table[iIndex][6] = value;
+            /* set Reference */ else Table[iIndex][5] = value;
 
             let calcValue;
+            let calcMin;
+            let calcMax;
             try {
               calcValue = GetCalculatedValue(iIndex, this.data().Values, Table);
+              calcMin = GetCalculatedValue(
+                iIndex,
+                this.data().Values,
+                Table,
+                2,
+              );
+              calcMax = GetCalculatedValue(
+                iIndex,
+                this.data().Values,
+                Table,
+                3,
+              );
             } catch {
               return;
             }
 
             /* set updated value */
             Table[iIndex][1] = calcValue;
+            Table[iIndex][2] = calcMin;
+            Table[iIndex][3] = calcMax;
           }
         }
         break;
@@ -275,19 +274,19 @@ function StatData(dataProps) {
     // elem.focus();
   } // End of Update
 
-  const GetCalculatedValue = (iElem, mTable, Table) => {
-    if (Table[iElem][6] && !Table[iElem][5]) {
-      return mTable[Table[iElem][5][0]][Table[iElem][5][1]][1];
+  const GetCalculatedValue = (iRow, mTable, Table, iElm = 1) => {
+    if (Table[iRow][6] && !Table[iRow][5]) {
+      return mTable[Table[iRow][5][0]][Table[iRow][5][1]][1];
     }
-    if (!Table[iElem][6] && Table[iElem][5]) return -1;
+    if (!Table[iRow][6] && Table[iRow][5]) return -1;
 
-    const expression = Table[iElem][6];
+    const expression = Table[iRow][6];
 
-    let scope = JSON.parse(Table[iElem][5]);
+    let scope = JSON.parse(Table[iRow][5]);
 
     // parse scope
     for (let [key, value] of Object.entries(scope)) {
-      scope[key] = mTable[value[0]][value[1]][1]; // table, row, column="always 'Value'""
+      scope[key] = mTable[value[0]][value[1]][iElm /* Column */]; // table, row, column="always 'Value'""
     }
 
     const result = evaluate(expression, scope);
@@ -355,8 +354,12 @@ function StatData(dataProps) {
       for (let r = 0; r < Table.length; r) {
         // console.log('Calculating:', Header[0], Table[r]);
         const calcValue = GetCalculatedValue(r, this.data().Values, Table);
+        const calcMin = GetCalculatedValue(r, this.data().Values, Table, 2);
+        const calcMax = GetCalculatedValue(r, this.data().Values, Table, 3);
         /* set updated value */
         Table[r][1] = calcValue;
+        Table[r][2] = calcMin;
+        Table[r][3] = calcMax;
 
         r += 1;
       }

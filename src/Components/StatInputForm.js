@@ -211,11 +211,17 @@ function StatInputForm(props) {
         <Field
           type="number"
           name={'Min'}
+          disabled={bCalc}
           style={{
             width: '56px',
           }}
         />,
-        <Field type="number" name={'Max'} style={{ width: '56px' }} />,
+        <Field
+          type="number"
+          name={'Max'}
+          disabled={bCalc}
+          style={{ width: '56px' }}
+        />,
         <Field name={'Unit'} style={{ width: '56px' }} />,
         <Field
           name={'References'}
