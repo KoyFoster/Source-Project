@@ -107,9 +107,21 @@ const defaultData = {
   Values: [
     [
       [
+        'Visible Player Stats',
+        'Fixed',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginBottom": "0px" }',
+        [0, 0, 0] /* Totals(val, min, max) */,
+        61440 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Health', 264, 264, 30720, '', '{"a": [1, 3]}', 'a * 12'],
+      ['Mana', 264, 264, 30720, '', '{"a": [1, 5]}', 'a * 12'],
+    ],
+    [
+      [
         'Primary Stats',
         'Fixed',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "Times New Roman" }',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderTop": "none", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginTop": "0px", "marginBottom": "0px", "border-top-left-radius": "4px", "border-top-right-radius": "4px" }',
         [2358, 70, 12800] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -125,26 +137,24 @@ const defaultData = {
       [
         'Secondary Stats',
         'Calculated',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "Helvetica"}',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderTop": "none", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginTop": "0px", "marginBottom": "0px" }',
         [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Health', 264, 264, 30720, '', '{"a": [0, 3]}', 'a * 12'],
-      ['Mana', 264, 264, 30720, '', '{"a": [0, 5]}', 'a * 12'],
-      ['Melee Attack', 4.4, 4.4, 2560, '', '{"a": [0, 1]}', 'a * 0.2'],
-      ['Range Attack', 4.4, 4.4, 2560, '', '{"a": [0, 2]}', 'a * 0.2'],
-      ['Magic Attack', 4.4, 4.4, 2560, '', '{"a": [0, 5]}', 'a * 0.2'],
-      ['Healing Power', 4.4, 4.4, 2560, '', '{"a": [0, 4]}', 'a * 0.2'],
-      ['Physical Defense', 260, 44, 2560, '', '{"a": [0, 3]}', 'a * 1'], // 71.35%
-      ['Magic Defense', 260, 44, 2560, '', '{"a": [0, 3]}', 'a * 1'], // 23.81%
+      ['Melee Attack', 4.4, 4.4, 2560, '', '{"a": [1, 1]}', 'a * 0.2'],
+      ['Range Attack', 4.4, 4.4, 2560, '', '{"a": [1, 2]}', 'a * 0.2'],
+      ['Magic Attack', 4.4, 4.4, 2560, '', '{"a": [1, 5]}', 'a * 0.2'],
+      ['Healing Power', 4.4, 4.4, 2560, '', '{"a": [1, 4]}', 'a * 0.2'],
+      ['Physical Defense', 260, 44, 2560, '', '{"a": [1, 3]}', 'a * 1'], // 71.35%
+      ['Magic Defense', 260, 44, 2560, '', '{"a": [1, 3]}', 'a * 1'], // 23.81%
     ],
 
     [
       [
         'Misc Stats',
         'Fixed',
-        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "Arial" }',
+        '{ "background": "#faf8e8", "color": "#6e5735", "font-family": "NotoSansKR", "border": "4px solid #6e5735", "borderTop": "none", "padding": "4px", "margin": "4px", "paddingLeft": "16px", "marginTop": "0px", "border-bottom-left-radius": "4px", "border-bottom-right-radius": "4px"  }',
         [-1, -1, -1] /* Totals(val, min, max) */,
         -1 /* PointLimit */,
         false /* PointDiff */,
@@ -286,13 +296,10 @@ function StatCard(props) {
                 alignSelf: 'flex-start', //'flex-start'
               }}
             >
-              <Paper
-                key={`PaperForm_${iI}`}
-                name={`PaperForm_${iI}`}
+              <div
+                key={`DivForm_${iI}`}
+                name={`DivForm_${iI}`}
                 style={{
-                  margin: margin,
-                  padding: padding,
-
                   ...styleObj,
                 }}
               >
@@ -314,7 +321,7 @@ function StatCard(props) {
                     ...styleObj,
                   }}
                 />
-              </Paper>
+              </div>
             </Col>
           </div>,
         );

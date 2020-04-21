@@ -170,5 +170,7 @@ tfoot {
 /* Style Inheritance */
 .inherit div,
 input {
-  color: inherit; /*6e5735*/
+  color: inherit;
+  font: inherit;
+  background: inherit;
 }
