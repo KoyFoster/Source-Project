@@ -204,6 +204,34 @@ const defaultData = {
       ['Cast Time', 93, 0, 100, '%'],
       ['Attack Speed', 190, 0, 1200, ''], // (84.0%)
     ],
+    // Start of Container Card
+    [
+      [
+        '-Details-',
+        'Container',
+        ['{}', '{}', '{}', '{}'],
+        [
+          [
+            [
+              '-Misc Stats+',
+              'Fixed',
+              [
+                '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
+                '{}',
+                '{}',
+                '{}',
+              ],
+              [-1, -1, -1] /* Totals(val, min, max) */,
+              -1 /* PointLimit */,
+              false /* PointDiff */,
+            ],
+            ['Move Speed', 5.4, 5.4, 10, 'm/s'],
+            ['Cast Time', 93, 0, 100, '%'],
+            ['Attack Speed', 190, 0, 1200, ''], // (84.0%)
+          ],
+        ],
+      ],
+    ],
   ],
 };
 
@@ -215,6 +243,7 @@ function StatCard(props) {
 
   const data = {
     update,
+    Values,
     ShowName: (index) => {
       return Values[index][0][0] ? Values[index][0][0][0] : '-';
     },
@@ -226,9 +255,11 @@ function StatCard(props) {
     Name: (index) => {
       return Values[index][0][0];
     },
-    Values,
     vTableHeader: (index) => {
       return Values[index][0];
+    },
+    vTableType: (index) => {
+      return Values[index][0][1];
     },
     vTable: (index) => {
       return Values[index].slice(1, Values[index].length);
@@ -323,61 +354,107 @@ function StatCard(props) {
   // Temp Styles
   const padding = 3;
 
+  const hForm = (index, styleObj) => {
+    return (
+      <div
+        key={`FormDiv2_${index}`}
+        style={{
+          flexShrink: 0,
+          flex: 0,
+
+          display: 'flex',
+        }}
+      >
+        <Col
+          style={{
+            alignSelf: 'flex-start', //'flex-start'
+          }}
+        >
+          <div
+            key={`DivForm_${index}`}
+            name={`DivForm_${index}`}
+            style={{
+              ...styleObj[0],
+            }}
+          >
+            <StatInputForm
+              iD={index}
+              key={`StatDataForm_${index}`}
+              name={`StatDataForm_${index}`}
+              bCalc={getData().Values[index][0][1] === 'Calculated'}
+              Values={getData().Values[index]}
+              data={getData}
+              setData={dataFuncs}
+              Update={funcs.update}
+              RandomizeStats={funcs.randomize}
+              UpdatePointLimit={funcs.updateLimit}
+              UpdateCalcs={funcs.updateCalcs}
+              editMode={editMode}
+              lStyle={styleObj[1]}
+              tStyle={styleObj[2]}
+              vStyle={styleObj[3]}
+            />
+          </div>
+        </Col>
+      </div>
+    );
+  };
   const hForms = () => {
-    const hBuffer = [];
+    let hFormList = [];
+    let hContainerList = [];
     let styleObj = undefined;
-    let valColor = undefined;
     for (let i = 0; i < data.Values.length * 2; i) {
       const iI = i / 2;
       if (i % 2 === 0) {
         styleObj = [...UDSObj(styleObj, getData().Values[iI][0][2], true)];
-        // console.log('UDS[iI]:', UDS[iI]);
-        hBuffer.push(
-          <div
-            key={`FormDiv2_${iI}`}
-            style={{
-              flexShrink: 0,
-              flex: 0,
-
-              display: 'flex',
-            }}
-          >
-            <Col
-              style={{
-                alignSelf: 'flex-start', //'flex-start'
-              }}
-            >
+        /* Push New Card */
+        // console.log('Container Card', getData().Values[iI][0][1]);
+        if (getData().Values[iI][0][1] === 'Container') {
+          // Check if card type is 'Container'
+          // Container everything up until now
+          if (hFormList !== undefined) {
+            hContainerList.push(
               <div
-                key={`DivForm_${iI}`}
-                name={`DivForm_${iI}`}
+                key={`ContainedCard${0}`}
                 style={{
-                  ...styleObj[0],
+                  display: 'flex',
+                  flexWrap: 'wrap',
                 }}
               >
-                <StatInputForm
-                  iD={iI}
-                  key={`StatDataForm_${iI}`}
-                  name={`StatDataForm_${iI}`}
-                  bCalc={getData().Values[iI][0][1] === 'Calculated'}
-                  Values={getData().Values[iI]}
-                  data={getData}
-                  setData={dataFuncs}
-                  Update={funcs.update}
-                  RandomizeStats={funcs.randomize}
-                  UpdatePointLimit={funcs.updateLimit}
-                  UpdateCalcs={funcs.updateCalcs}
-                  editMode={editMode}
-                  lStyle={styleObj[1]}
-                  tStyle={styleObj[2]}
-                  vStyle={styleObj[3]}
-                />
-              </div>
-            </Col>
-          </div>,
-        );
-      } else hBuffer.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>);
+                {hFormList}
+              </div>,
+            );
+            /* Clear FormList */
+            hFormList = undefined;
+          } // End of FormList Push
+          // Start New List and Create New Container
+          hFormList = [hForm(iI, styleObj)];
+        } else {
+          hFormList.push(hForm(iI, styleObj));
+        }
+      } else
+        hFormList
+          ? hFormList.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>)
+          : (hFormList = [<div key={`FormDivSpacer_${i}`} style={{}}></div>]); // Push Spacer
       i += 1;
     }
+
+    // Check if hFormList still have contents and add it to hContainerlist if so
+    if (hFormList !== undefined) {
+      hContainerList.push(
+        <div
+          key={`ContainedCard${0}`}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+          }}
+        >
+          {hFormList}
+        </div>,
+      );
+      /* Clear FormList */
+      hFormList = undefined;
+    } // End of FormList Push
 
     return (
       <div
@@ -385,11 +462,9 @@ function StatCard(props) {
         style={{
           display: 'flex',
           flexWrap: 'wrap',
-
-          // border: '3px solid cyan',
         }}
       >
-        {hBuffer}
+        {hContainerList}
       </div>
     );
   };
