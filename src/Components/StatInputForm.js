@@ -207,6 +207,7 @@ function StatInputForm(props) {
           style={{
             width: '136px',
             textAlign: 'center',
+            ...props.tStyle,
           }}
         />,
         bCalc === false ? (
@@ -259,6 +260,7 @@ function StatInputForm(props) {
           style={{
             width: '256px',
             textAlign: 'left',
+            ...props.tStyle,
           }}
         >
           [value]
@@ -368,17 +370,20 @@ function StatInputForm(props) {
           value="Show"
         />,
         <Field
-          name={'Name'}
+          name="Name"
           value={val}
           style={{
             width: '100%',
+            ...props.lStyle,
           }}
         />,
       ]
     ) : (
       <div
+        name="Name"
         style={{
           display: bShow ? 'initial' : 'none',
+          ...props.lStyle,
         }}
       >
         {val}

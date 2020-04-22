@@ -137,6 +137,8 @@ const defaultData = {
         'Calculated',
         [
           '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "paddingRight": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
+          '{ "fontWeight": "bold" }',
+          '{ "color": "red" }',
           '{ "color": "#21a536" }',
         ],
         [0, 0, 0] /* Totals(val, min, max) */,
@@ -152,6 +154,8 @@ const defaultData = {
         'Fixed',
         [
           '{ "noGraph": true, "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
+          '{ "fontWeight": "undefined" }',
+          '{ "color": "undefined" }',
           '{}',
         ],
         [2358, 70, 12800] /* Totals(val, min, max) */,
@@ -169,7 +173,7 @@ const defaultData = {
       [
         '-Secondary Stats',
         'Calculated',
-        ['{}', '{}'],
+        ['{}', '{}', '{}', '{}'],
         [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -188,6 +192,8 @@ const defaultData = {
         'Fixed',
         [
           '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
+          '{}',
+          '{}',
           '{}',
         ],
         [-1, -1, -1] /* Totals(val, min, max) */,
@@ -356,7 +362,9 @@ function StatCard(props) {
                   UpdatePointLimit={funcs.updateLimit}
                   UpdateCalcs={funcs.updateCalcs}
                   editMode={editMode}
-                  vStyle={styleObj[1]}
+                  lStyle={styleObj[1]}
+                  tStyle={styleObj[2]}
+                  vStyle={styleObj[3]}
                 />
               </div>
             </Col>
