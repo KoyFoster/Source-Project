@@ -169,8 +169,14 @@ tfoot {
 
 /* Style Inheritance */
 .inherit div,
+button,
 input {
   color: inherit;
   font: inherit;
   background: inherit;
+}
+
+button:focus,
+input:focus {
+  outline: none;
 }

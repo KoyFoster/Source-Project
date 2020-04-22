@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Checkbox } from '@material-ui/core';
+import { Box, TextField } from '@material-ui/core';
 import { Row, Col } from './DivGrid.js';
 import '../App.css';
 import Grid from './Forms/Grid';
@@ -12,9 +12,6 @@ function StatInputForm(props) {
 
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
-    if (dataObj.name === 'Name') {
-      return props.setData.setName(props.iD, dataObj.value);
-    }
     if (dataObj.name === 'Level Cap') {
       return props.UpdatePointLimit(props.iD, dataObj.value);
     }
@@ -43,12 +40,14 @@ function StatInputForm(props) {
           if (
             (e.target.dataset.x === undefined ||
               e.target.dataset.y === undefined) &&
-            e.target.name !== 'Quantity'
+            e.target.name !== 'Quantity' &&
+            e.target.name !== 'Name'
           )
             return;
           const x = parseInt(e.target.dataset.x, 10);
           const y = parseInt(e.target.dataset.y, 10) - 1;
 
+          // console.log('SetValue');
           setValue(
             props.Update(props.iD, {
               x: x,
@@ -66,7 +65,7 @@ function StatInputForm(props) {
     );
   };
 
-  const PointDiff = (PROPS) => {
+  const PointDiff = () => {
     const [checked, setChecked] = useState(
       Boolean(props.data().PointDiff(props.iD)),
     );
@@ -76,10 +75,10 @@ function StatInputForm(props) {
       props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
-      <Checkbox
+      <input
+        type="checkbox"
         name="PointDiff"
         checked={checked}
-        style={{ width: 10, height: 0 }}
         onChange={(e) => {
           setChecked(
             Update({
@@ -118,11 +117,15 @@ function StatInputForm(props) {
     );
 
   const hRandom =
-    bCalc !== true ? (
-      <Button name="RNG" onClick={() => Update({ name: 'RNG' })}>
+    bCalc === false && editMode ? (
+      <button
+        name="RNG"
+        style={{ borderRadius: '8px' }}
+        onClick={() => Update({ name: 'RNG' })}
+      >
         {' '}
         Random{' '}
-      </Button>
+      </button>
     ) : (
       ''
     );
@@ -130,7 +133,7 @@ function StatInputForm(props) {
   const hStatProps = () => {
     if (editMode) {
       return [
-        <Row>
+        <Row name="QRow">
           Stats:{' '}
           <Field
             type="number"
@@ -139,7 +142,7 @@ function StatInputForm(props) {
           ></Field>
           {hLimit}
         </Row>,
-        <Row alignItems="center">
+        <Row name="PDRow" alignItems="center">
           {PointDiff()}
           {hTotal}
         </Row>,
@@ -241,7 +244,7 @@ function StatInputForm(props) {
     } else {
       return [
         <div
-          name={'Types'}
+          name={'vTypes'}
           style={{
             width: '256px',
             textAlign: 'left',
@@ -250,7 +253,7 @@ function StatInputForm(props) {
           [value]
         </div>,
         <div
-          name={'Value'}
+          name={'vValue'}
           style={{
             width: '64px',
             overflow: 'hidden',
@@ -261,29 +264,29 @@ function StatInputForm(props) {
         </div>,
         <div
           type="number"
-          name={'Min'}
+          name={'vMin'}
           style={{
             display: 'none',
           }}
         />,
         <div
           type="number"
-          name={'Max'}
+          name={'vMax'}
           style={{
             display: 'none',
           }}
         />,
-        <div name={'Unit'} style={{ width: '56px', textAlign: 'left' }}>
+        <div name={'vUnit'} style={{ width: '56px', textAlign: 'left' }}>
           [value]
         </div>,
         <div
-          name={'References'}
+          name={'vReferences'}
           style={{
             display: 'none',
           }}
         />,
         <div
-          name={'Expression'}
+          name={'vExpression'}
           style={{
             display: 'none',
           }}
@@ -333,74 +336,58 @@ function StatInputForm(props) {
           </label>,
         ];
 
-  const hName = () => {
-    if (editMode) {
-      return [
-        <TextField
-          label="Name"
-          name={`Name_${props.iD}`}
-          value={props.data().Name(props.iD)}
-          onChange={(e) => Update({ name: 'Name', value: e.target.value })}
-        />,
-      ];
-    } else {
-      return (
-        <div label="Name" name={`Name_${props.iD}`}>
-          {props.data().Name(props.iD)}
-        </div>
-      );
-    }
+  const Name = () => {
+    return editMode ? (
+      <Field
+        name={'Name'}
+        value={props.data().Name(props.iD)}
+        style={{
+          // display: bCalc ? 'initial' : 'none',
+          width: '128px',
+        }}
+      />
+    ) : (
+      <div
+        style={{
+          display: props.data().Name(props.iD)[0] === '+' ? 'initial' : 'none',
+        }}
+      >
+        {props
+          .data()
+          .Name(props.iD)
+          .slice(1, props.data().Name(props.iD).length)}
+      </div>
+    );
   };
 
-  if (editMode === true)
-    return (
-      <div class="inherit" style={{ color: 'black' }}>
-        <Col name="GraphBody">{hStatProps()}</Col>
-        <Row>
-          <Box name="FormBody" align="center">
-            <Col>
-              {hName()}
-              <Grid
-                bAddRowHeader={true}
-                colOrder={[0, 1, 4, 2, 3, 5, 6]}
-                hHeader={hHeader()}
-                hFooter={hFooter}
-                iRows={Table.length}
-                cellStyle={{ borderBottom: '2px solid white' }}
-                Values={Table}
-              >
-                {hBody()}
-              </Grid>
-            </Col>
-            {hRandom}
-          </Box>
-        </Row>
-      </div>
-    );
-  else {
-    return (
-      <div class="inherit" style={{ color: props.style.color }}>
-        <Col name="GraphBody">{hStatProps()}</Col>
-        <Row>
-          <Box name="FormBody" align="center">
-            <Col>
-              {hName()}
-              <Grid
-                bNoSel={true}
-                colOrder={[0, 1, 4, 2, 3, 5, 6]}
-                hFooter={hFooter}
-                iRows={Table.length}
-                Values={Table}
-              >
-                {hBody()}
-              </Grid>
-            </Col>
-            {hRandom}
-          </Box>
-        </Row>
-      </div>
-    );
-  }
+  return (
+    <div
+      class="inherit"
+      style={{ color: 'black' /*  border: '1px solid black */ }}
+    >
+      {Name()}
+      <Col name="GraphBody">{hStatProps()}</Col>
+      <Box name="FormBody" align="center">
+        <Col>
+          <Grid
+            bAddRowHeader={editMode}
+            colOrder={[0, 1, 4, 2, 3, 5, 6]}
+            hHeader={hHeader()}
+            hFooter={hFooter}
+            iRows={Table.length}
+            cellStyle={{
+              borderBottom: editMode ? '2px solid white' : undefined,
+            }}
+            Values={Table}
+            bNoSel={!editMode}
+          >
+            {hBody()}
+          </Grid>
+        </Col>
+        {hRandom}
+      </Box>
+    </div>
+  );
 }
 
 export default StatInputForm;

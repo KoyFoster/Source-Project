@@ -99,6 +99,11 @@ function StatData(dataProps) {
     let Points = Header[3];
 
     switch (sTag) {
+      case 'Name': {
+        // eslint-disable-next-line
+        this.setData.setName(iT, value);
+        return value;
+      }
       case 'Quantity': // eslint-disable-next-line
         {
           value = parseFloat(value, 10);
