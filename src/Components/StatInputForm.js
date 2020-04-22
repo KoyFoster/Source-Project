@@ -213,10 +213,10 @@ function StatInputForm(props) {
           <Field
             type="number"
             name={'Value'}
-            style={{ textAlign: 'right', color: props.valColor }}
+            style={{ textAlign: 'right', ...props.vStyle }}
           />
         ) : (
-          <div name={'Value'} style={{ color: props.valColor }}>
+          <div name={'Value'} style={{ ...props.vStyle }}>
             [value]
           </div>
         ),
@@ -236,10 +236,7 @@ function StatInputForm(props) {
         ) : (
           <div name={'Min'}>[value]</div>
         ),
-        <Field
-          name={'Unit'}
-          style={{ width: '56px', color: props.valColor }}
-        />,
+        <Field name={'Unit'} style={{ width: '56px', ...props.vStyle }} />,
         <Field
           name={'References'}
           style={{
@@ -272,7 +269,7 @@ function StatInputForm(props) {
             width: '64px',
             overflow: 'hidden',
             textAlign: 'right',
-            color: props.valColor,
+            ...props.vStyle,
           }}
         >
           [value]
@@ -293,7 +290,7 @@ function StatInputForm(props) {
         />,
         <div
           name={'Unit'}
-          style={{ width: '56px', textAlign: 'left', color: props.valColor }}
+          style={{ width: '56px', textAlign: 'left', ...props.vStyle }}
         >
           [value]
         </div>,

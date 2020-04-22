@@ -101,6 +101,32 @@ function compileMenuItems() {
 }
 const tmplMenuItems = compileMenuItems();
 
+// User Define Style Enum
+const UDS = { 1: 'style', 2: 'tStyle', 2: 'vStyle' };
+// parse style func
+const UDSObj = (obj, styleData, bMerge) => {
+  const buffer = [];
+  for (let i = 0; i < styleData.length; i) {
+    let buffer2;
+
+    try {
+      buffer2 = JSON.parse(styleData[i]);
+      // console.log('SUCCESS:Parsed style object(', buffer2, ')');
+    } catch {
+      console.error('ERROR: Failed to parse style object(', styleData[i], ')');
+      return [];
+    }
+
+    buffer.push(bMerge && obj ? { ...obj[i], ...buffer2 } : buffer2);
+    // console.log(`buffer${i}:`, buffer);
+
+    i += 1;
+  } // End of for loop
+
+  // console.log('buffer:', buffer);
+  return buffer;
+};
+
 const defaultData = {
   Name: 'Default Data',
 
@@ -109,7 +135,10 @@ const defaultData = {
       [
         '+Visible Player Stats',
         'Calculated',
-        '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "valColor": "#21a536", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "paddingRight": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
+        [
+          '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "paddingRight": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
+          '{ "color": "#21a536" }',
+        ],
         [0, 0, 0] /* Totals(val, min, max) */,
         0 /* PointLimit */,
         false /* PointDiff */,
@@ -121,7 +150,10 @@ const defaultData = {
       [
         '-Primary Stats',
         'Fixed',
-        '{ "noGraph": true, "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
+        [
+          '{ "noGraph": true, "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
+          '{}',
+        ],
         [2358, 70, 12800] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -137,7 +169,7 @@ const defaultData = {
       [
         '-Secondary Stats',
         'Calculated',
-        '{}',
+        ['{}', '{}'],
         [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -154,7 +186,10 @@ const defaultData = {
       [
         '-Misc Stats',
         'Fixed',
-        '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
+        [
+          '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
+          '{}',
+        ],
         [-1, -1, -1] /* Totals(val, min, max) */,
         -1 /* PointLimit */,
         false /* PointDiff */,
@@ -283,21 +318,9 @@ function StatCard(props) {
     let valColor = undefined;
     for (let i = 0; i < data.Values.length * 2; i) {
       const iI = i / 2;
-      let noGraph = false;
       if (i % 2 === 0) {
-        try {
-          const tempObj = JSON.parse(getData().Values[iI][0][2]);
-          /* Pull non style properies */
-          noGraph = tempObj.noGraph;
-          if (tempObj.valColor) valColor = tempObj.valColor;
-          /* Merge Style Objects */
-          styleObj = {
-            ...styleObj,
-            ...tempObj,
-            noGraph: undefined,
-          };
-          // console.log(`styleObj${iI}:`, styleObj);
-        } catch {}
+        styleObj = [...UDSObj(styleObj, getData().Values[iI][0][2], true)];
+        // console.log('UDS[iI]:', UDS[iI]);
         hBuffer.push(
           <div
             key={`FormDiv2_${iI}`}
@@ -317,12 +340,11 @@ function StatCard(props) {
                 key={`DivForm_${iI}`}
                 name={`DivForm_${iI}`}
                 style={{
-                  ...styleObj,
+                  ...styleObj[0],
                 }}
               >
                 <StatInputForm
                   iD={iI}
-                  doNotGraph={JSON.parse(getData().Values[iI][0][2]).doNotGraph}
                   key={`StatDataForm_${iI}`}
                   name={`StatDataForm_${iI}`}
                   bCalc={getData().Values[iI][0][1] === 'Calculated'}
@@ -334,7 +356,7 @@ function StatCard(props) {
                   UpdatePointLimit={funcs.updateLimit}
                   UpdateCalcs={funcs.updateCalcs}
                   editMode={editMode}
-                  valColor={valColor}
+                  vStyle={styleObj[1]}
                 />
               </div>
             </Col>
@@ -366,9 +388,9 @@ function StatCard(props) {
     for (let i = 0; i < data.Values.length; i) {
       let noGraph = false;
       try {
-        const tempObj = JSON.parse(getData().Values[i][0][2]);
-        noGraph = tempObj.noGraph;
-        styleObj = { ...styleObj, ...tempObj, noGraph: undefined };
+        //const tempObj = JSON.parse(getData().Values[i][0][2]);
+        //noGraph = tempObj.noGraph;
+        // styleObj = { ...styleObj, ...tempObj, noGraph: undefined };
         // console.log(`styleObj${i}:`, styleObj);
       } catch {}
       if (!noGraph)
@@ -395,7 +417,7 @@ function StatCard(props) {
                   height: `${564}px`,
                   padding: padding,
 
-                  ...styleObj,
+                  // ...styleObj,
                 }}
               >
                 <Diagram
