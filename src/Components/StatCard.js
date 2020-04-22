@@ -133,13 +133,13 @@ const defaultData = {
   Values: [
     [
       [
-        '+Visible Player Stats',
+        '+Visible Player Stats-',
         'Calculated',
         [
           '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "paddingRight": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
           '{ "fontWeight": "bold" }',
-          '{ "color": "red" }',
-          '{ "color": "#21a536" }',
+          '{ }', // '{ "color": "red" }',
+          '{ }', // '{ "color": "#21a536" }',
         ],
         [0, 0, 0] /* Totals(val, min, max) */,
         0 /* PointLimit */,
@@ -150,7 +150,7 @@ const defaultData = {
     ],
     [
       [
-        '-Primary Stats',
+        '-Primary Stats-',
         'Fixed',
         [
           '{ "noGraph": true, "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
@@ -171,7 +171,7 @@ const defaultData = {
 
     [
       [
-        '-Secondary Stats',
+        '-Secondary Stats+',
         'Calculated',
         ['{}', '{}', '{}', '{}'],
         [0, 0, 0] /* Totals(val, min, max) */,
@@ -188,7 +188,7 @@ const defaultData = {
 
     [
       [
-        '-Misc Stats',
+        '-Misc Stats+',
         'Fixed',
         [
           '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
@@ -217,6 +217,11 @@ function StatCard(props) {
     update,
     ShowName: (index) => {
       return Values[index][0][0] ? Values[index][0][0][0] : '-';
+    },
+    ShowGraph: (index) => {
+      return Values[index][0][0]
+        ? Values[index][0][0][Values[index][0][0].length - 1]
+        : '-';
     },
     Name: (index) => {
       return Values[index][0][0];
@@ -394,13 +399,13 @@ function StatCard(props) {
 
     let styleObj = undefined;
     for (let i = 0; i < data.Values.length; i) {
-      let noGraph = false;
-      try {
-        //const tempObj = JSON.parse(getData().Values[i][0][2]);
-        //noGraph = tempObj.noGraph;
-        // styleObj = { ...styleObj, ...tempObj, noGraph: undefined };
-        // console.log(`styleObj${i}:`, styleObj);
-      } catch {}
+      const noGraph = getData().ShowGraph(i) !== '+';
+      // try {
+      //const tempObj = JSON.parse(getData().Values[i][0][2]);
+      //noGraph = tempObj.noGraph;
+      // styleObj = { ...styleObj, ...tempObj, noGraph: undefined };
+      // console.log(`styleObj${i}:`, styleObj);
+      // } catch {}
       if (!noGraph)
         hBuffer.push(
           <div

@@ -46,7 +46,8 @@ function StatInputForm(props) {
               e.target.dataset.y === undefined) &&
             e.target.name !== 'Quantity' &&
             e.target.name !== 'Name' &&
-            e.target.name !== 'ShowName'
+            e.target.name !== 'ShowName' &&
+            e.target.name !== 'ShowGraph'
           )
             return;
           const x = parseInt(e.target.dataset.x, 10);
@@ -355,11 +356,13 @@ function StatInputForm(props) {
 
   const Name = () => {
     const SN = props.data().ShowName(props.iD);
+    const SD = props.data().ShowGraph(props.iD);
     const bShow = SN === '+';
+    const bShowGraph = SD === '+';
     const val = props
       .data()
       .Name(props.iD)
-      .slice(1, props.data().Name(props.iD).length);
+      .slice(1, props.data().Name(props.iD).length - 1);
     return editMode ? (
       [
         <Field
@@ -377,6 +380,16 @@ function StatInputForm(props) {
             ...props.lStyle,
           }}
         />,
+        <div style={{ display: 'flex' }}>
+          <Field
+            name="ShowGraph"
+            type="checkbox"
+            checked={bShowGraph}
+            style={{ width: '16px' }}
+            value="Show"
+          />
+          Graph
+        </div>,
       ]
     ) : (
       <div

@@ -109,8 +109,21 @@ function StatData(dataProps) {
       }
       case 'Name': {
         // eslint-disable-next-line
-        this.setData.setName(iT, this.data().ShowName(iT) + value);
+        this.setData.setName(
+          iT,
+          this.data().ShowName(iT) + value + this.data().ShowGraph(iT),
+        );
         return value;
+      }
+      case 'ShowGraph': {
+        // eslint-disable-next-line
+        const newName =
+          this.data()
+            .Name(iT)
+            .slice(0, this.data().Name(iT).length - 1) + (checked ? '+' : '-');
+
+        this.setData.setName(iT, newName);
+        return checked;
       }
       case 'Quantity': // eslint-disable-next-line
         {
