@@ -82,6 +82,7 @@ function StatInputForm(props) {
         type="checkbox"
         name="PointDiff"
         checked={checked}
+        style={{ width: '16px' }}
         onChange={(e) => {
           setChecked(
             Update({
@@ -208,27 +209,37 @@ function StatInputForm(props) {
             textAlign: 'center',
           }}
         />,
+        bCalc === false ? (
+          <Field
+            type="number"
+            name={'Value'}
+            style={{ textAlign: 'right', color: props.valColor }}
+          />
+        ) : (
+          <div name={'Value'} style={{ color: props.valColor }}>
+            [value]
+          </div>
+        ),
+        bCalc === false ? (
+          <Field
+            type="number"
+            name={'Min'}
+            style={{
+              width: '56px',
+            }}
+          />
+        ) : (
+          <div name={'Min'}>[value]</div>
+        ),
+        bCalc === false ? (
+          <Field type="number" name={'Max'} style={{ width: '56px' }} />
+        ) : (
+          <div name={'Min'}>[value]</div>
+        ),
         <Field
-          type="number"
-          name={'Value'}
-          disabled={bCalc}
-          style={{ textAlign: 'right' }}
+          name={'Unit'}
+          style={{ width: '56px', color: props.valColor }}
         />,
-        <Field
-          type="number"
-          name={'Min'}
-          disabled={bCalc}
-          style={{
-            width: '56px',
-          }}
-        />,
-        <Field
-          type="number"
-          name={'Max'}
-          disabled={bCalc}
-          style={{ width: '56px' }}
-        />,
-        <Field name={'Unit'} style={{ width: '56px' }} />,
         <Field
           name={'References'}
           style={{
@@ -247,7 +258,7 @@ function StatInputForm(props) {
     } else {
       return [
         <div
-          name={'vTypes'}
+          name={'Types'}
           style={{
             width: '256px',
             textAlign: 'left',
@@ -256,40 +267,44 @@ function StatInputForm(props) {
           [value]
         </div>,
         <div
-          name={'vValue'}
+          name={'Value'}
           style={{
             width: '64px',
             overflow: 'hidden',
             textAlign: 'right',
+            color: props.valColor,
           }}
         >
           [value]
         </div>,
         <div
           type="number"
-          name={'vMin'}
+          name={'Min'}
           style={{
             display: 'none',
           }}
         />,
         <div
           type="number"
-          name={'vMax'}
+          name={'Max'}
           style={{
             display: 'none',
           }}
         />,
-        <div name={'vUnit'} style={{ width: '56px', textAlign: 'left' }}>
+        <div
+          name={'Unit'}
+          style={{ width: '56px', textAlign: 'left', color: props.valColor }}
+        >
           [value]
         </div>,
         <div
-          name={'vReferences'}
+          name={'References'}
           style={{
             display: 'none',
           }}
         />,
         <div
-          name={'vExpression'}
+          name={'Expression'}
           style={{
             display: 'none',
           }}
@@ -348,7 +363,13 @@ function StatInputForm(props) {
       .slice(1, props.data().Name(props.iD).length);
     return editMode ? (
       [
-        <Field name="ShowName" type="checkbox" checked={bShow} value="Show" />,
+        <Field
+          name="ShowName"
+          type="checkbox"
+          checked={bShow}
+          style={{ width: '16px' }}
+          value="Show"
+        />,
         <Field
           name={'Name'}
           value={val}
@@ -369,12 +390,7 @@ function StatInputForm(props) {
   };
 
   return (
-    <div
-      class="inherit"
-      style={{
-        color: 'black' /*  border: '1px solid black */,
-      }}
-    >
+    <div /* className="inherit" */>
       <div
         style={{
           display: 'flex',

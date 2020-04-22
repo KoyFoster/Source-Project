@@ -109,7 +109,7 @@ const defaultData = {
       [
         '+Visible Player Stats',
         'Calculated',
-        '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
+        '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "valColor": "#21a536", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "paddingRight": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
         [0, 0, 0] /* Totals(val, min, max) */,
         0 /* PointLimit */,
         false /* PointDiff */,
@@ -121,7 +121,7 @@ const defaultData = {
       [
         '-Primary Stats',
         'Fixed',
-        '{ "noGraph": true, "borderTop": "none", "borderBottom": "none", "paddingLeft": "16px", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
+        '{ "noGraph": true, "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
         [2358, 70, 12800] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -137,7 +137,7 @@ const defaultData = {
       [
         '-Secondary Stats',
         'Calculated',
-        '{ "borderTop": "none", "borderBottom": "none", "paddingLeft": "16px" }',
+        '{}',
         [0, 0, 0] /* Totals(val, min, max) */,
         2560 /* PointLimit */,
         false /* PointDiff */,
@@ -154,7 +154,7 @@ const defaultData = {
       [
         '-Misc Stats',
         'Fixed',
-        '{ "borderBottom": "4px solid #6e5735", "paddingLeft": "16px", "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
+        '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
         [-1, -1, -1] /* Totals(val, min, max) */,
         -1 /* PointLimit */,
         false /* PointDiff */,
@@ -170,7 +170,7 @@ const defaultData = {
 function StatCard(props) {
   const [Values, setValues] = useState(defaultData.Values);
   const [update, setUpdate] = useState(false);
-  const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
 
   const data = {
     update,
@@ -276,19 +276,26 @@ function StatCard(props) {
 
   // Temp Styles
   const padding = 3;
-  const margin = 3;
 
   const hForms = () => {
     const hBuffer = [];
     let styleObj = undefined;
+    let valColor = undefined;
     for (let i = 0; i < data.Values.length * 2; i) {
       const iI = i / 2;
       let noGraph = false;
       if (i % 2 === 0) {
         try {
           const tempObj = JSON.parse(getData().Values[iI][0][2]);
+          /* Pull non style properies */
           noGraph = tempObj.noGraph;
-          styleObj = { ...styleObj, ...tempObj, noGraph: undefined };
+          if (tempObj.valColor) valColor = tempObj.valColor;
+          /* Merge Style Objects */
+          styleObj = {
+            ...styleObj,
+            ...tempObj,
+            noGraph: undefined,
+          };
           // console.log(`styleObj${iI}:`, styleObj);
         } catch {}
         hBuffer.push(
@@ -327,9 +334,7 @@ function StatCard(props) {
                   UpdatePointLimit={funcs.updateLimit}
                   UpdateCalcs={funcs.updateCalcs}
                   editMode={editMode}
-                  style={{
-                    ...styleObj,
-                  }}
+                  valColor={valColor}
                 />
               </div>
             </Col>
@@ -388,7 +393,6 @@ function StatCard(props) {
                 style={{
                   width: `${564}px`,
                   height: `${564}px`,
-                  margin: margin,
                   padding: padding,
 
                   ...styleObj,
@@ -457,7 +461,6 @@ function StatCard(props) {
             MenuItems={tmplMenuItems}
             style={{
               flexGrow: 1,
-              margin: margin,
               marginBottom: 0,
               padding: padding,
             }}
@@ -468,7 +471,6 @@ function StatCard(props) {
           <Paper
             alignItems="top"
             style={{
-              margin: margin,
               marginRight: 0,
               padding: padding,
 
@@ -481,7 +483,6 @@ function StatCard(props) {
           <Paper
             alignItems="top"
             style={{
-              margin: margin,
               marginLeft: 0,
               padding: padding,
 

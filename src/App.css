@@ -176,6 +176,13 @@ input {
   background: inherit;
 }
 
+.value div,
+input {
+  color: inherit;
+  font: inherit;
+  background: inherit;
+}
+
 button:focus,
 input:focus {
   outline: none;
