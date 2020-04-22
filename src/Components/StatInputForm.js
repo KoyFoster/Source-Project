@@ -27,13 +27,17 @@ function StatInputForm(props) {
 
   /* Update Calculations on rerender */
   if (props.UpdateCalcs) props.UpdateCalcs();
+
   const Field = (PROPS) => {
-    const [value, setValue] = useState(PROPS.value);
+    const [value, setValue] = useState(
+      PROPS.type === 'checkbox' ? PROPS.checked : PROPS.value,
+    );
 
     return (
       <input
         {...PROPS}
-        value={value}
+        value={PROPS.type !== 'checkbox' ? value : PROPS.value}
+        checked={PROPS.type === 'checkbox' ? value : undefined}
         onChange={(e) => {
           // console.log('e:', 'dataset:', e.target.dataset, 'Name:', e.target.name, 'value:', e.target.value, );
           /* Validation: Skip if no coordinate are returned */
@@ -41,22 +45,21 @@ function StatInputForm(props) {
             (e.target.dataset.x === undefined ||
               e.target.dataset.y === undefined) &&
             e.target.name !== 'Quantity' &&
-            e.target.name !== 'Name'
+            e.target.name !== 'Name' &&
+            e.target.name !== 'ShowName'
           )
             return;
           const x = parseInt(e.target.dataset.x, 10);
           const y = parseInt(e.target.dataset.y, 10) - 1;
 
-          // console.log('SetValue');
-          setValue(
-            props.Update(props.iD, {
-              x: x,
-              y: y,
-              value: e.target.value,
-              checked: e.target.checked,
-              name: e.target.name,
-            }),
-          );
+          const val = props.Update(props.iD, {
+            x: x,
+            y: y,
+            value: e.target.value,
+            checked: e.target.checked,
+            name: e.target.name,
+          });
+          setValue(val);
         }}
         onBlur={() => {
           props.setData.Update();
@@ -337,25 +340,30 @@ function StatInputForm(props) {
         ];
 
   const Name = () => {
+    const SN = props.data().ShowName(props.iD);
+    const bShow = SN === '+';
+    const val = props
+      .data()
+      .Name(props.iD)
+      .slice(1, props.data().Name(props.iD).length);
     return editMode ? (
-      <Field
-        name={'Name'}
-        value={props.data().Name(props.iD)}
-        style={{
-          // display: bCalc ? 'initial' : 'none',
-          width: '128px',
-        }}
-      />
+      [
+        <Field name="ShowName" type="checkbox" checked={bShow} value="Show" />,
+        <Field
+          name={'Name'}
+          value={val}
+          style={{
+            width: '100%',
+          }}
+        />,
+      ]
     ) : (
       <div
         style={{
-          display: props.data().Name(props.iD)[0] === '+' ? 'initial' : 'none',
+          display: bShow ? 'initial' : 'none',
         }}
       >
-        {props
-          .data()
-          .Name(props.iD)
-          .slice(1, props.data().Name(props.iD).length)}
+        {val}
       </div>
     );
   };
@@ -363,9 +371,18 @@ function StatInputForm(props) {
   return (
     <div
       class="inherit"
-      style={{ color: 'black' /*  border: '1px solid black */ }}
+      style={{
+        color: 'black' /*  border: '1px solid black */,
+      }}
     >
-      {Name()}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        {Name()}
+      </div>
       <Col name="GraphBody">{hStatProps()}</Col>
       <Box name="FormBody" align="center">
         <Col>

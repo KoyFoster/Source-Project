@@ -99,9 +99,17 @@ function StatData(dataProps) {
     let Points = Header[3];
 
     switch (sTag) {
+      case 'ShowName': {
+        // eslint-disable-next-line
+        const newName =
+          (checked ? '+' : '-') +
+          this.data().Name(iT).slice(1, this.data().Name(iT).length);
+        this.setData.setName(iT, newName);
+        return checked;
+      }
       case 'Name': {
         // eslint-disable-next-line
-        this.setData.setName(iT, value);
+        this.setData.setName(iT, this.data().ShowName(iT) + value);
         return value;
       }
       case 'Quantity': // eslint-disable-next-line

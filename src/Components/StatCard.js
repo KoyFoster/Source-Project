@@ -174,6 +174,9 @@ function StatCard(props) {
 
   const data = {
     update,
+    ShowName: (index) => {
+      return Values[index][0][0] ? Values[index][0][0][0] : '-';
+    },
     Name: (index) => {
       return Values[index][0][0];
     },
