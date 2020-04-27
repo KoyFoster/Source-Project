@@ -105,6 +105,7 @@ const tmplMenuItems = compileMenuItems();
 const UDS = { 1: 'style', 2: 'tStyle', 2: 'vStyle' };
 // parse style func
 const UDSObj = (obj, styleData, bMerge) => {
+  if (!styleData) return [{}, {}, {}, {}];
   const buffer = [];
   for (let i = 0; i < styleData.length; i) {
     let buffer2;
@@ -114,7 +115,7 @@ const UDSObj = (obj, styleData, bMerge) => {
       // console.log('SUCCESS:Parsed style object(', buffer2, ')');
     } catch {
       console.error('ERROR: Failed to parse style object(', styleData[i], ')');
-      return [];
+      return [{}, {}, {}, {}];
     }
 
     buffer.push(bMerge && obj ? { ...obj[i], ...buffer2 } : buffer2);
@@ -131,12 +132,24 @@ const defaultData = {
   Name: 'Default Data',
 
   Values: [
+    // Start of Container Card
     [
+      '-Details-',
+      'Container',
+      [
+        '{"background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "padding": "16px", "margin": "4px"}',
+        '{}',
+        '{}',
+        '{}',
+      ],
+    ],
+    [
+      // Start of stat table
       [
         '+Visible Player Stats-',
         'Calculated',
         [
-          '{ "noGraph": true, "background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "borderBottom": "none", "padding": "4px", "paddingLeft": "16px", "paddingRight": "16px", "margin": "4px", "marginBottom": "0px", "borderTopLeftRadius": "4px", "borderTopRightRadius": "4px" }',
+          '{ }',
           '{ "fontWeight": "bold" }',
           '{ }', // '{ "color": "red" }',
           '{ }', // '{ "color": "#21a536" }',
@@ -145,15 +158,15 @@ const defaultData = {
         0 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Health', 0, 0, 0, '', '{"a": [1, 3]}', 'a * 12'],
-      ['Mana', 0, 0, 0, '', '{"a": [1, 5]}', 'a * 12'],
-    ],
+      ['Health', 0, 0, 0, '', '{"a": [2, 3]}', 'a * 12'],
+      ['Mana', 0, 0, 0, '', '{"a": [2, 5]}', 'a * 12'],
+    ], // End of stat table
     [
       [
         '-Primary Stats-',
         'Fixed',
         [
-          '{ "noGraph": true, "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
+          '{ "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
           '{ "fontWeight": "undefined" }',
           '{ "color": "undefined" }',
           '{}',
@@ -178,24 +191,19 @@ const defaultData = {
         2560 /* PointLimit */,
         false /* PointDiff */,
       ],
-      ['Melee Attack', 0, 0, 0, '', '{"a": [1, 1]}', 'a * 0.2'],
-      ['Range Attack', 0, 0, 0, '', '{"a": [1, 2]}', 'a * 0.2'],
-      ['Magic Attack', 0, 0, 0, '', '{"a": [1, 5]}', 'a * 0.2'],
-      ['Healing Power', 0, 0, 0, '', '{"a": [1, 4]}', 'a * 0.2'],
-      ['Physical Defense', 0, 0, 0, '', '{"a": [1, 3]}', 'a * 1'], // 71.35%
-      ['Magic Defense', 0, 0, 0, '', '{"a": [1, 3]}', 'a * 1'], // 23.81%
+      ['Melee Attack', 0, 0, 0, '', '{"a": [2, 1]}', 'a * 0.2'],
+      ['Range Attack', 0, 0, 0, '', '{"a": [2, 2]}', 'a * 0.2'],
+      ['Magic Attack', 0, 0, 0, '', '{"a": [2, 5]}', 'a * 0.2'],
+      ['Healing Power', 0, 0, 0, '', '{"a": [2, 4]}', 'a * 0.2'],
+      ['Physical Defense', 0, 0, 0, '', '{"a": [2, 3]}', 'a * 1'], // 71.35%
+      ['Magic Defense', 0, 0, 0, '', '{"a": [2, 3]}', 'a * 1'], // 23.81%
     ],
 
     [
       [
         '-Misc Stats+',
         'Fixed',
-        [
-          '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
-          '{}',
-          '{}',
-          '{}',
-        ],
+        ['{}', '{}', '{}', '{}'],
         [-1, -1, -1] /* Totals(val, min, max) */,
         -1 /* PointLimit */,
         false /* PointDiff */,
@@ -204,40 +212,216 @@ const defaultData = {
       ['Cast Time', 93, 0, 100, '%'],
       ['Attack Speed', 190, 0, 1200, ''], // (84.0%)
     ],
-    // Start of Container Card
+
+    ['-Details-', 'End', ['{}', '{}', '{}', '{}'], [], [], []],
+    [
+      '-Details-',
+      'Container',
+      [
+        '{"background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "padding": "16px", "margin": "4px"}',
+        '{}',
+        '{}',
+        '{}',
+      ],
+    ],
     [
       [
-        '-Details-',
-        'Container',
+        '-Melee Attack-',
+        'Fixed',
         ['{}', '{}', '{}', '{}'],
-        [
-          [
-            [
-              '-Misc Stats+',
-              'Fixed',
-              [
-                '{ "borderBottom": "4px solid #6e5735", "paddingBottom": "16px",  "marginTop": "0px", "borderBottomLeftRadius": "4px", "borderBottomRightRadius": "4px"  }',
-                '{}',
-                '{}',
-                '{}',
-              ],
-              [-1, -1, -1] /* Totals(val, min, max) */,
-              -1 /* PointLimit */,
-              false /* PointDiff */,
-            ],
-            ['Move Speed', 5.4, 5.4, 10, 'm/s'],
-            ['Cast Time', 93, 0, 100, '%'],
-            ['Attack Speed', 190, 0, 1200, ''], // (84.0%)
-          ],
-        ],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
       ],
+      ['Melee Attack Speed', 1, 1, 10, ''],
+      ['Melee Accuracy', 1, 1, 10, ''],
+      ['Melee Critical Status', 1, 1, 10, ''],
+      ['Melee Critical Damage', 1, 1, 10, ''],
+      ['Backstab Melee Damage', 1, 1, 10, ''],
+      ['Melee Skill Damage', 1, 1, 10, ''],
+      ['PvE Melee Skills', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Ranged Attack-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Ranged Attack Speed', 1, 1, 10, ''],
+      ['Ranged Accuracy', 1, 1, 10, ''],
+      ['Ranged Critical Status', 1, 1, 10, ''],
+      ['Ranged Critical Damage', 1, 1, 10, ''],
+      ['Backstab Ranged Damage', 1, 1, 10, ''],
+      ['Ranged Skill Damage', 1, 1, 10, ''],
+      ['PvE Melee Skills', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Magic Attack-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Magic Attack Speed', 1, 1, 10, ''],
+      ['Magic Accuracy', 1, 1, 10, ''],
+      ['Magic Critical Status', 1, 1, 10, ''],
+      ['Magic Critical Damage', 1, 1, 10, ''],
+      ['Backstab Magic Damage', 1, 1, 10, ''],
+      ['Magic Skill Damage', 1, 1, 10, ''],
+      ['PvE Magic Skills', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Misc-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Focus Attack Speed', 1, 1, 10, ''],
+      ['Shield Defense Penetration Rate', 1, 1, 10, ''],
+      ['Shield Defense Penetration', 1, 1, 10, ''],
+      ['Defense Penetration', 1, 1, 10, ''],
+      ['Magic Defense Penetration', 1, 1, 10, ''],
+    ],
+    ['-Details-', 'End', ['{}', '{}', '{}', '{}'], [], [], []],
+    [
+      '-Details-',
+      'Container',
+      [
+        '{"background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "padding": "16px", "margin": "4px"}',
+        '{}',
+        '{}',
+        '{}',
+      ],
+    ],
+    [
+      [
+        '-Defense-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Parry Rate', 1, 1, 10, ''],
+      ['Shield Block Rate', 1, 1, 10, ''],
+      ['Evasion', 1, 1, 10, ''],
+      ['Resiliance', 1, 1, 10, ''],
+      ['Toughness', 1, 1, 10, ''],
+      ['Siege Damage Reduction', 1, 1, 10, ''],
+      ['PvE Damage Reduction', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Melee Defense-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Melee Damage Reduction', 1, 1, 10, ''],
+      ['Fixed Melee Damage Reduction', 1, 1, 10, ''],
+      ['PvE Melee Damage Reduction', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Ranged Defense-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Ranged Damage Reduction', 1, 1, 10, ''],
+      ['Fixed Ranged Damage Reduction', 1, 1, 10, ''],
+      ['PvE Ranged Damage Reduction', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Magic Defense-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Magic Damage Reduction', 1, 1, 10, ''],
+      ['Fixed Magic Damage Reduction', 1, 1, 10, ''],
+      ['PvE Magic Damage Reduction', 1, 1, 10, ''],
+    ],
+
+    ['-Details-', 'End', ['{}', '{}', '{}', '{}'], [], [], []],
+    [
+      '-Details-',
+      'Container',
+      [
+        '{"background": "#faf8e8", "color": "#6e5735", "fontFamily": "NotoSansKR", "border": "4px solid #6e5735", "padding": "16px", "margin": "4px"}',
+        '{}',
+        '{}',
+        '{}',
+      ],
+    ],
+    [
+      [
+        '-Heal-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Critical Heal Rate', 1, 1, 10, ''],
+      ['Critical Heal Bonus', 1, 1, 10, ''],
+      ['Healing', 1, 1, 10, ''],
+      ['Healing Skill Damage', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Regeneration-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Heal Regen', 1, 1, 10, ''],
+      ['Continuous Heal Regen', 1, 1, 10, ''],
+      ['Mana Regen', 1, 1, 10, ''],
+      ['Post-Cast Mana Regen', 1, 1, 10, ''],
+    ],
+    [
+      [
+        '-Misc-',
+        'Fixed',
+        ['{}', '{}', '{}', '{}'],
+        [-1, -1, -1] /* Totals(val, min, max) */,
+        -1 /* PointLimit */,
+        false /* PointDiff */,
+      ],
+      ['Received Healing', 1, 1, 10, ''],
+      ['Increased experience gain', 1, 1, 10, ''],
+      ['Loot Drop Rate', 1, 1, 10, ''],
+      ['Gold earned from hunting', 1, 1, 10, ''],
+      ['Stealth Detection', 1, 1, 10, ''],
     ],
   ],
 };
 
 // Stat Card
 function StatCard(props) {
-  const [Values, setValues] = useState(defaultData.Values);
+  const initValues = (values = defaultData.Values) => {
+    return values;
+  };
+
+  const [Values, setValues] = useState(initValues());
   const [update, setUpdate] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
@@ -339,7 +523,7 @@ function StatCard(props) {
   //     }
   //     sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
   //   }
-  //   //console.log('data.Values:', Values, 'Name:', Name);
+  //   //console.log('ValuesValues:', Values, 'Name:', Name);
 
   //   return String(
   //     // 'koyfoster.github.io/#/StatCard/' +
@@ -354,7 +538,7 @@ function StatCard(props) {
   // Temp Styles
   const padding = 3;
 
-  const hForm = (index, styleObj) => {
+  const hContainer = (form, index, styleObj) => {
     return (
       <div
         key={`FormDiv2_${index}`}
@@ -377,66 +561,86 @@ function StatCard(props) {
               ...styleObj[0],
             }}
           >
-            <StatInputForm
-              iD={index}
-              key={`StatDataForm_${index}`}
-              name={`StatDataForm_${index}`}
-              bCalc={getData().Values[index][0][1] === 'Calculated'}
-              Values={getData().Values[index]}
-              data={getData}
-              setData={dataFuncs}
-              Update={funcs.update}
-              RandomizeStats={funcs.randomize}
-              UpdatePointLimit={funcs.updateLimit}
-              UpdateCalcs={funcs.updateCalcs}
-              editMode={editMode}
-              lStyle={styleObj[1]}
-              tStyle={styleObj[2]}
-              vStyle={styleObj[3]}
-            />
+            {form}
           </div>
         </Col>
       </div>
     );
   };
-  const hForms = () => {
-    let hFormList = [];
+
+  const hForm = (cardData, index, styleObj) => {
+    const length = styleObj ? styleObj.length : 0;
+    return (
+      <StatInputForm
+        iD={index}
+        key={`StatDataForm_${index}`}
+        name={`StatDataForm_${index}`}
+        bCalc={cardData[index][0][1] === 'Calculated'}
+        Values={cardData[index]}
+        data={getData}
+        setData={dataFuncs}
+        Update={funcs.update}
+        RandomizeStats={funcs.randomize}
+        UpdatePointLimit={funcs.updateLimit}
+        UpdateCalcs={funcs.updateCalcs}
+        editMode={editMode}
+        lStyle={length > 0 ? styleObj[1] : undefined}
+        tStyle={length > 1 ? styleObj[2] : undefined}
+        vStyle={length > 2 ? styleObj[3] : undefined}
+      />
+    );
+  };
+
+  // This uses recursion
+  const hCards = (cardData = null, depth = 0, parentStyle = undefined) => {
+    let hFormList = undefined;
     let hContainerList = [];
+    let bContained = false;
     let styleObj = undefined;
-    for (let i = 0; i < data.Values.length * 2; i) {
+
+    // Interate through Card Data
+    for (let i = depth; i < cardData.length * 2; i) {
       const iI = i / 2;
       if (i % 2 === 0) {
-        styleObj = [...UDSObj(styleObj, getData().Values[iI][0][2], true)];
-        /* Push New Card */
-        // console.log('Container Card', getData().Values[iI][0][1]);
-        if (getData().Values[iI][0][1] === 'Container') {
-          // Check if card type is 'Container'
-          // Container everything up until now
-          if (hFormList !== undefined) {
-            hContainerList.push(
-              <div
-                key={`ContainedCard${0}`}
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {hFormList}
-              </div>,
-            );
-            /* Clear FormList */
-            hFormList = undefined;
-          } // End of FormList Push
-          // Start New List and Create New Container
-          hFormList = [hForm(iI, styleObj)];
+        console.log('CardName:', cardData[iI][1]);
+        /* Check for sub data */
+        if (cardData[iI][1] === 'End') {
+          depth += 1;
+          break;
+        } else if (cardData[iI][1] === 'Container') {
+          styleObj = [...UDSObj(styleObj, cardData[iI][2], true)];
+          const statCard = cardData;
+
+          console.log('styleObj:', styleObj);
+
+          console.log('Depth 0: ', i + 2);
+          const buffer = hCards(statCard, i + 2, styleObj);
+          if (buffer) {
+            console.log('Depth 1: ', buffer.depth);
+            depth = buffer.depth;
+            i = depth;
+            hFormList
+              ? hFormList.push(buffer.card)
+              : (hFormList = [buffer.card]);
+          }
         } else {
-          hFormList.push(hForm(iI, styleObj));
+          styleObj = [...UDSObj(styleObj, cardData[iI][0][2], true)];
+          const form = hForm(cardData, iI, styleObj);
+
+          /* Push New Card */
+          hFormList ? hFormList.push(form) : (hFormList = [form]);
+          // console.log('Form Pushed:', cardData[iI], 'styleObj:', styleObj);
         }
-      } else
+      } // Push Spacer
+      else {
+        // console.log('Spacer Push');
         hFormList
           ? hFormList.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>)
-          : (hFormList = [<div key={`FormDivSpacer_${i}`} style={{}}></div>]); // Push Spacer
+          : (hFormList = [<div key={`FormDivSpacer_${i}`} style={{}}></div>]);
+      }
+
       i += 1;
+      depth = i;
     }
 
     // Check if hFormList still have contents and add it to hContainerlist if so
@@ -447,6 +651,7 @@ function StatCard(props) {
           style={{
             display: 'flex',
             flexWrap: 'wrap',
+            ...(parentStyle ? parentStyle[0] : undefined),
           }}
         >
           {hFormList}
@@ -456,17 +661,22 @@ function StatCard(props) {
       hFormList = undefined;
     } // End of FormList Push
 
-    return (
-      <div
-        key={`FormDiv`}
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-        }}
-      >
-        {hContainerList}
-      </div>
-    );
+    // Reduce depth before returning
+    // depth -= 1;
+    return {
+      depth: depth,
+      card: (
+        <div
+          key={`FormDiv`}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+          }}
+        >
+          {hContainerList}
+        </div>
+      ),
+    };
   };
 
   const hDiagrams = () => {
@@ -475,12 +685,6 @@ function StatCard(props) {
     let styleObj = undefined;
     for (let i = 0; i < data.Values.length; i) {
       const noGraph = getData().ShowGraph(i) !== '+';
-      // try {
-      //const tempObj = JSON.parse(getData().Values[i][0][2]);
-      //noGraph = tempObj.noGraph;
-      // styleObj = { ...styleObj, ...tempObj, noGraph: undefined };
-      // console.log(`styleObj${i}:`, styleObj);
-      // } catch {}
       if (!noGraph)
         hBuffer.push(
           <div
@@ -587,7 +791,7 @@ function StatCard(props) {
               flex: 1,
             }}
           >
-            <Row style={{}}>{hForms()}</Row>
+            <Row>{hCards(getData().Values).card}</Row>
           </Paper>
 
           <Paper
@@ -599,7 +803,7 @@ function StatCard(props) {
               flex: 1.8,
             }}
           >
-            <Row style={{}}>{hDiagrams()}</Row>
+            {/* {<Row style={{}}>{hDiagrams()}</Row>} */}
           </Paper>
         </Row>
       </Col>

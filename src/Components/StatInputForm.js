@@ -9,6 +9,7 @@ function StatInputForm(props) {
   const Table = props.data().vTable(props.iD);
   const editMode = props.editMode;
   const bCalc = props.bCalc;
+  console.log('props.iD:', props.iD);
 
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
@@ -257,6 +258,7 @@ function StatInputForm(props) {
     } else {
       return [
         <div
+          key={'Types'}
           name={'Types'}
           style={{
             width: '256px',
@@ -267,6 +269,7 @@ function StatInputForm(props) {
           [value]
         </div>,
         <div
+          key={'Value'}
           name={'Value'}
           style={{
             width: '64px',
@@ -279,6 +282,7 @@ function StatInputForm(props) {
         </div>,
         <div
           type="number"
+          key={'Min'}
           name={'Min'}
           style={{
             display: 'none',
@@ -286,24 +290,28 @@ function StatInputForm(props) {
         />,
         <div
           type="number"
+          key={'Max'}
           name={'Max'}
           style={{
             display: 'none',
           }}
         />,
         <div
+          key={'Unit'}
           name={'Unit'}
           style={{ width: '56px', textAlign: 'left', ...props.vStyle }}
         >
           [value]
         </div>,
         <div
+          key={'References'}
           name={'References'}
           style={{
             display: 'none',
           }}
         />,
         <div
+          key={'Expression'}
           name={'Expression'}
           style={{
             display: 'none',
@@ -316,7 +324,7 @@ function StatInputForm(props) {
   const hFooter =
     bCalc === true ||
     !editMode ||
-    (props.data().PointTotal(props.iD) === -1 &&
+    (props.data().PointTotal(props.Values) === -1 &&
       props.data().PointMin(props.iD) === -1 &&
       props.data().PointMax(props.iD) === -1)
       ? undefined
