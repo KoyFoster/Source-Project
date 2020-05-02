@@ -9,7 +9,6 @@ function StatInputForm(props) {
   const Table = props.data().vTable(props.iD);
   const editMode = props.editMode;
   const bCalc = props.bCalc;
-  console.log('props.iD:', props.iD);
 
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
@@ -324,7 +323,7 @@ function StatInputForm(props) {
   const hFooter =
     bCalc === true ||
     !editMode ||
-    (props.data().PointTotal(props.Values) === -1 &&
+    (props.data().PointTotal(props.iD) === -1 &&
       props.data().PointMin(props.iD) === -1 &&
       props.data().PointMax(props.iD) === -1)
       ? undefined

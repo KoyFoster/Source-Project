@@ -538,36 +538,6 @@ function StatCard(props) {
   // Temp Styles
   const padding = 3;
 
-  const hContainer = (form, index, styleObj) => {
-    return (
-      <div
-        key={`FormDiv2_${index}`}
-        style={{
-          flexShrink: 0,
-          flex: 0,
-
-          display: 'flex',
-        }}
-      >
-        <Col
-          style={{
-            alignSelf: 'flex-start', //'flex-start'
-          }}
-        >
-          <div
-            key={`DivForm_${index}`}
-            name={`DivForm_${index}`}
-            style={{
-              ...styleObj[0],
-            }}
-          >
-            {form}
-          </div>
-        </Col>
-      </div>
-    );
-  };
-
   const hForm = (cardData, index, styleObj) => {
     const length = styleObj ? styleObj.length : 0;
     return (
@@ -592,88 +562,88 @@ function StatCard(props) {
   };
 
   // This uses recursion
-  const hCards = (cardData = null, depth = 0, parentStyle = undefined) => {
+  const hCards = (
+    cardData = null,
+    depth = 0,
+    index = 0,
+    parentStyle = undefined,
+  ) => {
     let hFormList = undefined;
     let hContainerList = [];
-    let bContained = false;
     let styleObj = undefined;
+    let hFormBuffer = undefined;
 
     // Interate through Card Data
-    for (let i = depth; i < cardData.length * 2; i) {
+    for (let i = index; i < cardData.length * 2; i) {
       const iI = i / 2;
+      hFormBuffer = [];
       if (i % 2 === 0) {
-        console.log('CardName:', cardData[iI][1]);
         /* Check for sub data */
         if (cardData[iI][1] === 'End') {
-          depth += 1;
+          i += 1;
           break;
         } else if (cardData[iI][1] === 'Container') {
           styleObj = [...UDSObj(styleObj, cardData[iI][2], true)];
           const statCard = cardData;
 
-          console.log('styleObj:', styleObj);
-
-          console.log('Depth 0: ', i + 2);
-          const buffer = hCards(statCard, i + 2, styleObj);
+          const buffer = hCards(statCard, depth + 1, i + 2, styleObj);
           if (buffer) {
-            console.log('Depth 1: ', buffer.depth);
-            depth = buffer.depth;
-            i = depth;
-            hFormList
-              ? hFormList.push(buffer.card)
-              : (hFormList = [buffer.card]);
+            index = buffer.index;
+            i = index;
+            hFormBuffer = buffer.card;
           }
         } else {
           styleObj = [...UDSObj(styleObj, cardData[iI][0][2], true)];
-          const form = hForm(cardData, iI, styleObj);
-
-          /* Push New Card */
-          hFormList ? hFormList.push(form) : (hFormList = [form]);
-          // console.log('Form Pushed:', cardData[iI], 'styleObj:', styleObj);
+          hFormBuffer = hForm(cardData, iI, styleObj);
         }
       } // Push Spacer
-      else {
-        // console.log('Spacer Push');
-        hFormList
-          ? hFormList.push(<div key={`FormDivSpacer_${i}`} style={{}}></div>)
-          : (hFormList = [<div key={`FormDivSpacer_${i}`} style={{}}></div>]);
-      }
 
+      /* Push New Card */
+      if (hFormBuffer) {
+        hFormList ? hFormList.push(hFormBuffer) : (hFormList = [hFormBuffer]);
+      }
       i += 1;
-      depth = i;
-    }
+      index = i;
+    } // end of for loop
 
     // Check if hFormList still have contents and add it to hContainerlist if so
     if (hFormList !== undefined) {
       hContainerList.push(
-        <div
-          key={`ContainedCard${0}`}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            ...(parentStyle ? parentStyle[0] : undefined),
-          }}
-        >
-          {hFormList}
-        </div>,
+        depth ? (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexShrink: 1,
+            }}
+          >
+            {hFormList}
+          </div>
+        ) : (
+          hFormList
+        ),
       );
       /* Clear FormList */
       hFormList = undefined;
     } // End of FormList Push
 
-    // Reduce depth before returning
-    // depth -= 1;
     return {
-      depth: depth,
+      depth: depth - 1,
+      index: index,
       card: (
-        <div
-          key={`FormDiv`}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-          }}
-        >
-          {hContainerList}
+        <div>
+          <div
+            key={`ContainedCard${0}`}
+            style={{
+              ...(parentStyle ? parentStyle[0] : undefined),
+
+              display: 'inline-flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
+            {hContainerList}
+          </div>
         </div>
       ),
     };
@@ -687,41 +657,23 @@ function StatCard(props) {
       const noGraph = getData().ShowGraph(i) !== '+';
       if (!noGraph)
         hBuffer.push(
-          <div
-            key={`GiagDiv2_${i}`}
+          <Paper
+            key={`PaperDiagram_${i}`}
+            name={`PaperDiagram_${i}`}
             style={{
-              flexShrink: 1,
-              alignSelf: 'flex-start', //'flex-start'
-
-              display: 'flex',
+              width: `${564}px`,
+              height: `${564}px`,
+              padding: padding,
             }}
           >
-            <Col
-              style={{
-                alignSelf: 'flex-start', //'flex-start'
-              }}
-            >
-              <Paper
-                key={`PaperDiagram_${i}`}
-                name={`PaperDiagram_${i}`}
-                style={{
-                  width: `${564}px`,
-                  height: `${564}px`,
-                  padding: padding,
-
-                  // ...styleObj,
-                }}
-              >
-                <Diagram
-                  key={`StatDataDiagram_${i}`}
-                  name={`StatDataDiagram_${i}`}
-                  iStrt={1}
-                  data={{ Values: Values[i] }}
-                  funcs={funcs}
-                />
-              </Paper>
-            </Col>
-          </div>,
+            <Diagram
+              key={`StatDataDiagram_${i}`}
+              name={`StatDataDiagram_${i}`}
+              iStrt={1}
+              data={{ Values: Values[i] }}
+              funcs={funcs}
+            />
+          </Paper>,
         );
       i += 1;
     }
@@ -731,6 +683,7 @@ function StatCard(props) {
         style={{
           display: 'flex',
           flexWrap: 'wrap',
+          alignContent: 'flex-start',
         }}
       >
         {hBuffer}
@@ -744,7 +697,6 @@ function StatCard(props) {
       name="body"
       style={{
         display: 'flex',
-        justifyContent: 'center',
       }}
       bgcolor="darkGrey"
     >
@@ -756,15 +708,18 @@ function StatCard(props) {
         setData={dataFuncs}
         funcs={funcs}
       />
-      <Col name="mainColumn">
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <Button
-            onClick={() => {
-              setEditMode(!editMode);
-            }}
-          >
-            Edit
-          </Button>
+      <Col style={{ flexGrow: 1 }}>
+        <Row>
+          <Paper style={{ margin: 4, padding: 4 }}>
+            <Button
+              style={{ width: '128px' }}
+              onClick={() => {
+                setEditMode(!editMode);
+              }}
+            >
+              Edit
+            </Button>
+          </Paper>
           <TemplateSelector
             Name={defaultData.Name}
             setData={dataFuncs}
@@ -774,36 +729,40 @@ function StatCard(props) {
             }
             MenuItems={tmplMenuItems}
             style={{
-              flexGrow: 1,
               marginBottom: 0,
               padding: padding,
+              flexGrow: 1,
             }}
           />
           <StatCode /* GetURLCode={GetURLCode} */ />
-        </div>
-        <Row name="mainRow">
+        </Row>
+        <Row>
           <Paper
             alignItems="top"
             style={{
-              marginRight: 0,
-              padding: padding,
-
+              display: 'flex',
+              flexGrow: 1,
               flex: 1,
+              margin: '1px',
+              marginLeft: 0,
+              padding: padding,
             }}
           >
-            <Row>{hCards(getData().Values).card}</Row>
+            {hCards(getData().Values).card}
           </Paper>
 
           <Paper
             alignItems="top"
             style={{
+              display: 'flex',
+              flexGrow: 1,
+              flex: 1.8,
+              margin: '1px',
               marginLeft: 0,
               padding: padding,
-
-              flex: 1.8,
             }}
           >
-            {/* {<Row style={{}}>{hDiagrams()}</Row>} */}
+            {hDiagrams()}
           </Paper>
         </Row>
       </Col>
