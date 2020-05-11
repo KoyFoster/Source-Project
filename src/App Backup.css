@@ -2,11 +2,93 @@
   text-align: top;
 }
 
+text {
+  display: inline-block;
+  height: 16px;
+  width: 48px;
+  text-align: right;
+}
+
+label {
+  padding: 4px;
+  display: inline;
+  text-align: right;
+  align-content: center;
+}
+
 input {
   display: inline-flexbox;
   height: 16px;
   width: 48px;
   vertical-align: middle;
+}
+
+.Header-default {
+  display: flex;
+  justify-content: center;
+
+  background-color: #171a21;
+  height: 102px; /*Set Header Height*/
+  width: 1024; /*Set Header Height*/
+  /*border: 1px solid green;*/ /*For some reason some hard margin exists at the top if I don't set border up like this*/
+}
+.Header-profile {
+  display: flex;
+  justify-content: center;
+  /*border: 1px solid green;*/ /*For some reason some hard margin exists at the top if I don't set border up like this*/
+}
+
+Button {
+  display: inline;
+  color: lightgray;
+  background: inherit;
+}
+
+.Button-install {
+  display: inline-flex;
+
+  background: #5c7e10;
+  border: black;
+  text-align: top;
+
+  padding-top: 4.5px;
+  padding-bottom: 4.5px;
+  padding-right: 16px;
+  padding-left: 16px;
+  margin: 2px;
+
+  text-decoration: none;
+}
+
+.Card {
+  display: flex;
+  flex: 1; /*1 for fill in the space of the parent*/
+
+  border: 1px solid rgb(123, 79, 245);
+}
+
+.Card-noflex {
+  flex: 2;
+  border: 1px solid green;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+
+.Link-header,
+.grid {
+  color: white;
+}
+
+.Div-row {
+  display: flex;
+
+  border: #09d3ac;
+}
+
+.font-default {
+  background: inherit;
 }
 
 .grid1 {
@@ -24,6 +106,9 @@ input {
   border: 2px solid rgb(255, 208, 0);
 }
 
+img {
+}
+
 example {
   align-content: center;
   align-items: center;
@@ -31,12 +116,26 @@ example {
   color: #3b1e1e;
 }
 
-/* Web Kit Shit*/
+.font-default,
+text,
+label,
+.Link-header,
+.grid1,
+.grid2,
+.Button-install {
+  color: #171a21;
+  font-size: 14px;
+  text-decoration: none;
+  font-family: 'Arial';
+}
+
 input[type='number'] {
   -webkit-appearance: none;
+  border: none;
 }
 input[type='text'] {
   -webkit-appearance: none;
+  border: none;
 }
 input[type='date']::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -48,6 +147,7 @@ input[type='date']::-webkit-clear-button {
 input[type='date']::-ms-clear {
   display: none;
 }
+
 input[type='time']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   display: none;
@@ -55,6 +155,7 @@ input[type='time']::-webkit-inner-spin-button {
 input[type='time']::-webkit-clear-button {
   display: none;
 }
+
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;

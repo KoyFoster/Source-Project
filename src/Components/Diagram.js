@@ -95,10 +95,12 @@ function Diagram(props) {
           return phase;
         }
         setAnimTL(() => {
-          return iCenter - iCenter / (Number(phase) + speed);
+          const denominator = Number(phase) + speed;
+          return denominator ? iCenter - iCenter / denominator : 0;
         });
         setAnimBR(() => {
-          return iBaseSize / (Number(phase) + speed);
+          const denominator = Number(phase) + speed;
+          return denominator ? iBaseSize / denominator : 0;
         });
 
         return Number(phase) + speed;
@@ -133,16 +135,20 @@ function Diagram(props) {
     const html = [];
 
     let iFlip = Values[getStart()][4] === '%' ? 1 : 0;
-    let vecScale = Values[getStart()][1] * (1 / Values[getStart()][3]);
+    let vecScale = Values[getStart()][3]
+      ? Values[getStart()][1] * (1 / Values[getStart()][3])
+      : 0;
+
     if (iFlip) {
       vecScale -= iFlip;
       vecScale *= -1;
     }
-
     let lastPoint = new Vector2(vector[1][0], vector[1][1] * vecScale);
 
     iFlip = Values[1 + getStart()][4] === '%' ? 1 : 0;
-    vecScale = Values[1 + getStart()][1] * (1 / Values[1 + getStart()][3]);
+    vecScale = Values[1 + getStart()][3]
+      ? Values[1 + getStart()][1] * (1 / Values[1 + getStart()][3])
+      : 0;
     if (iFlip) {
       vecScale -= iFlip;
       vecScale *= -1;
@@ -171,8 +177,9 @@ function Diagram(props) {
       i += 1;
       if (i !== iLen) {
         let iFlip = Values[i + getStart()][4] === '%' ? 1 : 0;
-        let vecScale =
-          Values[i + getStart()][1] * (1 / Values[i + getStart()][3]);
+        let vecScale = Values[i + getStart()][3]
+          ? Values[i + getStart()][1] * (1 / Values[i + getStart()][3])
+          : 0;
         if (iFlip) {
           vecScale -= iFlip;
           vecScale *= -1;
@@ -184,8 +191,9 @@ function Diagram(props) {
         // Get NExt Point
         const iNext = i + 1 < iLen ? i + 1 : 0;
         iFlip = Values[iNext + getStart()][4] === '%' ? 1 : 0;
-        vecScale =
-          Values[iNext + getStart()][1] * (1 / Values[iNext + getStart()][3]);
+        vecScale = Values[iNext + getStart()][3]
+          ? Values[iNext + getStart()][1] * (1 / Values[iNext + getStart()][3])
+          : 0;
         if (iFlip) {
           vecScale -= iFlip;
           vecScale *= -1;

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Box, TextField } from '@material-ui/core';
-import { Row, Col } from './DivGrid.js';
 import '../App.css';
+import React, { useState } from 'react';
+import { Row, Col } from './DivGrid.js';
 import Grid from './Forms/Grid';
+import TogglePopup from './TogglePopup';
 
 //User Input Class
 function StatInputForm(props) {
@@ -101,18 +101,14 @@ function StatInputForm(props) {
     bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
     ) : (
-      <TextField
-        label="Stat Cap:"
-        type="number"
-        name="Limit"
-        value={props.data().PointLimit(props.iD)}
-        onChange={(event) =>
-          Update({
-            name: 'Level Cap',
-            value: parseFloat(event.target.value, 10),
-          })
-        }
-      />
+      <div>
+        Stat Cap:
+        <Field
+          type="number"
+          name="Limit"
+          value={props.data().PointLimit(props.iD)}
+        />
+      </div>
     );
   const hTotal =
     bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
@@ -137,21 +133,23 @@ function StatInputForm(props) {
 
   const hStatProps = () => {
     if (editMode) {
-      return [
-        <Row name="QRow">
-          Stats:{' '}
-          <Field
-            type="number"
-            name="Quantity"
-            value={Number(Table.length)}
-          ></Field>
-          {hLimit}
-        </Row>,
-        <Row name="PDRow" alignItems="center">
-          {PointDiff()}
-          {hTotal}
-        </Row>,
-      ];
+      return (
+        <Col name="GraphBody">
+          <Row name="QRow">
+            Stats:{' '}
+            <Field
+              type="number"
+              name="Quantity"
+              value={Number(Table.length)}
+            ></Field>
+            {hLimit}
+          </Row>
+          <Row name="PDRow" alignItems="center">
+            {PointDiff()}
+            {hTotal}
+          </Row>
+        </Col>
+      );
     } else {
       return '';
     }
@@ -205,6 +203,7 @@ function StatInputForm(props) {
       return [
         <Field
           name={'Types'}
+          key={'Types'}
           style={{
             width: '136px',
             textAlign: 'center',
@@ -215,10 +214,11 @@ function StatInputForm(props) {
           <Field
             type="number"
             name={'Value'}
+            key={'Value'}
             style={{ textAlign: 'right', ...props.vStyle }}
           />
         ) : (
-          <div name={'Value'} style={{ ...props.vStyle }}>
+          <div name={'Value'} key={'Value'} style={{ ...props.vStyle }}>
             [value]
           </div>
         ),
@@ -226,21 +226,36 @@ function StatInputForm(props) {
           <Field
             type="number"
             name={'Min'}
+            key={'Min'}
             style={{
               width: '56px',
             }}
           />
         ) : (
-          <div name={'Min'}>[value]</div>
+          <div name={'Min'} key={'Min'}>
+            [value]
+          </div>
         ),
         bCalc === false ? (
-          <Field type="number" name={'Max'} style={{ width: '56px' }} />
+          <Field
+            type="number"
+            name={'Max'}
+            key={'Max'}
+            style={{ width: '56px' }}
+          />
         ) : (
-          <div name={'Min'}>[value]</div>
+          <div name={'Min'} key={'Min'}>
+            [value]
+          </div>
         ),
-        <Field name={'Unit'} style={{ width: '56px', ...props.vStyle }} />,
+        <Field
+          name={'Unit'}
+          key={'Unit'}
+          style={{ width: '56px', ...props.vStyle }}
+        />,
         <Field
           name={'References'}
+          key={'References'}
           style={{
             display: bCalc ? 'initial' : 'none',
             width: '64px',
@@ -248,6 +263,7 @@ function StatInputForm(props) {
         />,
         <Field
           name={'Expression'}
+          key={'Expression'}
           style={{
             display: bCalc ? 'initial' : 'none',
             width: '128px',
@@ -371,14 +387,23 @@ function StatInputForm(props) {
       .Name(props.iD)
       .slice(1, props.data().Name(props.iD).length - 1);
     return editMode ? (
-      [
-        <Field
-          name="ShowName"
-          type="checkbox"
-          checked={bShow}
-          style={{ width: '16px' }}
-          value="Show"
-        />,
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          textJustify: 'center',
+        }}
+      >
+        <div style={{ display: 'flex' }}>
+          Show
+          <Field
+            name="ShowName"
+            type="checkbox"
+            checked={bShow}
+            style={{ width: '16px' }}
+            value="Show"
+          />
+        </div>
         <Field
           name="Name"
           value={val}
@@ -386,7 +411,7 @@ function StatInputForm(props) {
             width: '100%',
             ...props.lStyle,
           }}
-        />,
+        />
         <div style={{ display: 'flex' }}>
           <Field
             name="ShowGraph"
@@ -396,8 +421,8 @@ function StatInputForm(props) {
             value="Show"
           />
           Graph
-        </div>,
-      ]
+        </div>
+      </div>
     ) : (
       <div
         name="Name"
@@ -413,16 +438,13 @@ function StatInputForm(props) {
 
   return (
     <div /* className="inherit" */>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        {Name()}
-      </div>
-      <Col name="GraphBody">{hStatProps()}</Col>
-      <Box name="FormBody" align="center">
+      {editMode ? (
+        <TogglePopup component={<div>Big BUTTS</div>}>CSS</TogglePopup>
+      ) : null}
+
+      {Name()}
+      {hStatProps()}
+      <div name="FormBody" align="center">
         <Col>
           <Grid
             bAddRowHeader={editMode}
@@ -440,7 +462,7 @@ function StatInputForm(props) {
           </Grid>
         </Col>
         {hRandom}
-      </Box>
+      </div>
     </div>
   );
 }

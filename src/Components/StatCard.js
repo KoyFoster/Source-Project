@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TemplateSelector from './TemplateSelector';
-import { Box, Paper, MenuItem, Button } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
 import StatInputForm from './StatInputForm.js';
 import Diagram from './Diagram.js';
 import StatData from './StatData.js';
@@ -102,7 +102,7 @@ function compileMenuItems() {
 const tmplMenuItems = compileMenuItems();
 
 // User Define Style Enum
-const UDS = { 1: 'style', 2: 'tStyle', 2: 'vStyle' };
+// const UDS = { 1: 'style', 2: 'tStyle', 2: 'vStyle' };
 // parse style func
 const UDSObj = (obj, styleData, bMerge) => {
   if (!styleData) return [{}, {}, {}, {}];
@@ -166,7 +166,7 @@ const defaultData = {
         '-Primary Stats-',
         'Fixed',
         [
-          '{ "borderTop": "none", "marginTop": "0px", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
+          '{ "borderTop": "none", "borderTopLeftRadius": "0px", "borderTopRightRadius": "0px" }',
           '{ "fontWeight": "undefined" }',
           '{ "color": "undefined" }',
           '{}',
@@ -611,6 +611,7 @@ function StatCard(props) {
       hContainerList.push(
         depth ? (
           <div
+            key={`ContainedTable${depth}`}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -631,9 +632,8 @@ function StatCard(props) {
       depth: depth - 1,
       index: index,
       card: (
-        <div>
+        <div key={`ContainedCard${index}`}>
           <div
-            key={`ContainedCard${0}`}
             style={{
               ...(parentStyle ? parentStyle[0] : undefined),
 
@@ -652,17 +652,17 @@ function StatCard(props) {
   const hDiagrams = () => {
     const hBuffer = [];
 
-    let styleObj = undefined;
+    // let styleObj = undefined;
     for (let i = 0; i < data.Values.length; i) {
       const noGraph = getData().ShowGraph(i) !== '+';
       if (!noGraph)
         hBuffer.push(
-          <Paper
+          <div
             key={`PaperDiagram_${i}`}
             name={`PaperDiagram_${i}`}
             style={{
-              width: `${564}px`,
-              height: `${564}px`,
+              width: `${504}px`,
+              height: `${504}px`,
               padding: padding,
             }}
           >
@@ -673,7 +673,7 @@ function StatCard(props) {
               data={{ Values: Values[i] }}
               funcs={funcs}
             />
-          </Paper>,
+          </div>,
         );
       i += 1;
     }
@@ -693,7 +693,7 @@ function StatCard(props) {
 
   // Render and Logic
   return (
-    <Box
+    <div
       name="body"
       style={{
         display: 'flex',
@@ -710,16 +710,16 @@ function StatCard(props) {
       />
       <Col style={{ flexGrow: 1 }}>
         <Row>
-          <Paper style={{ margin: 4, padding: 4 }}>
-            <Button
+          <div style={{ margin: 4, padding: 4 }}>
+            <button
               style={{ width: '128px' }}
               onClick={() => {
                 setEditMode(!editMode);
               }}
             >
               Edit
-            </Button>
-          </Paper>
+            </button>
+          </div>
           <TemplateSelector
             Name={defaultData.Name}
             setData={dataFuncs}
@@ -737,8 +737,7 @@ function StatCard(props) {
           <StatCode /* GetURLCode={GetURLCode} */ />
         </Row>
         <Row>
-          <Paper
-            alignItems="top"
+          <div
             style={{
               display: 'flex',
               flexGrow: 1,
@@ -749,24 +748,27 @@ function StatCard(props) {
             }}
           >
             {hCards(getData().Values).card}
-          </Paper>
+          </div>
 
-          <Paper
-            alignItems="top"
-            style={{
-              display: 'flex',
-              flexGrow: 1,
-              flex: 1.8,
-              margin: '1px',
-              marginLeft: 0,
-              padding: padding,
-            }}
-          >
-            {hDiagrams()}
-          </Paper>
+          {editMode ? (
+            ''
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexGrow: 1,
+                flex: 1.2,
+                margin: '1px',
+                marginLeft: 0,
+                padding: padding,
+              }}
+            >
+              {hDiagrams()}
+            </div>
+          )}
         </Row>
       </Col>
-    </Box>
+    </div>
   );
 }
 

@@ -45,6 +45,14 @@ function TemplateSelector(props) {
     // eslint-disable-next-line
   }, []);
 
+  const value = () => {
+    let val = props.Name ? props.Name : '';
+
+    if (val === '') val = props.defaultValue ? props.defaultValue.label : '';
+    console.log('Name:', props.Name, 'val:', val);
+    return val;
+  };
+
   return (
     <Paper
       style={{
@@ -56,12 +64,7 @@ function TemplateSelector(props) {
     >
       Name
       <ComboBox
-        value={() => {
-          let val = props.Name ? props.Name : '';
-          if (val === '')
-            val = props.defaultValue ? props.defaultValue.label : '';
-          return val;
-        }}
+        value={value}
         onChange={(e) => {
           if (props.OnChange) props.OnChange(e.target.value);
           setTemplate(e.target.value);
