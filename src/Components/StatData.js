@@ -315,6 +315,9 @@ function StatData(dataProps) {
       scope[key] = mTable[value[0]][value[1]][iElm /* Column */]; // table, row, column="always 'Value'""
     }
 
+    // validate
+    if (scope.length === 0) return 0;
+
     const result = evaluate(expression, scope);
     return Round(result);
   };
