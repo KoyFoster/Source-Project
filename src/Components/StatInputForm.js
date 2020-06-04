@@ -5,13 +5,19 @@ import Grid from './Forms/Grid';
 import TogglePopup from './TogglePopup';
 
 //User Input Class
-function StatInputForm(props) {
+const StatInputForm = (props) => {
   const Table = props.data().vTable(props.iD);
   const editMode = props.editMode;
   const bCalc = props.bCalc;
+  const [GridFuncs, setGridFuncs] = useState({
+    setValue: undefined,
+    setRowSize: undefined,
+    setColSize: undefined,
+    setColOrder: undefined,
+    setRowOrder: undefined,
+  });
 
   const Update = (dataObj) => {
-    // console.log('dataObj:', dataObj);
     if (dataObj.name === 'Level Cap') {
       return props.UpdatePointLimit(props.iD, dataObj.value);
     }
@@ -39,7 +45,6 @@ function StatInputForm(props) {
         value={PROPS.type !== 'checkbox' ? value : PROPS.value}
         checked={PROPS.type === 'checkbox' ? value : undefined}
         onChange={(e) => {
-          // console.log('e:', 'dataset:', e.target.dataset, 'Name:', e.target.name, 'value:', e.target.value, );
           /* Validation: Skip if no coordinate are returned */
           if (
             (e.target.dataset.x === undefined ||
@@ -151,7 +156,23 @@ function StatInputForm(props) {
         </Col>
       );
     } else {
-      return '';
+      return (
+        <Col name="GraphBody" style={{ visibility: 'hidden' }}>
+          <Row name="QRow">
+            Stats:{' '}
+            <Field
+              type="number"
+              name="Quantity"
+              value={Number(Table.length)}
+            ></Field>
+            {hLimit}
+          </Row>
+          <Row name="PDRow" alignItems="center">
+            {PointDiff()}
+            {hTotal}
+          </Row>
+        </Col>
+      );
     }
   };
 
@@ -436,6 +457,19 @@ function StatInputForm(props) {
     );
   };
 
+  // update grid
+  if (GridFuncs) {
+    // setValue: setValue,
+    // setRowSize: setRowSize,
+    // setColSize: setColSize,
+    // setColOrder: setColOrder,
+    // setRowOrder: setRowOrder,
+    if (GridFuncs.setValue) GridFuncs.setValue(Table);
+    if (GridFuncs.setRowSize) GridFuncs.setRowSize(Table.length);
+    if (GridFuncs.setColSize) GridFuncs.setColSize(7);
+    // if (GridFuncs.setColSize) GridFuncs.setColSize(7);
+  }
+
   return (
     <div /* className="inherit" */>
       {editMode ? (
@@ -447,15 +481,17 @@ function StatInputForm(props) {
       <div name="FormBody" align="center">
         <Col>
           <Grid
+            GridFuncs={setGridFuncs}
             bAddRowHeader={editMode}
             colOrder={[0, 1, 4, 2, 3, 5, 6]}
+            iCols={7}
             hHeader={hHeader()}
             hFooter={hFooter}
             iRows={Table.length}
             cellStyle={{
               borderBottom: editMode ? '2px solid white' : undefined,
             }}
-            Values={Table}
+            Value={Table}
             bNoSel={!editMode}
           >
             {hBody()}
@@ -465,6 +501,6 @@ function StatInputForm(props) {
       </div>
     </div>
   );
-}
+};
 
 export default StatInputForm;
