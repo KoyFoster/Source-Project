@@ -110,6 +110,8 @@ const Funcs = {
     style,
     noTab,
   ) => {
+    // console.log('parseRows: rowOrder:', rowOrder);
+
     // Funcs
     const bSelect = (x, y) => {
       if (bNoSel) return false;
@@ -213,6 +215,121 @@ const Funcs = {
     if (size === -1) size = children ? 1 : 0;
     return size;
   },
+
+  NormalizeRowOrder: (rowOrder) => {
+    let index = 0;
+    const sortedOrder = rowOrder
+      .map((x) => {
+        const elem = [x, index];
+        index += 1;
+        return elem;
+      })
+      .sort();
+    const newOrder = [];
+
+    for (let i = 0; i < rowOrder.length; i) {
+      newOrder.push(sortedOrder[i][1]);
+
+      i += 1;
+    }
+    return newOrder;
+  },
+
+  // Add Row Note: Currently the only function that modifies 'value'
+  addRow: (iAdd, iIndex, rowOrder, selection, iRows, iCols, value) => {
+    // Validate
+    if (iAdd === 0) return; // adding no value is pointless
+    if (iIndex <= 0 && iAdd < 0) return; // If Row 0, do not subtract
+    if (iIndex <= 0 && iAdd > 0) iIndex = 1; // Adding at 0 is ok
+
+    // Add
+    if (iAdd > 0) {
+      for (let i = 0; i < iAdd; i) {
+        const start =
+          (rowOrder.length === iRows && rowOrder.length > 0
+            ? rowOrder[iIndex - 1]
+            : 0) + 1;
+        const end = 0;
+
+        value.splice(start, end, new Array(iCols));
+        // Add to the end
+        rowOrder.splice(
+          (rowOrder.length === iRows && rowOrder.length > 0
+            ? rowOrder[iIndex - 1]
+            : 0) + 1,
+          0,
+          iRows,
+        );
+        i += 1;
+      }
+    }
+    // Subtract
+    else if (iAdd < 0) {
+      for (let i = 0; i < -1 * iAdd; i) {
+        const start = rowOrder[iIndex - 1];
+        const end = 1;
+        value.splice(start, end);
+        rowOrder.splice(iIndex - 1, 1);
+        i += 1;
+      }
+    }
+
+    // Update Row Number
+    const rows = iRows + iAdd;
+    const iSel = selection[1] + iAdd;
+    // setNumRows(rows);
+
+    // setSelection([selection[0], iSel === 0 && iRows ? 1 : iSel]);
+    const newSel = [selection[0], iSel === 0 && rows ? 1 : iSel];
+
+    // Update Row Order
+    // if (iAdd > 0) setRowOrder(rowOrder);
+    // else setRowOrder(NormalizeRowOrder());
+
+    // setValue(value);
+
+    return {
+      Value: value,
+      rowOrder: iAdd > 0 ? rowOrder : this.NormalizeRowOrder(rowOrder),
+      iRows: rows,
+      selection: newSel,
+    };
+  }, // end of addRow
+
+  // Move Row
+  moveRow: (iRow, iDir, rowOrder, selection, iRows) => {
+    // console.log(
+    //   'iRow:',
+    //   iRow,
+    //   'iDir:',
+    //   iDir,
+    //   'rowOrder:',
+    //   rowOrder,
+    //   'selection:',
+    //   selection,
+    //   'iRows:',
+    //   iRows,
+    // );
+    if ((iDir > 0 && iRow + iDir > iRows) || iRows === 0) {
+      return {};
+    }
+    if ((iDir < 0 && iRow + iDir < 1) || iRows === 0) {
+      return {};
+    }
+
+    const buffIndex = rowOrder.splice(iRow - 1, 1);
+
+    rowOrder.splice(iRow + iDir - 1, 0, buffIndex[0]);
+
+    const newSel = [selection[0], iRow + iDir];
+
+    // setSelection(newSel);
+    selection[0] = newSel[0];
+    selection[1] = newSel[1];
+    // setRowOrder(rowOrder);
+
+    return { rowOrder, selection: newSel };
+  },
 };
 
 const Grid = (props) => {
@@ -235,24 +352,7 @@ const Grid = (props) => {
   );
 
   // New States  // 2s array: d1: row index, d2: true index, used for consistent names
-  const NormalizeRowOrder = () => {
-    let index = 0;
-    const sortedOrder = rowOrder
-      .map((x) => {
-        const elem = [x, index];
-        index += 1;
-        return elem;
-      })
-      .sort();
-    const newOrder = [];
 
-    for (let i = 0; i < rowOrder.length; i) {
-      newOrder.push(sortedOrder[i][1]);
-
-      i += 1;
-    }
-    return newOrder;
-  };
   const InitRowOrder = (
     val,
     rows = -1,
@@ -305,6 +405,48 @@ const Grid = (props) => {
   // Update Functions
   // Currently The only Update Functions that need to occur are listed below
 
+  // handlers
+  const MoveSelUp = () => {
+    // console.log(
+    //   '1. iRow:',
+    //   selection[0],
+    //   'iDir:',
+    //   1,
+    //   'rowOrder:',
+    //   rowOrder,
+    //   'selection:',
+    //   selection,
+    //   'iRows:',
+    //   iRows,
+    // );
+    const result = Funcs.moveRow(
+      selection[0],
+      1,
+      rowOrder,
+      [...selection],
+      iRows,
+    );
+    // console.log('result:', result);
+    if (result.rowOrder) setRowOrder(result.rowOrder);
+    if (result.selection) setSelection(result.selection);
+  };
+  const MoveSelDown = () => {
+    const result = Funcs.moveRow(
+      selection[0],
+      -1,
+      rowOrder,
+      [...selection],
+      iRows,
+    );
+
+    // console.log('result:', result);
+    if (result.rowOrder) setRowOrder(result.rowOrder);
+    if (result.selection) setSelection(result.selection);
+
+    // if (result.iRows) setRowSize(result.iRows);
+    // if (result.Value) setValue(result.Value);
+  };
+
   // Rerender Vars: Currently Does This Every Rerender
   const hRows = Funcs.initTable(
     Value,
@@ -331,9 +473,9 @@ const Grid = (props) => {
         gridObj,
         props.bNoSel,
         colOrder,
-        props.rowOrder,
+        undefined,
         props.bAddRowHeader,
-        selection,
+        [...selection],
         undefined,
       );
     if (hRows)
@@ -342,9 +484,9 @@ const Grid = (props) => {
         gridObj,
         props.bNoSel,
         colOrder,
-        props.rowOrder,
+        rowOrder,
         props.bAddRowHeader,
-        selection,
+        [...selection],
         rowStyle ? rowStyle : cellStyle,
       );
 
@@ -354,9 +496,9 @@ const Grid = (props) => {
         gridObj,
         props.bNoSel,
         colOrder,
-        props.rowOrder,
+        undefined,
         props.bAddRowHeader,
-        selection,
+        [...selection],
         undefined,
         true,
       );
@@ -438,6 +580,8 @@ const Grid = (props) => {
         setColSize: setColSize,
         setColOrder: setColOrder,
         setRowOrder: setRowOrder,
+        MoveSelUp: MoveSelUp,
+        MoveSelDown: MoveSelDown,
       });
     }
     // eslint-disable-next-line

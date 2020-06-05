@@ -465,6 +465,7 @@ const StatInputForm = (props) => {
     // setColOrder: setColOrder,
     // setRowOrder: setRowOrder,
     if (GridFuncs.setValue) GridFuncs.setValue(Table);
+    if (GridFuncs.setColOrder) GridFuncs.setColOrder([0, 1, 4, 2, 3, 5, 6]);
     if (GridFuncs.setRowSize) GridFuncs.setRowSize(Table.length);
     if (GridFuncs.setColSize) GridFuncs.setColSize(7);
     // if (GridFuncs.setColSize) GridFuncs.setColSize(7);
@@ -480,12 +481,28 @@ const StatInputForm = (props) => {
       {hStatProps()}
       <div name="FormBody" align="center">
         <Col>
+          <div>
+            <button
+              onClick={() => {
+                if (GridFuncs.MoveSelUp) GridFuncs.MoveSelUp();
+              }}
+            >
+              UP
+            </button>
+            <button
+              onClick={() => {
+                if (GridFuncs.MoveSelDown) GridFuncs.MoveSelDown();
+              }}
+            >
+              DOWN
+            </button>
+          </div>
           <Grid
             GridFuncs={setGridFuncs}
             bAddRowHeader={editMode}
+            hHeader={hHeader()}
             colOrder={[0, 1, 4, 2, 3, 5, 6]}
             iCols={7}
-            hHeader={hHeader()}
             hFooter={hFooter}
             iRows={Table.length}
             cellStyle={{
