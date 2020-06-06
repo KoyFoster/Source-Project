@@ -6,6 +6,11 @@ import TogglePopup from './TogglePopup';
 
 //User Input Class
 const StatInputForm = (props) => {
+  const [lastElement, setLastElement] = useState(undefined);
+  if (lastElement) {
+    lastElement.focus();
+    setLastElement(undefined);
+  }
   const Table = props.data().vTable(props.iD);
   const editMode = props.editMode;
   const bCalc = props.bCalc;
@@ -15,6 +20,9 @@ const StatInputForm = (props) => {
     setColSize: undefined,
     setColOrder: undefined,
     setRowOrder: undefined,
+    MoveSelUp: undefined,
+    MoveSelDown: undefined,
+    getSel: undefined,
   });
 
   const Update = (dataObj) => {
@@ -68,7 +76,15 @@ const StatInputForm = (props) => {
           setValue(val);
         }}
         onBlur={() => {
-          props.setData.Update();
+          // props.setData.Update(); // I don't remember what this was used for
+          // document.activeElement.focus();
+          // console.log('this:', document.activeElement);
+          // console.log('onBlur:', document.activeElement);
+          // setLastElement(document.activeElement);
+        }}
+        onFocus={() => {
+          // console.log('onFocus:', document.activeElement);
+          // setLastElement(undefined);
         }}
       />
     );
@@ -464,11 +480,14 @@ const StatInputForm = (props) => {
     // setColSize: setColSize,
     // setColOrder: setColOrder,
     // setRowOrder: setRowOrder,
-    if (GridFuncs.setValue) GridFuncs.setValue(Table);
+    // if (GridFuncs.setValue) GridFuncs.setValue(Table);
     if (GridFuncs.setColOrder) GridFuncs.setColOrder([0, 1, 4, 2, 3, 5, 6]);
-    if (GridFuncs.setRowSize) GridFuncs.setRowSize(Table.length);
+    // if (GridFuncs.setRowSize) GridFuncs.setRowSize(Table.length);
     if (GridFuncs.setColSize) GridFuncs.setColSize(7);
     // if (GridFuncs.setColSize) GridFuncs.setColSize(7);
+    // if (GridFuncs.getSel)
+    //   if (GridFuncs.getSel()[0] !== 0)
+    //     console.log('getSel:', GridFuncs.getSel());
   }
 
   return (
@@ -498,17 +517,22 @@ const StatInputForm = (props) => {
             </button>
           </div>
           <Grid
+            // selection={[1,1]}
+            name={props
+              .data()
+              .Name(props.iD)
+              .slice(1, props.data().Name(props.iD).length - 1)}
             GridFuncs={setGridFuncs}
             bAddRowHeader={editMode}
             hHeader={hHeader()}
             colOrder={[0, 1, 4, 2, 3, 5, 6]}
             iCols={7}
             hFooter={hFooter}
-            iRows={Table.length}
             cellStyle={{
               borderBottom: editMode ? '2px solid white' : undefined,
             }}
             Value={Table}
+            iRows={Table.length}
             bNoSel={!editMode}
           >
             {hBody()}

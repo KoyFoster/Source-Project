@@ -114,6 +114,7 @@ const Funcs = {
 
     // Funcs
     const bSelect = (x, y) => {
+      // console.log('4. selection:', selection);
       if (bNoSel) return false;
       return (selection[0] === x && y === 0) || (selection[1] === y && x === 0); // Select Highlight Header Tabs
       // return selection[0] === x && selection[1] === y; // Highlight only the selected cell
@@ -237,6 +238,7 @@ const Funcs = {
 
   // Add Row Note: Currently the only function that modifies 'value'
   addRow: (iAdd, iIndex, rowOrder, selection, iRows, iCols, value) => {
+    // console.log('3. selection:', selection);
     // Validate
     if (iAdd === 0) return; // adding no value is pointless
     if (iIndex <= 0 && iAdd < 0) return; // If Row 0, do not subtract
@@ -279,7 +281,6 @@ const Funcs = {
     const iSel = selection[1] + iAdd;
     // setNumRows(rows);
 
-    // setSelection([selection[0], iSel === 0 && iRows ? 1 : iSel]);
     const newSel = [selection[0], iSel === 0 && rows ? 1 : iSel];
 
     // Update Row Order
@@ -292,12 +293,12 @@ const Funcs = {
       Value: value,
       rowOrder: iAdd > 0 ? rowOrder : this.NormalizeRowOrder(rowOrder),
       iRows: rows,
-      selection: newSel,
+      iSel: newSel,
     };
   }, // end of addRow
 
   // Move Row
-  moveRow: (iRow, iDir, rowOrder, selection, iRows) => {
+  moveRow: (iRow, iDir, rowOrder, iSel, iRows) => {
     // console.log(
     //   'iRow:',
     //   iRow,
@@ -305,8 +306,8 @@ const Funcs = {
     //   iDir,
     //   'rowOrder:',
     //   rowOrder,
-    //   'selection:',
-    //   selection,
+    //   'iSel:',
+    //   iSel,
     //   'iRows:',
     //   iRows,
     // );
@@ -321,14 +322,10 @@ const Funcs = {
 
     rowOrder.splice(iRow + iDir - 1, 0, buffIndex[0]);
 
-    const newSel = [selection[0], iRow + iDir];
-
-    // setSelection(newSel);
-    selection[0] = newSel[0];
-    selection[1] = newSel[1];
+    const newSel = [iSel[0], iRow + iDir];
     // setRowOrder(rowOrder);
 
-    return { rowOrder, selection: newSel };
+    return { rowOrder, iSel: newSel };
   },
 };
 
@@ -340,9 +337,12 @@ const Grid = (props) => {
   const hFooter = props.hFooter ? [props.hFooter] : undefined; // An Array of components
 
   // States
-  const [selection, setSelection] = useState(
-    props.selection ? props.selection : [0, 0],
+  const [iSel, setSelection] = useState(
+    props.selection ? props.selection : [1, 1],
   );
+  function getSel() {
+    return iSel;
+  }
   const [Value, setValue] = useState(props.Value); // An Array of components
   const [iRows, setRowSize] = useState(
     Funcs.initRowSize(props.iRows, props.hRows, getStart()),
@@ -407,41 +407,30 @@ const Grid = (props) => {
 
   // handlers
   const MoveSelUp = () => {
-    // console.log(
-    //   '1. iRow:',
-    //   selection[0],
-    //   'iDir:',
-    //   1,
-    //   'rowOrder:',
-    //   rowOrder,
-    //   'selection:',
-    //   selection,
-    //   'iRows:',
-    //   iRows,
-    // );
+    // console.log('1. iSel:', iSel);
     const result = Funcs.moveRow(
-      selection[0],
+      getSel()[1],
       1,
       rowOrder,
-      [...selection],
+      [...getSel()],
       iRows,
     );
     // console.log('result:', result);
     if (result.rowOrder) setRowOrder(result.rowOrder);
-    if (result.selection) setSelection(result.selection);
+    if (result.iSel) setSelection(result.iSel);
   };
   const MoveSelDown = () => {
     const result = Funcs.moveRow(
-      selection[0],
+      getSel()[1],
       -1,
       rowOrder,
-      [...selection],
+      [...getSel()],
       iRows,
     );
 
     // console.log('result:', result);
     if (result.rowOrder) setRowOrder(result.rowOrder);
-    if (result.selection) setSelection(result.selection);
+    if (result.iSel) setSelection(result.iSel);
 
     // if (result.iRows) setRowSize(result.iRows);
     // if (result.Value) setValue(result.Value);
@@ -475,7 +464,7 @@ const Grid = (props) => {
         colOrder,
         undefined,
         props.bAddRowHeader,
-        [...selection],
+        iSel,
         undefined,
       );
     if (hRows)
@@ -486,7 +475,7 @@ const Grid = (props) => {
         colOrder,
         rowOrder,
         props.bAddRowHeader,
-        [...selection],
+        iSel,
         rowStyle ? rowStyle : cellStyle,
       );
 
@@ -498,7 +487,7 @@ const Grid = (props) => {
         colOrder,
         undefined,
         props.bAddRowHeader,
-        [...selection],
+        iSel,
         undefined,
         true,
       );
@@ -553,7 +542,7 @@ const Grid = (props) => {
               return;
             const x = parseInt(e.target.dataset.x, 10);
             const y = parseInt(e.target.dataset.y, 10);
-            setSelection([x, y]);
+            setSelection([Number(x), Number(y)]);
 
             if (props.onClick && x && y)
               props.onClick({
@@ -582,12 +571,14 @@ const Grid = (props) => {
         setRowOrder: setRowOrder,
         MoveSelUp: MoveSelUp,
         MoveSelDown: MoveSelDown,
+        getSel: getSel,
       });
     }
     // eslint-disable-next-line
   }, []);
 
   // return render
+  // console.log('', getSel(), `:${props.name} Selection`, 'Value:', Value);
   return getGrid();
 };
 
