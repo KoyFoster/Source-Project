@@ -1,20 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const Funcs = {
-  initTable: (
-    Value,
-    iRows,
-    iCols,
-    iStart,
-    hRows,
-    children,
-    bRowHeader,
-    bAddRowHeader,
-    hHeader,
-  ) => {
-    let hTable = hRows ? [[...hRows]] : [];
+function Grid(props) {
+  // init functions
+
+  const [selection, setSelection] = useState(
+    props.selection ? props.selection : [0, 0],
+  );
+  const getStart = () => (props.iStrt ? props.iStrt : 0);
+  const initRowSize = (iSize = -1) => {
+    let size = props.iRows ? props.iRows - getStart() : -1;
+    if (size === -1) size = iSize;
+    if (size === -1) size = props.hRows ? props.hRows.length - getStart() : 0;
+    return size;
+  };
+  const initColSize = (iSize = -1) => {
+    let size = props.iCols ? props.iCols : -1;
+    if (size === -1) size = iSize;
+    if (size === -1) size = props.hRows ? props.hRows[0].length : -1;
+    if (size === -1) size = props.children ? 1 : 0;
+    return size;
+  };
+  const initRows = () => {
+    let hTable = props.hRows ? [[...props.hRows]] : [];
     if (hTable.length === 0) {
-      hTable = children ? [[...children]] : [];
+      hTable = props.children ? [[...props.children]] : [];
     }
 
     // Copy to hRow if single row passed
@@ -32,32 +41,47 @@ const Funcs = {
       if (hTable.length <= iRows) {
         // Clear first row as it will be replaced
         if (hTable.length === 1) hTable.splice(0, 1);
-        const plus = bRowHeader === true ? 1 : 0;
+        const plus = props.bRowHeader === true ? 1 : 0;
         // Add Rows and Update Names
         for (let y = 0; y < iRows; y) {
-          const iV = y + iStart;
+          const iV = y + getStart();
           hTable.push([...hRow[0]]);
           for (let x = 0; x < hTable[0].length; x) {
+            // console.log(
+            //   'hTable:',
+            //   hTable,
+            //   'bDefined:',
+            //   bDefined,
+            //   'Values:',
+            //   Values,
+            //   'iV:',
+            //   iV,
+            //   'x:',
+            //   x,
+            // );
             // name
             const name = `${hTable[iV][x].props.name}_(${iV},${x})`;
             // value
-            const bDefined = Value !== undefined && x - plus > -1;
-            // Validate Data/Value
-            let hasValue = Value ? Value.length >= iV : false;
-            if (hasValue) hasValue = Value[iV] ? Value[iV].length >= x : false;
+            const bDefined = Values !== undefined && x - plus > -1;
+            // Validate Data/Values
+            let hasValue = Values ? Values.length >= iV : false;
+            if (hasValue)
+              hasValue = Values[iV] ? Values[iV].length >= x : false;
             if (hasValue)
               hasValue =
-                bDefined && Value[iV][x - plus] !== ''
-                  ? Value[iV][x - plus] !== 'undefined'
+                bDefined && Values[iV][x - plus] !== ''
+                  ? Values[iV][x - plus] !== 'undefined'
                   : false;
             let value = hasValue
-              ? Value[iV][x - plus]
+              ? Values[iV][x - plus]
               : hTable[y][x].props.value;
+            // Reserved tags
+            tags.push(hTable[y][x].props.name);
 
             // define new row
             const dataset = {
-              'data-x': x + (bAddRowHeader ? 1 : 0),
-              'data-y': y + (hHeader ? 1 : 0),
+              'data-x': x + (props.bAddRowHeader ? 1 : 0),
+              'data-y': y + (props.hHeader ? 1 : 0),
             };
             // const inputProps = hTable[y][x].props.bMUI
             //   ? { ...hTable[y][x].props.inputProps, ...dataset }
@@ -65,7 +89,7 @@ const Funcs = {
 
             const bValueAsChild = hTable[y][x].props.children === '[value]';
             const children =
-              x === 0 && bRowHeader === true
+              x === 0 && props.bRowHeader === true
                 ? `${y + 1}`
                 : bValueAsChild
                 ? value
@@ -79,7 +103,6 @@ const Funcs = {
                 ...hTable[y][x].props,
                 ...dataset,
                 // inputProps: { ...hTable[y][x].props.inputProps, ...dataset },
-
                 children: children,
                 value,
                 name,
@@ -97,27 +120,44 @@ const Funcs = {
       return [];
     }
     return hTable;
-  },
-  // props.bNoSel, props.colOrder, props.rowOrder, props.bAddRowHeader, selection,
-  parseRows: (
-    arr,
-    gridObj,
-    bNoSel,
-    colOrder,
-    rowOrder,
-    bAddRowHeader,
-    selection,
-    style,
-    noTab,
-  ) => {
+  };
+
+  // States Vars
+  const [Values, setValues] = useState(props.Values ? props.Values : undefined); // An Array of components
+  const [tags /* , setTags */] = useState([]); // An Array of components
+  const hHeader = props.hHeader ? [props.hHeader] : undefined; // An Array of components
+  const hFooter = props.hFooter ? [props.hFooter] : undefined; // An Array of components
+  const [iRows, setRowSize] = useState(initRowSize());
+  const [iCols, setColSize] = useState(initColSize());
+  if (iRows !== props.iRows - getStart()) {
+    setValues(props.Values);
+    setRowSize(props.iRows - getStart());
+  } else if (props.Values !== Values && Values !== undefined) {
+    setValues(props.Values);
+    setColSize(props.Values.length > 0 ? props.Values[0].length : 0);
+  }
+  // Rerender Vars
+  const hRows = initRows(); // A 2d Array of components
+  const style = props.style ? props.style : undefined;
+  const cellStyle = props.cellStyle ? props.cellStyle : undefined;
+  const rowStyle = props.rowStyle ? props.rowStyle : undefined; // This style doesn't work at the moment
+
+  // {
+  //   filter: selection[1] === y && x === 0 ? 'invert(0.9)' : 'invert(0)',
+  //   backdropFilter:
+  //     selection[1] === y + 1 ? 'invert(0.25)' : 'invert(0)',
+  // }
+
+  const gridObj = { rows: [], yStrt: 0 };
+  const parseRows = (arr, style, noTab) => {
     // Funcs
     const bSelect = (x, y) => {
-      if (bNoSel) return false;
+      if (props.bNoSel) return false;
       return (selection[0] === x && y === 0) || (selection[1] === y && x === 0); // Select Highlight Header Tabs
       // return selection[0] === x && selection[1] === y; // Highlight only the selected cell
     };
     const coX = (x) => {
-      return colOrder ? colOrder[x] : x;
+      return props.colOrder ? props.colOrder[x] : x;
     };
     const bSelectStyle = (selected) => {
       if (!selected) return undefined;
@@ -131,12 +171,11 @@ const Funcs = {
     let yPlus = gridObj.yStrt;
     let y = 0;
     for (yPlus; yPlus < arr.length + gridObj.yStrt; yPlus) {
-      const iY = rowOrder ? rowOrder[y] : y;
-      if (iY === undefined) break;
+      const iY = props.rowOrder ? props.rowOrder[y] : y;
 
       // Add Row Header
       const row = [];
-      if (bAddRowHeader) {
+      if (props.bAddRowHeader) {
         row.push(
           yPlus === 0 ? (
             <th name="Origin" key="Origin" data-x={0} data-y={0}>
@@ -159,14 +198,11 @@ const Funcs = {
       } // End Add Row Header
 
       // Compile Row
-      let xPlus = !bAddRowHeader ? 1 : 0;
-
+      let xPlus = !props.bAddRowHeader ? 1 : 0;
       let x = 0;
       const xEnd = arr[0].length + xPlus;
       for (xPlus; xPlus < xEnd; x) {
         const iX = coX(x);
-        // console.log('arr:', arr, 'iY:', iY, 'iX:', iX);
-
         row.push(
           <th
             key={`th_${xPlus},${yPlus}`}
@@ -175,7 +211,7 @@ const Funcs = {
               ...bSelectStyle(
                 bSelect(
                   iX +
-                    (bAddRowHeader === true
+                    (props.bAddRowHeader === true
                       ? 1
                       : 0) /* An unfortunate exception */,
                   yPlus,
@@ -200,168 +236,13 @@ const Funcs = {
       yPlus += 1;
     } // End of parse
     gridObj.yStrt = y;
-  },
-  initRowSize: (iRows, hRows, iStart = 0, iSize = -1) => {
-    let size = iRows ? iRows - iStart : -1;
-    if (size === -1) size = iSize;
-    if (size === -1) size = hRows ? hRows.length - iStart : 0;
-    return size;
-  },
-  initColSize: (iCols, hRows, children) => {
-    let size = iCols ? iCols : -1;
-    if (size === -1) size = hRows ? hRows[0].length : -1;
-    if (size === -1) size = children ? 1 : 0;
-    return size;
-  },
-};
-
-const Grid = (props) => {
-  // vars
-  const { GridFuncs } = props;
-  const getStart = () => (props.iStrt ? props.iStrt : 0);
-  const hHeader = props.hHeader ? [props.hHeader] : undefined; // An Array of components
-  const hFooter = props.hFooter ? [props.hFooter] : undefined; // An Array of components
-
-  // States
-  const [selection, setSelection] = useState(
-    props.selection ? props.selection : [0, 0],
-  );
-  const [Value, setValue] = useState(props.Value); // An Array of components
-  const [iRows, setRowSize] = useState(
-    Funcs.initRowSize(props.iRows, props.hRows, getStart()),
-  );
-  const [iCols, setColSize] = useState(
-    Funcs.initColSize(props.iCols, props.hRows, props.children),
-  );
-
-  // New States  // 2s array: d1: row index, d2: true index, used for consistent names
-  const NormalizeRowOrder = () => {
-    let index = 0;
-    const sortedOrder = rowOrder
-      .map((x) => {
-        const elem = [x, index];
-        index += 1;
-        return elem;
-      })
-      .sort();
-    const newOrder = [];
-
-    for (let i = 0; i < rowOrder.length; i) {
-      newOrder.push(sortedOrder[i][1]);
-
-      i += 1;
-    }
-    return newOrder;
   };
-  const InitRowOrder = (
-    val,
-    rows = -1,
-    subRows = '' /* To be supplied with comma delimited non ordered row indexes that will be removed */,
-  ) => {
-    if (val === undefined && Array.isArray(val)) return val;
-    rows = rows > -1 ? rows : iRows;
-    const buffer = [];
-    for (let y = 0; y < rows; y) {
-      buffer.push(y);
-      y += 1;
-    }
-    return buffer;
-  };
-  const InitColOrder = (val) => {
-    // const isArray = val !== undefined && Array.isArray(val);
-    // if (isArray) return val;
-    const buffer = [];
-    for (let x = 0; x < iCols; x) {
-      buffer.push(x);
-      x += 1;
-    }
-    return buffer;
-  };
-  const [colOrder, setColOrder] = useState(InitColOrder(props.colOrder));
-  const [rowOrder, setRowOrder] = useState(InitRowOrder(props.rowOrder));
-  // console.log('colOrder:', colOrder, iCols);
-
-  const [headerHeight, setHeaderHeight] = useState(
-    props.headerHeight ? props.headerHeight : 24,
-  );
-  const [rowHeight, setRowHeight] = useState(
-    props.rowHeight !== 0 ? props.rowHeight : 24,
-  );
-  const [rowHeaderWidth, setRowHeaderWidth] = useState(78); // Note: Windows default size is 78px, but I would prefer 24px
-
-  // Forced updating via prop changes. --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-  // There needs to be a better way of doing this.
-  // Auto State Update Statement
-  // if (iRows !== props.iRows - getStart()) {
-  //   setValue(props.Value);
-  //   setRowSize(props.iRows - getStart());
-  // }
-  // if (props.Value !== Value && Value !== undefined) {
-  //   setValue(props.Value);
-  //   if (props.colOrder !== colOrder || props.Value[0].length > iCols)
-  //     setColSize(props.Value.length > 0 ? props.Value[0].length : 0);
-  //   setColOrder(InitColOrder(colOrder));
-  // } // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-  // Update Functions
-  // Currently The only Update Functions that need to occur are listed below
-
-  // Rerender Vars: Currently Does This Every Rerender
-  const hRows = Funcs.initTable(
-    Value,
-    iRows,
-    iCols,
-    getStart(),
-    props.hRows,
-    props.children,
-    props.bRowHeader,
-    props.bAddRowHeader,
-    props.hHeader,
-  ); // A 2d Array of components
-
-  const style = props.style ? props.style : undefined;
-  const cellStyle = props.cellStyle ? props.cellStyle : undefined;
-  const rowStyle = props.rowStyle ? props.rowStyle : undefined; // This style doesn't work at the moment
-
-  const gridObj = { rows: [], yStrt: 0 };
   const compileGrid = () => {
     // Must be in this order
-    if (hHeader)
-      Funcs.parseRows(
-        hHeader,
-        gridObj,
-        props.bNoSel,
-        colOrder,
-        props.rowOrder,
-        props.bAddRowHeader,
-        selection,
-        undefined,
-      );
-    if (hRows)
-      Funcs.parseRows(
-        hRows,
-        gridObj,
-        props.bNoSel,
-        colOrder,
-        props.rowOrder,
-        props.bAddRowHeader,
-        selection,
-        rowStyle ? rowStyle : cellStyle,
-      );
-
-    if (hFooter)
-      Funcs.parseRows(
-        hFooter,
-        gridObj,
-        props.bNoSel,
-        colOrder,
-        props.rowOrder,
-        props.bAddRowHeader,
-        selection,
-        undefined,
-        true,
-      );
+    if (hHeader) parseRows(hHeader, undefined);
+    if (hRows) parseRows(hRows, rowStyle ? rowStyle : cellStyle);
+    if (hFooter) parseRows(hFooter, undefined, true);
   };
-
   const getHeader = () => {
     if (!hHeader) return [];
     return gridObj.rows.slice(0, 1);
@@ -420,6 +301,9 @@ const Grid = (props) => {
               });
           }}
         >
+          {/* <thead style={{ ...props.headerStyle }}>{getHeader()}</thead>
+        <tbody style={{ ...props.bodyStyle }}>{getRows()}</tbody>
+        <tfoot>{getFooter()}</tfoot> */}
           <thead style={{ ...props.headerStyle }}>{getHeader()}</thead>
           <tbody style={{ ...props.bodyStyle }}>{getRows()}</tbody>
           <tfoot style={{ ...props.footerStyle }}>{getFooter()}</tfoot>
@@ -428,23 +312,8 @@ const Grid = (props) => {
     );
   };
 
-  //Setup Listener Events
-  useEffect(() => {
-    // init
-    if (GridFuncs) {
-      GridFuncs({
-        setValue: setValue,
-        setRowSize: setRowSize,
-        setColSize: setColSize,
-        setColOrder: setColOrder,
-        setRowOrder: setRowOrder,
-      });
-    }
-    // eslint-disable-next-line
-  }, []);
-
   // return render
   return getGrid();
-};
+}
 
 export default Grid;

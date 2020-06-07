@@ -112,16 +112,19 @@ const UDSObj = (obj, styleData, bMerge) => {
 
     try {
       buffer2 = JSON.parse(styleData[i]);
+      // console.log('SUCCESS:Parsed style object(', buffer2, ')');
     } catch {
       console.error('ERROR: Failed to parse style object(', styleData[i], ')');
       return [{}, {}, {}, {}];
     }
 
     buffer.push(bMerge && obj ? { ...obj[i], ...buffer2 } : buffer2);
+    // console.log(`buffer${i}:`, buffer);
 
     i += 1;
   } // End of for loop
 
+  // console.log('buffer:', buffer);
   return buffer;
 };
 
@@ -521,12 +524,14 @@ function StatCard(props) {
   //       let yBuffer = Values.value[x][y];
   //       /* Check for UnitType column and encode and '%' that appear fdor the URL*/
   //       if (y === 4 && yBuffer) {
+  //         console.log('yBuffer:', x, y, yBuffer);
   //         yBuffer = yBuffer.replace('%', '%25');
   //       }
   //       xBuffer += yBuffer + ',';
   //     }
   //     sResult += '[' + xBuffer.slice(0, xBuffer.length - 1) + ']';
   //   }
+  //   //console.log('ValuesValues:', Values, 'Name:', Name);
 
   //   return String(
   //     // 'koyfoster.github.io/#/StatCard/' +
@@ -541,10 +546,8 @@ function StatCard(props) {
   // Temp Styles
   const padding = 3;
 
-  let Forms = 0;
   const hForm = (cardData, index, styleObj) => {
     const length = styleObj ? styleObj.length : 0;
-    Forms += 1;
     return (
       <StatInputForm
         iD={index}
