@@ -541,8 +541,10 @@ function StatCard(props) {
   // Temp Styles
   const padding = 3;
 
+  let Forms = 0;
   const hForm = (cardData, index, styleObj) => {
     const length = styleObj ? styleObj.length : 0;
+    Forms += 1;
     return (
       <StatInputForm
         iD={index}
@@ -724,8 +726,7 @@ function StatCard(props) {
             </button>
           </div>
           <TemplateSelector
-            // key={defaultData.Name}
-            // Name={defaultData.Name}
+            Name={defaultData.Name}
             setData={dataFuncs}
             funcs={funcs}
             defaultValue={
