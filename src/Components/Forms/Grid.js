@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Grid(props) {
   // init functions
-
+  const [rowOrder, setRowOrder] = useState(props.rowOrder);
   const [selection, setSelection] = useState(
     props.selection ? props.selection : [0, 0],
   );
@@ -75,8 +75,6 @@ function Grid(props) {
             let value = hasValue
               ? Values[iV][x - plus]
               : hTable[y][x].props.value;
-            // Reserved tags
-            tags.push(hTable[y][x].props.name);
 
             // define new row
             const dataset = {
@@ -123,19 +121,12 @@ function Grid(props) {
   };
 
   // States Vars
-  const [Values, setValues] = useState(props.Values ? props.Values : undefined); // An Array of components
-  const [tags /* , setTags */] = useState([]); // An Array of components
+  const { Values } = props; // An Array of components
   const hHeader = props.hHeader ? [props.hHeader] : undefined; // An Array of components
   const hFooter = props.hFooter ? [props.hFooter] : undefined; // An Array of components
-  const [iRows, setRowSize] = useState(initRowSize());
-  const [iCols, setColSize] = useState(initColSize());
-  if (iRows !== props.iRows - getStart()) {
-    setValues(props.Values);
-    setRowSize(props.iRows - getStart());
-  } else if (props.Values !== Values && Values !== undefined) {
-    setValues(props.Values);
-    setColSize(props.Values.length > 0 ? props.Values[0].length : 0);
-  }
+  const iRows = initRowSize();
+  const iCols = initColSize();
+
   // Rerender Vars
   const hRows = initRows(); // A 2d Array of components
   const style = props.style ? props.style : undefined;
@@ -171,7 +162,7 @@ function Grid(props) {
     let yPlus = gridObj.yStrt;
     let y = 0;
     for (yPlus; yPlus < arr.length + gridObj.yStrt; yPlus) {
-      const iY = props.rowOrder ? props.rowOrder[y] : y;
+      const iY = rowOrder ? rowOrder[y] : y;
 
       // Add Row Header
       const row = [];
@@ -311,6 +302,70 @@ function Grid(props) {
       </div>
     );
   };
+
+  function moveRow(iRow, iDir, rowOrder, selection, iRows) {
+    console.log(
+      'iRow:',
+      iRow,
+      'iDir:',
+      iDir,
+      'rowOrder:',
+      rowOrder,
+      'selection:',
+      selection,
+      'iRows:',
+      iRows,
+    );
+    if ((iDir > 0 && iRow + iDir > iRows) || iRows === 0) {
+      return {};
+    }
+    if ((iDir < 0 && iRow + iDir < 1) || iRows === 0) {
+      return {};
+    }
+
+    const buffIndex = rowOrder.splice(iRow - 1, 1);
+
+    rowOrder.splice(iRow + iDir - 1, 0, buffIndex[0]);
+
+    const newSel = [selection[0], iRow + iDir];
+
+    // setSelection(newSel);
+    selection[0] = newSel[0];
+    selection[1] = newSel[1];
+    // setRowOrder(rowOrder);
+
+    return { rowOrder, selection: newSel };
+  }
+
+  // handlers
+  const MoveSelUp = () => {
+    const result = moveRow(selection[0], 1, rowOrder, [...selection], iRows);
+    // console.log('result:', result);
+    if (result.rowOrder) setRowOrder(result.rowOrder);
+    if (result.selection) setSelection(result.selection);
+  };
+  const MoveSelDown = () => {
+    const result = moveRow(selection[0], -1, rowOrder, [...selection], iRows);
+
+    // console.log('result:', result);
+    if (result.rowOrder) setRowOrder(result.rowOrder);
+    if (result.selection) setSelection(result.selection);
+
+    // if (result.iRows) setRowSize(result.iRows);
+    // if (result.Value) setValue(result.Value);
+  };
+
+  //Setup Listener Events
+  useEffect(() => {
+    // init
+    if (props.GridFuncs) {
+      props.GridFuncs({
+        MoveSelDown: MoveSelDown,
+        MoveSelUp: MoveSelUp,
+      });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   // return render
   return getGrid();

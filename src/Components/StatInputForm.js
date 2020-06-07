@@ -10,6 +10,11 @@ function StatInputForm(props) {
   const editMode = props.editMode;
   const bCalc = props.bCalc;
 
+  const [GridFuncs, setGridFuncs] = useState({
+    MoveSelDown: undefined,
+    MoveSelUp: undefined,
+  });
+
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
     if (dataObj.name === 'Level Cap') {
@@ -63,7 +68,10 @@ function StatInputForm(props) {
           setValue(val);
         }}
         onBlur={() => {
-          props.setData.Update();
+          // a forced rerender because the information is array based
+          // currently needed for updating rows
+          // Force Update
+          // props.setData.Update();
         }}
       />
     );
@@ -436,6 +444,8 @@ function StatInputForm(props) {
     );
   };
 
+  const iRows = Table.length;
+
   return (
     <div /* className="inherit" */>
       {editMode ? (
@@ -446,17 +456,34 @@ function StatInputForm(props) {
       {hStatProps()}
       <div name="FormBody" align="center">
         <Col>
+          <div>
+            <button
+              onClick={() => {
+                if (GridFuncs.MoveSelUp) GridFuncs.MoveSelUp();
+              }}
+            >
+              UP
+            </button>
+            <button
+              onClick={() => {
+                if (GridFuncs.MoveSelDown) GridFuncs.MoveSelDown();
+              }}
+            >
+              DOWN
+            </button>
+          </div>
           <Grid
             bAddRowHeader={editMode}
             colOrder={[0, 1, 4, 2, 3, 5, 6]}
             hHeader={hHeader()}
             hFooter={hFooter}
-            iRows={Table.length}
+            iRows={iRows}
             cellStyle={{
               borderBottom: editMode ? '2px solid white' : undefined,
             }}
             Values={Table}
             bNoSel={!editMode}
+            GridFuncs={setGridFuncs}
           >
             {hBody()}
           </Grid>
