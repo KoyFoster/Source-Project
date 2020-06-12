@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.6.0",
     "@types/mathjs": "^6.0.5",
+    "classnames": "^2.2.6",
     "eslint": "^6.8.0",
     "mathjs": "^6.6.4",
     "react": "^16.10.2",

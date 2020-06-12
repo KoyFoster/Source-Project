@@ -1,518 +1,1145 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable no-lone-blocks */
-/* eslint-disable prettier/prettier */
-/* eslint-disable indent */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/prop-types */
-
 import React, { useState, useEffect } from 'react';
+// import NativeCheckbox from './NativeCheckbox';
+import classNames from 'classnames';
+// import isEqual from 'lodash/isEqual';
 
-const Tree = props => {
-  // Vars
-  const { data } = props;
-  const { style } = props;
-  const { value } = props;
-  const { setValue } = props;
-  const { getItem } = props;
-  const listProps = props.listProps ? props.listProps : {};
-  const treeProps = props.treeProps ? props.treeProps : { checkboxes: true };
-  const parentSep = listProps ? listProps.parentSeparator : ',';
-  const childSep = listProps ? listProps.separator : ',';
-  const lineSep = listProps ? listProps.separateLine : ',';
+// Remaining bugs:
+// 1. The last parent of a parent is has control over wether the parent is checked off or not, instead of referencing all items.
+// 2. When checking off a parent that has parent children, the non-parent child will be missed if SaveChildrenText is the only properties set to true.
+// 3. GridTree does not line up clean on the branch column like VS.
+// General bugs
+// 1. Beahavior of the DropDown component needs fixing
+// Note: all on hold until later controls are started and finished.
+const fontFamily = 'calibri';
+const fontSize = '12px';
 
-  // get value as data string
-  // Note: To be completed later
-  // Note: parentSeps are handled in iterateItems
-  const getValueAsDataStr = dataVal => {
-    let buffer = '';
-    let i = 0;
-    if (Array.isArray(dataVal)) {
-      dataVal.map(function get(val) {
-        i += 1;
-        buffer += val
-          ? val +
-            (buffer ? childSep : '') +
-            (lineSep !== ',' && i < dataVal.length ? lineSep : '')
-          : '';
-        return null;
-      });
-    }
-    return buffer;
+class NativeCheckbox extends React.PureComponent {
+  static defaultProps = {
+    indeterminate: false,
   };
 
-  // eslint-disable-next-line arrow-body-style
-  const returnVal = (iParent, i, depth, val = undefined, bParent = false) => {
-    // if root parent
-    if (iParent === undefined && bParent) {
-      // eslint-disable-next-line no-nested-ternary
-      return val !== undefined
-        ? treeProps.saveParentText
-          ? data[i]
-          : ''
-        : undefined;
-    }
-    // eslint-disable-next-line no-nested-ternary
-    return treeProps.saveChildrenText === true || iParent === i
-      ? !treeProps.saveParentText
-        ? (treeProps.saveExpandedTree ? data[iParent] + parentSep : '') +
-          data[i].slice(depth, data[i].length)
-        : ''
-      : '';
-  };
+  componentDidMount() {
+    this.updateDeterminateProperty();
+  }
 
-  const iterateItems = (
-    val = [],
-    index = undefined,
-    depth = 0,
-    iSel = undefined,
-    iParent = undefined,
-  ) => {
-    let i = index !== undefined ? index : 0;
+  componentDidUpdate() {
+    this.updateDeterminateProperty();
+  }
 
-    // iterate
-    let bAllUnchecked = true;
-    for (i; i < data.length; i) {
-      const I = i; // used primarily for remembering the parent items
-      // Data
-      const isArray = Array.isArray(data[i]);
-      const curData = isArray ? data[i].toString() : data[i];
-      const nextData = data.length > i + 1 ? data[i + 1].toString() : -1;
-      // Item check
-      let dataLen = data.length > depth ? data.length : -1;
-      const bChild = curData[depth] === ':';
-      /* Depth Check: Check if no longer in depth */
-      if (depth > 0) {
-        // Note: "I don't understand what I'm doing on these two lines but it's important"
-        let inDepth = curData.length > depth - 1;
-        inDepth = dataLen ? curData[depth - 1] === ':' : false;
+  updateDeterminateProperty() {
+    const { indeterminate } = this.props;
+  }
 
-        // Return if at end of depth
-        if (!inDepth) {
-          return {
-            val,
-            index: i,
-            depth: depth - 1,
-            iSel,
-            iParent,
-            allUnchecked: bAllUnchecked,
-          };
-        }
-        // Check Next Item
-        if (inDepth && nextData !== -1) {
-          dataLen = nextData.length > depth - 1 ? nextData.length : -1;
-        }
-      } // end depth check
+  render() {
+    const props = { ...this.props };
 
-      if (dataLen === -1) break; // End of item check
+    // Remove property that does not exist in HTML
+    delete props.indeterminate;
 
-      // Parent Check
-      let validate = nextData !== -1;
-      validate = validate ? nextData.length > depth : false;
-      const bParent = validate ? nextData[depth] === ':' : false;
-
-      // /////////////////////////////////////////////////////////////////////
-      // Add Item
-      if (!bChild) {
-        // check if parent is checked off and currently selected item
-        let bChecked;
-        if (iParent !== undefined)
-          if (iParent === iSel) bChecked = val[iParent] !== undefined;
-
-        // define children if parent was changed
-        if (bChecked !== undefined) {
-          val[i] = bChecked ? returnVal(iParent, i, depth) : undefined;
-        }
-        // define current if currently selected
-        else if (i === iSel) {
-          if (depth === 0) {
-            val[i] = val[i] === undefined ? data[i] : undefined;
-            val[i] = returnVal(undefined, i, depth, val[i], bParent);
-          } else {
-            // predefined selected value
-            val[i] = val[i] === undefined ? data[i] : undefined;
-            // defined selected value
-            if (val[i]) val[i] = returnVal(iParent, i, depth, val[i]);
-          } // end of item set
-        }
-
-        // /////////////////////////////////////////////////////////////////////
-        // set parent if child is defined
-        // if (val[i] !== undefined && val[iParent] === undefined) {
-        //   val[iParent] = returnVal(
-        //     undefined,
-        //     iParent,
-        //     depth,
-        //     data[iParent],
-        //     bParent,
-        //   );
-        //   bAllUnchecked = false;
-        // }
-
-        // All items checked check
-        if (bAllUnchecked && val[i] !== undefined) {
-          bAllUnchecked = false;
-        }
-
-        // /////////////////////////////////////////////////////////////////////
-        // if is a parent
-        let buffer = {};
-        if (bParent) {
-          buffer = iterateItems(
-            val,
-            i + 1,
-            depth + 1,
-            bChecked !== undefined
-              ? i
-              : iSel /* Set Current Item as currently selected parent */,
-            i,
-          );
-          i = buffer.index - 1;
-          bAllUnchecked = buffer.allUnchecked;
-        }
-      } // End of colon check
-      // /////////////////////////////////////////////////////////////////////
-      // Add children
-      else {
-        const buffer = iterateItems(val, i, depth + 1, iSel, iParent);
-        i += buffer.depth;
-        bAllUnchecked = buffer.allUnchecked;
-      } // End of item case
-
-      // /////////////////////////////////////////////////////////////////////
-      // Uncheck parent
-      if (bParent) {
-        if (bAllUnchecked) {
-          val[I] = undefined;
-        } else if (bParent) {
-          val[I] = returnVal(undefined, I, depth, data[I], bParent);
-        }
-      }
-
-      i += 1;
-    } // end of for loop
-
-    return {
-      val,
-      index: i,
-      depth: depth - 1,
-      iSel,
-      iParent,
-      allUnchecked: bAllUnchecked,
-    };
-  }; // End of iterateItems
-
-  // This is the array representation of the grid
-  // Hurdle: Handle value selection recursively instead of hardcoding children
-  const handleChange = val => {
-    const buffer = treeProps.checkboxes
-      ? [...value]
-      : [new Array(value.length)].fill(undefined);
-
-    // eslint-disable-next-line no-nested-ternary
-    iterateItems(buffer, 0, 0, val.i);
-    setValue(buffer);
-    return getValueAsDataStr(buffer);
-  };
-
-  // Generate Items
-  const Branch = (index, isParent, bBranchEnd, bDepthEnd, bChecked, key) => {
-    const [checked, setChecked] = useState(bChecked.getBChecked());
-    const handleCheck = val => {
-      setChecked(val);
-      bChecked.setBChecked(val);
-    };
-
-    const segment = isParent ? (
-      <label
-        key={key}
-        style={{
-          display: 'inline-block',
-          lineHeight: '7px',
-
-          margin: '2px',
-          width: '9px',
-          height: '9px',
-
-          border: '1px solid #988e8e',
-          background: '#fafbfb',
-          color: '#4b63a7',
-
-          overflow: 'hidden',
-
-          alignSelf: 'center',
-          textAlign: 'center',
-          verticalAlign: 'middle',
+    return (
+      <input
+        {...props}
+        ref={(c) => {
+          this.checkbox = c;
         }}
-      >
-        <input
-          type="checkbox"
-          style={{ display: 'none', width: 0, height: 0 }}
-          onChange={e => {
-            handleCheck(e.target.checked);
-          }}
-        />
-        {checked ? '-' : '+'}
-      </label>
-    ) : (
-      undefined
+        type="checkbox"
+      />
     );
+  }
+}
 
-    if (segment) return segment;
-
-    // Types: first item, not first item, last item, list node
-    // eslint-disable-next-line no-nested-ternary
-    const branchType = index === 0 ? 1 : bBranchEnd ? 2 : -1;
-
-    return (
-      <div key={key}>
-        <div
-          style={{
-            display: 'flex',
-            height: '100%',
-            alignSelf: 'center',
-          }}
-        >
-          <div>
-            <div
-              style={{
-                width: '6px',
-                height: '50%',
-              }}
-            />
-            <div
-              style={{
-                width: '6px',
-                height: '50%',
-              }}
-            />
-          </div>
-          <div>
-            <div
-              style={{
-                width: '6px',
-                height: '50%',
-                borderLeft: !(branchType === 0 || branchType === 1)
-                  ? '1px dotted #a0a0a0'
-                  : 'none',
-                borderBottom: !bDepthEnd ? 'none' : '1px dotted #a0a0a0',
-              }}
-            />
-            <div
-              style={{
-                width: '6px',
-                height: '50%',
-                borderLeft: !bBranchEnd ? '1px dotted #a0a0a0' : 'none',
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const Item = (index, itemValue, isChecked, children, iChildren, branches) => {
-    const [bChecked, setBChecked] = useState(
-      props.treeProps ? props.treeProps.expandOnPopulation : false,
-    );
-    const getBChecked = () => bChecked;
-
-    return (
-      <div
-        key={`itemDiv${index}`}
-        style={{ display: 'flex', alignContent: 'center' }}
-      >
-        <div>
-          <div style={{ display: 'flex' }}>
-            {branches({ setBChecked, getBChecked })}
-
-            {getItem({
-              index,
-              value: itemValue,
-              isChecked,
-              children,
-              iChildren,
-              checkboxes: treeProps.checkboxes,
-              checkbox: (
-                <input
-                  key={`itemcb${index}`}
-                  name={value}
-                  data-index={index}
-                  data-children={iChildren}
-                  type="checkbox"
-                  checked={isChecked}
-                  style={{
-                    width: treeProps.checkboxes === true ? '12px' : '0px',
-                    height: '12px',
-                    alignSelf: 'center',
-                  }}
-                  onChange={e => {}} // To clear warning
-                />
-              ),
-            })}
-          </div>
-          <div style={{ display: getBChecked() ? 'inline' : 'none' }}>
-            {children}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const hItems = (index = undefined, depth = 0) => {
-    const list = [];
-    const iList = [];
-    let i = index !== undefined ? index : 0;
-    //
-    for (i; i < data.length; i) {
-      // Data
-      const isArray = Array.isArray(data[i]);
-      const curData = isArray ? data[i].toString() : data[i];
-      const nextData = data.length > i + 1 ? data[i + 1].toString() : -1;
-
-      // Item check
-      let dataLen = data.length > depth ? data.length : -1;
-      const bColon = curData[depth] === ':';
-
-      /* Depth Check: Check if no longer in depth */
-      let bBranchEnd = false;
-      if (depth > 0) {
-        // Note: "I don't understand what I'm doing on these two lines but it's important"
-        let inDepth = curData.length > depth - 1;
-        inDepth = dataLen ? curData[depth - 1] === ':' : false;
-
-        // Return if at end of depth
-        if (!inDepth) {
-          return {
-            depth: depth - 1,
-            index: i,
-            list,
-            iList,
-          };
-        }
-        // Check Next Item
-        if (inDepth && nextData !== -1) {
-          dataLen = nextData.length > depth - 1 ? nextData.length : -1;
-          bBranchEnd = !(dataLen === -1 ? false : nextData[depth - 1] === ':');
-        }
-      }
-      if (dataLen === -1) break; // End of item check
-
-      // Parent Check
-      let validate = nextData !== -1;
-      validate = validate ? nextData.length > depth : false;
-      const bParent = validate ? nextData[depth] === ':' : false;
-
-      // Add Item
-      if (!bColon) {
-        // eslint-disable-next-line no-loop-func
-        const Branches = (bChecked = {}) => {
-          const branches = [
-            Branch(
-              i,
-              depth === 0 ? bParent : false, // isParent
-              i === data.length - 1, // bBranchEnd
-              depth ? false : !bParent, // bDepthEnd
-              bChecked,
-              `B_${i},${0}`,
-            ),
-          ];
-          let b;
-          for (b = 1; b <= depth; b) {
-            branches.push(
-              Branch(
-                i,
-                depth === b ? bParent : false,
-                bBranchEnd,
-                depth === b,
-                bChecked,
-                `B_${i},${b}`,
-              ),
-            );
-            b += 1;
-          }
-          return branches;
-        };
-
-        let buffer;
-        let children;
-        let iChildren;
-        if (bParent) {
-          buffer = hItems(i + 1, depth + 1);
-          children = buffer.list;
-          iChildren = buffer.iList;
-        }
-
-        const bItemChecked = value ? value[i] !== undefined : false;
-        iList.push(i);
-        const dataPass = isArray
-          ? data[i]
-          : data[i].slice(depth, data[i].length);
-        list.push(
-          Item(i, dataPass, bItemChecked, children, iChildren, Branches),
-        );
-
-        if (bParent) {
-          i = buffer.index - 1;
-        }
-      }
-      // Add Sub Items
-      else {
-        const buffer = hItems(i, depth + 1);
-        list.push(<div style={{}}>{buffer.list}</div>);
-        i += buffer.depth;
-      } // End of item case
-      i += 1;
-    }
-    return { depth: depth - 1, index: i, list, iList };
-  }; // End of hItems
-
-  // used for intialization
-  useEffect(() => {
-    // eslint-disable-next-line
-  }, []);
-
-  return (
-    <div
-      style={{
-        ...style,
-        maxHeight: style.maxHeight,
-        overflow: 'auto',
-      }}
-      {...props.events}
-      onChange={e => {
-        if (Object.keys(e.target.dataset).length > 0) {
-          if (props.onChange) {
-            props.onChange(
-              handleChange({
-                checked: e.target.checked,
-                children: e.target.dataset.children,
-                i: parseInt(e.target.dataset.index, 10),
-              }),
-            );
-          } else
-            handleChange({
-              checked: e.target.checked,
-              children: e.target.dataset.children,
-              i: parseInt(e.target.dataset.index, 10),
-            });
-        }
-      }}
-    >
-      <div style={{ display: 'flex' }}>
-        <div
-          style={{
-            minWidth: '24px',
-          }}
-        />
-        {props.children}
-      </div>
-
-      {data.length > 0 ? hItems().list : null}
-    </div>
-  );
+const CheckModel = {
+  ALL: 'all',
+  PARENT: 'parent',
+  LEAF: 'leaf',
 };
+
+class Node {
+  constructor(props, nodes = {}) {
+    this.props = props;
+    this.flatNodes = nodes;
+  }
+
+  setProps(props) {
+    this.props = props;
+  }
+
+  clone() {
+    const clonedNodes = {};
+
+    // Re-construct nodes one level deep to avoid shallow copy of mutable characteristics
+    Object.keys(this.flatNodes).forEach((value) => {
+      const node = this.flatNodes[value];
+      clonedNodes[value] = { ...node };
+    });
+
+    return new Node(this.props, clonedNodes);
+  }
+
+  getNode(value) {
+    return this.flatNodes[value];
+  }
+
+  flattenNodes(nodes, parent = {}, depth = 0) {
+    if (!Array.isArray(nodes) || nodes.length === 0) {
+      return;
+    }
+
+    const { disabled, noCascade } = this.props;
+
+    // Flatten the `node` property for internal lookups
+    nodes.forEach((node, index) => {
+      const isParent = this.nodeHasChildren(node);
+
+      this.flatNodes[node.value] = {
+        label: node.label,
+        value: node.value,
+        children: node.children,
+        parent,
+        isChild: parent.value !== undefined,
+        isParent,
+        isLeaf: !isParent,
+        showCheckbox:
+          node.showCheckbox !== undefined ? node.showCheckbox : true,
+        disabled: this.getDisabledState(node, parent, disabled, noCascade),
+        treeDepth: depth,
+        index,
+      };
+      this.flattenNodes(node.children, node, depth + 1);
+    });
+  }
+
+  nodeHasChildren(node) {
+    return Array.isArray(node.children);
+  }
+
+  getDisabledState(node, parent, disabledProp, noCascade) {
+    if (disabledProp) {
+      return true;
+    }
+
+    if (!noCascade && parent.disabled) {
+      return true;
+    }
+
+    return Boolean(node.disabled);
+  }
+
+  deserializeLists(lists) {
+    const listKeys = ['checked', 'expanded'];
+
+    // Reset values to false
+    Object.keys(this.flatNodes).forEach((value) => {
+      listKeys.forEach((listKey) => {
+        this.flatNodes[value][listKey] = false;
+      });
+    });
+
+    // Deserialize values and set their nodes to true
+    listKeys.forEach((listKey) => {
+      lists[listKey].forEach((value) => {
+        if (this.flatNodes[value] !== undefined) {
+          this.flatNodes[value][listKey] = true;
+        }
+      });
+    });
+  }
+
+  serializeList(key) {
+    const list = [];
+
+    Object.keys(this.flatNodes).forEach((value) => {
+      if (this.flatNodes[value][key]) {
+        list.push(value);
+      }
+    });
+
+    return list;
+  }
+
+  expandAllNodes(expand) {
+    Object.keys(this.flatNodes).forEach((value) => {
+      if (this.flatNodes[value].isParent) {
+        this.flatNodes[value].expanded = expand;
+      }
+    });
+
+    return this;
+  }
+
+  toggleChecked(
+    node,
+    isChecked,
+    checkModel,
+    noCascade,
+    percolateUpward = true,
+  ) {
+    const flatNode = this.flatNodes[node.value];
+    const modelHasParents =
+      [CheckModel.PARENT, CheckModel.ALL].indexOf(checkModel) > -1;
+    const modelHasLeaves =
+      [CheckModel.LEAF, CheckModel.ALL].indexOf(checkModel) > -1;
+
+    if (flatNode.isLeaf || noCascade) {
+      if (node.disabled) {
+        return this;
+      }
+
+      this.toggleNode(node.value, 'checked', isChecked);
+    } else {
+      if (modelHasParents) {
+        this.toggleNode(node.value, 'checked', isChecked);
+      }
+
+      if (modelHasLeaves) {
+        // Percolate check status down to all children
+        flatNode.children.forEach((child) => {
+          this.toggleChecked(child, isChecked, checkModel, noCascade, false);
+        });
+      }
+    }
+
+    // Percolate check status up to parent
+    // The check model must include parent nodes and we must not have already covered the
+    // parent (relevant only when percolating through children)
+    if (percolateUpward && !noCascade && flatNode.isChild && modelHasParents) {
+      this.toggleParentStatus(flatNode.parent, checkModel);
+    }
+
+    return this;
+  }
+
+  toggleParentStatus(node, checkModel) {
+    const flatNode = this.flatNodes[node.value];
+
+    if (flatNode.isChild) {
+      if (checkModel === CheckModel.ALL) {
+        this.toggleNode(
+          node.value,
+          'checked',
+          this.isEveryChildChecked(flatNode),
+        );
+      }
+
+      this.toggleParentStatus(flatNode.parent, checkModel);
+    } else {
+      this.toggleNode(
+        node.value,
+        'checked',
+        this.isEveryChildChecked(flatNode),
+      );
+    }
+  }
+
+  isEveryChildChecked(node) {
+    return node.children.every((child) => this.getNode(child.value).checked);
+  }
+
+  toggleNode(nodeValue, key, toggleValue) {
+    this.flatNodes[nodeValue][key] = toggleValue;
+
+    return this;
+  }
+} // end of node
+
+class TreeNode extends React.Component {
+  static defaultProps = {
+    children: null,
+    className: null,
+    expandOnClick: false,
+    icon: null,
+    showCheckbox: true,
+    title: null,
+    onClick: () => {},
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.onCheck = this.onCheck.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.onExpand = this.onExpand.bind(this);
+  }
+
+  onCheck() {
+    const { value, onCheck } = this.props;
+
+    onCheck({ value, checked: this.getCheckState({ toggle: true }) });
+  }
+
+  onClick() {
+    const { expandOnClick, isParent, value, onClick } = this.props;
+
+    // Auto expand if enabled
+    if (isParent && expandOnClick) {
+      this.onExpand();
+    }
+
+    onClick({ value, checked: this.getCheckState({ toggle: false }) });
+  }
+
+  onExpand() {
+    const { expanded, value, onExpand } = this.props;
+
+    onExpand({ value, expanded: !expanded });
+  }
+
+  getCheckState({ toggle }) {
+    const { checked, optimisticToggle } = this.props;
+
+    // Toggle off state to checked
+    if (checked === 0 && toggle) {
+      return true;
+    }
+
+    // Node is already checked and we are not toggling
+    if (checked === 1 && !toggle) {
+      return true;
+    }
+
+    // Get/toggle partial state based on cascade model
+    if (checked === 2) {
+      return optimisticToggle;
+    }
+
+    return false;
+  }
+
+  renderCollapseButton() {
+    const { expandDisabled, isLeaf, lang } = this.props;
+
+    if (isLeaf) {
+      return (
+        <span className="rct-collapse">
+          <span className="rct-icon" />
+        </span>
+      );
+    }
+
+    return (
+      <button
+        type="button"
+        className="rct-collapse rct-collapse-btn"
+        disabled={expandDisabled}
+        aria-label={lang.toggle}
+        title={lang.toggle}
+        onClick={this.onExpand}
+      >
+        {this.renderCollapseIcon()}
+      </button>
+    );
+  }
+
+  renderCollapseIcon() {
+    const {
+      expanded,
+      icons: { expandClose, expandOpen },
+    } = this.props;
+
+    if (!expanded) {
+      return expandClose;
+    }
+
+    return expandOpen;
+  }
+
+  renderCheckboxIcon() {
+    const {
+      checked,
+      icons: { uncheck, check, halfCheck },
+    } = this.props;
+
+    if (checked === 0) {
+      return uncheck;
+    }
+
+    if (checked === 1) {
+      return check;
+    }
+
+    return halfCheck;
+  }
+
+  renderNodeIcon() {
+    const {
+      expanded,
+      icon,
+      icons: { leaf, parentClose, parentOpen },
+      isLeaf,
+    } = this.props;
+
+    if (icon !== null) {
+      return icon;
+    }
+
+    if (isLeaf) {
+      return leaf;
+    }
+
+    if (!expanded) {
+      return parentClose;
+    }
+
+    return parentOpen;
+  }
+
+  renderBareLabel(children) {
+    const { onClick, title } = this.props;
+    const clickable = onClick !== null;
+
+    return (
+      <span className="rct-bare-label" title={title}>
+        {clickable ? (
+          <span
+            className="rct-node-clickable"
+            onClick={this.onClick}
+            onKeyPress={this.onClick}
+            role="button"
+            tabIndex={0}
+          >
+            {children}
+          </span>
+        ) : (
+          children
+        )}
+      </span>
+    );
+  }
+
+  renderCheckboxLabel(children) {
+    const { checked, disabled, title, treeId, value, onClick } = this.props;
+    const clickable = onClick !== null;
+    const inputId = `${treeId}-${String(value).split(' ').join('_')}`;
+
+    const render = [
+      <label key={0} htmlFor={inputId} title={title}>
+        {/* <NativeCheckbox */}
+        <NativeCheckbox
+          checked={checked === 1}
+          disabled={disabled}
+          id={inputId}
+          indeterminate={checked === 2}
+          onClick={this.onCheck}
+          onChange={() => {}}
+        />
+        <span className="rct-checkbox">{this.renderCheckboxIcon()}</span>
+        {!clickable ? children : null}
+      </label>,
+    ];
+
+    if (clickable) {
+      render.push(
+        <span
+          key={1}
+          className="rct-node-clickable"
+          onClick={this.onClick}
+          onKeyPress={this.onClick}
+          role="link"
+          tabIndex={0}
+        >
+          {children}
+        </span>,
+      );
+    }
+
+    return render;
+  }
+
+  renderLabel() {
+    const { label, showCheckbox, showNodeIcon } = this.props;
+    const labelChildren = [
+      showNodeIcon ? (
+        <span key={0} className="rct-node-icon">
+          {this.renderNodeIcon()}
+        </span>
+      ) : null,
+      <span key={1} className="rct-title">
+        {label}
+      </span>,
+    ];
+
+    if (!showCheckbox) {
+      return this.renderBareLabel(labelChildren);
+    }
+
+    return this.renderCheckboxLabel(labelChildren);
+  }
+
+  renderChildren() {
+    if (!this.props.expanded) {
+      return null;
+    }
+
+    return this.props.children;
+  }
+
+  render() {
+    const { className, disabled, expanded, isLeaf } = this.props;
+    const nodeClass = classNames(
+      {
+        'rct-node': true,
+        'rct-node-leaf': isLeaf,
+        'rct-node-parent': !isLeaf,
+        'rct-node-expanded': !isLeaf && expanded,
+        'rct-node-collapsed': !isLeaf && !expanded,
+        'rct-disabled': disabled,
+      },
+      className,
+    );
+
+    return (
+      <li className={nodeClass}>
+        <span className="rct-text">
+          {this.renderCollapseButton()}
+          {this.renderLabel()}
+        </span>
+        {this.renderChildren()}
+      </li>
+    );
+  }
+}
+
+class Tree extends React.Component {
+  static defaultProps = {
+    checkModel: CheckModel.LEAF,
+    checked: [],
+    disabled: false,
+    expandDisabled: false,
+    expandOnClick: false,
+    expanded: [],
+    icons: {
+      check: <span className="rct-icon rct-icon-check" />,
+      uncheck: <span className="rct-icon rct-icon-uncheck" />,
+      halfCheck: <span className="rct-icon rct-icon-half-check" />,
+      expandClose: <span className="rct-icon rct-icon-expand-close" />,
+      expandOpen: <span className="rct-icon rct-icon-expand-open" />,
+      expandAll: <span className="rct-icon rct-icon-expand-all" />,
+      collapseAll: <span className="rct-icon rct-icon-collapse-all" />,
+      parentClose: <span className="rct-icon rct-icon-parent-close" />,
+      parentOpen: <span className="rct-icon rct-icon-parent-open" />,
+      leaf: <span className="rct-icon rct-icon-leaf" />,
+    },
+    iconsClass: 'fa4',
+    id: null,
+    lang: {
+      collapseAll: 'Collapse all',
+      expandAll: 'Expand all',
+      toggle: 'Toggle',
+    },
+    name: undefined,
+    nameAsArray: false,
+    nativeCheckboxes: false,
+    noCascade: false,
+    onlyLeafCheckboxes: false,
+    optimisticToggle: true,
+    showExpandAll: false,
+    showNodeIcon: true,
+    showNodeTitle: false,
+    onCheck: () => {},
+    onClick: null,
+    onExpand: () => {},
+  };
+
+  constructor(props) {
+    super(props);
+
+    const model = new Node(props);
+    model.flattenNodes(props.nodes);
+    model.deserializeLists({
+      checked: props.checked,
+      expanded: props.expanded,
+    });
+
+    this.state = {
+      id: props.id /* || `rct-${nanoid(7)}` */,
+      model,
+      prevProps: props,
+    };
+
+    this.onCheck = this.onCheck.bind(this);
+    this.onExpand = this.onExpand.bind(this);
+    this.onNodeClick = this.onNodeClick.bind(this);
+    this.onExpandAll = this.onExpandAll.bind(this);
+    this.onCollapseAll = this.onCollapseAll.bind(this);
+  }
+
+  // eslint-disable-next-line react/sort-comp
+  static getDerivedStateFromProps(newProps, prevState) {
+    const { model, prevProps } = prevState;
+    const { disabled, id, nodes } = newProps;
+    let newState = { ...prevState, prevProps: newProps };
+
+    // Apply new properties to model
+    model.setProps(newProps);
+
+    // Since flattening nodes is an expensive task, only update when there is a node change
+    if (
+      prevProps.nodes !== nodes /*!isEqual(prevProps.nodes, nodes)*/ ||
+      prevProps.disabled !== disabled
+    ) {
+      model.flattenNodes(nodes);
+    }
+
+    if (id !== null) {
+      newState = { ...newState, id };
+    }
+
+    model.deserializeLists({
+      checked: newProps.checked,
+      expanded: newProps.expanded,
+    });
+
+    return newState;
+  }
+
+  onCheck(nodeInfo) {
+    const { checkModel, noCascade, onCheck } = this.props;
+    const model = this.state.model.clone();
+    const node = model.getNode(nodeInfo.value);
+
+    model.toggleChecked(nodeInfo, nodeInfo.checked, checkModel, noCascade);
+    onCheck(model.serializeList('checked'), { ...node, ...nodeInfo });
+  }
+
+  onExpand(nodeInfo) {
+    const { onExpand } = this.props;
+    const model = this.state.model.clone();
+    const node = model.getNode(nodeInfo.value);
+
+    model.toggleNode(nodeInfo.value, 'expanded', nodeInfo.expanded);
+    onExpand(model.serializeList('expanded'), { ...node, ...nodeInfo });
+  }
+
+  onNodeClick(nodeInfo) {
+    const { onClick } = this.props;
+    const { model } = this.state;
+    const node = model.getNode(nodeInfo.value);
+
+    onClick({ ...node, ...nodeInfo });
+  }
+
+  onExpandAll() {
+    this.expandAllNodes();
+  }
+
+  onCollapseAll() {
+    this.expandAllNodes(false);
+  }
+
+  expandAllNodes(expand = true) {
+    const { onExpand } = this.props;
+
+    onExpand(
+      this.state.model.clone().expandAllNodes(expand).serializeList('expanded'),
+    );
+  }
+
+  determineShallowCheckState(node, noCascade) {
+    const flatNode = this.state.model.getNode(node.value);
+
+    if (flatNode.isLeaf || noCascade) {
+      return flatNode.checked ? 1 : 0;
+    }
+
+    if (this.isEveryChildChecked(node)) {
+      return 1;
+    }
+
+    if (this.isSomeChildChecked(node)) {
+      return 2;
+    }
+
+    return 0;
+  }
+
+  isEveryChildChecked(node) {
+    return node.children.every(
+      (child) => this.state.model.getNode(child.value).checkState === 1,
+    );
+  }
+
+  isSomeChildChecked(node) {
+    return node.children.some(
+      (child) => this.state.model.getNode(child.value).checkState > 0,
+    );
+  }
+
+  renderTreeNodes(nodes, parent = {}) {
+    const {
+      expandDisabled,
+      expandOnClick,
+      icons,
+      lang,
+      noCascade,
+      onClick,
+      onlyLeafCheckboxes,
+      optimisticToggle,
+      showNodeTitle,
+      showNodeIcon,
+    } = this.props;
+    const { id, model } = this.state;
+    const { icons: defaultIcons } = Tree.defaultProps;
+
+    const treeNodes = nodes.map((node) => {
+      const key = node.value;
+      const flatNode = model.getNode(node.value);
+      const children = flatNode.isParent
+        ? this.renderTreeNodes(node.children, node)
+        : null;
+
+      // Determine the check state after all children check states have been determined
+      // This is done during rendering as to avoid an additional loop during the
+      // deserialization of the `checked` property
+      flatNode.checkState = this.determineShallowCheckState(node, noCascade);
+
+      // Show checkbox only if this is a leaf node or showCheckbox is true
+      const showCheckbox = onlyLeafCheckboxes
+        ? flatNode.isLeaf
+        : flatNode.showCheckbox;
+
+      // Render only if parent is expanded or if there is no root parent
+      const parentExpanded = parent.value
+        ? model.getNode(parent.value).expanded
+        : true;
+
+      if (!parentExpanded) {
+        return null;
+      }
+
+      return (
+        <TreeNode
+          key={key}
+          checked={flatNode.checkState}
+          className={node.className}
+          disabled={flatNode.disabled}
+          expandDisabled={expandDisabled}
+          expandOnClick={expandOnClick}
+          expanded={flatNode.expanded}
+          icon={node.icon}
+          icons={{ ...defaultIcons, ...icons }}
+          label={node.label}
+          lang={lang}
+          optimisticToggle={optimisticToggle}
+          isLeaf={flatNode.isLeaf}
+          isParent={flatNode.isParent}
+          showCheckbox={showCheckbox}
+          showNodeIcon={showNodeIcon}
+          title={showNodeTitle ? node.title || node.label : node.title}
+          treeId={id}
+          value={node.value}
+          onCheck={this.onCheck}
+          onClick={onClick && this.onNodeClick}
+          onExpand={this.onExpand}
+        >
+          {children}
+        </TreeNode>
+      );
+    });
+
+    return <ol>{treeNodes}</ol>;
+  }
+
+  renderExpandAll() {
+    const {
+      icons: { expandAll, collapseAll },
+      lang,
+      showExpandAll,
+    } = this.props;
+
+    if (!showExpandAll) {
+      return null;
+    }
+
+    return (
+      <div className="rct-options">
+        <button
+          type="button"
+          className="rct-option rct-option-expand-all"
+          aria-label={lang.expandAll}
+          title={lang.expandAll}
+          onClick={this.onExpandAll}
+        >
+          {expandAll}
+        </button>
+        <button
+          type="button"
+          className="rct-option rct-option-collapse-all"
+          aria-label={lang.collapseAll}
+          title={lang.collapseAll}
+          onClick={this.onCollapseAll}
+        >
+          {collapseAll}
+        </button>
+      </div>
+    );
+  }
+
+  renderHiddenInput() {
+    const { name, nameAsArray } = this.props;
+
+    if (name === undefined) {
+      return null;
+    }
+
+    if (nameAsArray) {
+      return this.renderArrayHiddenInput();
+    }
+
+    return this.renderJoinedHiddenInput();
+  }
+
+  renderArrayHiddenInput() {
+    const { checked, name: inputName } = this.props;
+
+    return checked.map((value) => {
+      const name = `${inputName}[]`;
+
+      return <input key={value} name={name} type="hidden" value={value} />;
+    });
+  }
+
+  renderJoinedHiddenInput() {
+    const { checked, name } = this.props;
+    const inputValue = checked.join(',');
+
+    return <input name={name} type="hidden" value={inputValue} />;
+  }
+
+  render() {
+    const { disabled, iconsClass, nodes, nativeCheckboxes } = this.props;
+    const { id } = this.state;
+    const treeNodes = this.renderTreeNodes(nodes);
+
+    const className = classNames({
+      'react-checkbox-tree': true,
+      'rct-disabled': disabled,
+      [`rct-icons-${iconsClass}`]: true,
+      'rct-native-display': nativeCheckboxes,
+    });
+
+    return (
+      <div className={className} id={id}>
+        {this.renderExpandAll()}
+        {this.renderHiddenInput()}
+        {treeNodes}
+      </div>
+    );
+  }
+} // end of tree
+
+// const Tree = (props) => {
+//   // Vars
+//   const [data, setData] = useState(props.data);
+//   const { style } = props;
+//   const { setValue } = props;
+//   const listProps = props.listProps
+//     ? props.listProps
+//     : { parentSeparator: ',', separator: ',', separateLine: ',' };
+//   const treeProps = props.treeProps
+//     ? props.treeProps
+//     : {
+//         saveParentText: true,
+//         saveChildrenText: true,
+//         saveExpandedItem: true,
+//         checkboxes: false,
+//         expandOnPopulation: false,
+//       };
+//   const { parentSeparator } = listProps;
+//   const { separator } = listProps;
+//   const { separateLine } = listProps;
+
+//   // get value as data string
+//   // Note: To be completed later
+//   // Note: parentSeps are handled in iterateItems
+//   const getValueAsDataStr = (dataVal) => {
+//     let buffer = '';
+//     let i = 0;
+//     if (Array.isArray(dataVal)) {
+//       dataVal.map(function get(val) {
+//         i += 1;
+//         buffer += val
+//           ? (buffer && separateLine === ',' ? separator : '') +
+//             val +
+//             (separateLine !== ',' && i < dataVal.length ? separateLine : '')
+//           : '';
+//         return null;
+//       });
+//     }
+//     return buffer;
+//   };
+
+//   const returnVal = (
+//     iParent,
+//     i,
+//     depth,
+//     val = undefined,
+//     bParent = false,
+//     bAllChecked = false,
+//   ) => {
+//     // if root parent
+//     if (iParent === undefined && bParent) {
+//       return val !== undefined
+//         ? treeProps.saveParentText
+//           ? data[i].slice(depth, data[i].length)
+//           : ''
+//         : undefined;
+//     }
+//     if (iParent === undefined) {
+//       return data[i].slice(depth, data[i].length);
+//     }
+//     if (bAllChecked) {
+//       return treeProps.saveChildrenText
+//         ? !treeProps.saveParentText
+//           ? (treeProps.saveExpandedItem
+//               ? data[iParent] + parentSeparator
+//               : '') + data[i].slice(depth, data[i].length)
+//           : ''
+//         : '';
+//     }
+//     return (
+//       (treeProps.saveExpandedItem ? data[iParent] + parentSeparator : '') +
+//       data[i].slice(depth, data[i].length)
+//     );
+//   };
+
+//   // Note: how the item is displayed. If one is not passed, a default will take it's place
+//   const getItem = props.getItem
+//     ? props.getItem
+//     : (item, events) => [
+//         <label
+//           key={`item${item.id}`}
+//           type="button"
+//           style={{
+//             display: 'flex',
+//             background: 'transparent',
+//             color: 'inherit',
+//             fontFamily: 'inherit',
+//             fontStyle: 'inherit',
+//             border: 'none',
+
+//             filter: item.checked //  && !itemData.checkboxes
+//               ? 'invert(0.9)'
+//               : 'invert(0)',
+//             backdropFilter: item.checked // && !itemData.checkboxes
+//               ? 'invert(0.25)'
+//               : 'invert(0)',
+//           }}
+//           {...events}
+//         >
+//           {/* {itemData.checkbox} */}
+//           {item.value}
+//         </label>,
+//       ];
+
+//   // Generate Items
+//   const Branch = (index, isParent, bBranchEnd, bDepthEnd, expand, key) => {
+//     const handleChange = (val) => {
+//       if (expand) if (expand.setExpand) expand.setExpand(!expand.expand);
+//     };
+
+//     const segment = isParent ? (
+//       <label
+//         key={key}
+//         style={{
+//           display: 'inline-block',
+//           lineHeight: '7px',
+
+//           margin: '2px',
+//           width: '9px',
+//           height: '9px',
+
+//           border: '1px solid #988e8e',
+//           background: '#fafbfb',
+//           color: '#4b63a7',
+
+//           overflow: 'hidden',
+
+//           alignSelf: 'center',
+//           textAlign: 'center',
+//           verticalAlign: 'middle',
+//         }}
+//       >
+//         <input
+//           type="checkbox"
+//           checked={expand.expand}
+//           style={{ display: 'none', width: 0, height: 0 }}
+//           onChange={(e) => {
+//             handleChange(e.target.checked);
+//           }}
+//         />
+//         {expand.expand ? '-' : '+'}
+//       </label>
+//     ) : undefined;
+
+//     if (segment) return segment;
+
+//     // Types: first item, not first item, last item, list node
+//     // eslint-disable-next-line no-nested-ternary
+//     const branchType = index === 0 ? 1 : bBranchEnd ? 2 : -1;
+
+//     return (
+//       <div key={key}>
+//         <div
+//           style={{
+//             display: 'flex',
+//             height: '100%',
+//             alignSelf: 'center',
+//           }}
+//         >
+//           <div>
+//             <div
+//               style={{
+//                 width: '6px',
+//                 height: '50%',
+//               }}
+//             />
+//             <div
+//               style={{
+//                 width: '6px',
+//                 height: '50%',
+//               }}
+//             />
+//           </div>
+//           <div>
+//             <div
+//               style={{
+//                 width: '6px',
+//                 height: '50%',
+//                 borderLeft: !(branchType === 0 || branchType === 1)
+//                   ? '1px dotted #a0a0a0'
+//                   : 'none',
+//                 borderBottom: !bDepthEnd ? 'none' : '1px dotted #a0a0a0',
+//               }}
+//             />
+//             <div
+//               style={{
+//                 width: '6px',
+//                 height: '50%',
+//                 borderLeft: !bBranchEnd ? '1px dotted #a0a0a0' : 'none',
+//               }}
+//             />
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   // compile branches
+//   const GetBranches = (bChecked = {}, index, depth, bParent, bEnd, expand) => {
+//     const branches = [
+//       Branch(
+//         index,
+//         depth === 0 ? bParent : false, // isParent
+//         bEnd, // bBranchEnd
+//         depth ? false : !bParent, // bDepthEnd
+//         expand,
+//         `B_${index},${0}`,
+//       ),
+//     ];
+//     let b;
+//     for (b = 1; b <= depth; b) {
+//       branches.push(
+//         Branch(
+//           index,
+//           depth === b ? bParent : false,
+//           bEnd,
+//           depth === b,
+//           expand,
+//           `B_${index},${b}`,
+//         ),
+//       );
+//       b += 1;
+//     }
+//     return branches;
+//   };
+
+//   const Item = (item, i, depth) => {
+//     const [expand, setExpand] = useState(false);
+//     const [checked, setChecked] = useState(item.checked);
+
+//     // handle change
+//     const handleChange = () => {
+//       const val = !item.checked;
+//       item.checked = val;
+
+//       // update update parent
+//       if (item.parentId > -1) {
+//       }
+
+//       // update children
+//       if (item.children.length) {
+//         for (let i = 0; i < item.children.length; i) {
+//           item.children[i].checked = val;
+//           i += 1;
+//         }
+//       }
+
+//       setChecked(val);
+//     };
+
+//     return (
+//       <div key={`${item.id}_${item.value}`}>
+//         <div style={{ display: 'flex' }}>
+//           {GetBranches(
+//             {},
+//             i,
+//             depth,
+//             item.children.length,
+//             item.length - 1 === i,
+//             { expand, setExpand },
+//           )}
+//           {getItem(
+//             { ...item, checked: item.checked },
+//             {
+//               onClick: () => handleChange(),
+//             },
+//           )}
+//         </div>
+//         <div style={{ display: expand ? 'inline' : 'none' }}>
+//           {item.children ? getList(item.children, depth + 1) : null}
+//         </div>
+//       </div>
+//     );
+//   };
+
+//   const onChange = () => {};
+
+//   // compile and return item list
+//   const getList = (itemData = data, depth = 0) => {
+//     const buffer = [];
+//     // interate through dataLen
+//     for (let i = 0; i < itemData.length; i) {
+//       buffer.push(Item(itemData[i], i, depth));
+//       i += 1;
+//     }
+//     return buffer;
+//   }; // End of getList
+
+//   const hList = getList();
+//   console.log('hList:', hList);
+//   return (
+//     <div
+//       style={{
+//         ...style,
+//         fontFamily,
+//         fontSize,
+//         maxHeight: style ? style.maxHeight : style,
+//         overflow: 'auto',
+//       }}
+//       {...props.events}
+//     >
+//       <div style={{ display: 'flex' }}>
+//         <div
+//           style={{
+//             minWidth: '24px',
+//           }}
+//         />
+//         {props.children}
+//       </div>
+
+//       {data.length > 0 ? hList : null}
+//     </div>
+//   );
+// };
 
 export default Tree;

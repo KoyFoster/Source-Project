@@ -6,6 +6,7 @@ import Diagram from './Diagram.js';
 import StatData from './StatData.js';
 import { Row, Col } from './DivGrid';
 import StatCode from './StatCode';
+import Tree from './Forms/Tree';
 
 // defaultTemplates
 const iDefTmpl = 0;
@@ -453,8 +454,13 @@ function StatCard(props) {
     vTableType: (index) => {
       return Values[index][0][1];
     },
-    vTable: (index) => {
-      return Values[index].slice(1, Values[index].length);
+    vTable: (index, bAll = false) => {
+      if (!bAll) {
+        return Values[index].slice(1, Values[index].length);
+      } else return Values[index];
+    },
+    vSetTable: (index, val) => {
+      return (Values[index] = val);
     },
     PointTotal: (index) => {
       return Values[index][0][3][0];
@@ -483,6 +489,7 @@ function StatCard(props) {
       Values[index][x][1] = val;
     },
     setTable: (index, val) => {
+      console.log(`Values[${index}]:`, val);
       Values[index] = val;
     },
     Update: () => {
@@ -699,6 +706,9 @@ function StatCard(props) {
     );
   };
 
+  const [checked, setChecked] = useState([]);
+  const [expanded, setExpanded] = useState([]);
+
   // Render and Logic
   return (
     <div
@@ -718,6 +728,47 @@ function StatCard(props) {
       />
       <Col style={{ flexGrow: 1 }}>
         <Row>
+          <Tree
+            nodes={[
+              { value: 'one', label: 'one', children: [] },
+              {
+                value: 'two',
+                label: 'two',
+                children: [
+                  {
+                    value: 'three',
+                    label: 'three',
+                    children: [
+                      {
+                        value: 'four',
+                        label: 'four',
+                      },
+                    ],
+                  },
+                  {
+                    value: 'five',
+                    label: 'five',
+                    children: [],
+                  },
+                ],
+              },
+              { value: 'six', label: 'six', children: [] },
+            ]}
+            checked={checked}
+            expanded={expanded}
+            onCheck={(checked) => setChecked(checked)}
+            onExpand={(expanded) => setExpanded(expanded)}
+
+            // value={[]}
+            // setValue={undefined}
+
+            // style={{
+            //   display: 'flexBox',
+            //   border: '2px solid red',
+            //   width: '256px',
+            //   height: '256px',
+            // }}
+          ></Tree>
           <div style={{ margin: 4, padding: 4 }}>
             <button
               style={{ width: '128px' }}

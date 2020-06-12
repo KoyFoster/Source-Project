@@ -7,13 +7,26 @@ import TogglePopup from './TogglePopup';
 //User Input Class
 function StatInputForm(props) {
   const Table = props.data().vTable(props.iD);
+  const FullTable = props.data().vTable(props.iD, true);
   const editMode = props.editMode;
   const bCalc = props.bCalc;
 
-  const [GridFuncs, setGridFuncs] = useState({
+  // grid states
+  const [rowOrder, setRowOrder] = useState();
+  // const [toggle, setToggle] = useState(false);
+  // const Flip = (val = !toggle) => {
+  //   setToggle(val);
+  // };
+
+  const GridFuncs = {
     MoveSelDown: undefined,
     MoveSelUp: undefined,
-  });
+    setRowOrder: setRowOrder,
+    setValue: (val) => {
+      props.setData.setTable(props.iD, val);
+      props.setData.Update();
+    },
+  };
 
   const Update = (dataObj) => {
     // console.log('dataObj:', dataObj);
@@ -118,6 +131,7 @@ function StatInputForm(props) {
         />
       </div>
     );
+
   const hTotal =
     bCalc === true || props.data().PointLimit(props.iD) === -1 ? (
       ''
@@ -140,27 +154,26 @@ function StatInputForm(props) {
     );
 
   const hStatProps = () => {
-    if (editMode) {
-      return (
-        <Col name="GraphBody">
-          <Row name="QRow">
-            Stats:{' '}
-            <Field
-              type="number"
-              name="Quantity"
-              value={Number(Table.length)}
-            ></Field>
-            {hLimit}
-          </Row>
-          <Row name="PDRow" alignItems="center">
-            {PointDiff()}
-            {hTotal}
-          </Row>
-        </Col>
-      );
-    } else {
-      return '';
-    }
+    return (
+      <Col
+        name="GraphBody"
+        style={{ visibility: editMode ? 'visible' : 'hidden' }}
+      >
+        <Row name="QRow">
+          Stats:{' '}
+          <Field
+            type="number"
+            name="Quantity"
+            value={Number(Table.length)}
+          ></Field>
+          {hLimit}
+        </Row>
+        <Row name="PDRow" alignItems="center">
+          {PointDiff()}
+          {hTotal}
+        </Row>
+      </Col>
+    );
   };
 
   const hHeader = () => {
@@ -186,24 +199,25 @@ function StatInputForm(props) {
           (expression)
         </label>,
       ];
-    else
-      return [
-        <label style={{ display: 'none' }}></label>,
-        <label></label>,
-        <label style={{ display: 'none' }}></label>,
-        <label style={{ display: 'none' }}></label>,
-        <label></label>,
-        <label
-          style={{
-            display: 'none',
-          }}
-        ></label>,
-        <label
-          style={{
-            display: 'none',
-          }}
-        ></label>,
-      ];
+    else return undefined;
+
+    // return [
+    //   <label style={{ display: 'none' }}></label>,
+    //   <label></label>,
+    //   <label style={{ display: 'none' }}></label>,
+    //   <label style={{ display: 'none' }}></label>,
+    //   <label></label>,
+    //   <label
+    //     style={{
+    //       display: 'none',
+    //     }}
+    //   ></label>,
+    //   <label
+    //     style={{
+    //       display: 'none',
+    //     }}
+    //   ></label>,
+    // ];
   };
 
   const hBody = () => {
@@ -446,6 +460,8 @@ function StatInputForm(props) {
 
   const iRows = Table.length;
 
+  if (props.iD === 1) console.log('SIF:', rowOrder, Table);
+  // console.log('toggle:', toggle);
   return (
     <div /* className="inherit" */>
       {editMode ? (
@@ -459,14 +475,30 @@ function StatInputForm(props) {
           <div>
             <button
               onClick={() => {
-                if (GridFuncs.MoveSelUp) GridFuncs.MoveSelUp();
+                if (GridFuncs.MoveSelUp) {
+                  GridFuncs.MoveSelUp();
+                  // props.setData.Update();
+                }
               }}
             >
               UP
             </button>
             <button
               onClick={() => {
-                if (GridFuncs.MoveSelDown) GridFuncs.MoveSelDown();
+                const buffer = FullTable;
+                buffer.push([...FullTable[1]]);
+                props.setData.setTable(props.iD, buffer);
+                props.setData.Update();
+              }}
+            >
+              TEST
+            </button>
+            <button
+              onClick={() => {
+                if (GridFuncs.MoveSelDown) {
+                  GridFuncs.MoveSelDown();
+                  // props.setData.Update();
+                }
               }}
             >
               DOWN
@@ -481,9 +513,12 @@ function StatInputForm(props) {
             cellStyle={{
               borderBottom: editMode ? '2px solid white' : undefined,
             }}
-            Values={Table}
+            ValuesOffset={1}
+            Data={FullTable}
             bNoSel={!editMode}
-            GridFuncs={setGridFuncs}
+            GridFuncs={GridFuncs}
+            UpdateValue
+            rowOrder={rowOrder}
           >
             {hBody()}
           </Grid>
