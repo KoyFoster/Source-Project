@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DDCB, DropDown } from './DropDown';
 import Tree from './Tree';
 const fontFamily = 'calibri';
@@ -46,13 +46,16 @@ const TreeDropDown = (props) => {
   const { value } = props;
   const [checked, setChecked] = useState(false);
 
+  // references
+  const parentRef = useRef(null);
+
   // remaining things to restore
   // 1. aqcuiring and setting value data
   // 2. formatting value data according to tree properties
   // 3. getting setting value data from exam data
-
   return (
     <div
+      ref={parentRef}
       style={{
         ...style,
         display: 'inline-flex',
@@ -96,11 +99,9 @@ const TreeDropDown = (props) => {
         />
       </div>
       <DropDown
+        parentRef={parentRef}
         bVisible={checked}
         style={{
-          position: 'absolute',
-          width: style.width,
-          top: style.height,
           maxHeight: `${300 + style.border ? 2 : 0}px'`,
           border: style.border,
           zIndex: props.tabOrder,

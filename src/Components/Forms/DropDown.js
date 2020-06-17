@@ -42,20 +42,41 @@ const DDCB = (props) => {
 };
 
 const DropDown = (props) => {
+  // return
   const { style } = props;
   const { bVisible } = props;
   const zIndex = style.zIndex ? style.zIndex : 1;
 
-  // return
+  // get info from parent ref
+  let top;
+  let left;
+  let width;
+
+  if (props.parentRef && bVisible) {
+    const BCR = props.parentRef.current.getBoundingClientRect();
+    console.log('BCR:', BCR);
+    const iTop = BCR.height + BCR.top;
+    top = `${iTop}px`;
+    width = BCR.width;
+    left = BCR.left;
+  }
+
   return (
     <div
+      name="DropDown"
       style={{
         ...style,
+        position: 'fixed',
         zIndex: bVisible ? '10000' : zIndex,
-        height: bVisible ? style.height : 0,
-        width: style.width ? style.width : '100%',
-        display: bVisible ? 'flex' : 'none',
+        display: bVisible ? 'block' : 'none',
         flexDirection: 'column',
+        background: 'white',
+        border: '1px solid black',
+        overflow: 'auto',
+
+        top: top,
+        left: left,
+        width: width,
       }}
     >
       {/* eslint-disable-next-line react/prop-types */}
