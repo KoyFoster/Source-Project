@@ -142,27 +142,25 @@ const newDefaultData = {
           pointLimit: -1,
           pointDiff: false,
           children: [
-            [
-              { value: 'Melee Attack Speed', minMax: [1, 1, 10], unit: '' },
-              { value: 'Melee Accuracy', minMax: [1, 1, 10], unit: '' },
-              {
-                value: 'Melee Critical Status',
-                minMax: [1, 1, 10],
-                unit: '',
-              },
-              {
-                value: 'Melee Critical Damage',
-                minMax: [1, 1, 10],
-                unit: '',
-              },
-              {
-                value: 'Backstab Melee Damage',
-                minMax: [1, 1, 10],
-                unit: '',
-              },
-              { value: 'Melee Skill Damage', minMax: [1, 1, 10], unit: '' },
-              { value: 'PvE Melee Skills', minMax: [1, 1, 10], unit: '' },
-            ],
+            { value: 'Melee Attack Speed', minMax: [1, 1, 10], unit: '' },
+            { value: 'Melee Accuracy', minMax: [1, 1, 10], unit: '' },
+            {
+              value: 'Melee Critical Status',
+              minMax: [1, 1, 10],
+              unit: '',
+            },
+            {
+              value: 'Melee Critical Damage',
+              minMax: [1, 1, 10],
+              unit: '',
+            },
+            {
+              value: 'Backstab Melee Damage',
+              minMax: [1, 1, 10],
+              unit: '',
+            },
+            { value: 'Melee Skill Damage', minMax: [1, 1, 10], unit: '' },
+            { value: 'PvE Melee Skills', minMax: [1, 1, 10], unit: '' },
           ],
         },
       ],
@@ -353,7 +351,6 @@ const newDefaultData = {
 
 // render
 const renderStats = (data) => {
-  console.log('renderStats', data);
   const result = [];
 
   // iterate
@@ -365,7 +362,6 @@ const renderStats = (data) => {
         children = renderStats(data[i].children);
       }
     }
-    console.log('Children?:', data[i].children);
     result.push(
       <div key={i}>
         {data[i].value}
@@ -376,7 +372,6 @@ const renderStats = (data) => {
     i += 1;
   }
 
-  console.log({ data, result });
   return result;
 };
 
