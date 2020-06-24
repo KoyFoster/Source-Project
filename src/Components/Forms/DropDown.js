@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/prop-types */
+/* eslint-disable prefer-destructuring */
+import React, { useState } from 'react';
 
 // TODO: Triggers: Drop Down, Close Up, Select OK, Select Cancel
 // Note: I didn't notice that on the windows side that the currently selected list item is highlighted.  -
@@ -6,7 +8,6 @@ import React, { useState, useEffect } from 'react';
 // TODO: The user needs to be able to edit the simple ComboBox
 const DDCB = (props) => {
   const [checked, setChecked] = useState(false);
-  const { style } = props;
   const { disabled } = props;
   const { onChange } = props;
   const onCheck = (val) => {
@@ -19,7 +20,7 @@ const DDCB = (props) => {
       style={{
         position: 'relative',
         width: '20px',
-        height: /* style.position === 'relative' ? 'auto' : */ '100%',
+        // height: /* style.position === 'relative' ? 'auto' : */ '100%',
         cursor: 'pointer',
 
         background: checked ? '#a5a39d' : 'linear-gradient(#f7f2f6,#b2ac9e)',
@@ -54,11 +55,14 @@ const DropDown = (props) => {
 
   if (props.parentRef && bVisible) {
     const BCR = props.parentRef.current.getBoundingClientRect();
-    console.log('BCR:', BCR);
-    const iTop = BCR.height + BCR.top;
-    top = `${iTop}px`;
-    width = BCR.width;
-    left = BCR.left;
+    if (props.position === 'absolute') {
+      top = `${BCR.height}px`;
+      width = BCR.width;
+    } else {
+      const iTop = BCR.height + props.parentRef.current.offsetTop;
+      top = `${iTop}px`;
+      width = BCR.width;
+    }
   }
 
   return (
@@ -66,7 +70,8 @@ const DropDown = (props) => {
       name="DropDown"
       style={{
         ...style,
-        position: 'fixed',
+        // position: 'fixed',
+        position: 'absolute',
         zIndex: bVisible ? '10000' : zIndex,
         display: bVisible ? 'block' : 'none',
         flexDirection: 'column',
@@ -74,9 +79,9 @@ const DropDown = (props) => {
         border: '1px solid black',
         overflow: 'auto',
 
-        top: top,
-        left: left,
-        width: width,
+        top,
+        left,
+        width,
       }}
     >
       {/* eslint-disable-next-line react/prop-types */}

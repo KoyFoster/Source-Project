@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useState, useRef } from 'react';
 import { DDCB, DropDown } from './DropDown';
 import Tree from './Tree';
-const fontFamily = 'calibri';
-const fontSize = '12px';
 
 // HardCode these two things to reproduce VS behavior
 //    Note: Using '-' to denote skipped items
@@ -43,7 +42,10 @@ const TreeDropDown = (props) => {
   const { noCascade } = props;
   const { singleSelect } = props;
   const { setValue } = props;
-  const { value } = props;
+  const { setString } = props;
+  const { string } = props;
+  const { defaultValue } = props;
+  const { Funcs } = props;
   const [checked, setChecked] = useState(false);
 
   // references
@@ -53,31 +55,32 @@ const TreeDropDown = (props) => {
   // 1. aqcuiring and setting value data
   // 2. formatting value data according to tree properties
   // 3. getting setting value data from exam data
+  const maxHeight = `${300 + (style.border ? 2 : 0)}px`;
   return (
     <div
-      ref={parentRef}
       style={{
         ...style,
         display: 'inline-flex',
         flexDirection: 'column',
         alignItems: 'stretch',
-        border: 'none',
+        border: style.border ? style.border : '1px solid black',
       }}
     >
       <div
+        ref={parentRef}
         style={{
           display: 'flex',
+          height: 'inherit',
           flexGrow: 1,
           flexDirection: 'row',
         }}
       >
         {/* TextAreas must be hard coded */}
         <textarea
-          value={value}
+          value={string}
           style={{
             // hard code
             display: 'block',
-
             position: 'relative',
             width: '100%',
             resize: 'none',
@@ -85,10 +88,15 @@ const TreeDropDown = (props) => {
             fontStyle: style.fontStyle,
             background: style.background,
             color: style.color,
-            border: style.border,
+            border: 'none',
+            whiteSpace: props.wordWrap ? 'wrap' : 'nowrap',
+            overflow: 'hidden',
+
+            // height must be hardcode for textarea as it has a soft minimum height of around 32px
+            height: `calc(100% - 2px)`,
           }}
           onChange={(e) => {
-            if (setValue) setValue(e.target.value);
+            if (setString) setString(e.target.value);
           }}
         />
         <DDCB
@@ -102,8 +110,7 @@ const TreeDropDown = (props) => {
         parentRef={parentRef}
         bVisible={checked}
         style={{
-          maxHeight: `${300 + style.border ? 2 : 0}px'`,
-          border: style.border,
+          maxHeight,
           zIndex: props.tabOrder,
         }}
       >
@@ -121,7 +128,9 @@ const TreeDropDown = (props) => {
           noCascade={noCascade}
           singleSelect={singleSelect}
           setValue={setValue}
-          // checked={checked}
+          setString={setString}
+          defaultValue="Normal,no tears,with tears,no tears,with tears,no tears,with tears,no tears,with tears,1+,2+,3+,4+"
+          Funcs={Funcs}
         />
       </DropDown>
     </div>

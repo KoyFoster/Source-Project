@@ -182,10 +182,12 @@ class Node {
     let string = '';
 
     Object.keys(this.flatNodes).forEach((value) => {
-      // console.log(
-      //   `this.flatNodes[${value}][${key}]:`,
-      //   this.flatNodes[value][key],
-      // );
+      console.log(
+        `this.flatNodes[${value}]:`,
+        this.flatNodes[value],
+        `this.flatNodes[${value}][${key}]:`,
+        this.flatNodes[value][key],
+      );
       if (this.flatNodes[value][key]) {
         list.push(value);
         // compile string result

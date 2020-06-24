@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
-import StatCard from './StatCard';
+import Stats from './StatCard';
 import { Row } from './DivGrid';
 
 function NavBar(props) {
@@ -12,6 +12,7 @@ function NavBar(props) {
         ...props.style,
         margin: 'none',
         padding: '5px',
+        background: 'lightGrey',
       }}
     >
       <HashRouter basename="/">
@@ -29,7 +30,7 @@ function NavBar(props) {
 
         <div>
           <Route exact path="/" />
-          <Route path="/StatCard" component={StatCard} />
+          <Route path="/StatCard" component={Stats} />
         </div>
       </HashRouter>
     </div>

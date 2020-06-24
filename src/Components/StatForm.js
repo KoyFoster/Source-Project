@@ -460,7 +460,7 @@ function StatInputForm(props) {
 
   const iRows = Table.length;
 
-  if (props.iD === 1) console.log('SIF:', rowOrder, Table);
+  // if (props.iD === 1) console.log('SIF:', rowOrder, Table);
   // console.log('toggle:', toggle);
   return (
     <div /* className="inherit" */>
