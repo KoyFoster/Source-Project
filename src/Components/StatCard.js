@@ -7,6 +7,7 @@ import StatData from './StatData.js';
 import { Row, Col } from './DivGrid';
 import StatCode from './StatCode';
 import Tree from './Forms/Tree';
+import Grid from './Forms/Grid';
 
 // test data
 const newDefaultData = {
@@ -377,8 +378,86 @@ const renderStats = (data) => {
 
 // Stat Card
 function Stats(props) {
+  // member variables
+  const [value, setValue] = useState([
+    [0, 1, 2, 3, 4, 5],
+    [6, 7, 8, 9, 0, 10],
+    [],
+  ]);
+  const handleChange = (val) => {
+    setValue(val);
+  };
+
   // Render and Logic
-  return <div>{renderStats(newDefaultData.children)}</div>;
+  // return <div>{renderStats(newDefaultData.children)}</div>;
+  console.log('value:', value);
+  return (
+    <div>
+      <button
+        onClick={(e) => {
+          setValue([['', '', '', '', '', '']]);
+        }}
+      >
+        Change
+      </button>
+      {/* <Grid
+        defaultValue={value}
+        // value={value}
+        onBlur={handleChange}
+        hRow={[
+          <input type="text" />,
+          <textarea />,
+          <input type="date" />,
+          <input type="datetime" />,
+          <input type="month" />,
+          <input type="search" />,
+        ]}
+        header
+        hHeader={['1', '2', <input type="date" />, 12312]}
+        rowHeader
+        style={{
+          background: 'gold',
+        }}
+        rowStyle={{
+          borderBottom: '2px solid white',
+        }}
+        cellStyle={{
+          border: '1px solid black',
+        }}
+        rowHeaderStyle={{
+          border: '1px solid purple',
+        }}
+      ></Grid> */}
+      <Grid
+        value={value}
+        // value={value}
+        onChange={handleChange}
+        hRow={[
+          <input type="text" value={''} />,
+          <textarea value={''} />,
+          <input type="date" value={''} />,
+          <input type="datetime" value={''} />,
+          <input type="month" value={''} />,
+          <input type="checkbox" checked={false} />,
+        ]}
+        header
+        hHeader={['1', '2', <input type="date" />, 12312]}
+        rowHeader
+        style={{
+          background: 'gold',
+        }}
+        rowStyle={{
+          borderBottom: '2px solid white',
+        }}
+        cellStyle={{
+          border: '1px solid black',
+        }}
+        rowHeaderStyle={{
+          border: '1px solid purple',
+        }}
+      ></Grid>
+    </div>
+  );
 }
 
 export default Stats;
