@@ -380,17 +380,80 @@ const renderStats = (data) => {
 function Stats(props) {
   // member variables
   const [value, setValue] = useState([
-    [0, 1, 2, 3, 4, 5],
-    [6, 7, 8, 9, 0, 10],
-    [],
+    [
+      0,
+      [
+        [
+          0,
+          [
+            [0, 1, 2, 3, 4, 5],
+            [6, 7, 8, 9, 0, 10],
+          ],
+          ,
+          2,
+          3,
+          4,
+          5,
+        ],
+        [
+          6,
+          [
+            [0, 1, 2, 3, 4, 5],
+            [6, 7, 8, 9, 0, 10],
+          ],
+          ,
+          8,
+          9,
+          0,
+          10,
+        ],
+      ],
+      2,
+      3,
+      4,
+      5,
+    ],
+    [
+      6,
+      [
+        [
+          0,
+          [
+            [0, 1, 2, 3, 4, 5],
+            [6, 7, 8, 9, 0, 10],
+          ],
+          ,
+          2,
+          3,
+          4,
+          5,
+        ],
+        [
+          6,
+          [
+            [0, 1, 2, 3, 4, 5],
+            [6, 7, 8, 9, 0, 10],
+          ],
+          ,
+          8,
+          9,
+          0,
+          10,
+        ],
+      ],
+      8,
+      9,
+      0,
+      10,
+    ],
   ]);
-  const handleChange = (val) => {
-    setValue(val);
+  const handleChange = (e) => {
+    setValue(e.target.value);
   };
 
   // Render and Logic
   // return <div>{renderStats(newDefaultData.children)}</div>;
-  console.log('value:', value);
+  console.log('Grid Value:', value);
   return (
     <div>
       <button
@@ -400,43 +463,62 @@ function Stats(props) {
       >
         Change
       </button>
-      {/* <Grid
-        defaultValue={value}
-        // value={value}
-        onBlur={handleChange}
-        hRow={[
-          <input type="text" />,
-          <textarea />,
-          <input type="date" />,
-          <input type="datetime" />,
-          <input type="month" />,
-          <input type="search" />,
-        ]}
-        header
-        hHeader={['1', '2', <input type="date" />, 12312]}
-        rowHeader
-        style={{
-          background: 'gold',
-        }}
-        rowStyle={{
-          borderBottom: '2px solid white',
-        }}
-        cellStyle={{
-          border: '1px solid black',
-        }}
-        rowHeaderStyle={{
-          border: '1px solid purple',
-        }}
-      ></Grid> */}
       <Grid
         value={value}
         // value={value}
         onChange={handleChange}
         hRow={[
           <input type="text" value={''} />,
-          <textarea value={''} />,
+          <Grid
+            value={true}
+            hRow={[
+              <input type="text" value={''} />,
+              <Grid
+                value={true}
+                hRow={[
+                  <input type="text" value={''} />,
+                  <textarea value={''} />,
+                  <input type="date" value={''} />,
+                  <input type="month" value={''} />,
+                  <input type="checkbox" checked={false} />,
+                ]}
+                header
+                hHeader={['1', '2', <input type="date" />, 12312]}
+                rowHeader
+                style={{
+                  background: 'gold',
+                }}
+                rowStyle={{
+                  borderBottom: '2px solid white',
+                }}
+                cellStyle={{
+                  border: '1px solid black',
+                }}
+                rowHeaderStyle={{
+                  border: '1px solid purple',
+                }}
+              ></Grid>,
+              <input type="date" value={''} />,
+              <input type="month" value={''} />,
+              <input type="checkbox" checked={false} />,
+            ]}
+            header
+            hHeader={['1', '2', <input type="date" />, 12312]}
+            rowHeader
+            style={{
+              background: 'red',
+            }}
+            rowStyle={{
+              borderBottom: '2px solid white',
+            }}
+            cellStyle={{
+              border: '1px solid black',
+            }}
+            rowHeaderStyle={{
+              border: '1px solid purple',
+            }}
+          ></Grid>,
           <input type="date" value={''} />,
-          <input type="datetime" value={''} />,
           <input type="month" value={''} />,
           <input type="checkbox" checked={false} />,
         ]}
@@ -444,7 +526,7 @@ function Stats(props) {
         hHeader={['1', '2', <input type="date" />, 12312]}
         rowHeader
         style={{
-          background: 'gold',
+          background: 'green',
         }}
         rowStyle={{
           borderBottom: '2px solid white',

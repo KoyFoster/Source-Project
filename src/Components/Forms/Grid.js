@@ -11,6 +11,19 @@ import React from 'react';
 const RenderGrid = (props) => {
   const arrCheck = (arr) => (arr ? (Array.isArray(arr) ? arr : []) : []);
 
+  const getDataSet = (obj) => {
+    const object = {};
+    Object.keys(obj)
+      .map((k) => {
+        if ('data-' === k.slice(0, 5)) {
+          object[k] = obj[k];
+          return k;
+        }
+      })
+      .filter((k) => k !== undefined);
+    return object;
+  };
+  const dataset = getDataSet(props);
   const { header } = props;
   const hHeader = arrCheck(props.hHeader);
   const { rowHeader } = props;
@@ -51,48 +64,35 @@ const RenderGrid = (props) => {
     });
   };
 
-  // const getIndex = element => {
-  //   // console.log('element:', element);
-  //   const { x, y } = element.dataset;
-
-  //   if (x !== undefined && y !== undefined) return { x, y };
-  //   if (element.type === 'table') return {};
-  //   return getIndex(element.parentElement);
-  // };
-
   const parseValueIntoGrid = () => {
     if (!Array.isArray(value)) return;
     if (value.length <= 0) return;
     if (value[0] <= 0) return;
 
     function handleEvent(e) {
-      const { x, y } = e.target.dataset;
+      // console.log('handleEvent:', e.target);
+      const ds = e.target.dataset;
+      const { x, y } = ds;
 
       let result;
 
-      // console.log(
-      //   'e:',
-      //   `value(${e.target.value}):`,
-      //   `checked(${e.target.checked}):`,
-      // );
       if (hRow[y].props.checked !== undefined) {
         result = e.target.checked;
-        // if (!e.target.value) {
-        //   result = e.target.checked;
-        // } else {
-        //   result = e.target.checked ? String(e.target.value) : '';
-        // }
       } else if (hRow[y].props.value !== undefined) {
-        result = String(e.target.value);
+        result = e.target.value;
       } else if (hRow[y].props.children !== undefined) {
         return;
-        // result = hRow[y].props.children;
       }
 
       // set cell
       value[x][y] = result;
-      // console.log(`value[${x}][${y}]:`, value[x][y]);
-      return value;
+      return {
+        target: {
+          value: value,
+          dataset: e.target.parentNode ? e.target.parentNode.dataset : {},
+        },
+      };
+      // return { target: { value: value, dataset: e.target.ds } };
     }
 
     // map
@@ -100,7 +100,6 @@ const RenderGrid = (props) => {
     let iX = -1;
     let iY = -1;
     const rHS = { ...cellStyle, ...headerStyle, ...rowHeaderStyle };
-    // console.log('rHS:', rHS);
     return (
       <table style={{ ...style, tableLayout: 'fixed' }}>
         <thead>
@@ -134,17 +133,18 @@ const RenderGrid = (props) => {
                   row.map((col) => {
                     iY += 1;
 
-                    const dataset = {
+                    const ds = {
+                      // dataset
                       'data-x': iX,
                       'data-y': iY,
                     };
-                    // console.log('dataset:', dataset, {...hRow[iY].props, ...dataset});
+                    // console.log('ds:', ds, {...hRow[iY].props, ...ds});
                     let hasElem = hRow.length > iY;
                     if (hasElem) hasElem = hRow[iY] !== undefined;
                     return (
                       <td
                         key={`td${iY}`}
-                        name={`td${iY}`}
+                        {...dataset}
                         style={{
                           ...cellStyle,
                           ...(columnWidths
@@ -162,7 +162,7 @@ const RenderGrid = (props) => {
                               ...hRow[iY],
                               props: {
                                 ...hRow[iY].props,
-                                ...dataset,
+                                ...ds,
                                 ...(hRow[iY].props.checked !== undefined
                                   ? {
                                       checked: col,
@@ -179,39 +179,7 @@ const RenderGrid = (props) => {
                                     }
                                   : {}),
 
-                                // inherit width, if not set
-                                // ...(hRow[iY].props.style.width
-                                //   ? {}
-                                //   : {
-                                //       style: {
-                                //         ...hRow[iY].props.style,
-                                //         width: 'inherit',
-                                //       },
-                                //     }),
-
-                                onClick: (e) => {
-                                  const { y } = e.target.dataset;
-                                  if (!y) {
-                                    console.error(
-                                      'ERROR: Element is not compatible with the Grid element',
-                                    );
-                                    // console.log('onClick:', {
-                                    //   y,
-                                    //   hRow,
-                                    //   value: e.target.value,
-                                    // });
-                                    return;
-                                  }
-                                  // cell event
-                                  if (hasElem)
-                                    if (hRow[y].props.onClick)
-                                      hRow[y].props.onClick(e);
-                                  // tree event
-                                  if (onClick) onClick(handleEvent(e));
-                                },
-
                                 onChange: (e) => {
-                                  // console.log('onChange:', e.target, e);
                                   const { y } = e.target.dataset;
                                   // if index not found, then search up parent tree
                                   if (!y) {
@@ -221,6 +189,10 @@ const RenderGrid = (props) => {
                                     return;
                                   }
 
+                                  // check for events
+                                  if (!hRow[y].props.onChange && !onChange)
+                                    return;
+
                                   // cell event
                                   if (hasElem)
                                     if (hRow[y].props.onChange)
@@ -229,47 +201,78 @@ const RenderGrid = (props) => {
                                   if (onChange) onChange(handleEvent(e));
                                 },
 
-                                onFocus: (e) => {
-                                  const { y } = e.target.dataset;
-                                  const { x } = e.target.dataset;
-                                  if (!y || !x) {
-                                    console.error(
-                                      'ERROR: Element is not compatible with the Grid element',
-                                    );
-                                    return;
-                                  }
-                                  if (setSelection)
-                                    setSelection(
-                                      parseInt(x, 10),
-                                      parseInt(y, 10),
-                                    );
-                                  // cell event
-                                  if (hasElem)
-                                    if (hRow[y].props.onFocus)
-                                      hRow[y].props.onFocus(e);
-                                  // tree event
-                                  if (onFocus) onFocus(handleEvent(e));
-                                },
-                                onBlur: (e) => {
-                                  const { y } = e.target.dataset;
-                                  if (!y) {
-                                    console.error(
-                                      'ERROR: Element is not compatible with the Grid element',
-                                    );
-                                    // console.log('onBlur:', {
-                                    //   y,
-                                    //   hRow,
-                                    //   value: e.target.value,
-                                    // });
-                                    return;
-                                  }
-                                  // cell event
-                                  if (hasElem)
-                                    if (hRow[y].props.onBlur)
-                                      hRow[y].props.onBlur(e);
-                                  // tree event
-                                  if (onBlur) onBlur(handleEvent(e));
-                                },
+                                ...(hRow[iY].props.onClick || onClick
+                                  ? {
+                                      onClick: (e) => {
+                                        // console.log('onClick');
+                                        const { y } = e.target.dataset;
+                                        if (!y) {
+                                          console.error(
+                                            'ERROR: Element is not compatible with the Grid element',
+                                          );
+                                          return;
+                                        }
+                                        // cell event
+                                        if (hasElem)
+                                          if (hRow[y].props.onClick)
+                                            hRow[y].props.onClick(e);
+                                        // tree event
+                                        if (onClick) onClick(handleEvent(e));
+                                      },
+                                    }
+                                  : {}),
+
+                                ...(hRow[iY].props.onFocus ||
+                                onFocus ||
+                                setSelection
+                                  ? {
+                                      onFocus: (e) => {
+                                        const { y } = e.target.dataset;
+                                        const { x } = e.target.dataset;
+                                        if (!y || !x) {
+                                          console.error(
+                                            'ERROR: Element is not compatible with the Grid element',
+                                          );
+                                          return;
+                                        }
+                                        // set selection
+                                        if (setSelection)
+                                          setSelection(
+                                            parseInt(x, 10),
+                                            parseInt(y, 10),
+                                          );
+
+                                        // cell event
+                                        if (hasElem)
+                                          if (hRow[y].props.onFocus)
+                                            hRow[y].props.onFocus(e);
+                                        // tree event
+                                        // console.log('onFocus:', onFocus);
+                                        if (onFocus) onFocus(handleEvent(e));
+                                      },
+                                    }
+                                  : {}),
+
+                                ...(hRow[iY].props.onBlur || onBlur
+                                  ? {
+                                      onBlur: (e) => {
+                                        // console.log('onBlur');
+                                        const { y } = e.target.dataset;
+                                        if (!y) {
+                                          console.error(
+                                            'ERROR: Element is not compatible with the Grid element',
+                                          );
+                                          return;
+                                        }
+                                        // cell event
+                                        if (hasElem)
+                                          if (hRow[y].props.onBlur)
+                                            hRow[y].props.onBlur(e);
+                                        // tree event
+                                        if (onBlur) onBlur(handleEvent(e));
+                                      },
+                                    }
+                                  : {}),
                               },
                             }
                           : col}
@@ -286,7 +289,6 @@ const RenderGrid = (props) => {
   };
 
   const rendered = parseValueIntoGrid();
-  // console.log(`parseValueIntoGrid(${value}):`, rendered);
   return <div>{rendered}</div>;
 };
 
@@ -323,13 +325,13 @@ class Grid extends React.Component {
       this.props.funcs.moveRowUp = this.moveRowUp;
       this.props.funcs.moveRowDown = this.moveRowDown;
     }
-    // console.log('funcs:', this.props.funcs);
   }
 
   // this expects an array of data
-  handleChange = (value) => {
-    if (this.state.mutable) this.setState({ value });
-    if (this.props.onChange) this.props.onChange(value);
+  handleChange = (e) => {
+    // console.log('Grid handleChange:', e, this.props.onChange);
+    if (this.state.mutable) this.setState({ value: e.target.value });
+    if (this.props.onChange) this.props.onChange(e);
   };
 
   getValue = () => (this.state.mutable ? this.state.value : this.props.value);
@@ -439,6 +441,7 @@ class Grid extends React.Component {
   getCols = () => (this.getValue().length ? this.getValue()[0].length : 0);
 
   render() {
+    // console.log('row:', this.props.value);
     return (
       <RenderGrid
         {...this.props}
