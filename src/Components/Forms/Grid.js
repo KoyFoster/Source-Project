@@ -9,7 +9,14 @@ import React from 'react';
 
 // render grid data
 const RenderGrid = (props) => {
-  const arrCheck = (arr) => (arr ? (Array.isArray(arr) ? arr : []) : []);
+  const arrCheck = (arr, getKeys = false) =>
+    arr
+      ? Array.isArray(arr)
+        ? arr
+        : getKeys && Object.keys(arr).length
+        ? Object.keys(arr)
+        : []
+      : [];
 
   const getDataSet = (obj) => {
     const object = {};
@@ -19,13 +26,15 @@ const RenderGrid = (props) => {
           object[k] = obj[k];
           return k;
         }
+        return undefined;
       })
       .filter((k) => k !== undefined);
     return object;
   };
   const dataset = getDataSet(props);
   const { header } = props;
-  const hHeader = arrCheck(props.hHeader);
+  const hHeader = arrCheck(props.hHeader, true);
+  // console.log('hHeader:', hHeader, props.hHeader);
   const { rowHeader } = props;
   const { style } = props;
   const { headerStyle } = props;
@@ -47,7 +56,10 @@ const RenderGrid = (props) => {
 
   const headerFromValue = (row) => {
     let x = -1;
-    return row.map(() => {
+    const isObj = Object.keys(row).length ? true : false;
+    const ROW = !isObj ? row : Object.keys(row);
+
+    return ROW.map(() => {
       x += 1;
       const hasElem = hHeader.length > x;
       return (
@@ -72,7 +84,10 @@ const RenderGrid = (props) => {
     function handleEvent(e) {
       // console.log('handleEvent:', e.target);
       const ds = e.target.dataset;
-      const { x, y } = ds;
+      const { x, y, key } = ds;
+      console.log(`x: ${x}, y: ${y}, key: ${key}`);
+
+      const k = key ? key : y;
 
       let result;
 
@@ -85,7 +100,8 @@ const RenderGrid = (props) => {
       }
 
       // set cell
-      value[x][y] = result;
+      console.log('value[x][key]:', value[x][k]);
+      value[x][k] = result;
       return {
         target: {
           value: value,
@@ -120,8 +136,11 @@ const RenderGrid = (props) => {
         </thead>
         <tbody style={bodyStyle}>
           {value.map((row) => {
+            // console.log('row:', row);
             iX += 1;
             iY = -1;
+            const isObj = Object.keys(row).length ? true : false;
+            const ROW = isObj ? Object.keys(row) : row;
             return (
               <tr key={`tr${iX}`} name={`tr${iX}`} style={rowStyle}>
                 {rowHeader ? ( // row header
@@ -130,16 +149,19 @@ const RenderGrid = (props) => {
                   </th>
                 ) : null}
                 {
-                  row.map((col) => {
+                  ROW.map((cell) => {
                     iY += 1;
-
+                    const CELL = isObj ? row[cell] : cell;
+                    // console.log('cell:', cell, CELL);
                     const ds = {
                       // dataset
                       'data-x': iX,
                       'data-y': iY,
+                      'data-key': cell,
                     };
                     // console.log('ds:', ds, {...hRow[iY].props, ...ds});
                     let hasElem = hRow.length > iY;
+                    // console.log(`hRow[${iY}]:`, hRow[iY]);
                     if (hasElem) hasElem = hRow[iY] !== undefined;
                     return (
                       <td
@@ -165,17 +187,17 @@ const RenderGrid = (props) => {
                                 ...ds,
                                 ...(hRow[iY].props.checked !== undefined
                                   ? {
-                                      checked: col,
+                                      checked: CELL,
                                     }
                                   : {}),
                                 ...(hRow[iY].props.value !== undefined
                                   ? {
-                                      value: col,
+                                      value: CELL,
                                     }
                                   : {}),
                                 ...(hRow[iY].props.children !== undefined
                                   ? {
-                                      children: col,
+                                      children: CELL,
                                     }
                                   : {}),
 
@@ -204,7 +226,7 @@ const RenderGrid = (props) => {
                                 ...(hRow[iY].props.onClick || onClick
                                   ? {
                                       onClick: (e) => {
-                                        // console.log('onClick');
+                                        // console.log('onClick:', e);
                                         const { y } = e.target.dataset;
                                         if (!y) {
                                           console.error(
@@ -275,7 +297,9 @@ const RenderGrid = (props) => {
                                   : {}),
                               },
                             }
-                          : col}
+                          : isObj
+                          ? CELL.toString()
+                          : CELL}
                       </td>
                     );
                   }) // end of row map
@@ -296,6 +320,8 @@ const RenderGrid = (props) => {
 class Grid extends React.Component {
   constructor(props) {
     super(props);
+
+    // console.log('Grid props:', props.value);
 
     // Note: See below states can be moved over to SimpleGrid
     this.state = {
@@ -329,7 +355,6 @@ class Grid extends React.Component {
 
   // this expects an array of data
   handleChange = (e) => {
-    // console.log('Grid handleChange:', e, this.props.onChange);
     if (this.state.mutable) this.setState({ value: e.target.value });
     if (this.props.onChange) this.props.onChange(e);
   };
@@ -441,14 +466,18 @@ class Grid extends React.Component {
   getCols = () => (this.getValue().length ? this.getValue()[0].length : 0);
 
   render() {
-    // console.log('row:', this.props.value);
+    console.log('row:', this.props.value);
     return (
       <RenderGrid
         {...this.props}
         value={
           this.state.mutable
             ? this.state.value
-            : this.props.value.map((row) => [...row])
+            : Array.isArray(this.props.value)
+            ? this.props.value.map((row) => {
+                return Array.isArray(row) ? [...row] : { ...row };
+              })
+            : { ...this.props.value }
         }
         selection={this.state.selection}
         setSelection={this.setSelection}
