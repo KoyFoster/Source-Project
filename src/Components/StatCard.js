@@ -645,12 +645,14 @@ function Stats(props) {
       </button>
       <Grid
         value={value}
+        childrenAsRow
         // value={value}
         onChange={handleChange}
         hRow={[
           <input type="text" value={''} />,
           <Grid
             value={true}
+            childrenAsRow
             hRow={[
               <input type="text" value={''} />,
               <input type="checkbox" checked={''} />,
@@ -670,54 +672,32 @@ function Stats(props) {
                   <input type="text" value={''} />,
                 ]}
                 header
-                hHeader={['Value', 'Num', 'Min', 'Max', 'Unit', 'Math']}
+                hHeader={['Name', 'Value', 'Min', 'Max', 'Unit', 'Math']}
                 style={{
                   background: 'grey',
+                }}
+                headerStyle={{
+                  border: '1px solid black',
+                }}
+                cellStyle={{
+                  border: '1px solid black',
                 }}
               />,
             ]}
             header
-            hHeader={{
-              value: ' ',
-              type: '',
-              num: '',
-              min: '',
-              max: '',
-              pointLimit: 0,
-              pointDiff: false,
-              children: [],
-            }}
-            style={{
-              background: 'limegreen',
-            }}
-            rowStyle={{
-              borderBottom: '2px solid white',
+            headerStyle={{
+              border: '1px solid black',
             }}
             cellStyle={{
               border: '1px solid black',
             }}
-            rowHeaderStyle={{
-              border: '1px solid purple',
-            }}
           />,
         ]}
-        header
-        hHeader={{
-          value: ' ',
-          children: [],
-        }}
-        rowHeader
-        style={{
-          background: 'green',
-        }}
-        rowStyle={{
-          borderBottom: '2px solid white',
+        headerStyle={{
+          border: '1px solid black',
         }}
         cellStyle={{
           border: '1px solid black',
-        }}
-        rowHeaderStyle={{
-          border: '1px solid purple',
         }}
       ></Grid>
     </div>
