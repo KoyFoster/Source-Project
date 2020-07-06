@@ -20,7 +20,7 @@ const newDefaultData = {
         // Start of stat table
         {
           value: '+Visible Player Stats-',
-          type: 'Fixed',
+
           num: 0,
           min: 0,
           max: 0,
@@ -50,7 +50,6 @@ const newDefaultData = {
 
         {
           value: '-Primary Stats-',
-          type: 'Fixed',
 
           num: 2358,
           min: 70,
@@ -81,7 +80,7 @@ const newDefaultData = {
 
         {
           value: '-Secondary Stats+',
-          type: 'Calculated',
+
           num: 0,
           min: 0,
           max: 0,
@@ -141,7 +140,6 @@ const newDefaultData = {
 
         {
           value: '-Misc Stats+',
-          type: 'Calculated',
 
           num: -1,
           min: -1,
@@ -187,7 +185,6 @@ const newDefaultData = {
       children: [
         {
           value: '-Melee Attack-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -227,7 +224,6 @@ const newDefaultData = {
         },
         {
           value: '-Ranged Attack-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -264,7 +260,6 @@ const newDefaultData = {
 
         {
           value: '-Magic Attack-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -301,7 +296,6 @@ const newDefaultData = {
 
         {
           value: '-Misc-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -345,7 +339,6 @@ const newDefaultData = {
       children: [
         {
           value: '-Defense-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -376,7 +369,6 @@ const newDefaultData = {
         },
         {
           value: '-Melee Defense-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -411,7 +403,6 @@ const newDefaultData = {
         },
         {
           value: '-Ranged Defense-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -446,7 +437,6 @@ const newDefaultData = {
         },
         {
           value: '-Magic Defense-',
-          type: 'Fixed',
 
           num: -1,
           min: -1,
@@ -483,7 +473,6 @@ const newDefaultData = {
           children: [
             {
               value: '-Heal-',
-              type: 'Fixed',
 
               num: -1,
               min: -1,
@@ -517,7 +506,6 @@ const newDefaultData = {
             },
             {
               value: '-Regeneration-',
-              type: 'Fixed',
 
               num: -1,
               min: -1,
@@ -546,7 +534,6 @@ const newDefaultData = {
             },
             {
               value: '-Misc-',
-              type: 'Fixed',
 
               num: -1,
               min: -1,
@@ -634,72 +621,72 @@ function Stats(props) {
   console.log('---------------------------------------------------');
   console.log('Grid Value:', value);
   console.log('---------------------------------------------------');
+  const baseInputStyle = { width: '100%', border: 'none', padding: '0px' };
+  const cellStyle = {
+    borderRadius: '8px',
+    borderLeft: '2px solid black',
+    borderTop: '2px solid black',
+    borderBottom: '2px solid grey',
+    borderRight: '2px solid grey',
+  };
   return (
     <div>
-      <button
-        onClick={(e) => {
-          setValue([['', '', '', '', '', '']]);
-        }}
-      >
-        Change
-      </button>
-      <Grid
-        value={value}
-        childrenAsRow
-        // value={value}
-        onChange={handleChange}
-        hRow={[
-          <input type="text" value={''} />,
+      {value.map((card) => {
+        console.log('card:', card);
+        return (
           <Grid
-            value={true}
+            value={card.children}
+            style={{
+              maxwidth: '512px',
+              overflow: 'scroll',
+              background: '#faf8e8',
+              color: '#6e5735',
+              fontFamily: 'NotoSansKR',
+              border: '4px solid #6e5735',
+              padding: '16px',
+              margin: '4px',
+            }}
+            cellStyle={cellStyle}
             childrenAsRow
+            columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+            headerRows
+            hHeader={['Stat', 'Value', 'Max', 'Max', 'Limit', 'Difference']}
             hRow={[
-              <input type="text" value={''} />,
-              <input type="checkbox" checked={''} />,
-              <input type="number" value={''} />,
-              <input type="number" value={''} />,
-              <input type="number" value={''} />,
-              <input type="number" value={''} />,
-              <input type="checkbox" checked={''} />,
+              <input type="text" value={''} style={baseInputStyle} />,
+              <input type="number" value={''} style={baseInputStyle} />,
+              <input type="number" value={''} style={baseInputStyle} />,
+              <input type="number" value={''} style={baseInputStyle} />,
+              <input type="number" value={''} style={baseInputStyle} />,
+              <input type="checkbox" checked={''} style={baseInputStyle} />,
               <Grid
                 value={true}
-                hRow={[
-                  <input type="text" value={''} />,
-                  <input type="number" value={''} />,
-                  <input type="number" value={''} />,
-                  <input type="number" value={''} />,
-                  <input type="text" value={''} />,
-                  <input type="text" value={''} />,
-                ]}
+                columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+                style={{
+                  // border: '2px dotted red',
+                  width: '512px',
+                  overflow: 'hidden',
+                }}
+                cellStyle={cellStyle}
                 header
                 hHeader={['Name', 'Value', 'Min', 'Max', 'Unit', 'Math']}
-                style={{
-                  background: 'grey',
-                }}
-                headerStyle={{
-                  border: '1px solid black',
-                }}
-                cellStyle={{
-                  border: '1px solid black',
-                }}
+                hRow={[
+                  <input
+                    type="text"
+                    value={''}
+                    style={{ width: '100%', border: 'none', padding: '0px' }}
+                  />,
+                  <input type="number" value={''} style={baseInputStyle} />,
+                  <input type="number" value={''} style={baseInputStyle} />,
+                  <input type="number" value={''} style={baseInputStyle} />,
+                  <input type="text" value={''} style={baseInputStyle} />,
+                  <input type="text" value={''} style={baseInputStyle} />,
+                ]}
               />,
             ]}
-            header
-            headerStyle={{
-              border: '1px solid black',
-            }}
-            cellStyle={{
-              border: '1px solid black',
-            }}
-          />,
-        ]}
-        headerStyle={{
-          border: '1px solid black',
-        }}
-        cellStyle={{
-          border: '1px solid black',
-        }}
-      ></Grid>
+            onChange={handleChange}
+          ></Grid>
+        );
+      })}
     </div>
   );
 }

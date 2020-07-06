@@ -33,6 +33,7 @@ const RenderGrid = (props) => {
   };
   const dataset = getDataSet(props);
   const { header } = props;
+  const { headerRows } = props;
   const hHeader = arrCheck(props.hHeader, true);
   const { rowHeader } = props;
   const { style } = props;
@@ -54,28 +55,83 @@ const RenderGrid = (props) => {
   const { selection } = props;
   const { setSelection } = props;
 
-  const headerFromValue = (row) => {
+  const getColumnGroup = (row) => {
     let x = -1;
     const isObj = Object.keys(row).length ? true : false;
     const ROW = !isObj ? row : Object.keys(row);
 
+    return (
+      <colgroup>
+        {ROW.map((key) => {
+          x += 1;
+          const hasElem = hHeader.length > x;
+          return childrenAsRow && key === 'children' ? undefined : (
+            <col
+              key={`col${x}`}
+              name={`col${x}`}
+              style={{
+                ...(columnWidths
+                  ? {
+                      width: columnWidths.length > x ? columnWidths[x] : {},
+                    }
+                  : {}),
+              }}
+            ></col>
+          );
+        }).filter((cell) => cell !== undefined)}
+        <col />
+      </colgroup>
+    );
+  };
+
+  const headerFromValue = (row) => {
+    let x = -1;
+    const isObj = Array.isArray(row) ? false : true;
+    const ROW = !isObj ? row : Object.keys(row);
+
+    console.log('ROW:', ROW, 'hHeader:', hHeader);
     return ROW.map((key) => {
+      console.log();
       x += 1;
       const hasElem = hHeader.length > x;
+      const label = hasElem
+        ? hHeader[x]
+        : isObj
+        ? ROW[x]
+        : String.fromCharCode(x + 65); /* Offset by one as x will start at 0 */
+
       return childrenAsRow && key === 'children' ? undefined : (
-        <th key={`rhd${x}`} name={`rhd${x}`} style={headerStyle}>
-          {
-            hasElem
-              ? hHeader[x]
-              : isObj
-              ? ROW[x]
-              : String.fromCharCode(
-                  x + 65,
-                ) /* Offset by one as x will start at 0 */
-          }
+        <th
+          key={`rhd${x}`}
+          name={`rhd${x}`}
+          style={{
+            ...headerStyle,
+          }}
+        >
+          {label}
         </th>
       );
     }).filter((cell) => cell !== undefined);
+  };
+
+  const getHeader = (val, style, asRow) => {
+    const buffer =
+      header || headerRows ? ( // header
+        // iterate the length of the first data row
+        val.length ? (
+          <tr key="hd" name="hd" style={rowStyle}>
+            {rowHeader && !asRow && (header || headerRows) ? ( // origin
+              <th key="hd" name="hd" style={style}>
+                {selection ? `(${selection.y},${selection.x})` : null}
+              </th>
+            ) : null}
+            {headerFromValue(val[0])}
+          </tr>
+        ) : // end of header map
+        null
+      ) : null;
+    if (asRow) return buffer;
+    return <thead>{buffer}</thead>;
   };
 
   const parseValueIntoGrid = () => {
@@ -118,22 +174,8 @@ const RenderGrid = (props) => {
     const rHS = { ...cellStyle, ...headerStyle, ...rowHeaderStyle };
     return (
       <table style={{ ...style, tableLayout: 'fixed' }}>
-        <thead>
-          {header ? ( // header
-            // iterate the length of the first data row
-            value.length ? (
-              <tr key="hd" name="hd" style={rowStyle}>
-                {rowHeader && header ? ( // origin
-                  <th key="hd" name="hd" style={rHS}>
-                    {selection ? `(${selection.y},${selection.x})` : null}
-                  </th>
-                ) : null}
-                {headerFromValue(value[0])}
-              </tr>
-            ) : // end of header map
-            null
-          ) : null}
-        </thead>
+        {getColumnGroup(value[0])}
+        {getHeader(value, rHS)}
         <tbody style={bodyStyle}>
           {value.map((row) => {
             iX += 1;
@@ -141,6 +183,7 @@ const RenderGrid = (props) => {
             const isObj = Object.keys(row).length ? true : false;
             const ROW = isObj ? Object.keys(row) : row;
             return [
+              headerRows && iX > 0 ? getHeader(value, rHS, true) : null,
               <tr key={`tr${iX}`} name={`tr${iX}`} style={rowStyle}>
                 {rowHeader ? ( // row header
                   <th key={`rhd${iX}`} name={`rhd${iX}`} style={rHS}>
@@ -163,19 +206,11 @@ const RenderGrid = (props) => {
                       <td
                         key={`td${iY}`}
                         {...dataset}
-                        // {...(isObj && cell === 'children'
-                        //   ? { ColspanP: 3 }
-                        //   : {})}
+                        {...(isObj && childrenAsRow && cell === 'children'
+                          ? { colspan: ROW.length - 1 }
+                          : {})}
                         style={{
                           ...cellStyle,
-                          ...(columnWidths
-                            ? {
-                                width:
-                                  columnWidths.length > iY
-                                    ? columnWidths[iY]
-                                    : {},
-                              }
-                            : {}),
                         }}
                       >
                         {hasElem
@@ -306,7 +341,9 @@ const RenderGrid = (props) => {
                   }).filter((cell) => cell !== undefined) // end of row map
                 }
               </tr>,
-              childrenAsRow && children ? <tr>{children}</tr> : undefined,
+              childrenAsRow && children ? (
+                <tr style={rowStyle}>{children}</tr>
+              ) : undefined,
             ];
           })}
         </tbody>
