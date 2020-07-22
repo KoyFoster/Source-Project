@@ -7,15 +7,8 @@ import FootBar from './Components/FootBar';
 function App() {
   return (
     <div>
-      <div
-        name="body"
-        display="flex-box"
-        width="100%"
-        height={'100%'}
-        align="center"
-        bgcolor="darkGrey"
-      >
-        <div>
+      <div>
+        <div style={{ backgroundColor: 'grey' }}>
           <NavBar height="32px" />
           <FootBar />
         </div>

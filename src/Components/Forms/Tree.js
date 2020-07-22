@@ -96,6 +96,14 @@ class Node {
   }
 
   getNode(value) {
+    // console.log(
+    //   'getNode: value:',
+    //   value,
+    //   '\nthis.flatNodes:',
+    //   this.flatNodes,
+    //   '\nthis.flatNodes[value]:',
+    //   this.flatNodes[value],
+    // );
     return this.flatNodes[value];
   }
 
@@ -1061,7 +1069,7 @@ class Tree extends React.Component {
         expanded={this.state.expanded}
         onCheck={(checked, value, string) => {
           this.setState({ checked });
-          this.props.setValue(string);
+          if (this.props.setValue) this.props.setValue(string);
         }}
         onExpand={(expanded) => this.setState({ expanded })}
       />

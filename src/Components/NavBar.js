@@ -2,6 +2,7 @@ import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
 import Stats from './StatCard';
 import { Row } from './DivGrid';
+import CanvasCard from './CanvasCard';
 
 function NavBar(props) {
   return (
@@ -25,12 +26,19 @@ function NavBar(props) {
           <Link to="/StatCard">
             <button style={{ margin: '1px' }}>Stat Card</button>
           </Link>
+          <Link to="/CanvasCard">
+            <button style={{ margin: '1px' }}>Canvas Card</button>
+          </Link>
         </Row>
         <hr style={{ display: 'none' }} />
 
         <div>
           <Route exact path="/" />
           <Route path="/StatCard" component={Stats} />
+        </div>
+        <div>
+          <Route exact path="/" />
+          <Route path="/CanvasCard" component={CanvasCard} />
         </div>
       </HashRouter>
     </div>

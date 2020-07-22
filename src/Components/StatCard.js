@@ -7,578 +7,701 @@ import StatData from './StatData.js';
 import { Row, Col } from './DivGrid';
 import StatCode from './StatCode';
 import Tree from './Forms/Tree';
+import Card from './Forms/Card';
 import Grid from './Forms/Grid';
 
 // test data
-const newDefaultData = {
-  value: 'Default Data',
-  children: [
+const defaultData = {
+  Title: 'Default Data',
+  'Page One':
     // page one
     {
-      value: 'Page One',
-      children: [
+      Value: 'Page One',
+      Stats: {
         // Start of stat table
-        {
-          value: '+Visible Player Stats-',
+        'Visible Player Stats': {
+          Value: 'Visible Player Stats',
+          Num: 0,
+          Min: 0,
+          Max: 0,
+          PointLimit: 0,
+          PointDiff: false,
 
-          num: 0,
-          min: 0,
-          max: 0,
-          pointLimit: 0,
-          pointDiff: false,
-
-          children: [
-            {
-              value: 'Health',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+          Values: {
+            Health: {
+              Value: 'Health',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 3]}', 'a * 12'],
             },
-            {
-              value: 'Mana',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+            Mana: {
+              Value: 'Mana',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 5]}', 'a * 12'],
             },
-          ],
+          },
         },
         // End of stat table
+        '-Primary Stats-': {
+          Value: '-Primary Stats-',
+          Num: 2358,
+          Min: 70,
+          Max: 12800,
+          PointLimit: 2560,
+          PointDiff: false,
+          Stats: {
+            Strength: {
+              Value: 'Strength',
 
-        {
-          value: '-Primary Stats-',
-
-          num: 2358,
-          min: 70,
-          max: 12800,
-          pointLimit: 2560,
-          pointDiff: false,
-          children: [
-            {
-              value: 'Strength',
-
-              num: 103,
-              min: 3,
-              max: 2560,
-              unit: '',
+              Num: 103,
+              Min: 3,
+              Max: 2560,
+              Unit: '',
             },
-            {
-              value: 'Agility',
-              num: 119,
-              min: 3,
-              max: 2560,
-              unit: '',
+            Agility: {
+              Value: 'Agility',
+              Num: 119,
+              Min: 3,
+              Max: 2560,
+              Unit: '',
             },
-            { value: 'Stamina', num: 181, min: 3, max: 2560, unit: '' },
-            { value: 'Spirit', num: 216, min: 3, max: 2560, unit: '' },
-            { value: 'Intelligence', num: 1391, min: 58, max: 2560, unit: '' },
-          ],
+            Stamina: {
+              Value: 'Stamina',
+              Num: 181,
+              Min: 3,
+              Max: 2560,
+              Unit: '',
+            },
+            Spirit: { Value: 'Spirit', Num: 216, Min: 3, Max: 2560, Unit: '' },
+            Intelligence: {
+              Value: 'Intelligence',
+              Num: 1391,
+              Min: 58,
+              Max: 2560,
+              Unit: '',
+            },
+          },
         },
-
-        {
-          value: '-Secondary Stats+',
-
-          num: 0,
-          min: 0,
-          max: 0,
+        '-Secondary Stats+': {
+          Value: '-Secondary Stats+',
+          Num: 0,
+          Min: 0,
+          Max: 0,
           pointTotal: 2560,
-          pointDiff: false,
-          children: [
-            {
-              value: 'Melee Attack',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+          PointDiff: false,
+          Values: {
+            'Melee Attack': {
+              Value: 'Melee Attack',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 1]}', 'a * 0.2'],
             },
-            {
-              value: 'Range Attack',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+            'Range Attack': {
+              Value: 'Range Attack',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 2]}', 'a * 0.2'],
             },
-            {
-              value: 'Magic Attack',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+            'Magic Attack': {
+              Value: 'Magic Attack',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 5]}', 'a * 0.2'],
             },
-            {
-              value: 'Healing Power',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+            'Healing Power': {
+              Value: 'Healing Power',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 4]}', 'a * 0.2'],
             },
-            {
-              value: 'Physical Defense',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+            'Physical Defense': {
+              Value: 'Physical Defense',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 3]}', 'a * 1'],
             },
-            {
-              value: 'Magic Defense',
-              num: 0,
-              min: 0,
-              max: 0,
-              unit: '',
+            'Magic Defense': {
+              Value: 'Magic Defense',
+              Num: 0,
+              Min: 0,
+              Max: 0,
+              Unit: '',
               math: ['{"a": [2, 3]}', 'a * 1'],
             },
-          ],
+          },
         },
-
-        {
-          value: '-Misc Stats+',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            {
-              value: 'Move Speed',
-              num: 5.4,
-              min: 5.4,
-              max: 10,
-              unit: 'm/s',
+        '-Misc Stats+': {
+          Value: '-Misc Stats+',
+          Num: -1,
+          Min: -1,
+          Max: -1,
+          PointLimit: -1,
+          PointDiff: false,
+          Values: {
+            'Move Speed': {
+              Value: 'Move Speed',
+              Num: 5.4,
+              Min: 5.4,
+              Max: 10,
+              Unit: 'm/s',
               math: ['{}', ''],
             },
-            {
-              value: 'Cast Time',
+            'Cast Time': {
+              Value: 'Cast Time',
 
-              num: 0,
-              min: 0,
-              max: 100,
-              unit: '%',
+              Num: 0,
+              Min: 0,
+              Max: 100,
+              Unit: '%',
               math: [
                 '{"a": [2, 4], "b": [2, 5]}',
                 '(a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013))',
               ],
             },
-            {
-              value: 'Attack Speed',
-              num: 190,
-              min: 0,
-              max: 1200,
-              unit: '%',
+            'Attack Speed': {
+              Value: 'Attack Speed',
+              Num: 190,
+              Min: 0,
+              Max: 1200,
+              Unit: '%',
               math: ['{}', ''],
-            },
-          ],
-        },
-      ], // end of Page One Children
-    },
+            }, // end of attack speed
+          }, // end of stat values
+        }, // end of misc stats
+      }, // end of stats
+    }, // end of page one
+  // page two
+  '-Page Two: Attack Details-':
     // page two
     {
-      value: '-Page Two: Attack Details-',
-      children: [
-        {
-          value: '-Melee Attack-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            { value: 'Melee Attack Speed', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'Melee Accuracy', num: 1, min: 1, max: 10, unit: '' },
-            {
-              value: 'Melee Critical Status',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+      Value: '-Page Two: Attack Details-',
+      Stats: {
+        '-Melee Attack-': {
+          Value: '-Melee Attack-',
+          Num: -1,
+          Min: -1,
+          Max: -1,
+          PointLimit: -1,
+          PointDiff: false,
+          Values: {
+            'Melee Attack Speed': {
+              Value: 'Melee Attack Speed',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Melee Critical Damage',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+            'Melee Accuracy': {
+              Value: 'Melee Accuracy',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Backstab Melee Damage',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+            'Melee Critical Status': {
+              Value: 'Melee Critical Status',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            { value: 'Melee Skill Damage', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'PvE Melee Skills', num: 1, min: 1, max: 10, unit: '' },
-          ],
+            'Melee Critical Damage': {
+              Value: 'Melee Critical Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'Backstab Melee Damage': {
+              Value: 'Backstab Melee Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'Melee Skill Damage': {
+              Value: 'Melee Skill Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'PvE Melee Skills': {
+              Value: 'PvE Melee Skills',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+          },
         },
-        {
-          value: '-Ranged Attack-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            { value: 'Ranged Accuracy', num: 1, min: 1, max: 10, unit: '' },
-            {
-              value: 'Ranged Critical Status',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+        '-Ranged Attack-': {
+          Value: '-Ranged Attack-',
+          Num: -1,
+          Min: -1,
+          Max: -1,
+          PointLimit: -1,
+          PointDiff: false,
+          Values: {
+            'Ranged Accuracy': {
+              Value: 'Ranged Accuracy',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Ranged Critical Damage',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+            'Ranged Critical Status': {
+              Value: 'Ranged Critical Status',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Backstab Ranged Damage',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+            'Ranged Critical Damage': {
+              Value: 'Ranged Critical Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            { value: 'Ranged Skill Damage', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'PvE Ranged Skills', num: 1, min: 1, max: 10, unit: '' },
-          ],
+            'Backstab Ranged Damage': {
+              Value: 'Backstab Ranged Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'Ranged Skill Damage': {
+              Value: 'Ranged Skill Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'PvE Ranged Skills': {
+              Value: 'PvE Ranged Skills',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+          },
         },
+        '-Magic Attack-': {
+          Value: '-Magic Attack-',
 
-        {
-          value: '-Magic Attack-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            { value: 'Magic Accuracy', num: 1, min: 1, max: 10, unit: '' },
-            {
-              value: 'Magic Critical Status',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+          Num: -1,
+          Min: -1,
+          Max: -1,
+          PointLimit: -1,
+          PointDiff: false,
+          Stats: {
+            'Magic Accuracy': {
+              Value: 'Magic Accuracy',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Magic Critical Damage',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+            'Magic Critical Status': {
+              Value: 'Magic Critical Status',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Backstab Magic Damage',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+            'Magic Critical Damage': {
+              Value: 'Magic Critical Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            { value: 'Magic Skill Damage', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'PvE Magic Skills', num: 1, min: 1, max: 10, unit: '' },
-          ],
+            'Backstab Magic Damage': {
+              Value: 'Backstab Magic Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'Magic Skill Damage': {
+              Value: 'Magic Skill Damage',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'PvE Magic Skills': {
+              Value: 'PvE Magic Skills',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+          },
         },
+        '-Misc-': {
+          Value: '-Misc-',
 
-        {
-          value: '-Misc-',
+          Num: -1,
+          Min: -1,
+          Max: -1,
+          PointLimit: -1,
+          PointDiff: false,
+          Values: {
+            Focus: { Value: 'Focus', Num: 1, Min: 1, Max: 10, Unit: '' },
+            'Shield Defense Penetration Rate': {
+              Value: 'Shield Defense Penetration Rate',
 
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            { value: 'Focus', num: 1, min: 1, max: 10, unit: '' },
-            {
-              value: 'Shield Defense Penetration Rate',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            {
-              value: 'Shield Defense Penetration',
+            'Shield Defense Penetration': {
+              Value: 'Shield Defense Penetration',
 
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-            { value: 'Defense Penetration', num: 1, min: 1, max: 10, unit: '' },
-            {
-              value: 'Magic Defense Penetration',
+            'Defense Penetration': {
+              Value: 'Defense Penetration',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
+            },
+            'Magic Defense Penetration': {
+              Value: 'Magic Defense Penetration',
 
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
+              Num: 1,
+              Min: 1,
+              Max: 10,
+              Unit: '',
             },
-          ],
+          },
         },
-      ],
+      }, // end of page two
+
+      // page three
+      '-Page Three: Defense Details-': {
+        Value: '-Page Three: Defense Details-',
+        Stats: {
+          '-Defense-': {
+            Value: '-Defense-',
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Values: {
+              'Parry Rate': {
+                Value: 'Parry Rate',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Shield Block Rate': {
+                Value: 'Shield Block Rate',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              Evasion: { Value: 'Evasion', Num: 1, Min: 1, Max: 10, Unit: '' },
+              Resiliance: {
+                Value: 'Resiliance',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              Toughness: {
+                Value: 'Toughness',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Siege Damage Reduction': {
+                Value: 'Siege Damage Reduction',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Damage Reduction': {
+                Value: 'PvE Damage Reduction',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+          '-Melee Defense-': {
+            Value: '-Melee Defense-',
+
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Stats: {
+              'Melee Damage Reduction': {
+                Value: 'Melee Damage Reduction',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Fixed Melee Damage Reduction': {
+                Value: 'Fixed Melee Damage Reduction',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Melee Damage Reduction': {
+                Value: 'PvE Melee Damage Reduction',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+          '-Ranged Defense-': {
+            Value: '-Ranged Defense-',
+
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Stats: {
+              'Ranged Damage Reduction': {
+                Value: 'Ranged Damage Reduction',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Fixed Ranged Damage Reduction': {
+                Value: 'Fixed Ranged Damage Reduction',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Ranged Damage Reduction': {
+                Value: 'PvE Ranged Damage Reduction',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+          '-Magic Defense-': {
+            Value: '-Magic Defense-',
+
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Values: {
+              'Magic Damage Reduction': {
+                Value: 'Magic Damage Reduction',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Fixed Magic Damage Reduction': {
+                Value: 'Fixed Magic Damage Reduction',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Magic Damage Reduction': {
+                Value: 'PvE Magic Damage Reduction',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+        }, // end of defense stats
+      }, // end of defense page
+
+      'Regen/Misc': {
+        Value: 'Regen/Misc',
+        Stats: {
+          '-Heal-': {
+            Value: '-Heal-',
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Stats: {
+              'Critical Heal Rate': {
+                Value: 'Critical Heal Rate',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Critical Heal Bonus': {
+                Value: 'Critical Heal Bonus',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              Healing: { Value: 'Healing', Num: 1, Min: 1, Max: 10, Unit: '' },
+              'Healing Skill Damage': {
+                Value: 'Healing Skill Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+          '-Regeneration-': {
+            Value: '-Regeneration-',
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Values: {
+              'Heal Regen': {
+                Value: 'Heal Regen',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Continuous Heal Regen': {
+                Value: 'Continuous Heal Regen',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Mana Regen': {
+                Value: 'Mana Regen',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Post-Cast Mana Regen': {
+                Value: 'Post-Cast Mana Regen',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            }, // end of Stat Values
+          },
+          '-Misc-': {
+            Value: '-Misc-',
+
+            Num: -1,
+            Min: -1,
+            Max: -1,
+            PointLimit: -1,
+            PointDiff: false,
+            Values: {
+              'Received Healing': {
+                Value: 'Received Healing',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Increased experience gain': {
+                Value: 'Increased experience gain',
+
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Loot Drop Rate': {
+                Value: 'Loot Drop Rate',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Gold earned from hunting': {
+                Value: 'Gold earned from hunting',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Stealth Detection': {
+                Value: 'Stealth Detection',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          }, // end of Stat Values
+        },
+      },
     },
-    // page three
-    {
-      value: '-Page Three: Defense Details-',
-      children: [
-        {
-          value: '-Defense-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            { value: 'Parry Rate', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'Shield Block Rate', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'Evasion', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'Resiliance', num: 1, min: 1, max: 10, unit: '' },
-            { value: 'Toughness', num: 1, min: 1, max: 10, unit: '' },
-            {
-              value: 'Siege Damage Reduction',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'PvE Damage Reduction',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-          ],
-        },
-        {
-          value: '-Melee Defense-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            {
-              value: 'Melee Damage Reduction',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'Fixed Melee Damage Reduction',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'PvE Melee Damage Reduction',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-          ],
-        },
-        {
-          value: '-Ranged Defense-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            {
-              value: 'Ranged Damage Reduction',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'Fixed Ranged Damage Reduction',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'PvE Ranged Damage Reduction',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-          ],
-        },
-        {
-          value: '-Magic Defense-',
-
-          num: -1,
-          min: -1,
-          max: -1,
-          pointLimit: -1,
-          pointDiff: false,
-          children: [
-            {
-              value: 'Magic Damage Reduction',
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'Fixed Magic Damage Reduction',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-            {
-              value: 'PvE Magic Damage Reduction',
-
-              num: 1,
-              min: 1,
-              max: 10,
-              unit: '',
-            },
-          ],
-        },
-        {
-          children: [
-            {
-              value: '-Heal-',
-
-              num: -1,
-              min: -1,
-              max: -1,
-              pointLimit: -1,
-              pointDiff: false,
-              children: [
-                {
-                  value: 'Critical Heal Rate',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-                {
-                  value: 'Critical Heal Bonus',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-                { value: 'Healing', num: 1, min: 1, max: 10, unit: '' },
-                {
-                  value: 'Healing Skill Damage',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-              ],
-            },
-            {
-              value: '-Regeneration-',
-
-              num: -1,
-              min: -1,
-              max: -1,
-              pointLimit: -1,
-              pointDiff: false,
-              children: [
-                { value: 'Heal Regen', num: 1, min: 1, max: 10, unit: '' },
-                {
-                  value: 'Continuous Heal Regen',
-
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-                { value: 'Mana Regen', num: 1, min: 1, max: 10, unit: '' },
-                {
-                  value: 'Post-Cast Mana Regen',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-              ],
-            },
-            {
-              value: '-Misc-',
-
-              num: -1,
-              min: -1,
-              max: -1,
-              pointLimit: -1,
-              pointDiff: false,
-              children: [
-                {
-                  value: 'Received Healing',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-                {
-                  value: 'Increased experience gain',
-
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-                { value: 'Loot Drop Rate', num: 1, min: 1, max: 10, unit: '' },
-                {
-                  value: 'Gold earned from hunting',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-                {
-                  value: 'Stealth Detection',
-                  num: 1,
-                  min: 1,
-                  max: 10,
-                  unit: '',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
 };
+
+// test data
+const keys = 'Page One,Stats,Visible Player Stats,Values,Max'.split(',');
+console.log(
+  `defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Max']:`,
+  '\n',
+  defaultData['Page One'],
+  '\n',
+  defaultData['Page One']['Stats'],
+  '\n',
+  defaultData['Page One']['Stats']['Visible Player Stats'],
+  '\n',
+  defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Max'],
+  defaultData[keys[0]][keys[1]][keys[2]][keys[3]],
+);
 
 // render
 const renderStats = (data) => {
@@ -586,17 +709,17 @@ const renderStats = (data) => {
 
   // iterate
   for (let i = 0; i < data.length; i) {
-    // check for children
-    let children = null;
-    if (data[i].children) {
-      if (data[i].children.length) {
-        children = renderStats(data[i].children);
+    // check for Values
+    let Values = null;
+    if (data[i].Values) {
+      if (data[i].Values.length) {
+        Values = renderStats(data[i].Values);
       }
     }
     result.push(
       <div key={i}>
-        {data[i].value}
-        {children}
+        {data[i].Value}
+        {Values}
       </div>,
     );
 
@@ -609,17 +732,17 @@ const renderStats = (data) => {
 // Stat Card
 function Stats(props) {
   // member variables
-  const [value, setValue] = useState([...newDefaultData.children]);
-  const handleChange = (e) => {
-    console.log('Grid handleChange:', e);
+  // const [Value, setValue] = useState([...defaultData.Values]);
+  // const handleChange = (e) => {
+  //   console.log('Grid handleChange:', e);
 
-    setValue(e.target.value);
-  };
+  //   setValue(e.target.Value);
+  // };
 
   // Render and Logic
   // return <div>{renderStats()}</div>;
   console.log('---------------------------------------------------');
-  console.log('Grid Value:', value);
+  // console.log('Grid Value:', Value);
   console.log('---------------------------------------------------');
   const baseInputStyle = { width: '100%', border: 'none', padding: '0px' };
   const cellStyle = {
@@ -629,64 +752,258 @@ function Stats(props) {
     borderBottom: '2px solid grey',
     borderRight: '2px solid grey',
   };
+
+  // test
+  const [tempBuffer, setTempBuffer] = useState([
+    [
+      '5230',
+      'Seven, Henry ',
+      '2020-05-22T14:48:07',
+      'Remaining Controls',
+      '21',
+      '3364',
+      '',
+      '2',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ],
+    [
+      '5232',
+      'Seven, Henry ',
+      '2020-05-26T15:47:46',
+      'Just CheckListBox',
+      '21',
+      '3364',
+      '',
+      '3',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ],
+    [
+      '5272',
+      'Seven, Henry ',
+      '2020-07-07T16:55:49',
+      'Remaining Controls',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '22',
+      '3360',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ],
+    [
+      '5218',
+      'Seven, Henry ',
+      '2020-05-21T15:46:54',
+      'Remaining Controls',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '22',
+      '3360',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ],
+    [
+      '5271',
+      'Seven, Henry ',
+      '2020-07-14T13:57:14',
+      'Remaining Controls',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '22',
+      '3360',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ],
+    [
+      '5260',
+      'Seven, Henry ',
+      '2020-07-07T11:24:28',
+      'Remaining Controls',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '2',
+      '3370',
+      '',
+      '',
+    ],
+  ]);
+
+  const handleTestChange = (e) => {
+    console.log('handleTestChange:', e);
+    setTempBuffer(e.target.value);
+  };
+
   return (
     <div>
-      {value.map((card) => {
-        console.log('card:', card);
-        return (
-          <Grid
-            value={card.children}
-            style={{
-              maxwidth: '512px',
-              overflow: 'scroll',
-              background: '#faf8e8',
-              color: '#6e5735',
-              fontFamily: 'NotoSansKR',
-              border: '4px solid #6e5735',
-              padding: '16px',
-              margin: '4px',
-            }}
-            cellStyle={cellStyle}
-            childrenAsRow
-            columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
-            headerRows
-            hHeader={['Stat', 'Value', 'Max', 'Max', 'Limit', 'Difference']}
-            hRow={[
-              <input type="text" value={''} style={baseInputStyle} />,
-              <input type="number" value={''} style={baseInputStyle} />,
-              <input type="number" value={''} style={baseInputStyle} />,
-              <input type="number" value={''} style={baseInputStyle} />,
-              <input type="number" value={''} style={baseInputStyle} />,
-              <input type="checkbox" checked={''} style={baseInputStyle} />,
-              <Grid
-                value={true}
-                columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
-                style={{
-                  // border: '2px dotted red',
-                  width: '512px',
-                  overflow: 'hidden',
-                }}
-                cellStyle={cellStyle}
-                header
-                hHeader={['Name', 'Value', 'Min', 'Max', 'Unit', 'Math']}
-                hRow={[
-                  <input
-                    type="text"
-                    value={''}
-                    style={{ width: '100%', border: 'none', padding: '0px' }}
-                  />,
-                  <input type="number" value={''} style={baseInputStyle} />,
-                  <input type="number" value={''} style={baseInputStyle} />,
-                  <input type="number" value={''} style={baseInputStyle} />,
-                  <input type="text" value={''} style={baseInputStyle} />,
-                  <input type="text" value={''} style={baseInputStyle} />,
-                ]}
-              />,
-            ]}
-            onChange={handleChange}
-          ></Grid>
-        );
-      })}
+      <Grid
+        value={tempBuffer}
+        onChange={handleTestChange}
+        style={{
+          maxwidth: '512px',
+          overflow: 'scroll',
+          background: '#faf8e8',
+          color: '#6e5735',
+          fontFamily: 'NotoSansKR',
+          border: '4px solid #6e5735',
+          padding: '16px',
+          margin: '4px',
+        }}
+        cellStyle={cellStyle}
+        // childrenAsRow
+        columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+        headerRows
+        hHeader={[
+          'Stat',
+          'Value',
+          'Max',
+          'Max',
+          'Limit',
+          'Difference',
+          'Stats',
+        ]}
+        hRow={[
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+          <input type="text" value="" />,
+        ]}
+      ></Grid>
+      {
+        // Value.map((card) => {
+        // console.log('card:', card);
+        // return (
+        // <Grid
+        //   value={card.Values}
+        //   onChange={handleChange}
+        //   style={{
+        //     maxwidth: '512px',
+        //     overflow: 'scroll',
+        //     background: '#faf8e8',
+        //     color: '#6e5735',
+        //     fontFamily: 'NotoSansKR',
+        //     border: '4px solid #6e5735',
+        //     padding: '16px',
+        //     margin: '4px',
+        //   }}
+        //   cellStyle={cellStyle}
+        //   // childrenAsRow
+        //   columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+        //   headerRows
+        //   hHeader={[
+        //     'Stat',
+        //     'Value',
+        //     'Max',
+        //     'Max',
+        //     'Limit',
+        //     'Difference',
+        //     'Stats',
+        //   ]}
+        //   hRow={[
+        //     <input type="text" value={''} style={baseInputStyle} />,
+        //     <input type="number" value={''} style={baseInputStyle} />,
+        //     <input type="number" value={''} style={baseInputStyle} />,
+        //     <input type="number" value={''} style={baseInputStyle} />,
+        //     <input type="number" value={''} style={baseInputStyle} />,
+        //     <input type="checkbox" checked={''} style={baseInputStyle} />,
+        //     <Grid
+        //       value={true}
+        //       columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+        //       style={{
+        //         // border: '2px dotted red',
+        //         width: '512px',
+        //         overflow: 'hidden',
+        //       }}
+        //       cellStyle={cellStyle}
+        //       header
+        //       hHeader={['Name', 'Value', 'Min', 'Max', 'Unit', 'Math']}
+        //       hRow={[
+        //         <input
+        //           type="text"
+        //           value={''}
+        //           style={{ width: '100%', border: 'none', padding: '0px' }}
+        //         />,
+        //         <input type="number" value={''} style={baseInputStyle} />,
+        //         <input type="number" value={''} style={baseInputStyle} />,
+        //         <input type="number" value={''} style={baseInputStyle} />,
+        //         <input type="text" value={''} style={baseInputStyle} />,
+        //         <input type="text" value={''} style={baseInputStyle} />,
+        //       ]}
+        //     />,
+        //   ]}
+        // ></Grid>
+        // );
+        // })
+      }
     </div>
   );
 }

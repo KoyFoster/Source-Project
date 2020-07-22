@@ -2,6 +2,17 @@
   text-align: top;
 }
 
+body {
+  background-color: teal;
+}
+
+#menu-close {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 input[type='number'] {
   -webkit-appearance: none;
 }
@@ -94,4 +105,50 @@ input:focus {
 .close:hover {
   color: gold;
   cursor: pointer;
+}
+
+/* Context Menu */
+.react-contextmenu-wrapper {
+}
+
+.react-contextmenu {
+  background-color: grey;
+  border: 3px solid red;
+  border-radius: 5px;
+}
+
+.react-contextmenu.react-contextmenu--visible {
+}
+
+.react-contextmenu-item {
+  background-color: black;
+  border: 2px solid white;
+  border-radius: 5px;
+  color: white;
+}
+
+.react-contextmenu-item.react-contextmenu-item--active,
+.react-contextmenu-item.react-contextmenu-item--selected {
+}
+
+.react-contextmenu-item.react-contextmenu-item--disabled,
+.react-contextmenu-item.react-contextmenu-item--disabled:hover {
+}
+
+.react-contextmenu-item--divider {
+}
+.react-contextmenu-item--divider:hover {
+}
+
+.react-contextmenu-item.react-contextmenu-submenu {
+}
+
+.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item {
+}
+
+.react-contextmenu-item.react-contextmenu-submenu
+  > .react-contextmenu-item:before {
+}
+
+.example-multiple-targets::after {
 }

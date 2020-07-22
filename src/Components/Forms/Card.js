@@ -8,7 +8,7 @@
 import React from 'react';
 
 // render grid data
-const RenderGrid = (props) => {
+const RenderCard = (props) => {
   const arrCheck = (arr, getKeys = false) =>
     arr
       ? Array.isArray(arr)
@@ -22,7 +22,7 @@ const RenderGrid = (props) => {
     const object = {};
     Object.keys(obj)
       .map((k) => {
-        if (k.slice(0, 5) === 'data-') {
+        if ('data-' === k.slice(0, 5)) {
           object[k] = obj[k];
           return k;
         }
@@ -64,6 +64,7 @@ const RenderGrid = (props) => {
       <colgroup>
         {ROW.map((key) => {
           x += 1;
+          const hasElem = hHeader.length > x;
           return childrenAsRow && key === 'children' ? undefined : (
             <col
               key={`col${x}`}
@@ -75,7 +76,7 @@ const RenderGrid = (props) => {
                     }
                   : {}),
               }}
-            />
+            ></col>
           );
         }).filter((cell) => cell !== undefined)}
         <col />
@@ -88,8 +89,9 @@ const RenderGrid = (props) => {
     const isObj = Array.isArray(row) ? false : true;
     const ROW = !isObj ? row : Object.keys(row);
 
-    // console.log('ROW:', ROW, 'hHeader:', hHeader);
+    console.log('ROW:', ROW, 'hHeader:', hHeader);
     return ROW.map((key) => {
+      console.log();
       x += 1;
       const hasElem = hHeader.length > x;
       const label = hasElem
@@ -112,14 +114,14 @@ const RenderGrid = (props) => {
     }).filter((cell) => cell !== undefined);
   };
 
-  const getHeader = (val, newStyle, asRow) => {
+  const getHeader = (val, style, asRow) => {
     const buffer =
       header || headerRows ? ( // header
         // iterate the length of the first data row
         val.length ? (
           <tr key="hd" name="hd" style={rowStyle}>
             {rowHeader && !asRow && (header || headerRows) ? ( // origin
-              <th key="hd" name="hd" style={newStyle}>
+              <th key="hd" name="hd" style={style}>
                 {selection ? `(${selection.y},${selection.x})` : null}
               </th>
             ) : null}
@@ -132,11 +134,11 @@ const RenderGrid = (props) => {
     return <thead>{buffer}</thead>;
   };
 
-  const parseValueIntoGrid = () => {
+  const parseValueIntoCard = () => {
     if (!Array.isArray(value)) return;
     if (value.length <= 0) return;
     if (value[0] <= 0) return;
-    let children;
+    let children = undefined;
 
     function handleEvent(e) {
       const ds = e.target.dataset;
@@ -158,7 +160,7 @@ const RenderGrid = (props) => {
       value[x][k] = result;
       return {
         target: {
-          value,
+          value: value,
           dataset: e.target.parentNode ? e.target.parentNode.dataset : {},
         },
       };
@@ -192,18 +194,18 @@ const RenderGrid = (props) => {
                   ROW.map((cell) => {
                     iY += 1;
                     const CELL = isObj ? row[cell] : cell;
-                    // console.log(
-                    //   'CELL:',
-                    //   CELL,
-                    //   'row:',
-                    //   row,
-                    //   'row[cell]:',
-                    //   row[cell],
-                    //   'cell:',
-                    //   cell,
-                    //   'iY:',
-                    //   iY,
-                    // );
+                    console.log(
+                      'CELL:',
+                      CELL,
+                      'row:',
+                      row,
+                      'row[cell]:',
+                      row[cell],
+                      'cell:',
+                      cell,
+                      'iY:',
+                      iY,
+                    );
                     const ds = {
                       // dataset
                       'data-x': iX,
@@ -361,15 +363,16 @@ const RenderGrid = (props) => {
     );
   };
 
-  const rendered = parseValueIntoGrid();
+  const rendered = parseValueIntoCard();
   return <div>{rendered}</div>;
 };
 
 // handles grid data
-class Grid extends React.Component {
+class Card extends React.Component {
   constructor(props) {
     super(props);
 
+    // Note: See below states can be moved over to SimpleGrid
     this.state = {
       mutable: this.props.value === undefined,
       value: this.props.value
@@ -439,7 +442,7 @@ class Grid extends React.Component {
     const row = newValue.splice(iRow, 1);
     newValue.splice(iRow + iDir, 0, ...row);
     this.setSelection(iRow + iDir, this.state.selection.x);
-    this.handleChange({ target: { value: newValue } });
+    this.handleChange(newValue);
   };
 
   moveRowUp = () => {
@@ -486,7 +489,7 @@ class Grid extends React.Component {
     if (iSel >= newValue.length - 1) iSel = newValue.length - 1;
     else if (iSel < 0) iSel = 0;
     this.setSelection(iSel, this.state.selection.y);
-    this.handleChange({ target: { value: newValue } });
+    this.handleChange(newValue);
   }; // end of addRow
 
   addRow = (val) => {
@@ -513,15 +516,15 @@ class Grid extends React.Component {
 
   render() {
     return (
-      <RenderGrid
+      <RenderCard
         {...this.props}
         value={
           this.state.mutable
             ? this.state.value
             : Array.isArray(this.props.value)
-            ? this.props.value.map((row) =>
-                Array.isArray(row) ? [...row] : { ...row },
-              )
+            ? this.props.value.map((row) => {
+                return Array.isArray(row) ? [...row] : { ...row };
+              })
             : { ...this.props.value }
         }
         selection={this.state.selection}
@@ -537,4 +540,4 @@ class Grid extends React.Component {
   }
 }
 
-export default Grid;
+export default Card;
