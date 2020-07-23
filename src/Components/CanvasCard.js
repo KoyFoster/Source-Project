@@ -10,11 +10,10 @@ const CanvasCard = (props) => {
     <Canvas
       // width={'100%'}
       style={{
-        border: '1px solid purple',
         overflow: 'scroll',
+        width: '128px',
+        height: '256px',
       }}
-      width={'128px'}
-      height={'128px'}
       // height={props.height}
       // viewBox={props.viewBox}
     ></Canvas>
