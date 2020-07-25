@@ -58,7 +58,7 @@ const RenderGrid = (props) => {
   const { onFocus } = props.events;
   const { onBlur } = props.events;
   const value = arrCheck(props.value);
-  // console.log('render value:', value);
+  const { rowKeys } = props;
   const hRow = arrCheck(props.hRow);
   const { selection } = props;
   const { setSelection } = props;
@@ -73,7 +73,6 @@ const RenderGrid = (props) => {
         {ROW.map((key) => {
           x += 1;
           const hasElem = hRow.length > x;
-          // console.log('Col:', hasElem ? hRow[x].props : false);
           return hasElem ? (
             hRow[x].props.break
           ) : false ? undefined : (
@@ -216,23 +215,11 @@ const RenderGrid = (props) => {
                   ROW.map((cell) => {
                     iY += 1;
                     const CELL = isObj ? row[cell] : cell;
-                    // console.log(
-                    //   'cell:',
-                    //   iY,
-                    //   ', CELL:',
-                    //   CELL,
-                    //   `, row[${cell}]:`,
-                    //   row[cell],
-                    //   ', row:',
-                    //   cell,
-                    //   ', iY:',
-                    //   row,
-                    // );
                     const ds = {
                       // dataset
                       'data-x': iX,
                       'data-y': iY,
-                      'data-key': cell,
+                      'data-key': `${rowKeys ? `${rowKeys[iX]}/` : ''}${cell}`,
                     };
                     let hasElem = hRow.length > iY;
                     if (hasElem) hasElem = hRow[iY] !== undefined;
@@ -270,7 +257,7 @@ const RenderGrid = (props) => {
                                   : {}),
 
                                 onChange: (e) => {
-                                  console.log('e:', e);
+                                  // console.log('e:', e);
                                   const buffer = {
                                     target: {
                                       value: e.target.value,
@@ -551,7 +538,6 @@ class Grid extends React.Component {
   getCols = () => (this.getValue().length ? this.getValue()[0].length : 0);
 
   render() {
-    // console.log('Grid value:', this.props.value);
     return (
       <RenderGrid
         {...this.props}

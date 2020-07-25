@@ -51,9 +51,9 @@ const cellStyle = {
 };
 
 const StatBlock = (props) => {
+  // console.log('props:', props);
   const { Stats } = props;
   const { parentKey } = props;
-  console.log('parentKey:', parentKey);
 
   // stat properties
   const { Value } = Stats;
@@ -65,30 +65,63 @@ const StatBlock = (props) => {
 
   // stat data
   const { Values } = Stats;
+  const { onChange } = props;
+
+  // handleChange
+  const handleChange = (e, key) => {
+    const buffer = {
+      target: {
+        value: e.target.value,
+        checked: e.target.checked,
+        dataset: {
+          key: `${parentKey}/${key}`,
+        },
+      },
+    };
+
+    if (onChange) onChange(buffer);
+  };
 
   return (
     <div>
       <div style={{ display: 'flex' }}>
-        Section: <input type="text" value={Value} style={cellStyle} />
-        Limit: <input type="number" value={PointLimit} style={cellStyle} />
+        Section:{' '}
+        <input
+          type="text"
+          value={Value}
+          style={cellStyle}
+          onChange={(e) => handleChange(e, 'Value')}
+        />
+        Limit:{' '}
+        <input
+          type="number"
+          value={PointLimit}
+          style={cellStyle}
+          onChange={(e) => handleChange(e, 'PointLimit')}
+        />
         Offset:
-        <input type="checkbox" value={PointDiff} style={cellStyle} />
+        <input
+          type="checkbox"
+          checked={PointDiff}
+          style={cellStyle}
+          onChange={(e) => handleChange(e, 'PointDiff')}
+        />
       </div>
       <Grid
-        parentKey={`${parentKey ? parentKey + '/' : ''}${Value}`}
+        parentKey={`${parentKey}/Values`}
+        rowKeys={Object.keys(Values)}
         value={Values}
-        // value={Header}
-        onChange={props.onChange}
+        header
+        onChange={onChange}
         cellStyle={cellStyle}
         hRow={[
-          <input type="text" value={''} style={baseInputStyle} />,
-          <input type="number" value={''} style={baseInputStyle} />,
-          <input type="number" value={''} style={baseInputStyle} />,
-          <input type="number" value={''} style={baseInputStyle} />,
-          <input type="number" value={''} style={baseInputStyle} />,
-          <input type="text" value={''} style={baseInputStyle} />,
-          <input type="text" value={''} style={baseInputStyle} />,
-          <input type="text" value={''} style={baseInputStyle} />,
+          <input key="Value" type="text" value={''} style={baseInputStyle} />,
+          <input key="Num" type="number" value={''} style={baseInputStyle} />,
+          <input key="Min" type="number" value={''} style={baseInputStyle} />,
+          <input key="Max" type="number" value={''} style={baseInputStyle} />,
+          <input key="Unit" type="text" value={''} style={baseInputStyle} />,
+          <input key="Math" type="text" value={''} style={baseInputStyle} />,
+          <input key="Vars" type="text" value={''} style={baseInputStyle} />,
         ]}
         hFooter={[
           <div key="0">Totals: </div>,
@@ -98,7 +131,6 @@ const StatBlock = (props) => {
           <div key="4"></div>,
           <div key="5"></div>,
           <div key="6"></div>,
-          <div key="7"></div>,
         ]}
       ></Grid>
     </div>
@@ -107,22 +139,24 @@ const StatBlock = (props) => {
 
 const Card = (props) => {
   const { parentKey } = props;
-  console.log('parentKey:', parentKey);
+  // console.log('parentKey:', parentKey);
   // console.log('--- --- --- --- --- --- --- --- --- ---');
   const { Page } = props;
   const { name } = props;
+  const { onChange } = props;
   const keys = Object.keys(Page);
 
+  // console.log('Card:', { parentKey, Page, name });
   return (
     <div style={cardStyle}>
       <div style={cellStyle}>{name}</div>
       {keys.map((key) => {
         return (
           <StatBlock
-            key={parentKey}
-            parentKey={parentKey}
+            key={`${parentKey}/${key}`}
+            parentKey={`${parentKey}/${key}`}
             Stats={Page[key]}
-            onChange={props.onChange}
+            onChange={onChange}
           ></StatBlock>
         );
       })}
@@ -138,7 +172,7 @@ const Stack = (props) => {
     return (
       <Card
         key={key}
-        parentKey={key}
+        parentKey={`${key}/Stats`}
         name={key}
         Page={Page.Stats}
         onChange={props.onChange}
@@ -153,6 +187,7 @@ const ProfileCard = (props) => {
   // 1. Get Title
   const { Title } = props.value;
   const { Game } = props.value;
+  const { onChange } = props;
   // 2. Get Pages. Pages are anything that isn't the title
   const Pages = {};
   Object.keys(props.value).forEach((key) => {
@@ -164,7 +199,7 @@ const ProfileCard = (props) => {
     <div>
       <div style={cellStyle}>Game: {Game}</div>
       <div style={cellStyle}>Title: {Title}</div>
-      <Stack Pages={Pages} onChange={props.onChange}></Stack>
+      <Stack Pages={Pages} onChange={onChange}></Stack>
     </div>
   );
 };

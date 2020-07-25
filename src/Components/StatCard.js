@@ -688,104 +688,37 @@ const defaultData = {
   },
 };
 
-// test data
-const keys = 'Page One,Stats,Visible Player Stats,Values,Value'.split(',');
-console.log(
-  `defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Value']:`,
-  '\n',
-  defaultData['Page One'],
-  '\n',
-  defaultData['Page One']['Stats'],
-  '\n',
-  defaultData['Page One']['Stats']['Visible Player Stats'],
-  '\n',
-  defaultData['Page One']['Stats']['Visible Player Stats']['Values'],
-  '\n',
-  defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Mana'],
-  '\n',
-  defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Mana'][
-    'Value'
-  ],
-);
-
-// render
-const renderStats = (data) => {
-  const result = [];
-
-  // iterate
-  for (let i = 0; i < data.length; i) {
-    // check for Values
-    let Values = null;
-    if (data[i].Values) {
-      if (data[i].Values.length) {
-        Values = renderStats(data[i].Values);
-      }
-    }
-    result.push(
-      <div key={i}>
-        {data[i].Value}
-        {Values}
-      </div>,
-    );
-
-    i += 1;
-  }
-
-  return result;
-};
-
 // Stat Card
-// `defaultData['Page One']['Stats']['Visible Player Stats']['Values'][      ]['Max']:`
+// `defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Max']:`
 function Stats(props) {
   // member variables
   const [value, setValue] = useState(defaultData);
   const handleChange = (e) => {
-    console.log('handleChange:', e);
-
     // iterate through key string
-    const index = { value: undefined };
-    const newValue = e.target.value;
+    const newValue =
+      e.target.checked !== undefined ? e.target.checked : e.target.value;
     const keys = e.target.dataset.key.split('/');
-    console.log('1. keys:', keys, 'newValue:', newValue);
+
+    console.log('keys:', keys, 'newValue:', newValue);
+    if (!keys.length) return;
+
     // depth check
-    switch (keys.length) {
-      case 1:
-        console.log(`2. Key:[${keys[0]}]`, value[keys[0]]);
-        index.value = value[keys[0]];
-        break;
-      case 2:
-        console.log(`2. Key:[${keys[0]}]['Stats'][${keys[1]}]`);
-        index.value = value[keys[0]]['Stats'][keys[1]];
-        break;
-      case 3:
-        console.log(
-          `2. Key:[${keys[0]}]['Stats'][${keys[1]}]['Values'][${keys[2]}]`,
-          value[keys[0]]['Stats'][keys[1]]['Values'][keys[2]],
-        );
-        index.value = value[keys[0]]['Stats'][keys[1]]['Values'][keys[2]];
-        break;
-      default:
-        break;
-    }
-    if (index.value === undefined) return;
-
-    console.log(
-      '3. keys:',
-      keys,
-      'newValue:',
-      newValue,
-      'oldValue:',
-      index.value,
-    );
-
     const buffer = { ...value };
+    let index = buffer;
+    let i = 1;
+    keys.forEach((key) => {
+      // validate
+      if (index === undefined) return;
+
+      if (i !== keys.length) index = index[key];
+      else index[key] = newValue;
+      i += 1;
+    });
 
     setValue(buffer);
   };
 
-  // Render and Logic
-  // return <div>{renderStats()}</div>;
-
+  console.log('value:', value);
   return (
     <ProfileCard value={value} onChange={handleChange}></ProfileCard>
 
