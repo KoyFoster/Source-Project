@@ -7,12 +7,13 @@ import StatData from './StatData.js';
 import { Row, Col } from './DivGrid';
 import StatCode from './StatCode';
 import Tree from './Forms/Tree';
-import Card from './Forms/Card';
+import ProfileCard from './Forms/Card';
 import Grid from './Forms/Grid';
 
 // test data
 const defaultData = {
-  Title: 'Default Data',
+  Game: 'ArcheAge',
+  Title: "Koy's Stats",
   'Page One':
     // page one
     {
@@ -47,14 +48,14 @@ const defaultData = {
           },
         },
         // End of stat table
-        '-Primary Stats-': {
-          Value: '-Primary Stats-',
+        'Primary Stats': {
+          Value: 'Primary Stats',
           Num: 2358,
           Min: 70,
           Max: 12800,
           PointLimit: 2560,
           PointDiff: false,
-          Stats: {
+          Values: {
             Strength: {
               Value: 'Strength',
 
@@ -87,8 +88,8 @@ const defaultData = {
             },
           },
         },
-        '-Secondary Stats+': {
-          Value: '-Secondary Stats+',
+        'Secondary Stats': {
+          Value: 'Secondary Stats',
           Num: 0,
           Min: 0,
           Max: 0,
@@ -145,8 +146,8 @@ const defaultData = {
             },
           },
         },
-        '-Misc Stats+': {
-          Value: '-Misc Stats+',
+        'Misc Stats': {
+          Value: 'Misc Stats',
           Num: -1,
           Min: -1,
           Max: -1,
@@ -186,13 +187,13 @@ const defaultData = {
       }, // end of stats
     }, // end of page one
   // page two
-  '-Page Two: Attack Details-':
+  'Page Two: Attack Details':
     // page two
     {
-      Value: '-Page Two: Attack Details-',
+      Value: 'Page Two: Attack Details',
       Stats: {
-        '-Melee Attack-': {
-          Value: '-Melee Attack-',
+        'Melee Attack': {
+          Value: 'Melee Attack',
           Num: -1,
           Min: -1,
           Max: -1,
@@ -250,8 +251,8 @@ const defaultData = {
             },
           },
         },
-        '-Ranged Attack-': {
-          Value: '-Ranged Attack-',
+        'Ranged Attack': {
+          Value: 'Ranged Attack',
           Num: -1,
           Min: -1,
           Max: -1,
@@ -302,15 +303,15 @@ const defaultData = {
             },
           },
         },
-        '-Magic Attack-': {
-          Value: '-Magic Attack-',
+        'Magic Attack': {
+          Value: 'Magic Attack',
 
           Num: -1,
           Min: -1,
           Max: -1,
           PointLimit: -1,
           PointDiff: false,
-          Stats: {
+          Values: {
             'Magic Accuracy': {
               Value: 'Magic Accuracy',
               Num: 1,
@@ -355,8 +356,8 @@ const defaultData = {
             },
           },
         },
-        '-Misc-': {
-          Value: '-Misc-',
+        Misc: {
+          Value: 'Misc',
 
           Num: -1,
           Min: -1,
@@ -399,299 +400,298 @@ const defaultData = {
           },
         },
       }, // end of page two
-
-      // page three
-      '-Page Three: Defense Details-': {
-        Value: '-Page Three: Defense Details-',
-        Stats: {
-          '-Defense-': {
-            Value: '-Defense-',
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Values: {
-              'Parry Rate': {
-                Value: 'Parry Rate',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Shield Block Rate': {
-                Value: 'Shield Block Rate',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              Evasion: { Value: 'Evasion', Num: 1, Min: 1, Max: 10, Unit: '' },
-              Resiliance: {
-                Value: 'Resiliance',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              Toughness: {
-                Value: 'Toughness',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Siege Damage Reduction': {
-                Value: 'Siege Damage Reduction',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'PvE Damage Reduction': {
-                Value: 'PvE Damage Reduction',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            },
+    },
+  // page three
+  'Page Three: Defense Details': {
+    Value: 'Page Three: Defense Details',
+    Stats: {
+      Defense: {
+        Value: 'Defense',
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Parry Rate': {
+            Value: 'Parry Rate',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
           },
-          '-Melee Defense-': {
-            Value: '-Melee Defense-',
-
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Stats: {
-              'Melee Damage Reduction': {
-                Value: 'Melee Damage Reduction',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Fixed Melee Damage Reduction': {
-                Value: 'Fixed Melee Damage Reduction',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'PvE Melee Damage Reduction': {
-                Value: 'PvE Melee Damage Reduction',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            },
+          'Shield Block Rate': {
+            Value: 'Shield Block Rate',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
           },
-          '-Ranged Defense-': {
-            Value: '-Ranged Defense-',
-
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Stats: {
-              'Ranged Damage Reduction': {
-                Value: 'Ranged Damage Reduction',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Fixed Ranged Damage Reduction': {
-                Value: 'Fixed Ranged Damage Reduction',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'PvE Ranged Damage Reduction': {
-                Value: 'PvE Ranged Damage Reduction',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            },
+          Evasion: { Value: 'Evasion', Num: 1, Min: 1, Max: 10, Unit: '' },
+          Resiliance: {
+            Value: 'Resiliance',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
           },
-          '-Magic Defense-': {
-            Value: '-Magic Defense-',
-
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Values: {
-              'Magic Damage Reduction': {
-                Value: 'Magic Damage Reduction',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Fixed Magic Damage Reduction': {
-                Value: 'Fixed Magic Damage Reduction',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'PvE Magic Damage Reduction': {
-                Value: 'PvE Magic Damage Reduction',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            },
+          Toughness: {
+            Value: 'Toughness',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
           },
-        }, // end of defense stats
-      }, // end of defense page
-
-      'Regen/Misc': {
-        Value: 'Regen/Misc',
-        Stats: {
-          '-Heal-': {
-            Value: '-Heal-',
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Stats: {
-              'Critical Heal Rate': {
-                Value: 'Critical Heal Rate',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Critical Heal Bonus': {
-                Value: 'Critical Heal Bonus',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              Healing: { Value: 'Healing', Num: 1, Min: 1, Max: 10, Unit: '' },
-              'Healing Skill Damage': {
-                Value: 'Healing Skill Damage',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            },
+          'Siege Damage Reduction': {
+            Value: 'Siege Damage Reduction',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
           },
-          '-Regeneration-': {
-            Value: '-Regeneration-',
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Values: {
-              'Heal Regen': {
-                Value: 'Heal Regen',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Continuous Heal Regen': {
-                Value: 'Continuous Heal Regen',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Mana Regen': {
-                Value: 'Mana Regen',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Post-Cast Mana Regen': {
-                Value: 'Post-Cast Mana Regen',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            }, // end of Stat Values
+          'PvE Damage Reduction': {
+            Value: 'PvE Damage Reduction',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
           },
-          '-Misc-': {
-            Value: '-Misc-',
-
-            Num: -1,
-            Min: -1,
-            Max: -1,
-            PointLimit: -1,
-            PointDiff: false,
-            Values: {
-              'Received Healing': {
-                Value: 'Received Healing',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Increased experience gain': {
-                Value: 'Increased experience gain',
-
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Loot Drop Rate': {
-                Value: 'Loot Drop Rate',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Gold earned from hunting': {
-                Value: 'Gold earned from hunting',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-              'Stealth Detection': {
-                Value: 'Stealth Detection',
-                Num: 1,
-                Min: 1,
-                Max: 10,
-                Unit: '',
-              },
-            },
-          }, // end of Stat Values
         },
       },
+      'Melee Defense': {
+        Value: 'Melee Defense',
+
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Melee Damage Reduction': {
+            Value: 'Melee Damage Reduction',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Fixed Melee Damage Reduction': {
+            Value: 'Fixed Melee Damage Reduction',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'PvE Melee Damage Reduction': {
+            Value: 'PvE Melee Damage Reduction',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+        },
+      },
+      'Ranged Defense': {
+        Value: 'Ranged Defense',
+
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Ranged Damage Reduction': {
+            Value: 'Ranged Damage Reduction',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Fixed Ranged Damage Reduction': {
+            Value: 'Fixed Ranged Damage Reduction',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'PvE Ranged Damage Reduction': {
+            Value: 'PvE Ranged Damage Reduction',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+        },
+      },
+      'Magic Defense': {
+        Value: 'Magic Defense',
+
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Magic Damage Reduction': {
+            Value: 'Magic Damage Reduction',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Fixed Magic Damage Reduction': {
+            Value: 'Fixed Magic Damage Reduction',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'PvE Magic Damage Reduction': {
+            Value: 'PvE Magic Damage Reduction',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+        },
+      },
+    }, // end of defense stats
+  }, // end of defense page
+
+  'Regen/Misc': {
+    Value: 'Regen/Misc',
+    Stats: {
+      Heal: {
+        Value: 'Heal',
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Critical Heal Rate': {
+            Value: 'Critical Heal Rate',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Critical Heal Bonus': {
+            Value: 'Critical Heal Bonus',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          Healing: { Value: 'Healing', Num: 1, Min: 1, Max: 10, Unit: '' },
+          'Healing Skill Damage': {
+            Value: 'Healing Skill Damage',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+        },
+      },
+      Regeneration: {
+        Value: 'Regeneration',
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Heal Regen': {
+            Value: 'Heal Regen',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Continuous Heal Regen': {
+            Value: 'Continuous Heal Regen',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Mana Regen': {
+            Value: 'Mana Regen',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Post-Cast Mana Regen': {
+            Value: 'Post-Cast Mana Regen',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+        }, // end of Stat Values
+      },
+      Misc: {
+        Value: 'Misc',
+
+        Num: -1,
+        Min: -1,
+        Max: -1,
+        PointLimit: -1,
+        PointDiff: false,
+        Values: {
+          'Received Healing': {
+            Value: 'Received Healing',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Increased experience gain': {
+            Value: 'Increased experience gain',
+
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Loot Drop Rate': {
+            Value: 'Loot Drop Rate',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Gold earned from hunting': {
+            Value: 'Gold earned from hunting',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+          'Stealth Detection': {
+            Value: 'Stealth Detection',
+            Num: 1,
+            Min: 1,
+            Max: 10,
+            Unit: '',
+          },
+        },
+      }, // end of Stat Values
     },
+  },
 };
 
 // test data
-const keys = 'Page One,Stats,Visible Player Stats,Values,Max'.split(',');
+const keys = 'Page One,Stats,Visible Player Stats,Values,Value'.split(',');
 console.log(
-  `defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Max']:`,
+  `defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Value']:`,
   '\n',
   defaultData['Page One'],
   '\n',
@@ -699,8 +699,13 @@ console.log(
   '\n',
   defaultData['Page One']['Stats']['Visible Player Stats'],
   '\n',
-  defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Max'],
-  defaultData[keys[0]][keys[1]][keys[2]][keys[3]],
+  defaultData['Page One']['Stats']['Visible Player Stats']['Values'],
+  '\n',
+  defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Mana'],
+  '\n',
+  defaultData['Page One']['Stats']['Visible Player Stats']['Values']['Mana'][
+    'Value'
+  ],
 );
 
 // render
@@ -730,281 +735,124 @@ const renderStats = (data) => {
 };
 
 // Stat Card
+// `defaultData['Page One']['Stats']['Visible Player Stats']['Values'][      ]['Max']:`
 function Stats(props) {
   // member variables
-  // const [Value, setValue] = useState([...defaultData.Values]);
-  // const handleChange = (e) => {
-  //   console.log('Grid handleChange:', e);
+  const [value, setValue] = useState(defaultData);
+  const handleChange = (e) => {
+    console.log('handleChange:', e);
 
-  //   setValue(e.target.Value);
-  // };
+    // iterate through key string
+    const index = { value: undefined };
+    const newValue = e.target.value;
+    const keys = e.target.dataset.key.split('/');
+    console.log('1. keys:', keys, 'newValue:', newValue);
+    // depth check
+    switch (keys.length) {
+      case 1:
+        console.log(`2. Key:[${keys[0]}]`, value[keys[0]]);
+        index.value = value[keys[0]];
+        break;
+      case 2:
+        console.log(`2. Key:[${keys[0]}]['Stats'][${keys[1]}]`);
+        index.value = value[keys[0]]['Stats'][keys[1]];
+        break;
+      case 3:
+        console.log(
+          `2. Key:[${keys[0]}]['Stats'][${keys[1]}]['Values'][${keys[2]}]`,
+          value[keys[0]]['Stats'][keys[1]]['Values'][keys[2]],
+        );
+        index.value = value[keys[0]]['Stats'][keys[1]]['Values'][keys[2]];
+        break;
+      default:
+        break;
+    }
+    if (index.value === undefined) return;
+
+    console.log(
+      '3. keys:',
+      keys,
+      'newValue:',
+      newValue,
+      'oldValue:',
+      index.value,
+    );
+
+    const buffer = { ...value };
+
+    setValue(buffer);
+  };
 
   // Render and Logic
   // return <div>{renderStats()}</div>;
-  console.log('---------------------------------------------------');
-  // console.log('Grid Value:', Value);
-  console.log('---------------------------------------------------');
-  const baseInputStyle = { width: '100%', border: 'none', padding: '0px' };
-  const cellStyle = {
-    borderRadius: '8px',
-    borderLeft: '2px solid black',
-    borderTop: '2px solid black',
-    borderBottom: '2px solid grey',
-    borderRight: '2px solid grey',
-  };
-
-  // test
-  const [tempBuffer, setTempBuffer] = useState([
-    [
-      '5230',
-      'Seven, Henry ',
-      '2020-05-22T14:48:07',
-      'Remaining Controls',
-      '21',
-      '3364',
-      '',
-      '2',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-    ],
-    [
-      '5232',
-      'Seven, Henry ',
-      '2020-05-26T15:47:46',
-      'Just CheckListBox',
-      '21',
-      '3364',
-      '',
-      '3',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-    ],
-    [
-      '5272',
-      'Seven, Henry ',
-      '2020-07-07T16:55:49',
-      'Remaining Controls',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '22',
-      '3360',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-    ],
-    [
-      '5218',
-      'Seven, Henry ',
-      '2020-05-21T15:46:54',
-      'Remaining Controls',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '22',
-      '3360',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-    ],
-    [
-      '5271',
-      'Seven, Henry ',
-      '2020-07-14T13:57:14',
-      'Remaining Controls',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '22',
-      '3360',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-    ],
-    [
-      '5260',
-      'Seven, Henry ',
-      '2020-07-07T11:24:28',
-      'Remaining Controls',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '2',
-      '3370',
-      '',
-      '',
-    ],
-  ]);
-
-  const handleTestChange = (e) => {
-    console.log('handleTestChange:', e);
-    setTempBuffer(e.target.value);
-  };
 
   return (
-    <div>
-      <Grid
-        value={tempBuffer}
-        onChange={handleTestChange}
-        style={{
-          maxwidth: '512px',
-          overflow: 'scroll',
-          background: '#faf8e8',
-          color: '#6e5735',
-          fontFamily: 'NotoSansKR',
-          border: '4px solid #6e5735',
-          padding: '16px',
-          margin: '4px',
-        }}
-        cellStyle={cellStyle}
-        // childrenAsRow
-        columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
-        headerRows
-        hHeader={[
-          'Stat',
-          'Value',
-          'Max',
-          'Max',
-          'Limit',
-          'Difference',
-          'Stats',
-        ]}
-        hRow={[
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-          <input type="text" value="" />,
-        ]}
-      ></Grid>
-      {
-        // Value.map((card) => {
-        // console.log('card:', card);
-        // return (
-        // <Grid
-        //   value={card.Values}
-        //   onChange={handleChange}
-        //   style={{
-        //     maxwidth: '512px',
-        //     overflow: 'scroll',
-        //     background: '#faf8e8',
-        //     color: '#6e5735',
-        //     fontFamily: 'NotoSansKR',
-        //     border: '4px solid #6e5735',
-        //     padding: '16px',
-        //     margin: '4px',
-        //   }}
-        //   cellStyle={cellStyle}
-        //   // childrenAsRow
-        //   columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
-        //   headerRows
-        //   hHeader={[
-        //     'Stat',
-        //     'Value',
-        //     'Max',
-        //     'Max',
-        //     'Limit',
-        //     'Difference',
-        //     'Stats',
-        //   ]}
-        //   hRow={[
-        //     <input type="text" value={''} style={baseInputStyle} />,
-        //     <input type="number" value={''} style={baseInputStyle} />,
-        //     <input type="number" value={''} style={baseInputStyle} />,
-        //     <input type="number" value={''} style={baseInputStyle} />,
-        //     <input type="number" value={''} style={baseInputStyle} />,
-        //     <input type="checkbox" checked={''} style={baseInputStyle} />,
-        //     <Grid
-        //       value={true}
-        //       columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
-        //       style={{
-        //         // border: '2px dotted red',
-        //         width: '512px',
-        //         overflow: 'hidden',
-        //       }}
-        //       cellStyle={cellStyle}
-        //       header
-        //       hHeader={['Name', 'Value', 'Min', 'Max', 'Unit', 'Math']}
-        //       hRow={[
-        //         <input
-        //           type="text"
-        //           value={''}
-        //           style={{ width: '100%', border: 'none', padding: '0px' }}
-        //         />,
-        //         <input type="number" value={''} style={baseInputStyle} />,
-        //         <input type="number" value={''} style={baseInputStyle} />,
-        //         <input type="number" value={''} style={baseInputStyle} />,
-        //         <input type="text" value={''} style={baseInputStyle} />,
-        //         <input type="text" value={''} style={baseInputStyle} />,
-        //       ]}
-        //     />,
-        //   ]}
-        // ></Grid>
-        // );
-        // })
-      }
-    </div>
+    <ProfileCard value={value} onChange={handleChange}></ProfileCard>
+
+    // Value.map((card) => {
+    // console.log('card:', card);
+    // return (
+    // <Grid
+    //   value={card.Values}
+    //   onChange={handleChange}
+    //   style={{
+    //     maxwidth: '512px',
+    //     overflow: 'scroll',
+    //     background: '#faf8e8',
+    //     color: '#6e5735',
+    //     fontFamily: 'NotoSansKR',
+    //     border: '4px solid #6e5735',
+    //     padding: '16px',
+    //     margin: '4px',
+    //   }}
+    //   cellStyle={cellStyle}
+    //   // childrenAsRow
+    //   columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+    //   headerRows
+    //   hHeader={[
+    //     'Stat',
+    //     'Value',
+    //     'Max',
+    //     'Max',
+    //     'Limit',
+    //     'Difference',
+    //     'Stats',
+    //   ]}
+    //   hRow={[
+    //     <input type="text" value={''} style={baseInputStyle} />,
+    //     <input type="number" value={''} style={baseInputStyle} />,
+    //     <input type="number" value={''} style={baseInputStyle} />,
+    //     <input type="number" value={''} style={baseInputStyle} />,
+    //     <input type="number" value={''} style={baseInputStyle} />,
+    //     <input type="checkbox" checked={''} style={baseInputStyle} />,
+    //     <Grid
+    //       value={true}
+    //       columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+    //       style={{
+    //         // border: '2px dotted red',
+    //         width: '512px',
+    //         overflow: 'hidden',
+    //       }}
+    //       cellStyle={cellStyle}
+    //       header
+    //       hHeader={['Name', 'Value', 'Min', 'Max', 'Unit', 'Math']}
+    //       hRow={[
+    //         <input
+    //           type="text"
+    //           value={''}
+    //           style={{ width: '100%', border: 'none', padding: '0px' }}
+    //         />,
+    //         <input type="number" value={''} style={baseInputStyle} />,
+    //         <input type="number" value={''} style={baseInputStyle} />,
+    //         <input type="number" value={''} style={baseInputStyle} />,
+    //         <input type="text" value={''} style={baseInputStyle} />,
+    //         <input type="text" value={''} style={baseInputStyle} />,
+    //       ]}
+    //     />,
+    //   ]}
+    // ></Grid>
+    // );
+    // })
   );
 }
 

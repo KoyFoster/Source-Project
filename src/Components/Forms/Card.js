@@ -6,538 +6,167 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
+import Grid from './Grid';
 
-// render grid data
-const RenderCard = (props) => {
-  const arrCheck = (arr, getKeys = false) =>
-    arr
-      ? Array.isArray(arr)
-        ? arr
-        : getKeys && Object.keys(arr).length
-        ? Object.keys(arr)
-        : []
-      : [];
+// style={{
+//   maxwidth: '512px',
+//   overflow: 'scroll',
+//   background: '#faf8e8',
+//   color: '#6e5735',
+//   fontFamily: 'NotoSansKR',
+//   border: '4px solid #6e5735',
+//   padding: '16px',
+//   margin: '4px',
+// }}
+// cellStyle={cellStyle}
+// // childrenAsRow
+// // columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+// headerRows
+// hRow={[]}
 
-  const getDataSet = (obj) => {
-    const object = {};
-    Object.keys(obj)
-      .map((k) => {
-        if ('data-' === k.slice(0, 5)) {
-          object[k] = obj[k];
-          return k;
-        }
-        return undefined;
-      })
-      .filter((k) => k !== undefined);
-    return object;
-  };
-  const dataset = getDataSet(props);
-  const { header } = props;
-  const { headerRows } = props;
-  const hHeader = arrCheck(props.hHeader, true);
-  const { rowHeader } = props;
-  const { style } = props;
-  const { headerStyle } = props;
-  const { bodyStyle } = props;
-  const rowHeaderStyle = props.rowHeaderStyle
-    ? props.rowHeaderStyle
-    : props.headerStyle;
-  const { rowStyle } = props;
-  const { cellStyle } = props;
-  const { columnWidths } = props;
-  const { onClick } = props.events;
-  const { onChange } = props.events;
-  const { onFocus } = props.events;
-  const { onBlur } = props.events;
-  const { value } = props;
-  const { childrenAsRow } = props;
-  const hRow = arrCheck(props.hRow);
-  const { selection } = props;
-  const { setSelection } = props;
+// Steps To Rendering A Card
+// 1. Take Title
+// 2. Parse Out Pages
+// 3. Render Pages Out As Grids?
 
-  const getColumnGroup = (row) => {
-    let x = -1;
-    const isObj = Object.keys(row).length ? true : false;
-    const ROW = !isObj ? row : Object.keys(row);
+const baseInputStyle = { width: '100%', border: 'none', padding: '0px' };
 
+const cardStyle = {
+  maxwidth: '512px',
+  // overflow: 'scroll',
+  background: '#faf8e8',
+  color: '#6e5735',
+  fontFamily: 'NotoSansKR',
+  border: '4px solid #6e5735',
+  padding: '16px',
+  margin: '4px',
+};
+
+const cellStyle = {
+  borderRadius: '8px',
+  borderLeft: '2px solid black',
+  borderTop: '2px solid black',
+  borderBottom: '2px solid grey',
+  borderRight: '2px solid grey',
+};
+
+const StatBlock = (props) => {
+  const { Stats } = props;
+  const { parentKey } = props;
+  console.log('parentKey:', parentKey);
+
+  // stat properties
+  const { Value } = Stats;
+  const { Num } = Stats;
+  const { Min } = Stats;
+  const { Max } = Stats;
+  const { PointLimit } = Stats;
+  const { PointDiff } = Stats;
+
+  // stat data
+  const { Values } = Stats;
+
+  return (
+    <div>
+      <div style={{ display: 'flex' }}>
+        Section: <input type="text" value={Value} style={cellStyle} />
+        Limit: <input type="number" value={PointLimit} style={cellStyle} />
+        Offset:
+        <input type="checkbox" value={PointDiff} style={cellStyle} />
+      </div>
+      <Grid
+        parentKey={`${parentKey ? parentKey + '/' : ''}${Value}`}
+        value={Values}
+        // value={Header}
+        onChange={props.onChange}
+        cellStyle={cellStyle}
+        hRow={[
+          <input type="text" value={''} style={baseInputStyle} />,
+          <input type="number" value={''} style={baseInputStyle} />,
+          <input type="number" value={''} style={baseInputStyle} />,
+          <input type="number" value={''} style={baseInputStyle} />,
+          <input type="number" value={''} style={baseInputStyle} />,
+          <input type="text" value={''} style={baseInputStyle} />,
+          <input type="text" value={''} style={baseInputStyle} />,
+          <input type="text" value={''} style={baseInputStyle} />,
+        ]}
+        hFooter={[
+          <div key="0">Totals: </div>,
+          <div key="1">{Num}</div>,
+          <div key="2">{Min}</div>,
+          <div key="3">{Max}</div>,
+          <div key="4"></div>,
+          <div key="5"></div>,
+          <div key="6"></div>,
+          <div key="7"></div>,
+        ]}
+      ></Grid>
+    </div>
+  );
+};
+
+const Card = (props) => {
+  const { parentKey } = props;
+  console.log('parentKey:', parentKey);
+  // console.log('--- --- --- --- --- --- --- --- --- ---');
+  const { Page } = props;
+  const { name } = props;
+  const keys = Object.keys(Page);
+
+  return (
+    <div style={cardStyle}>
+      <div style={cellStyle}>{name}</div>
+      {keys.map((key) => {
+        return (
+          <StatBlock
+            key={parentKey}
+            parentKey={parentKey}
+            Stats={Page[key]}
+            onChange={props.onChange}
+          ></StatBlock>
+        );
+      })}
+    </div>
+  );
+};
+
+const Stack = (props) => {
+  const { Pages } = props;
+
+  return Object.keys(Pages).map((key) => {
+    const Page = Pages[key];
     return (
-      <colgroup>
-        {ROW.map((key) => {
-          x += 1;
-          const hasElem = hHeader.length > x;
-          return childrenAsRow && key === 'children' ? undefined : (
-            <col
-              key={`col${x}`}
-              name={`col${x}`}
-              style={{
-                ...(columnWidths
-                  ? {
-                      width: columnWidths.length > x ? columnWidths[x] : {},
-                    }
-                  : {}),
-              }}
-            ></col>
-          );
-        }).filter((cell) => cell !== undefined)}
-        <col />
-      </colgroup>
+      <Card
+        key={key}
+        parentKey={key}
+        name={key}
+        Page={Page.Stats}
+        onChange={props.onChange}
+      ></Card>
     );
-  };
-
-  const headerFromValue = (row) => {
-    let x = -1;
-    const isObj = Array.isArray(row) ? false : true;
-    const ROW = !isObj ? row : Object.keys(row);
-
-    console.log('ROW:', ROW, 'hHeader:', hHeader);
-    return ROW.map((key) => {
-      console.log();
-      x += 1;
-      const hasElem = hHeader.length > x;
-      const label = hasElem
-        ? hHeader[x]
-        : isObj
-        ? ROW[x]
-        : String.fromCharCode(x + 65); /* Offset by one as x will start at 0 */
-
-      return childrenAsRow && key === 'children' ? undefined : (
-        <th
-          key={`rhd${x}`}
-          name={`rhd${x}`}
-          style={{
-            ...headerStyle,
-          }}
-        >
-          {label}
-        </th>
-      );
-    }).filter((cell) => cell !== undefined);
-  };
-
-  const getHeader = (val, style, asRow) => {
-    const buffer =
-      header || headerRows ? ( // header
-        // iterate the length of the first data row
-        val.length ? (
-          <tr key="hd" name="hd" style={rowStyle}>
-            {rowHeader && !asRow && (header || headerRows) ? ( // origin
-              <th key="hd" name="hd" style={style}>
-                {selection ? `(${selection.y},${selection.x})` : null}
-              </th>
-            ) : null}
-            {headerFromValue(val[0])}
-          </tr>
-        ) : // end of header map
-        null
-      ) : null;
-    if (asRow) return buffer;
-    return <thead>{buffer}</thead>;
-  };
-
-  const parseValueIntoCard = () => {
-    if (!Array.isArray(value)) return;
-    if (value.length <= 0) return;
-    if (value[0] <= 0) return;
-    let children = undefined;
-
-    function handleEvent(e) {
-      const ds = e.target.dataset;
-      const { x, y, key } = ds;
-
-      const k = key ? key : y;
-
-      let result;
-
-      if (hRow[y].props.checked !== undefined) {
-        result = e.target.checked;
-      } else if (hRow[y].props.value !== undefined) {
-        result = e.target.value;
-      } else if (hRow[y].props.children !== undefined) {
-        return;
-      }
-
-      // set cell
-      value[x][k] = result;
-      return {
-        target: {
-          value: value,
-          dataset: e.target.parentNode ? e.target.parentNode.dataset : {},
-        },
-      };
-      // return { target: { value: value, dataset: e.target.ds } };
-    }
-
-    // map
-    // table
-    let iX = -1;
-    let iY = -1;
-    const rHS = { ...cellStyle, ...headerStyle, ...rowHeaderStyle };
-    return (
-      <table style={{ ...style, tableLayout: 'fixed' }}>
-        {getColumnGroup(value[0])}
-        {getHeader(value, rHS)}
-        <tbody style={bodyStyle}>
-          {value.map((row) => {
-            iX += 1;
-            iY = -1;
-            const isObj = Object.keys(row).length ? true : false;
-            const ROW = isObj ? Object.keys(row) : row;
-            return [
-              headerRows && iX > 0 ? getHeader(value, rHS, true) : null,
-              <tr key={`tr${iX}`} name={`tr${iX}`} style={rowStyle}>
-                {rowHeader ? ( // row header
-                  <th key={`rhd${iX}`} name={`rhd${iX}`} style={rHS}>
-                    {iX}
-                  </th>
-                ) : null}
-                {
-                  ROW.map((cell) => {
-                    iY += 1;
-                    const CELL = isObj ? row[cell] : cell;
-                    console.log(
-                      'CELL:',
-                      CELL,
-                      'row:',
-                      row,
-                      'row[cell]:',
-                      row[cell],
-                      'cell:',
-                      cell,
-                      'iY:',
-                      iY,
-                    );
-                    const ds = {
-                      // dataset
-                      'data-x': iX,
-                      'data-y': iY,
-                      'data-key': cell,
-                    };
-                    let hasElem = hRow.length > iY;
-                    if (hasElem) hasElem = hRow[iY] !== undefined;
-                    const buffer = (
-                      <td
-                        key={`td${iY}`}
-                        {...dataset}
-                        {...(isObj && childrenAsRow && cell === 'children'
-                          ? { colspan: ROW.length - 1 }
-                          : {})}
-                        style={{
-                          ...cellStyle,
-                        }}
-                      >
-                        {hasElem
-                          ? {
-                              ...hRow[iY],
-                              props: {
-                                ...hRow[iY].props,
-                                ...ds,
-                                ...(hRow[iY].props.checked !== undefined
-                                  ? {
-                                      checked: CELL,
-                                    }
-                                  : {}),
-                                ...(hRow[iY].props.value !== undefined
-                                  ? {
-                                      value: CELL,
-                                    }
-                                  : {}),
-                                ...(hRow[iY].props.children !== undefined
-                                  ? {
-                                      children: CELL,
-                                    }
-                                  : {}),
-
-                                onChange: (e) => {
-                                  const { y } = e.target.dataset;
-                                  // if index not found, then search up parent tree
-                                  if (!y) {
-                                    console.error(
-                                      'ERROR: Element is not compatible with the Grid element',
-                                    );
-                                    return;
-                                  }
-
-                                  // check for events
-                                  if (!hRow[y].props.onChange && !onChange)
-                                    return;
-
-                                  // cell event
-                                  if (hasElem)
-                                    if (hRow[y].props.onChange)
-                                      hRow[y].props.onChange(e);
-                                  // tree event
-                                  if (onChange) onChange(handleEvent(e));
-                                },
-
-                                ...(hRow[iY].props.onClick || onClick
-                                  ? {
-                                      onClick: (e) => {
-                                        const { y } = e.target.dataset;
-                                        if (!y) {
-                                          console.error(
-                                            'ERROR: Element is not compatible with the Grid element',
-                                          );
-                                          return;
-                                        }
-                                        // cell event
-                                        if (hasElem)
-                                          if (hRow[y].props.onClick)
-                                            hRow[y].props.onClick(e);
-                                        // tree event
-                                        if (onClick) onClick(handleEvent(e));
-                                      },
-                                    }
-                                  : {}),
-
-                                ...(hRow[iY].props.onFocus ||
-                                onFocus ||
-                                setSelection
-                                  ? {
-                                      onFocus: (e) => {
-                                        const { y } = e.target.dataset;
-                                        const { x } = e.target.dataset;
-                                        if (!y || !x) {
-                                          console.error(
-                                            'ERROR: Element is not compatible with the Grid element',
-                                          );
-                                          return;
-                                        }
-                                        // set selection
-                                        if (setSelection)
-                                          setSelection(
-                                            parseInt(x, 10),
-                                            parseInt(y, 10),
-                                          );
-
-                                        // cell event
-                                        if (hasElem)
-                                          if (hRow[y].props.onFocus)
-                                            hRow[y].props.onFocus(e);
-                                        // tree event
-                                        if (onFocus) onFocus(handleEvent(e));
-                                      },
-                                    }
-                                  : {}),
-
-                                ...(hRow[iY].props.onBlur || onBlur
-                                  ? {
-                                      onBlur: (e) => {
-                                        const { y } = e.target.dataset;
-                                        if (!y) {
-                                          console.error(
-                                            'ERROR: Element is not compatible with the Grid element',
-                                          );
-                                          return;
-                                        }
-                                        // cell event
-                                        if (hasElem)
-                                          if (hRow[y].props.onBlur)
-                                            hRow[y].props.onBlur(e);
-                                        // tree event
-                                        if (onBlur) onBlur(handleEvent(e));
-                                      },
-                                    }
-                                  : {}),
-                              },
-                            }
-                          : isObj
-                          ? CELL.toString()
-                          : CELL}
-                      </td>
-                    ); // end of buffer
-                    if (childrenAsRow && cell === 'children') {
-                      children = buffer;
-                      return undefined;
-                    }
-                    return buffer;
-                  }).filter((cell) => cell !== undefined) // end of row map
-                }
-              </tr>,
-              childrenAsRow && children ? (
-                <tr style={rowStyle}>{children}</tr>
-              ) : undefined,
-            ];
-          })}
-        </tbody>
-      </table>
-    );
-  };
-
-  const rendered = parseValueIntoCard();
-  return <div>{rendered}</div>;
+  });
 };
 
 // handles grid data
-class Card extends React.Component {
-  constructor(props) {
-    super(props);
+const ProfileCard = (props) => {
+  // Parse out props
+  // 1. Get Title
+  const { Title } = props.value;
+  const { Game } = props.value;
+  // 2. Get Pages. Pages are anything that isn't the title
+  const Pages = {};
+  Object.keys(props.value).forEach((key) => {
+    // console.log('key:', key);
+    if (key !== 'Title' && key !== 'Game') Pages[key] = props.value[key];
+  });
 
-    // Note: See below states can be moved over to SimpleGrid
-    this.state = {
-      mutable: this.props.value === undefined,
-      value: this.props.value
-        ? undefined
-        : Array.isArray(this.props.defaultValue)
-        ? this.props.defaultValue.map((row) => [...row])
-        : [],
-      selection: this.props.selection ? this.props.selection : { x: 0, y: 0 },
-      columns: this.props.columns,
-    };
+  return (
+    <div>
+      <div style={cellStyle}>Game: {Game}</div>
+      <div style={cellStyle}>Title: {Title}</div>
+      <Stack Pages={Pages} onChange={props.onChange}></Stack>
+    </div>
+  );
+};
 
-    // get funcs
-    if (this.props.funcs) {
-      this.props.funcs.addRow = this.addRow;
-      this.props.funcs.subRow = this.subRow;
-      this.props.funcs.modRow = this.modRows;
-
-      this.props.funcs.getRow = this.getRow;
-      this.props.funcs.getSelRow = this.getSelRow;
-      this.props.funcs.getSelection = this.getSelection;
-      this.props.funcs.getRows = this.getRows;
-      this.props.funcs.getCols = this.getCols;
-
-      this.props.funcs.moveRow = this.moveRow;
-      this.props.funcs.moveRowUp = this.moveRowUp;
-      this.props.funcs.moveRowDown = this.moveRowDown;
-    }
-  }
-
-  // this expects an array of data
-  handleChange = (e) => {
-    if (this.state.mutable) this.setState({ value: e.target.value });
-    if (this.props.onChange) this.props.onChange(e);
-  };
-
-  getValue = () => (this.state.mutable ? this.state.value : this.props.value);
-
-  getColumns = () => {
-    const stateColumns = this.state.columns ? this.state.columns : 0;
-    if (this.getValue().length)
-      return this.getValue()[0].length > stateColumns
-        ? this.getValue()[0].length
-        : stateColumns;
-    return stateColumns;
-  };
-
-  setSelection = (x, y) => {
-    this.setState({ selection: { x, y } });
-  };
-
-  // Move Row
-  moveRow = (iRow, iDir) => {
-    if (
-      (iDir > 0 && iRow + iDir > this.getValue().length) ||
-      this.getValue().length === 0
-    ) {
-      return;
-    }
-    if ((iDir < 0 && iRow + iDir < 1) || this.getValue().length === 0) {
-      return;
-    }
-
-    // splice row into new position
-    const newValue = this.getValue().map((row) => [...row]);
-
-    // move
-    const row = newValue.splice(iRow, 1);
-    newValue.splice(iRow + iDir, 0, ...row);
-    this.setSelection(iRow + iDir, this.state.selection.x);
-    this.handleChange(newValue);
-  };
-
-  moveRowUp = () => {
-    this.moveRow(this.state.selection.x, -1);
-  };
-
-  moveRowDown = () => {
-    this.moveRow(this.state.selection.x, 1);
-  };
-
-  // Add Row Note: Currently the only function that modifies 'value'
-  modRows = (iAdd = 1, iIndex = this.getValue().length, val) => {
-    // Validate
-    if (iAdd === 0) return; // adding no value is pointless
-    // if (iIndex <= 0 && iAdd < 0) return; // If Row 0, do not subtract
-    // if (iIndex <= 0 && iAdd > 0) iIndex = 1; // Adding at 0 is ok
-
-    const newValue = this.getValue().map((row) => [...row]);
-
-    // Add
-    if (iAdd > 0) {
-      for (let i = 0; i < iAdd; i) {
-        const start = iIndex;
-        const end = 0;
-
-        // Add to the end
-        newValue.splice(
-          start,
-          end,
-          val ? val : new Array(this.getColumns()).fill(''),
-        );
-        i += 1;
-      }
-    }
-    // Subtract
-    else if (iAdd < 0) {
-      const start = iIndex; // position to remove at
-      const end = -1 * iAdd; // number of rows to remove
-      newValue.splice(start, end);
-    }
-
-    // update
-    let iSel = this.state.selection.x + iAdd;
-    if (iSel >= newValue.length - 1) iSel = newValue.length - 1;
-    else if (iSel < 0) iSel = 0;
-    this.setSelection(iSel, this.state.selection.y);
-    this.handleChange(newValue);
-  }; // end of addRow
-
-  addRow = (val) => {
-    this.modRows(1, this.state.selection.x, val);
-  };
-
-  subRow = () => {
-    this.modRows(-1, this.state.selection.x);
-  };
-
-  getRow(index) {
-    if (index < 0 || index > this.getValue().length || index === undefined)
-      return undefined;
-    return this.getValue()[index];
-  }
-
-  getSelection = () => this.state.selection;
-
-  getSelRow = () => this.state.selection.x;
-
-  getRows = () => this.getValue().length;
-
-  getCols = () => (this.getValue().length ? this.getValue()[0].length : 0);
-
-  render() {
-    return (
-      <RenderCard
-        {...this.props}
-        value={
-          this.state.mutable
-            ? this.state.value
-            : Array.isArray(this.props.value)
-            ? this.props.value.map((row) => {
-                return Array.isArray(row) ? [...row] : { ...row };
-              })
-            : { ...this.props.value }
-        }
-        selection={this.state.selection}
-        setSelection={this.setSelection}
-        events={{
-          onClick: this.props.onClick,
-          onChange: this.handleChange,
-          onFocus: this.props.onFocus,
-          onBlur: this.props.onBlur,
-        }}
-      />
-    );
-  }
-}
-
-export default Card;
+export default ProfileCard;

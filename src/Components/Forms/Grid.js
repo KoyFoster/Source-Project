@@ -9,14 +9,20 @@ import React from 'react';
 
 // render grid data
 const RenderGrid = (props) => {
-  const arrCheck = (arr, getKeys = false) =>
-    arr
+  const arrCheck = (arr, getKeys = false) => {
+    const keys = arr ? Object.keys(arr) : [];
+    return arr
       ? Array.isArray(arr)
         ? arr
-        : getKeys && Object.keys(arr).length
-        ? Object.keys(arr)
+        : getKeys && keys.length
+        ? keys
+        : keys.length
+        ? keys.map((key) => {
+            return arr[key];
+          })
         : []
       : [];
+  };
 
   const getDataSet = (obj) => {
     const object = {};
@@ -31,10 +37,12 @@ const RenderGrid = (props) => {
       .filter((k) => k !== undefined);
     return object;
   };
+  const { parentKey } = props;
   const dataset = getDataSet(props);
   const { header } = props;
   const { headerRows } = props;
   const hHeader = arrCheck(props.hHeader, true);
+  const hFooter = arrCheck(props.hFooter, true);
   const { rowHeader } = props;
   const { style } = props;
   const { headerStyle } = props;
@@ -49,8 +57,8 @@ const RenderGrid = (props) => {
   const { onChange } = props.events;
   const { onFocus } = props.events;
   const { onBlur } = props.events;
-  const { value } = props;
-  const { childrenAsRow } = props;
+  const value = arrCheck(props.value);
+  // console.log('render value:', value);
   const hRow = arrCheck(props.hRow);
   const { selection } = props;
   const { setSelection } = props;
@@ -64,7 +72,11 @@ const RenderGrid = (props) => {
       <colgroup>
         {ROW.map((key) => {
           x += 1;
-          return childrenAsRow && key === 'children' ? undefined : (
+          const hasElem = hRow.length > x;
+          // console.log('Col:', hasElem ? hRow[x].props : false);
+          return hasElem ? (
+            hRow[x].props.break
+          ) : false ? undefined : (
             <col
               key={`col${x}`}
               name={`col${x}`}
@@ -88,17 +100,17 @@ const RenderGrid = (props) => {
     const isObj = Array.isArray(row) ? false : true;
     const ROW = !isObj ? row : Object.keys(row);
 
-    // console.log('ROW:', ROW, 'hHeader:', hHeader);
     return ROW.map((key) => {
       x += 1;
       const hasElem = hHeader.length > x;
+      const hasRowElem = hRow.length > x;
       const label = hasElem
         ? hHeader[x]
         : isObj
         ? ROW[x]
         : String.fromCharCode(x + 65); /* Offset by one as x will start at 0 */
 
-      return childrenAsRow && key === 'children' ? undefined : (
+      return (hasRowElem ? hRow[x].props.break : false) ? undefined : (
         <th
           key={`rhd${x}`}
           name={`rhd${x}`}
@@ -132,10 +144,24 @@ const RenderGrid = (props) => {
     return <thead>{buffer}</thead>;
   };
 
+  const getFooter = () => {
+    let i = -1;
+    return hFooter ? (
+      <tfoot>
+        <tr>
+          {hFooter.map((cell) => {
+            i += 1;
+            return <td key={`td${i}`}>{cell}</td>;
+          })}
+        </tr>
+      </tfoot>
+    ) : null;
+  };
+
   const parseValueIntoGrid = () => {
-    if (!Array.isArray(value)) return;
-    if (value.length <= 0) return;
-    if (value[0] <= 0) return;
+    if (!Array.isArray(value)) return null;
+    if (value.length <= 0) return null;
+    if (value[0] <= 0) return null;
     let children;
 
     function handleEvent(e) {
@@ -150,8 +176,6 @@ const RenderGrid = (props) => {
         result = e.target.checked;
       } else if (hRow[y].props.value !== undefined) {
         result = e.target.value;
-      } else if (hRow[y].props.children !== undefined) {
-        return;
       }
 
       // set cell
@@ -193,16 +217,16 @@ const RenderGrid = (props) => {
                     iY += 1;
                     const CELL = isObj ? row[cell] : cell;
                     // console.log(
-                    //   'CELL:',
-                    //   CELL,
-                    //   'row:',
-                    //   row,
-                    //   'row[cell]:',
-                    //   row[cell],
                     //   'cell:',
-                    //   cell,
-                    //   'iY:',
                     //   iY,
+                    //   ', CELL:',
+                    //   CELL,
+                    //   `, row[${cell}]:`,
+                    //   row[cell],
+                    //   ', row:',
+                    //   cell,
+                    //   ', iY:',
+                    //   row,
                     // );
                     const ds = {
                       // dataset
@@ -216,7 +240,7 @@ const RenderGrid = (props) => {
                       <td
                         key={`td${iY}`}
                         {...dataset}
-                        {...(isObj && childrenAsRow && cell === 'children'
+                        {...((hRow[iY] ? hRow[iY].props.break : false)
                           ? { colspan: ROW.length - 1 }
                           : {})}
                         style={{
@@ -246,25 +270,41 @@ const RenderGrid = (props) => {
                                   : {}),
 
                                 onChange: (e) => {
-                                  const { y } = e.target.dataset;
-                                  // if index not found, then search up parent tree
-                                  if (!y) {
-                                    console.error(
-                                      'ERROR: Element is not compatible with the Grid element',
-                                    );
-                                    return;
-                                  }
+                                  console.log('e:', e);
+                                  const buffer = {
+                                    target: {
+                                      value: e.target.value,
+                                      dataset: {
+                                        key: `${
+                                          parentKey ? parentKey + '/' : ''
+                                        }${e.target.dataset.key}`,
+                                      },
+                                    },
+                                  };
 
-                                  // check for events
-                                  if (!hRow[y].props.onChange && !onChange)
-                                    return;
+                                  if (onChange) onChange(buffer);
+                                  // return value and key
+                                  return buffer;
 
-                                  // cell event
-                                  if (hasElem)
-                                    if (hRow[y].props.onChange)
-                                      hRow[y].props.onChange(e);
-                                  // tree event
-                                  if (onChange) onChange(handleEvent(e));
+                                  // const { y } = e.target.dataset;
+                                  // // if index not found, then search up parent tree
+                                  // if (!y) {
+                                  //   console.error(
+                                  //     'ERROR: Element is not compatible with the Grid element',
+                                  //   );
+                                  //   return e;
+                                  // }
+
+                                  // // check for events
+                                  // if (!hRow[y].props.onChange && !onChange)
+                                  //   return;
+
+                                  // // cell event
+                                  // if (hasElem)
+                                  //   if (hRow[y].props.onChange)
+                                  //     hRow[y].props.onChange(e);
+                                  // // tree event
+                                  // if (onChange) onChange(handleEvent(e));
                                 },
 
                                 ...(hRow[iY].props.onClick || onClick
@@ -343,7 +383,7 @@ const RenderGrid = (props) => {
                           : CELL}
                       </td>
                     ); // end of buffer
-                    if (childrenAsRow && cell === 'children') {
+                    if (hRow[iY] ? hRow[iY].props.break : false) {
                       children = buffer;
                       return undefined;
                     }
@@ -351,12 +391,11 @@ const RenderGrid = (props) => {
                   }).filter((cell) => cell !== undefined) // end of row map
                 }
               </tr>,
-              childrenAsRow && children ? (
-                <tr style={rowStyle}>{children}</tr>
-              ) : undefined,
+              children ? <tr style={rowStyle}>{children}</tr> : undefined,
             ];
           })}
         </tbody>
+        {getFooter()}
       </table>
     );
   };
@@ -512,6 +551,7 @@ class Grid extends React.Component {
   getCols = () => (this.getValue().length ? this.getValue()[0].length : 0);
 
   render() {
+    // console.log('Grid value:', this.props.value);
     return (
       <RenderGrid
         {...this.props}
