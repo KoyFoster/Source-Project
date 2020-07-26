@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import TemplateSelector from './TemplateSelector';
-import { MenuItem } from '@material-ui/core';
-import StatForm from './StatForm.js';
-import Diagram from './Diagram.js';
-import { Row, Col } from './DivGrid';
-import StatCode from './StatCode';
-import Tree from './Forms/Tree';
+// import TemplateSelector from './TemplateSelector';
+// import { MenuItem } from '@material-ui/core';
+// import StatForm from './StatForm.js';
+// import Diagram from './Diagram.js';
+// import { Row, Col } from './DivGrid';
+// import StatCode from './StatCode';
+// import Tree from './Forms/Tree';
 import ProfileCard from './Forms/Card';
-import Grid from './Forms/Grid';
+// import Grid from './Forms/Grid';
 
 const defaultTemplates = {
   Jojo: {
@@ -60,7 +60,7 @@ const defaultTemplates = {
     Values: {
       'Page One': {
         Value: 'Page One',
-        Stats: {
+        Values: {
           Stats: {
             Value: 'Stats',
             Num: 0,
@@ -124,7 +124,7 @@ const defaultTemplates = {
       // page one
       {
         Value: 'Page One',
-        Stats: {
+        Values: {
           // Start of stat table
           'Visible Player Stats': {
             Value: 'Visible Player Stats',
@@ -308,7 +308,7 @@ const defaultTemplates = {
       // page two
       {
         Value: 'Page Two: Attack Details',
-        Stats: {
+        Values: {
           'Melee Attack': {
             Value: 'Melee Attack',
             Num: 0,
@@ -523,7 +523,7 @@ const defaultTemplates = {
     // page three
     'Page Three: Defense Details': {
       Value: 'Page Three: Defense Details',
-      Stats: {
+      Values: {
         Defense: {
           Value: 'Defense',
           Num: 0,
@@ -685,7 +685,7 @@ const defaultTemplates = {
 
     'Regen/Misc': {
       Value: 'Regen/Misc',
-      Stats: {
+      Values: {
         Heal: {
           Value: 'Heal',
           Num: 0,
@@ -811,19 +811,19 @@ const defaultTemplates = {
   },
 };
 
-function compileMenuItems() {
-  let result = [];
+// function compileMenuItems() {
+//   let result = [];
 
-  for (let i = 0; i < defaultTemplates.length; i++) {
-    result.push(
-      <MenuItem key={defaultTemplates[i].label} value={defaultTemplates[i]}>
-        {defaultTemplates[i].label}
-      </MenuItem>,
-    );
-  }
-  return result;
-}
-const tmplMenuItems = compileMenuItems();
+//   for (let i = 0; i < defaultTemplates.length; i++) {
+//     result.push(
+//       <MenuItem key={defaultTemplates[i].label} value={defaultTemplates[i]}>
+//         {defaultTemplates[i].label}
+//       </MenuItem>,
+//     );
+//   }
+//   return result;
+// }
+// const tmplMenuItems = compileMenuItems();
 
 // Stat Card
 function Stats(props) {
@@ -839,17 +839,13 @@ function Stats(props) {
       e.target.checked !== undefined ? e.target.checked : e.target.value;
     const keys = e.target.dataset.key.split('/');
 
-    // console.log('keys:', keys, 'newValue:', newValue);
     if (!keys.length) return;
 
     // depth check
     const buffer = !skipState ? { ...value } : value;
-    let prevIndex = undefined;
     let index = [buffer];
     let i = 1;
     keys.forEach((key) => {
-      console.log('index:', index[index.length - 1], key);
-
       // validate
       if (index[index.length - 1][key] === undefined) return;
 
@@ -864,30 +860,16 @@ function Stats(props) {
           index[index.length - 1][key] = newValue;
 
           // 2. update key
-          // back up two levels
-          // console.log(index[index.length - 2], index[index.length - 1]);
-
           // currently inserts new object at the end
           // will need to redeclare the entire object to fix this
           const newOrder = {};
           const currKeys = Object.keys(index[index.length - 2]);
-          let iI = -1;
-          currKeys.map((k) => {
-            console.log(k, '!==', keys[i - 2]);
+          currKeys.forEach((k) => {
             newOrder[k !== keys[i - 2] ? k : newValue] =
               index[index.length - 2][k];
           });
 
-          // delete index[index.length - 2];
-
-          //console.log('newOrder:', newOrder);
           index[index.length - 3]['Values'] = newOrder;
-
-          // console.log(
-          //   'index',
-          //   keys[i - 2],
-          //   index[index.length - 2][keys[i - 2]],
-          // );
         } else {
           index[index.length - 1][key] = newValue;
         }
@@ -895,7 +877,6 @@ function Stats(props) {
 
       i += 1;
     });
-    // console.log('buffer:', buffer);
 
     if (!skipState) setValue(buffer);
   };
@@ -903,7 +884,7 @@ function Stats(props) {
   console.log('value:', value);
   return (
     <div>
-      <TemplateSelector
+      {/* <TemplateSelector
         // Name={defaultData.Name}
         // setData={dataFuncs}
         // funcs={funcs}
@@ -914,8 +895,12 @@ function Stats(props) {
         //   padding: padding,
         //   flexGrow: 1,
         // }}
-      />
-      <ProfileCard value={value} onChange={handleChange}></ProfileCard>
+      /> */}
+      <ProfileCard
+        key="profile"
+        value={value}
+        onChange={handleChange}
+      ></ProfileCard>
     </div>
 
     // Value.map((card) => {

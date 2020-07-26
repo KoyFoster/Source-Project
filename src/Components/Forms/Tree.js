@@ -2,11 +2,11 @@
 // Date: 2020-17-2020
 // Note: heavily reference's Jake Zatecky's tree code
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 // import NativeCheckbox from './NativeCheckbox';
 import classNames from 'classnames';
 import './Tree.css';
-import { truncate } from 'lodash';
+// import { truncate } from 'lodash';
 
 // Remaining bugs:
 // 1. The last parent of a parent is has control over wether the parent is checked off or not, instead of referencing all items.
@@ -46,7 +46,7 @@ class NativeCheckbox extends React.PureComponent {
   }
 
   updateDeterminateProperty() {
-    const { indeterminate } = this.props;
+    // const { indeterminate } = this.props;
   }
 
   render() {
@@ -552,7 +552,7 @@ class TreeNode extends React.Component {
 
   // render the lable and checkbox
   renderLabel() {
-    const { label, showCheckbox, showNodeIcon } = this.props;
+    const { label, /*showCheckbox, */ showNodeIcon } = this.props;
     const labelChildren = [
       showNodeIcon ? (
         <span key={0} className="rct-node-icon">
@@ -803,7 +803,7 @@ class TreeBase extends React.Component {
       icons,
       lang,
       noCascade,
-      singleSelect,
+      // singleSelect,
       onClick,
       onlyLeafCheckboxes,
       optimisticToggle,

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
-const Canvas = (props) => {
+const SVGCanvas = (props) => {
   const { style } = props;
 
   // Note: The idea is to have a node and polygon system
@@ -180,12 +180,12 @@ const Canvas = (props) => {
     return rendered;
   };
 
-  const saveAsSVG = async (svg) => {
-    const svgCanvas = document.getElementById('svgCanvas');
-    const buffer =
-      'data:image/svg+xml,' + encodeURIComponent(svgCanvas.outerHTML);
-    console.log('save:', buffer);
-  };
+  // const saveAsSVG = async (svg) => {
+  //   const svgCanvas = document.getElementById('svgCanvas');
+  //   const buffer =
+  //     'data:image/svg+xml,' + encodeURIComponent(svgCanvas.outerHTML);
+  //   console.log('save:', buffer);
+  // };
 
   // var svgElement = document.getElementById('svgCanvas');
   // let blobURL;
@@ -292,4 +292,4 @@ const Canvas = (props) => {
   );
 };
 
-export default Canvas;
+export default SVGCanvas;

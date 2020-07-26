@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import Canvas from './Forms/Canvas';
+import React from 'react';
+import SVGCanvas from './Forms/SVGCanvas';
 
 const CanvasCard = (props) => {
   // Note: The idea is to have a node and polygon system
@@ -7,7 +7,7 @@ const CanvasCard = (props) => {
   // and that information is saved
 
   return (
-    <Canvas
+    <SVGCanvas
       // width={'100%'}
       style={{
         overflow: 'scroll',
@@ -16,7 +16,7 @@ const CanvasCard = (props) => {
       }}
       // height={props.height}
       // viewBox={props.viewBox}
-    ></Canvas>
+    ></SVGCanvas>
   );
 };
 

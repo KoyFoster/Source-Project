@@ -84,12 +84,12 @@ const StatBlock = (props) => {
   };
 
   const handleMinMaxChange = (e) => {
-    console.log('handleStatChange:', e);
+    // console.log('handleStatChange:', e);
 
     const value =
       e.target.value === '' ? 0 : Number.parseFloat(e.target.value, 10);
     const keys = e.target.dataset.key.split('/');
-    console.log('handelStatChange:', keys);
+    // console.log('handelStatChange:', keys);
 
     e.target.value = StatData.HandleStatMinMax(
       Values[keys[0]],
@@ -133,6 +133,7 @@ const StatBlock = (props) => {
       <div style={{ display: 'flex' }}>
         Section:{' '}
         <input
+          key=""
           type="text"
           value={Value}
           style={cellStyle}
@@ -236,14 +237,14 @@ const Card = (props) => {
         value: e.target.value,
         checked: type === 'checkbox' ? e.target.checked : undefined,
         dataset: {
-          key: `${key}/Value`,
+          key: `${parentKey}/Value`,
         },
       },
     };
 
     if (onChange) onChange(buffer);
   };
-
+  let i = -1;
   return (
     <div style={cardStyle}>
       Card:{' '}
@@ -254,10 +255,11 @@ const Card = (props) => {
         onChange={(e) => handleChange(e, name)}
       />
       {keys.map((key) => {
+        i += 1;
         return (
           <StatBlock
-            key={`${parentKey}/${key}`}
-            parentKey={`${parentKey}/${key}`}
+            key={`StatBlock_${i}`}
+            parentKey={`${parentKey}/Values/${key}`}
             Stats={Page[key]}
             onChange={onChange}
           ></StatBlock>
@@ -273,14 +275,13 @@ const Stack = (props) => {
 
   return Object.keys(Pages).map((key) => {
     const Page = Pages[key];
-    // console.log('Page:', Page);
     return (
       <Card
-        key={key}
-        parentKey={`${parentKey}/${key}/Stats`}
+        key="Card"
+        parentKey={`${parentKey}/${key}`}
         name={key}
         Value={Page.Value}
-        Page={Page.Stats}
+        Page={Page.Values}
         onChange={props.onChange}
       ></Card>
     );
@@ -300,8 +301,6 @@ const ProfileCard = (props) => {
   Object.keys(Values).forEach((key) => {
     Pages[key] = Values[key];
   });
-
-  console.log('Pages:');
 
   // handleChange
   const handleChange = (e, key, type) => {

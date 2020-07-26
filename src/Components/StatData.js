@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { Coll, Calc } from './KoyMath.js';
-import { evaluate } from 'mathjs';
+import React from 'react';
+import { /*Coll, */ Calc } from './KoyMath.js';
+// import { evaluate } from 'mathjs';
 
 class StatData extends React.Component {
   // handles value range and returns event state
@@ -12,7 +12,7 @@ class StatData extends React.Component {
       case 'Num':
         result = Calc.fMinMax(result, stats['Min'], stats['Max']);
         event = result - value;
-        console.log('MinMax:', result, stats['Min'], stats['Max'], event);
+        // console.log('MinMax:', result, stats['Min'], stats['Max'], event);
         break;
       case 'Min':
         result = Calc.fMinMax(result, undefined, stats['Num']);
@@ -30,7 +30,7 @@ class StatData extends React.Component {
   }
 
   static TallyTotals(statBlock) {
-    console.log('statBlock:', statBlock);
+    // console.log('statBlock:', statBlock);
     const tallies = { Num: 0, Min: 0, Max: 0 };
 
     Object.keys(statBlock).forEach((key) => {

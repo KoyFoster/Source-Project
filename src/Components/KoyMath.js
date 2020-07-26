@@ -404,7 +404,7 @@ var Coll = {
     TargetX += CenterX;
     TargetY += CenterY;
 
-    return TargetX, TargetY;
+    return { TargetX, TargetY };
   },
   v2GetSlope(A, B) {
     Calc.vSub(A, B);

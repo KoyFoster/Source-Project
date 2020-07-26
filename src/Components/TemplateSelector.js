@@ -49,7 +49,7 @@ function TemplateSelector(props) {
     let val = props.Name ? props.Name : '';
 
     if (val === '') val = props.defaultValue ? props.defaultValue.label : '';
-    console.log('Name:', props.Name, 'val:', val);
+    // console.log('Name:', props.Name, 'val:', val);
     return val;
   };
 
