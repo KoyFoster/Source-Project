@@ -223,6 +223,9 @@ const RenderGrid = (props) => {
                     };
                     let hasElem = hRow.length > iY;
                     if (hasElem) hasElem = hRow[iY] !== undefined;
+                    let elmOnChange = hasElem
+                      ? hRow[iY].props.onChange
+                      : undefined;
                     const buffer = (
                       <td
                         key={`td${iY}`}
@@ -256,43 +259,35 @@ const RenderGrid = (props) => {
                                     }
                                   : {}),
 
-                                onChange: (e) => {
-                                  // console.log('e:', e);
-                                  const buffer = {
-                                    target: {
-                                      value: e.target.value,
-                                      dataset: {
-                                        key: `${
-                                          parentKey ? parentKey + '/' : ''
-                                        }${e.target.dataset.key}`,
+                                ...(elmOnChange || onChange
+                                  ? {
+                                      onChange: (e) => {
+                                        const buffer = {
+                                          target: {
+                                            value: e.target.value,
+                                            dataset: {
+                                              key: `${e.target.dataset.key}`,
+                                            },
+                                          },
+                                        };
+
+                                        if (elmOnChange) {
+                                          elmOnChange(buffer);
+                                        }
+
+                                        if (onChange) {
+                                          buffer.target.dataset.key = `${
+                                            parentKey ? parentKey + '/' : ''
+                                          }${e.target.dataset.key}`;
+
+                                          onChange(buffer);
+                                        }
+
+                                        // return value and key
+                                        return buffer;
                                       },
-                                    },
-                                  };
-
-                                  if (onChange) onChange(buffer);
-                                  // return value and key
-                                  return buffer;
-
-                                  // const { y } = e.target.dataset;
-                                  // // if index not found, then search up parent tree
-                                  // if (!y) {
-                                  //   console.error(
-                                  //     'ERROR: Element is not compatible with the Grid element',
-                                  //   );
-                                  //   return e;
-                                  // }
-
-                                  // // check for events
-                                  // if (!hRow[y].props.onChange && !onChange)
-                                  //   return;
-
-                                  // // cell event
-                                  // if (hasElem)
-                                  //   if (hRow[y].props.onChange)
-                                  //     hRow[y].props.onChange(e);
-                                  // // tree event
-                                  // if (onChange) onChange(handleEvent(e));
-                                },
+                                    }
+                                  : {}),
 
                                 ...(hRow[iY].props.onClick || onClick
                                   ? {
