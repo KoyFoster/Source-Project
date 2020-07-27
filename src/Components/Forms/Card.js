@@ -45,11 +45,13 @@ const cardStyle = {
 };
 
 const cellStyle = {
+  ...baseInputStyle,
   borderRadius: '8px',
   borderLeft: '2px solid black',
   borderTop: '2px solid black',
   borderBottom: '2px solid grey',
   borderRight: '2px solid grey',
+  boxSizing: 'border-box', // inner border
 };
 
 const StatBlock = (props) => {
@@ -131,29 +133,29 @@ const StatBlock = (props) => {
 
   // input forms
   const inputForms = [
-    <input key="Value" type="text" value={''} style={baseInputStyle} />,
+    <input key="Value" type="text" value={''} style={cellStyle} />,
     <input
       key="Num"
       type="number"
       value={0}
-      style={baseInputStyle}
+      style={cellStyle}
       onChange={handleMinMaxChange}
     />,
     <input
       key="Min"
       type="number"
       value={0}
-      style={baseInputStyle}
+      style={cellStyle}
       onChange={handleMinMaxChange}
     />,
     <input
       key="Max"
       type="number"
       value={0}
-      style={baseInputStyle}
+      style={cellStyle}
       onChange={handleMinMaxChange}
     />,
-    <input key="Unit" type="text" value={''} style={baseInputStyle} />,
+    <input key="Unit" type="text" value={''} style={cellStyle} />,
     <div key="Math" style={{ display: 'none' }}>
       Data
     </div>,
@@ -162,13 +164,13 @@ const StatBlock = (props) => {
     </div>,
   ];
   const displayForms = [
-    <input key="Value" type="text" value={''} style={baseInputStyle} />,
+    <input key="Value" type="text" value={''} style={cellStyle} />,
     <div key="Num">Data</div>,
     <div key="Min">Data</div>,
     <div key="Max">Data</div>,
-    <input key="Unit" type="text" value={''} style={baseInputStyle} />,
-    <input key="Math" type="text" value={''} style={baseInputStyle} />,
-    <input key="Vars" type="text" value={''} style={baseInputStyle} />,
+    <input key="Unit" type="text" value={''} style={cellStyle} />,
+    <input key="Math" type="text" value={''} style={cellStyle} />,
+    <input key="Vars" type="text" value={''} style={cellStyle} />,
   ];
 
   return (
@@ -199,27 +201,39 @@ const StatBlock = (props) => {
           style={cellStyle}
           onChange={(e) => handleChange(e, 'Value')}
         />
-        Level:{' '}
-        <input
-          type="number"
-          value={Level}
-          style={cellStyle}
-          onChange={(e) => handleChange(e, 'Level')}
-        />
-        <div>
-          <div>Points: {Points}</div>
-          <div>Remainder: {Points - Num}</div>
-        </div>
+        {Calc ? null : 'Level: '}
+        {Calc ? null : (
+          <input
+            type="number"
+            value={Level}
+            style={cellStyle}
+            onChange={(e) => handleChange(e, 'Level')}
+          />
+        )}
+        {Calc ? null : (
+          <div>
+            <div>Points: {Points}</div>
+            <div>Remainder: {Points - Num}</div>
+          </div>
+        )}
       </div>
       <Grid
-        columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+        // columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
+        columnStyle={[
+          { width: '128px' },
+          { width: '64px' },
+          { width: '64px' },
+          { width: '64px' },
+          { width: '32px' },
+          { width: '64px' },
+        ]}
         parentKey={`${parentKey}/Values`}
         rowKeys={Object.keys(Values)}
         value={Values}
         header
         onChange={onChange}
-        cellStyle={cellStyle}
-        hRow={Calc ? inputForms : displayForms}
+        // cellStyle={cellStyle}
+        hRow={Calc ? displayForms : inputForms}
         hFooter={[
           <div key="0">Totals: </div>,
           <div key="1">{Num}</div>,

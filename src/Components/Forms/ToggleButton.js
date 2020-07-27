@@ -12,7 +12,7 @@ const ToggleButton = (props) => {
 
   const getLabel = () => {
     return Array.isArray(props.children)
-      ? props.children[checked ? 1 : 0]
+      ? props.children[checked ? 0 : 1]
       : props.children;
   };
 

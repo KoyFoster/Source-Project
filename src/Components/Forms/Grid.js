@@ -52,7 +52,7 @@ const RenderGrid = (props) => {
     : props.headerStyle;
   const { rowStyle } = props;
   const { cellStyle } = props;
-  const { columnWidths } = props;
+  const { columnStyle } = props;
   const { onClick } = props.events;
   const { onChange } = props.events;
   const { onFocus } = props.events;
@@ -68,37 +68,16 @@ const RenderGrid = (props) => {
     // const isObj = Object.keys(row).length ? true : false;
     // const ROW = !isObj ? row : Object.keys(row);
 
-    if (!columnWidths) return null;
+    if (!columnStyle) return null;
 
     return (
       <colgroup>
-        {columnWidths.map((width) => {
+        {columnStyle.map((cStyle) => {
+          console.log('cStyle:');
           x += 1;
-          return <col key={x} style={{ width }}></col>;
+          return <col key={x} style={cStyle}></col>;
         })}
       </colgroup>
-      // <colgroup>
-      //   {ROW.map((key) => {
-      //     x += 1;
-      //     const hasElem = hRow.length > x;
-      //     return hasElem ? (
-      //       hRow[x].props.break
-      //     ) : false ? undefined : (
-      //       <col
-      //         key={`col${x}`}
-      //         name={`col${x}`}
-      //         style={{
-      //           ...(columnWidths
-      //             ? {
-      //                 width: columnWidths.length > x ? columnWidths[x] : {},
-      //               }
-      //             : {}),
-      //         }}
-      //       />
-      //     );
-      //   }).filter((cell) => cell !== undefined)}
-      //   <col />
-      // </colgroup>
     );
   };
 
@@ -202,7 +181,9 @@ const RenderGrid = (props) => {
     let iY = -1;
     const rHS = { ...cellStyle, ...headerStyle, ...rowHeaderStyle };
     return (
-      <table style={{ ...style, tableLayout: 'fixed' }}>
+      <table
+        style={{ ...style, tableLayout: 'fixed', borderCollapse: 'collapse' }}
+      >
         {getColumnGroup()}
         {getHeader(value, rHS)}
         <tbody style={bodyStyle}>
