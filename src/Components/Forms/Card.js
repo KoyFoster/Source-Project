@@ -10,6 +10,10 @@ import Grid from './Grid';
 import StatData from '../StatData.js';
 import ToggleButton from '../Forms/ToggleButton.js';
 
+// TODO:
+// 1. Calculate Points
+// 2. Limit Point Allocation if in static mode
+
 // style={{
 //   maxwidth: '512px',
 //   overflow: 'scroll',
@@ -31,7 +35,12 @@ import ToggleButton from '../Forms/ToggleButton.js';
 // 2. Parse Out Pages
 // 3. Render Pages Out As Grids?
 
-const baseInputStyle = { width: '100%', border: 'none', padding: '0px' };
+const baseInputStyle = {
+  width: '100%',
+  border: 'none',
+  padding: '0px',
+  // height: 'fit-content',
+};
 
 const cardStyle = {
   maxwidth: '512px',
@@ -175,8 +184,8 @@ const StatBlock = (props) => {
 
   return (
     <div>
-      <div style={{ display: 'flex' }}>
-        <div>
+      <div>
+        <div style={{ display: 'flex' }}>
           <ToggleButton
             style={{ display: 'block', padding: '2px', width: '48px' }}
             toggledStyle={{
@@ -192,30 +201,30 @@ const StatBlock = (props) => {
           >
             {['Calc', 'Static']}
           </ToggleButton>
-        </div>
-        Section:{' '}
-        <input
-          key=""
-          type="text"
-          value={Value}
-          style={cellStyle}
-          onChange={(e) => handleChange(e, 'Value')}
-        />
-        {Calc ? null : 'Level: '}
-        {Calc ? null : (
+          Section:{' '}
           <input
-            type="number"
-            value={Level}
+            key=""
+            type="text"
+            value={Value}
             style={cellStyle}
-            onChange={(e) => handleChange(e, 'Level')}
+            onChange={(e) => handleChange(e, 'Value')}
           />
-        )}
-        {Calc ? null : (
-          <div>
-            <div>Points: {Points}</div>
-            <div>Remainder: {Points - Num}</div>
-          </div>
-        )}
+        </div>
+        <div style={{ display: 'flex' }}>
+          {Calc ? null : 'Level: '}
+          {Calc ? null : (
+            <input
+              type="number"
+              value={Level}
+              style={cellStyle}
+              onChange={(e) => handleChange(e, 'Level')}
+            />
+          )}
+          {Calc ? null : <div style={{ width: '100%' }}>Points: {Points}</div>}
+          {Calc ? null : (
+            <div style={{ width: '100%' }}>Remainder: {Points - Num}</div>
+          )}
+        </div>
       </div>
       <Grid
         // columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
@@ -273,13 +282,17 @@ const Card = (props) => {
   let i = -1;
   return (
     <div style={cardStyle}>
-      Card:{' '}
-      <input
-        type="text"
-        value={Value}
-        style={cellStyle}
-        onChange={(e) => handleChange(e, name)}
-      />
+      <div style={{ display: 'flex' }}>
+        Card:
+        <div style={{ width: '100%' }}>
+          <input
+            type="text"
+            value={Value}
+            style={cellStyle}
+            onChange={(e) => handleChange(e, name)}
+          />
+        </div>
+      </div>
       {keys.map((key) => {
         i += 1;
         return (
