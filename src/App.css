@@ -152,3 +152,12 @@ input:focus {
 
 .example-multiple-targets::after {
 }
+
+.toggleButton {
+}
+.toggleButton:hover {
+  filter: brightness(125%);
+}
+.toggleButton:active {
+  filter: brightness(66%);
+}

@@ -65,32 +65,40 @@ const RenderGrid = (props) => {
 
   const getColumnGroup = (row) => {
     let x = -1;
-    const isObj = Object.keys(row).length ? true : false;
-    const ROW = !isObj ? row : Object.keys(row);
+    // const isObj = Object.keys(row).length ? true : false;
+    // const ROW = !isObj ? row : Object.keys(row);
+
+    if (!columnWidths) return null;
 
     return (
       <colgroup>
-        {ROW.map((key) => {
+        {columnWidths.map((width) => {
           x += 1;
-          const hasElem = hRow.length > x;
-          return hasElem ? (
-            hRow[x].props.break
-          ) : false ? undefined : (
-            <col
-              key={`col${x}`}
-              name={`col${x}`}
-              style={{
-                ...(columnWidths
-                  ? {
-                      width: columnWidths.length > x ? columnWidths[x] : {},
-                    }
-                  : {}),
-              }}
-            />
-          );
-        }).filter((cell) => cell !== undefined)}
-        <col />
+          return <col key={x} style={{ width }}></col>;
+        })}
       </colgroup>
+      // <colgroup>
+      //   {ROW.map((key) => {
+      //     x += 1;
+      //     const hasElem = hRow.length > x;
+      //     return hasElem ? (
+      //       hRow[x].props.break
+      //     ) : false ? undefined : (
+      //       <col
+      //         key={`col${x}`}
+      //         name={`col${x}`}
+      //         style={{
+      //           ...(columnWidths
+      //             ? {
+      //                 width: columnWidths.length > x ? columnWidths[x] : {},
+      //               }
+      //             : {}),
+      //         }}
+      //       />
+      //     );
+      //   }).filter((cell) => cell !== undefined)}
+      //   <col />
+      // </colgroup>
     );
   };
 
@@ -195,7 +203,7 @@ const RenderGrid = (props) => {
     const rHS = { ...cellStyle, ...headerStyle, ...rowHeaderStyle };
     return (
       <table style={{ ...style, tableLayout: 'fixed' }}>
-        {getColumnGroup(value[0])}
+        {getColumnGroup()}
         {getHeader(value, rHS)}
         <tbody style={bodyStyle}>
           {value.map((row) => {

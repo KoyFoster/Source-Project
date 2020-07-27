@@ -8,6 +8,7 @@
 import React, { useState } from 'react';
 import Grid from './Grid';
 import StatData from '../StatData.js';
+import ToggleButton from '../Forms/ToggleButton.js';
 
 // style={{
 //   maxwidth: '512px',
@@ -58,6 +59,7 @@ const StatBlock = (props) => {
 
   // stat properties
   const { Value } = Stats;
+  let { Calc } = Stats;
   let { Num } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
@@ -126,11 +128,69 @@ const StatBlock = (props) => {
 
     setUpdateTotals(false);
   }
-  // Update Totals
+
+  // input forms
+  const inputForms = [
+    <input key="Value" type="text" value={''} style={baseInputStyle} />,
+    <input
+      key="Num"
+      type="number"
+      value={0}
+      style={baseInputStyle}
+      onChange={handleMinMaxChange}
+    />,
+    <input
+      key="Min"
+      type="number"
+      value={0}
+      style={baseInputStyle}
+      onChange={handleMinMaxChange}
+    />,
+    <input
+      key="Max"
+      type="number"
+      value={0}
+      style={baseInputStyle}
+      onChange={handleMinMaxChange}
+    />,
+    <input key="Unit" type="text" value={''} style={baseInputStyle} />,
+    <div key="Math" style={{ display: 'none' }}>
+      Data
+    </div>,
+    <div key="Vars" style={{ display: 'none' }}>
+      Data
+    </div>,
+  ];
+  const displayForms = [
+    <input key="Value" type="text" value={''} style={baseInputStyle} />,
+    <div key="Num">Data</div>,
+    <div key="Min">Data</div>,
+    <div key="Max">Data</div>,
+    <input key="Unit" type="text" value={''} style={baseInputStyle} />,
+    <input key="Math" type="text" value={''} style={baseInputStyle} />,
+    <input key="Vars" type="text" value={''} style={baseInputStyle} />,
+  ];
 
   return (
     <div>
       <div style={{ display: 'flex' }}>
+        <div>
+          <ToggleButton
+            style={{ display: 'block', padding: '2px', width: '48px' }}
+            toggledStyle={{
+              display: 'block',
+              padding: '2px',
+              width: '48px',
+              filter: 'brightness(88%)',
+            }}
+            checked={Calc}
+            onChange={(e) => {
+              handleChange(e, 'Calc', 'checkbox');
+            }}
+          >
+            {['Calc', 'Static']}
+          </ToggleButton>
+        </div>
         Section:{' '}
         <input
           key=""
@@ -139,20 +199,6 @@ const StatBlock = (props) => {
           style={cellStyle}
           onChange={(e) => handleChange(e, 'Value')}
         />
-        {/* Limit:{' '}
-        <input
-          type="number"
-          value={PointLimit}
-          style={cellStyle}
-          onChange={(e) => handleChange(e, 'PointLimit')}
-        />
-        Offset:
-        <input
-          type="checkbox"
-          checked={PointDiff}
-          style={cellStyle}
-          onChange={(e) => handleChange(e, 'PointDiff', 'checkbox')}
-        /> */}
         Level:{' '}
         <input
           type="number"
@@ -161,53 +207,19 @@ const StatBlock = (props) => {
           onChange={(e) => handleChange(e, 'Level')}
         />
         <div>
-          {/* <div>
-            Points:{' '}
-            <input
-              type="number"
-              value={Points}
-              style={cellStyle}
-              onChange={(e) => handleChange(e, 'Points')}
-            />
-          </div> */}
           <div>Points: {Points}</div>
           <div>Remainder: {Points - Num}</div>
         </div>
       </div>
       <Grid
+        columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
         parentKey={`${parentKey}/Values`}
         rowKeys={Object.keys(Values)}
         value={Values}
         header
         onChange={onChange}
         cellStyle={cellStyle}
-        hRow={[
-          <input key="Value" type="text" value={''} style={baseInputStyle} />,
-          <input
-            key="Num"
-            type="number"
-            value={0}
-            style={baseInputStyle}
-            onChange={handleMinMaxChange}
-          />,
-          <input
-            key="Min"
-            type="number"
-            value={0}
-            style={baseInputStyle}
-            onChange={handleMinMaxChange}
-          />,
-          <input
-            key="Max"
-            type="number"
-            value={0}
-            style={baseInputStyle}
-            onChange={handleMinMaxChange}
-          />,
-          <input key="Unit" type="text" value={''} style={baseInputStyle} />,
-          <input key="Math" type="text" value={''} style={baseInputStyle} />,
-          <input key="Vars" type="text" value={''} style={baseInputStyle} />,
-        ]}
+        hRow={Calc ? inputForms : displayForms}
         hFooter={[
           <div key="0">Totals: </div>,
           <div key="1">{Num}</div>,
@@ -273,11 +285,13 @@ const Stack = (props) => {
   const { Pages } = props;
   const { parentKey } = props;
 
+  let i = -1;
   return Object.keys(Pages).map((key) => {
+    i += 1;
     const Page = Pages[key];
     return (
       <Card
-        key="Card"
+        key={`Card_${i}`}
         parentKey={`${parentKey}/${key}`}
         name={key}
         Value={Page.Value}
