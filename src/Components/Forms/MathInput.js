@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../App.css';
 
-const ToggleButton = (props) => {
+const MathInput = (props) => {
   const { checked } = props;
   const style = checked === true ? props.toggledStyle : props.style;
   const { onChange } = props;

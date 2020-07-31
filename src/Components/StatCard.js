@@ -165,7 +165,10 @@ const defaultTemplates = {
               Max: 12800,
               Level: 2560,
               Points: 1000,
-              PointCalc: ['{"a": "Level"}', 'a * 12'],
+              PointCalc: [
+                'a * 1',
+                '{"a": ["Values","Page One","Values","Primary Stats","Level"]}',
+              ],
               Values: {
                 Strength: {
                   Value: 'Strength',
@@ -210,9 +213,6 @@ const defaultTemplates = {
               Num: 0,
               Min: 0,
               Max: 0,
-              Level: 2560,
-              Points: 1000,
-              PointCalc: ['{"a": "Level"}', 'a * 12'],
               Values: {
                 'Melee Attack': {
                   Value: 'Melee Attack',
@@ -892,7 +892,7 @@ function Stats(props) {
     if (!skipState) setValue(buffer);
   };
 
-  console.log('value:', value);
+  // console.log('value:', value);
   return (
     <div>
       {/* <TemplateSelector

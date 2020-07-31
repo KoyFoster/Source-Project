@@ -43,6 +43,7 @@ const baseInputStyle = {
 };
 
 const cardStyle = {
+  display: 'inline-block',
   maxwidth: '512px',
   // overflow: 'scroll',
   background: '#faf8e8',
@@ -51,6 +52,8 @@ const cardStyle = {
   border: '4px solid #6e5735',
   padding: '16px',
   margin: '4px',
+  justifyContent: 'top',
+  'text-align-last': 'center',
 };
 
 const cellStyle = {
@@ -65,6 +68,7 @@ const cellStyle = {
 
 const StatBlock = (props) => {
   const [bUpdateTotals, setUpdateTotals] = useState(true);
+  const { data } = props;
   const { Stats } = props;
   const { parentKey } = props;
 
@@ -75,7 +79,11 @@ const StatBlock = (props) => {
   let { Min } = Stats;
   let { Max } = Stats;
   const { Level } = Stats;
-  const { Points } = Stats;
+  const { PointCalc } = Stats;
+  const Points =
+    !Calc && PointCalc
+      ? StatData.GetCellValue(PointCalc[0], PointCalc[1], data)
+      : Stats.Points;
 
   // stat data
   const { Values } = Stats;
@@ -227,7 +235,6 @@ const StatBlock = (props) => {
         </div>
       </div>
       <Grid
-        // columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
         columnStyle={[
           { width: '128px' },
           { width: '64px' },
@@ -236,6 +243,7 @@ const StatBlock = (props) => {
           { width: '32px' },
           { width: '64px' },
         ]}
+        iColumns={4}
         parentKey={`${parentKey}/Values`}
         rowKeys={Object.keys(Values)}
         value={Values}
@@ -258,6 +266,7 @@ const StatBlock = (props) => {
 };
 
 const Card = (props) => {
+  const { data } = props;
   const { parentKey } = props;
   const { Page } = props;
   const { name } = props;
@@ -298,6 +307,7 @@ const Card = (props) => {
         return (
           <StatBlock
             key={`StatBlock_${i}`}
+            data={data}
             parentKey={`${parentKey}/Values/${key}`}
             Stats={Page[key]}
             onChange={onChange}
@@ -309,6 +319,7 @@ const Card = (props) => {
 };
 
 const Stack = (props) => {
+  const { data } = props;
   const { Pages } = props;
   const { parentKey } = props;
 
@@ -319,6 +330,7 @@ const Stack = (props) => {
     return (
       <Card
         key={`Card_${i}`}
+        data={data}
         parentKey={`${parentKey}/${key}`}
         name={key}
         Value={Page.Value}
@@ -333,6 +345,7 @@ const Stack = (props) => {
 const ProfileCard = (props) => {
   // Parse out props
   // 1. Get Title
+  const data = props.value;
   const { Title } = props.value;
   const { Game } = props.value;
   const { Values } = props.value;
@@ -342,6 +355,16 @@ const ProfileCard = (props) => {
   Object.keys(Values).forEach((key) => {
     Pages[key] = Values[key];
   });
+
+  // test call
+  console.log(
+    "GetValue: {a: Level}, 'a * 12'",
+    StatData.GetCellValue(
+      'a * 12',
+      '{"a": ["Values","Page One","Values","Primary Stats","Level"]}',
+      props.value,
+    ),
+  );
 
   // handleChange
   const handleChange = (e, key, type) => {
@@ -374,7 +397,14 @@ const ProfileCard = (props) => {
         style={cellStyle}
         onChange={(e) => handleChange(e, 'Title')}
       />
-      <Stack parentKey={'Values'} Pages={Pages} onChange={onChange}></Stack>
+      <div>
+        <Stack
+          data={data}
+          parentKey={'Values'}
+          Pages={Pages}
+          onChange={onChange}
+        ></Stack>
+      </div>
     </div>
   );
 };

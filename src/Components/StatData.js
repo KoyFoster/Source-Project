@@ -1,6 +1,6 @@
 import React from 'react';
 import { /*Coll, */ Calc } from './KoyMath.js';
-// import { evaluate } from 'mathjs';
+import { evaluate } from 'mathjs';
 
 class StatData extends React.Component {
   // handles value range and returns event state
@@ -40,6 +40,98 @@ class StatData extends React.Component {
     });
 
     return tallies;
+  }
+
+  static GetValue = (keys, data) => {
+    if (!keys.length) return;
+    console.log('keys:', keys);
+
+    let buffer;
+
+    // depth check
+    let index = [data];
+    let i = 1;
+    keys.forEach((key) => {
+      console.log('key', key, index[index.length - 1][key]);
+
+      // iterate
+      if (i !== keys.length) {
+        index.push(index[index.length - 1][key]);
+      } else {
+        console.log('GetValue Return');
+        buffer = index[index.length - 1][key];
+      }
+      i += 1;
+    });
+
+    return buffer;
+  };
+
+  // static GetVariables(key, data) {
+  //   let val = '';
+
+  //   try {
+  //   } catch {
+  //     console.error(`ERROR: Invalid Key(${key})`);
+  //     return [{}, {}, {}, {}];
+  //   }
+
+  //   return val;
+  // }
+
+  static RD = 2; // Round Decimal
+  static Round(val) {
+    const power = Math.pow(10, this.RD);
+    // console.log('power:', power);
+    return Math.round(val * power) / power;
+  }
+
+  // parse scope
+  static parseVariables(variables, data) {
+    console.log(`${variables}, ${data}`);
+    let scope;
+
+    try {
+      scope = JSON.parse(variables);
+    } catch {
+      console.error(`ERROR: Invalid Variables(${variables})`);
+      return {};
+    }
+
+    for (let [key, value] of Object.entries(scope)) {
+      scope[key] = this.GetValue(value, data); // table, row, column="always 'Value'""
+    }
+
+    return scope;
+  }
+
+  // Get Calculated Value
+  static GetCalculatedValue(expression, scope) {
+    // parse scope
+    // for (let [key, value] of Object.entries(scope)) {
+    //   scope[key] = mTable[value[0]][value[1]][iElm /* Column */]; // table, row, column="always 'Value'""
+    // }
+
+    // validate
+    if (scope.length === 0) return 0;
+
+    let result;
+
+    try {
+      result = evaluate(expression, scope);
+    } catch {
+      console.error(`ERROR: Invalid Expression(${(expression, scope)})`);
+      return {};
+    }
+
+    return result !== undefined ? this.Round(result) : 0;
+  }
+
+  // Get Calculated Value
+  static GetCellValue(expression, scope, data) {
+    const variables = this.parseVariables(scope, data);
+
+    return this.GetCalculatedValue(expression, variables);
   }
 }
 

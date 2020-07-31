@@ -53,6 +53,7 @@ const RenderGrid = (props) => {
   const { rowStyle } = props;
   const { cellStyle } = props;
   const { columnStyle } = props;
+  const { iColumns } = props;
   const { onClick } = props.events;
   const { onChange } = props.events;
   const { onFocus } = props.events;
@@ -73,7 +74,6 @@ const RenderGrid = (props) => {
     return (
       <colgroup>
         {columnStyle.map((cStyle) => {
-          console.log('cStyle:');
           x += 1;
           return <col key={x} style={cStyle}></col>;
         })}
@@ -87,7 +87,9 @@ const RenderGrid = (props) => {
     const ROW = !isObj ? row : Object.keys(row);
 
     return ROW.map((key) => {
+      if (iColumns <= x) return undefined;
       x += 1;
+
       const hasElem = hHeader.length > x;
       const hasRowElem = hRow.length > x;
       const label = hasElem
@@ -135,10 +137,13 @@ const RenderGrid = (props) => {
     return hFooter ? (
       <tfoot>
         <tr>
-          {hFooter.map((cell) => {
-            i += 1;
-            return <td key={`td${i}`}>{cell}</td>;
-          })}
+          {hFooter
+            .map((cell) => {
+              if (iColumns <= i) return undefined;
+              i += 1;
+              return <td key={`td${i}`}>{cell}</td>;
+            })
+            .filter((cell) => cell !== undefined)}
         </tr>
       </tfoot>
     ) : null;
@@ -202,6 +207,7 @@ const RenderGrid = (props) => {
                 ) : null}
                 {
                   ROW.map((cell) => {
+                    if (iColumns <= iY) return undefined;
                     iY += 1;
                     const CELL = isObj ? row[cell] : cell;
                     const ds = {
