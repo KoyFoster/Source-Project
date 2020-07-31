@@ -57,6 +57,12 @@ const cardStyle = {
   textAlignLast: 'center',
 };
 
+const statBlockStyle = {
+  borderWidth: '1px',
+  borderStyle: 'dashed',
+  margin: '1px',
+};
+
 const { backgroundColor } = cardStyle;
 
 const cellStyle = {
@@ -99,14 +105,14 @@ const StatBlock = (props) => {
 
   // stat properties
   const { Value } = Stats;
-  let { Calc } = Stats;
+  let { Type } = Stats;
   let { Num } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
   const { Level } = Stats;
   const { PointCalc } = Stats;
   const Points =
-    !Calc && PointCalc
+    Type !== 'Calc' && PointCalc
       ? StatData.GetCellValue(PointCalc[0], PointCalc[1], data)
       : Stats.Points;
 
@@ -125,6 +131,7 @@ const StatBlock = (props) => {
         },
       },
     };
+    console.log(`handleChange = (`, buffer, `${key}, ${type})`);
 
     if (onChange) onChange(buffer);
   };
@@ -218,7 +225,7 @@ const StatBlock = (props) => {
   ];
 
   return (
-    <div>
+    <div style={statBlockStyle}>
       <div>
         <div style={{ display: 'flex' }}>
           <ToggleButton
@@ -229,14 +236,13 @@ const StatBlock = (props) => {
               padding: '2px',
               filter: 'brightness(88%)',
             }}
-            checked={Calc}
+            checked={Type === 'Calc'}
             onChange={(e) => {
-              handleChange(e, 'Calc', 'checkbox');
+              handleChange(e, 'Type');
             }}
           >
             {['Calc', 'Static']}
           </ToggleButton>
-          Section:{' '}
           <input
             key=""
             type="text"
@@ -246,8 +252,8 @@ const StatBlock = (props) => {
           />
         </div>
         <div style={{ display: 'flex' }}>
-          {Calc ? null : 'Level: '}
-          {Calc ? null : (
+          {Type === 'Calc' ? null : 'Level: '}
+          {Type === 'Calc' ? null : (
             <input
               type="number"
               value={Level}
@@ -255,8 +261,10 @@ const StatBlock = (props) => {
               onChange={(e) => handleChange(e, 'Level')}
             />
           )}
-          {Calc ? null : <div style={{ width: '100%' }}>Points: {Points}</div>}
-          {Calc ? null : (
+          {Type === 'Calc' ? null : (
+            <div style={{ width: '100%' }}>Points: {Points}</div>
+          )}
+          {Type === 'Calc' ? null : (
             <div style={{ width: '100%' }}>Remainder: {Points - Num}</div>
           )}
         </div>
@@ -277,16 +285,20 @@ const StatBlock = (props) => {
         header
         onChange={onChange}
         // cellStyle={cellStyle}
-        hRow={Calc ? displayForms : inputForms}
-        hFooter={[
-          <div key="0">Totals: </div>,
-          <div key="1">{Num}</div>,
-          <div key="2">{Min}</div>,
-          <div key="3">{Max}</div>,
-          <div key="4"></div>,
-          <div key="5"></div>,
-          <div key="6"></div>,
-        ]}
+        hRow={Type === 'Calc' ? displayForms : inputForms}
+        hFooter={
+          Type === 'Calc'
+            ? undefined
+            : [
+                <div key="0">Totals: </div>,
+                <div key="1">{Num}</div>,
+                <div key="2">{Min}</div>,
+                <div key="3">{Max}</div>,
+                <div key="4"></div>,
+                <div key="5"></div>,
+                <div key="6"></div>,
+              ]
+        }
       ></Grid>
     </div>
   );
@@ -320,7 +332,6 @@ const Card = (props) => {
     <div>
       <div style={cardStyle}>
         <div style={{ display: 'flex' }}>
-          Card:
           <div style={{ width: '100%' }}>
             <input
               type="text"

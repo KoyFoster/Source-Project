@@ -129,7 +129,7 @@ const defaultTemplates = {
             // Start of stat table
             'Visible Player Stats': {
               Value: 'Visible Player Stats',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -159,7 +159,7 @@ const defaultTemplates = {
             // End of stat table
             'Primary Stats': {
               Value: 'Primary Stats',
-              Calc: false,
+              Type: 'Static',
               Num: 2358,
               Min: 70,
               Max: 12800,
@@ -209,7 +209,7 @@ const defaultTemplates = {
             },
             'Secondary Stats': {
               Value: 'Secondary Stats',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -266,7 +266,7 @@ const defaultTemplates = {
             },
             'Misc Stats': {
               Value: 'Misc Stats',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -311,7 +311,7 @@ const defaultTemplates = {
           Values: {
             'Melee Attack': {
               Value: 'Melee Attack',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -372,7 +372,7 @@ const defaultTemplates = {
             },
             'Ranged Attack': {
               Value: 'Ranged Attack',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -426,7 +426,7 @@ const defaultTemplates = {
             },
             'Magic Attack': {
               Value: 'Magic Attack',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -480,7 +480,7 @@ const defaultTemplates = {
             },
             Misc: {
               Value: 'Misc',
-              Calc: true,
+              Type: 'Calc',
               Num: 0,
               Min: 0,
               Max: 0,
@@ -530,7 +530,7 @@ const defaultTemplates = {
         Values: {
           Defense: {
             Value: 'Defense',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -585,7 +585,7 @@ const defaultTemplates = {
           },
           'Melee Defense': {
             Value: 'Melee Defense',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -620,7 +620,7 @@ const defaultTemplates = {
           },
           'Ranged Defense': {
             Value: 'Ranged Defense',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -655,7 +655,7 @@ const defaultTemplates = {
           },
           'Magic Defense': {
             Value: 'Magic Defense',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -695,7 +695,7 @@ const defaultTemplates = {
         Values: {
           Heal: {
             Value: 'Heal',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -729,7 +729,7 @@ const defaultTemplates = {
           },
           Regeneration: {
             Value: 'Regeneration',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -770,7 +770,7 @@ const defaultTemplates = {
           },
           Misc: {
             Value: 'Misc',
-            Calc: true,
+            Type: 'Calc',
             Num: 0,
             Min: 0,
             Max: 0,
@@ -892,7 +892,7 @@ function Stats(props) {
     if (!skipState) setValue(buffer);
   };
 
-  // console.log('value:', value);
+  console.log('value:', value);
   return (
     <div>
       {/* <TemplateSelector

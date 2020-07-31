@@ -44,7 +44,7 @@ class StatData extends React.Component {
 
   static GetValue = (keys, data) => {
     if (!keys.length) return;
-    console.log('keys:', keys);
+    // console.log('keys:', keys);
 
     let buffer;
 
@@ -52,13 +52,12 @@ class StatData extends React.Component {
     let index = [data];
     let i = 1;
     keys.forEach((key) => {
-      console.log('key', key, index[index.length - 1][key]);
+      // console.log('key', key, index[index.length - 1][key]);
 
       // iterate
       if (i !== keys.length) {
         index.push(index[index.length - 1][key]);
       } else {
-        console.log('GetValue Return');
         buffer = index[index.length - 1][key];
       }
       i += 1;

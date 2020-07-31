@@ -10,9 +10,9 @@ const ToggleButton = (props) => {
   const { onFocus } = props;
   const event = { onChange, onClick, onBlur, onFocus };
 
-  const getLabel = () => {
+  const getLabel = (check) => {
     return Array.isArray(props.children)
-      ? props.children[checked ? 0 : 1]
+      ? props.children[check ? 0 : 1]
       : props.children;
   };
 
@@ -31,10 +31,15 @@ const ToggleButton = (props) => {
       <input
         type="checkbox"
         checked={checked}
+        value={getLabel(checked)}
         style={{ width: '0px', height: '0px', display: 'none' }}
         {...event}
+        onChange={(e) => {
+          e.target.value = getLabel(e.target.checked);
+          onChange(e);
+        }}
       />
-      {getLabel()}
+      {getLabel(checked)}
     </label>
   );
 };
