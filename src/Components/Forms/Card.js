@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import Grid from './Grid';
 import StatData from '../StatData.js';
 import ToggleButton from '../Forms/ToggleButton.js';
+import MathInput from '../Forms/MathInput.js';
 
 // TODO:
 // 1. Calculate Points
@@ -17,7 +18,7 @@ import ToggleButton from '../Forms/ToggleButton.js';
 // style={{
 //   maxwidth: '512px',
 //   overflow: 'scroll',
-//   background: '#faf8e8',
+//   backgroundColor: '#faf8e8',
 //   color: '#6e5735',
 //   fontFamily: 'NotoSansKR',
 //   border: '4px solid #6e5735',
@@ -46,21 +47,45 @@ const cardStyle = {
   display: 'inline-block',
   maxwidth: '512px',
   // overflow: 'scroll',
-  background: '#faf8e8',
+  backgroundColor: '#faf8e8',
   color: '#6e5735',
   fontFamily: 'NotoSansKR',
   border: '4px solid #6e5735',
   padding: '16px',
   margin: '4px',
   justifyContent: 'top',
-  'text-align-last': 'center',
+  textAlignLast: 'center',
 };
+
+const { backgroundColor } = cardStyle;
 
 const cellStyle = {
   ...baseInputStyle,
   borderRadius: '8px',
   borderLeft: '2px solid black',
   borderTop: '2px solid black',
+  borderBottom: '2px solid grey',
+  borderRight: '2px solid grey',
+  boxSizing: 'border-box', // inner border
+};
+const formStyle = {
+  ...baseInputStyle,
+  display: 'inline-block',
+  borderRadius: '8px',
+  borderLeft: '2px solid black',
+  borderTop: '2px solid black',
+  borderBottom: '2px solid grey',
+  borderRight: '2px solid grey',
+  boxSizing: 'border-box', // inner border
+};
+const buttonStyle = {
+  ...baseInputStyle,
+  backgroundColor,
+  display: 'block',
+  width: '100%',
+  borderRadius: '8px',
+  borderLeft: '2px solid white',
+  borderTop: '2px solid white',
   borderBottom: '2px solid grey',
   borderRight: '2px solid grey',
   boxSizing: 'border-box', // inner border
@@ -182,7 +207,9 @@ const StatBlock = (props) => {
   ];
   const displayForms = [
     <input key="Value" type="text" value={''} style={cellStyle} />,
-    <div key="Num">Data</div>,
+    <MathInput key="Num" style={buttonStyle} onChange={undefined}>
+      Data
+    </MathInput>,
     <div key="Min">Data</div>,
     <div key="Max">Data</div>,
     <input key="Unit" type="text" value={''} style={cellStyle} />,
@@ -195,11 +222,11 @@ const StatBlock = (props) => {
       <div>
         <div style={{ display: 'flex' }}>
           <ToggleButton
-            style={{ display: 'block', padding: '2px', width: '48px' }}
+            style={{ ...buttonStyle, width: '56px', padding: '2px' }}
             toggledStyle={{
-              display: 'block',
+              ...buttonStyle,
+              width: '56px',
               padding: '2px',
-              width: '48px',
               filter: 'brightness(88%)',
             }}
             checked={Calc}
@@ -224,7 +251,7 @@ const StatBlock = (props) => {
             <input
               type="number"
               value={Level}
-              style={cellStyle}
+              style={formStyle}
               onChange={(e) => handleChange(e, 'Level')}
             />
           )}
@@ -290,30 +317,32 @@ const Card = (props) => {
   };
   let i = -1;
   return (
-    <div style={cardStyle}>
-      <div style={{ display: 'flex' }}>
-        Card:
-        <div style={{ width: '100%' }}>
-          <input
-            type="text"
-            value={Value}
-            style={cellStyle}
-            onChange={(e) => handleChange(e, name)}
-          />
+    <div>
+      <div style={cardStyle}>
+        <div style={{ display: 'flex' }}>
+          Card:
+          <div style={{ width: '100%' }}>
+            <input
+              type="text"
+              value={Value}
+              style={cellStyle}
+              onChange={(e) => handleChange(e, name)}
+            />
+          </div>
         </div>
+        {keys.map((key) => {
+          i += 1;
+          return (
+            <StatBlock
+              key={`StatBlock_${i}`}
+              data={data}
+              parentKey={`${parentKey}/Values/${key}`}
+              Stats={Page[key]}
+              onChange={onChange}
+            ></StatBlock>
+          );
+        })}
       </div>
-      {keys.map((key) => {
-        i += 1;
-        return (
-          <StatBlock
-            key={`StatBlock_${i}`}
-            data={data}
-            parentKey={`${parentKey}/Values/${key}`}
-            Stats={Page[key]}
-            onChange={onChange}
-          ></StatBlock>
-        );
-      })}
     </div>
   );
 };
@@ -356,16 +385,6 @@ const ProfileCard = (props) => {
     Pages[key] = Values[key];
   });
 
-  // test call
-  console.log(
-    "GetValue: {a: Level}, 'a * 12'",
-    StatData.GetCellValue(
-      'a * 12',
-      '{"a": ["Values","Page One","Values","Primary Stats","Level"]}',
-      props.value,
-    ),
-  );
-
   // handleChange
   const handleChange = (e, key, type) => {
     const buffer = {
@@ -397,7 +416,13 @@ const ProfileCard = (props) => {
         style={cellStyle}
         onChange={(e) => handleChange(e, 'Title')}
       />
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignContent: 'flex-start',
+        }}
+      >
         <Stack
           data={data}
           parentKey={'Values'}

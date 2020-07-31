@@ -18,7 +18,7 @@ const MathInput = (props) => {
 
   return (
     <label
-      className="toggleButton"
+      className="Button"
       style={{
         background: 'inherit',
         borderColor: 'inherit',
@@ -39,4 +39,4 @@ const MathInput = (props) => {
   );
 };
 
-export default ToggleButton;
+export default MathInput;

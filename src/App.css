@@ -153,6 +153,17 @@ input:focus {
 .example-multiple-targets::after {
 }
 
+.Button {
+  filter: brightness(88%);
+  /*background-color: grey;*/
+}
+.Button:hover {
+  filter: brightness(125%);
+}
+.Button:active {
+  filter: brightness(66%);
+}
+
 .toggleButton {
 }
 .toggleButton:hover {
