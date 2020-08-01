@@ -53,6 +53,7 @@ class StatData extends React.Component {
     let i = 1;
     keys.forEach((key) => {
       // console.log('key', key, index[index.length - 1][key]);
+      if (index[index.length - 1][key] === undefined) return;
 
       // iterate
       if (i !== keys.length) {

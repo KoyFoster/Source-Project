@@ -1,41 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../App.css';
+import Popup from './Popup';
 
 const MathInput = (props) => {
-  const { checked } = props;
-  const style = checked === true ? props.toggledStyle : props.style;
+  const { component } = props;
+  const { children } = props;
+  const { style } = props;
   const { onChange } = props;
   const { onClick } = props;
   const { onBlur } = props;
   const { onFocus } = props;
-  const event = { onChange, onClick, onBlur, onFocus };
+  const events = { onChange, onClick, onBlur, onFocus };
 
-  const getLabel = () => {
-    return Array.isArray(props.children)
-      ? props.children[checked ? 0 : 1]
-      : props.children;
+  const [seen, setSeen] = useState(false);
+
+  const togglePopup = () => {
+    setSeen(!seen);
   };
-
   return (
-    <label
-      className="Button"
-      style={{
-        background: 'inherit',
-        borderColor: 'inherit',
-        borderWidth: '3px',
-        borderStyle: 'solid',
-        textAlign: 'center',
-        ...style,
-      }}
-    >
-      <input
-        type="checkbox"
-        checked={checked}
-        style={{ width: '0px', height: '0px', display: 'none' }}
-        {...event}
-      />
-      {getLabel()}
-    </label>
+    <div>
+      <button
+        type="button"
+        className="Button"
+        style={{
+          background: 'inherit',
+          borderColor: 'inherit',
+          borderWidth: '3px',
+          borderStyle: 'solid',
+          textAlign: 'center',
+          ...style,
+        }}
+        {...events}
+        onClick={(e) => {
+          if (onClick) onClick(e);
+          togglePopup();
+        }}
+      >
+        {children}
+      </button>
+      {seen ? (
+        // eslint-disable-next-line react/prop-types
+        <Popup bToggle={togglePopup} component={component} />
+      ) : null}
+    </div>
   );
 };
 
