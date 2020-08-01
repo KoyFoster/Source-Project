@@ -14,7 +14,7 @@ const ArcheAge = {
           'Visible Player Stats': {
             Value: 'Visible Player Stats',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             //Level: 0,
@@ -44,9 +44,9 @@ const ArcheAge = {
           'Primary Stats': {
             Value: 'Primary Stats',
             Type: 'Static',
-            Num: 2358,
-            Min: 70,
-            Max: 12800,
+            Total: 0,
+            Min: 0,
+            Max: 0,
             Level: 2560,
             Points: 1000,
             PointCalc: [
@@ -196,7 +196,7 @@ const ArcheAge = {
           'Melee Attack': {
             Value: 'Melee Attack',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: 0,
@@ -257,7 +257,7 @@ const ArcheAge = {
           'Ranged Attack': {
             Value: 'Ranged Attack',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -311,7 +311,7 @@ const ArcheAge = {
           'Magic Attack': {
             Value: 'Magic Attack',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -365,7 +365,7 @@ const ArcheAge = {
           Misc: {
             Value: 'Misc',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -415,7 +415,7 @@ const ArcheAge = {
         Defense: {
           Value: 'Defense',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -470,7 +470,7 @@ const ArcheAge = {
         'Melee Defense': {
           Value: 'Melee Defense',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -505,7 +505,7 @@ const ArcheAge = {
         'Ranged Defense': {
           Value: 'Ranged Defense',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -540,7 +540,7 @@ const ArcheAge = {
         'Magic Defense': {
           Value: 'Magic Defense',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -580,7 +580,7 @@ const ArcheAge = {
         Heal: {
           Value: 'Heal',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -614,7 +614,7 @@ const ArcheAge = {
         Regeneration: {
           Value: 'Regeneration',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -655,7 +655,7 @@ const ArcheAge = {
         Misc: {
           Value: 'Misc',
           Type: 'Calc',
-          Num: 0,
+          Total: 0,
           Min: 0,
           Max: 0,
           // Level: -1,
@@ -705,14 +705,24 @@ const ArcheAge = {
   },
 };
 
+const depthColor = [
+  ['black', 'red'],
+  ['white', 'blue'],
+  ['black', 'green'],
+  ['white', 'purple'],
+  ['black', 'yellow'],
+  ['black', 'magenta'],
+];
+
 const GetKey = (props) => {
   return (
     <button
+      type="push"
       key={props.fullKey}
       data-key={props.fullKey}
-      type="push"
+      style={props.style}
       onClick={(e) => {
-        console.log('Keys:', e.target.dataset.key);
+        // console.log('Keys:', e.target.dataset.key);
       }}
     >
       {props.children}
@@ -725,12 +735,14 @@ const renderStats = (
   data,
   parentKey = '',
   objKey = 'Values',
-  excludeKeyValues = 'Num,Min,Max,math,Level,Points,PointCalc,Unit',
-  excludeKeys = 'math,Value,Values,PointCalc,Min,Max,Max,Unit',
+  excludeKeyValues = 'Num,Min,Max,math,Level,Points,PointCalc,Unit,Type,Total',
+  excludeKeys = 'math,Value,Values,PointCalc,Min,Max,Max,Unit,Type,Total',
   selectKeys = 'Num,Level,Points',
   SelectElem = GetKey,
+  depth = 0,
+  colors = depthColor,
 ) => {
-  console.log('renderStats', data);
+  // console.log('renderStats', data);
   const result = [];
 
   // get keys
@@ -739,7 +751,7 @@ const renderStats = (
   keys.forEach((key) => {
     let children = [];
     if (key === objKey) {
-      console.log('Children?:', data[key]);
+      // console.log('Children?:', data[key]);
       const vKeys = Object.keys(data[key]);
       vKeys.forEach((vKey) => {
         children.push(
@@ -752,6 +764,8 @@ const renderStats = (
               excludeKeys,
               selectKeys,
               SelectElem,
+              depth + 1,
+              colors,
             )}
           </div>,
         );
@@ -767,15 +781,21 @@ const renderStats = (
         key={key}
         style={{
           display: 'flex',
-          // color: 'gold',
-          border: '1px dashed cyan',
-          backgroundColor: 'grey',
+          flexWrap: 'wrap',
+          color: colors[depth][0],
+          border: !bVal && !bKey ? undefined : '1px dashed cyan',
+          backgroundColor: colors[depth][1],
           // filter: 'brightness(66%)',
         }}
       >
         {bKey ? (
           bSel ? (
-            <SelectElem fullKey={`${parentKey}/${key}`}>{key}</SelectElem>
+            <SelectElem
+              fullKey={`${parentKey}/${key}`}
+              style={{ width: '100%' }}
+            >
+              {key}
+            </SelectElem>
           ) : (
             key
           )
@@ -792,7 +812,7 @@ const renderStats = (
 };
 
 const renderStatsOld = (data) => {
-  console.log('renderStats', data);
+  // console.log('renderStats', data);
   const result = [];
 
   // iterate
@@ -804,7 +824,7 @@ const renderStatsOld = (data) => {
         children = renderStats(data[i].children);
       }
     }
-    console.log('Children?:', data[i].children);
+    // console.log('Children?:', data[i].children);
     result.push(
       <div key={i}>
         {data[i].value}
@@ -815,7 +835,7 @@ const renderStatsOld = (data) => {
     i += 1;
   }
 
-  console.log({ data, result });
+  // console.log({ data, result });
   return result;
 };
 

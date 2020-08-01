@@ -130,7 +130,7 @@ const defaultTemplates = {
             'Visible Player Stats': {
               Value: 'Visible Player Stats',
               Type: 'Calc',
-              Num: 0,
+              Total: 0,
               Min: 0,
               Max: 0,
               //Level: 0,
@@ -160,9 +160,9 @@ const defaultTemplates = {
             'Primary Stats': {
               Value: 'Primary Stats',
               Type: 'Static',
-              Num: 2358,
-              Min: 70,
-              Max: 12800,
+              Total: 0,
+              Min: 0,
+              Max: 0,
               Level: 2560,
               Points: 1000,
               PointCalc: [
@@ -312,7 +312,7 @@ const defaultTemplates = {
             'Melee Attack': {
               Value: 'Melee Attack',
               Type: 'Calc',
-              Num: 0,
+              Total: 0,
               Min: 0,
               Max: 0,
               // Level: 0,
@@ -373,7 +373,7 @@ const defaultTemplates = {
             'Ranged Attack': {
               Value: 'Ranged Attack',
               Type: 'Calc',
-              Num: 0,
+              Total: 0,
               Min: 0,
               Max: 0,
               // Level: -1,
@@ -427,7 +427,7 @@ const defaultTemplates = {
             'Magic Attack': {
               Value: 'Magic Attack',
               Type: 'Calc',
-              Num: 0,
+              Total: 0,
               Min: 0,
               Max: 0,
               // Level: -1,
@@ -481,7 +481,7 @@ const defaultTemplates = {
             Misc: {
               Value: 'Misc',
               Type: 'Calc',
-              Num: 0,
+              Total: 0,
               Min: 0,
               Max: 0,
               // Level: -1,
@@ -531,7 +531,7 @@ const defaultTemplates = {
           Defense: {
             Value: 'Defense',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -586,7 +586,7 @@ const defaultTemplates = {
           'Melee Defense': {
             Value: 'Melee Defense',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -621,7 +621,7 @@ const defaultTemplates = {
           'Ranged Defense': {
             Value: 'Ranged Defense',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -656,7 +656,7 @@ const defaultTemplates = {
           'Magic Defense': {
             Value: 'Magic Defense',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -696,7 +696,7 @@ const defaultTemplates = {
           Heal: {
             Value: 'Heal',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -730,7 +730,7 @@ const defaultTemplates = {
           Regeneration: {
             Value: 'Regeneration',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,
@@ -771,7 +771,7 @@ const defaultTemplates = {
           Misc: {
             Value: 'Misc',
             Type: 'Calc',
-            Num: 0,
+            Total: 0,
             Min: 0,
             Max: 0,
             // Level: -1,

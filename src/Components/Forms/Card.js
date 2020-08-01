@@ -106,7 +106,7 @@ const StatBlock = (props) => {
   // stat properties
   const { Value } = Stats;
   let { Type } = Stats;
-  let { Num } = Stats;
+  let { Total } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
   const { Level } = Stats;
@@ -160,13 +160,13 @@ const StatBlock = (props) => {
   // Update Totals
   if (bUpdateTotals) {
     const Totals = StatData.TallyTotals(Values);
-    Num = Totals.Num;
+    Total = Totals.Total;
     Min = Totals.Min;
     Max = Totals.Max;
 
     if (onChange) {
       const e = {
-        target: { value: Num, dataset: { key: `${parentKey}/Num` } },
+        target: { value: Total, dataset: { key: `${parentKey}/Total` } },
       };
       onChange(e, true);
       e.target.value = Min;
@@ -265,7 +265,7 @@ const StatBlock = (props) => {
             <div style={{ width: '100%' }}>Points: {Points}</div>
           )}
           {Type === 'Calc' ? null : (
-            <div style={{ width: '100%' }}>Remainder: {Points - Num}</div>
+            <div style={{ width: '100%' }}>Remainder: {Points - Total}</div>
           )}
         </div>
       </div>
@@ -291,7 +291,7 @@ const StatBlock = (props) => {
             ? undefined
             : [
                 <div key="0">Totals: </div>,
-                <div key="1">{Num}</div>,
+                <div key="1">{Total}</div>,
                 <div key="2">{Min}</div>,
                 <div key="3">{Max}</div>,
                 <div key="4"></div>,

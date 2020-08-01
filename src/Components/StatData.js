@@ -31,10 +31,10 @@ class StatData extends React.Component {
 
   static TallyTotals(statBlock) {
     // console.log('statBlock:', statBlock);
-    const tallies = { Num: 0, Min: 0, Max: 0 };
+    const tallies = { Total: 0, Min: 0, Max: 0 };
 
     Object.keys(statBlock).forEach((key) => {
-      tallies.Num = tallies.Num + statBlock[key]['Num'];
+      tallies.Total = tallies.Total + statBlock[key]['Num'];
       tallies.Min = tallies.Min + statBlock[key]['Min'];
       tallies.Max = tallies.Max + statBlock[key]['Max'];
     });
