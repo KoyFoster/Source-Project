@@ -3,6 +3,7 @@ import { HashRouter, Link, Route } from 'react-router-dom';
 import Stats from './StatCard';
 import { Row } from './DivGrid';
 import CanvasCard from './CanvasCard';
+import Test from './Test';
 
 function NavBar(props) {
   return (
@@ -29,6 +30,9 @@ function NavBar(props) {
           <Link to="/CanvasCard">
             <button style={{ margin: '1px' }}>Canvas Card</button>
           </Link>
+          <Link to="/Test">
+            <button style={{ margin: '1px' }}>Test</button>
+          </Link>
         </Row>
         <hr style={{ display: 'none' }} />
 
@@ -39,6 +43,10 @@ function NavBar(props) {
         <div>
           <Route exact path="/" />
           <Route path="/CanvasCard" component={CanvasCard} />
+        </div>
+        <div>
+          <Route exact path="/" />
+          <Route path="/Test" component={Test} />
         </div>
       </HashRouter>
     </div>
