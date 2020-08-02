@@ -214,7 +214,7 @@ const RenderGrid = (props) => {
                       // dataset
                       'data-x': iX,
                       'data-y': iY,
-                      'data-key': `${rowKeys ? `${rowKeys[iX]}/` : ''}${cell}`,
+                      'data-key': `${rowKeys ? `${rowKeys[iX]}~` : ''}${cell}`,
                     };
                     let hasElem = hRow.length > iY;
                     if (hasElem) hasElem = hRow[iY] !== undefined;

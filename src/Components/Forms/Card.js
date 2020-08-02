@@ -109,6 +109,7 @@ const StatBlock = (props) => {
   let { Total } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
+  let { math } = Stats;
   const { Level } = Stats;
   const { PointCalc } = Stats;
   const Points =
@@ -127,7 +128,7 @@ const StatBlock = (props) => {
         value: e.target.value,
         checked: type === 'checkbox' ? e.target.checked : undefined,
         dataset: {
-          key: `${parentKey}/${key}`,
+          key: `${parentKey}~${key}`,
         },
       },
     };
@@ -141,7 +142,7 @@ const StatBlock = (props) => {
 
     const value =
       e.target.value === '' ? 0 : Number.parseFloat(e.target.value, 10);
-    const keys = e.target.dataset.key.split('/');
+    const keys = e.target.dataset.key.split('~');
     // console.log('handelStatChange:', keys);
 
     e.target.value = StatData.HandleStatMinMax(
@@ -166,14 +167,14 @@ const StatBlock = (props) => {
 
     if (onChange) {
       const e = {
-        target: { value: Total, dataset: { key: `${parentKey}/Total` } },
+        target: { value: Total, dataset: { key: `${parentKey}~Total` } },
       };
       onChange(e, true);
       e.target.value = Min;
-      e.target.dataset.key = `${parentKey}/Min`;
+      e.target.dataset.key = `${parentKey}~Min`;
       onChange(e, true);
       e.target.value = Max;
-      e.target.dataset.key = `${parentKey}/Max`;
+      e.target.dataset.key = `${parentKey}~Max`;
       onChange(e, true);
     }
 
@@ -212,9 +213,16 @@ const StatBlock = (props) => {
       Data
     </div>,
   ];
+
   const displayForms = [
     <input key="Value" type="text" value={''} style={cellStyle} />,
-    <MathInput key="Num" style={buttonStyle} onChange={undefined}>
+    <MathInput
+      key="Num"
+      rootKey={parentKey}
+      data={data}
+      style={buttonStyle}
+      onChange={undefined}
+    >
       Data
     </MathInput>,
     <div key="Min">Data</div>,
@@ -261,8 +269,17 @@ const StatBlock = (props) => {
               onChange={(e) => handleChange(e, 'Level')}
             />
           )}
+          {Type === 'Calc' ? null : 'Points: '}
           {Type === 'Calc' ? null : (
-            <div style={{ width: '100%' }}>Points: {Points}</div>
+            <MathInput
+              key="Num"
+              math={PointCalc}
+              data={data}
+              style={buttonStyle}
+              onChange={undefined}
+            >
+              {Points}
+            </MathInput>
           )}
           {Type === 'Calc' ? null : (
             <div style={{ width: '100%' }}>Remainder: {Points - Total}</div>
@@ -279,7 +296,7 @@ const StatBlock = (props) => {
           { width: '64px' },
         ]}
         iColumns={4}
-        parentKey={`${parentKey}/Values`}
+        parentKey={`${parentKey}~Values`}
         rowKeys={Object.keys(Values)}
         value={Values}
         header
@@ -320,7 +337,7 @@ const Card = (props) => {
         value: e.target.value,
         checked: type === 'checkbox' ? e.target.checked : undefined,
         dataset: {
-          key: `${parentKey}/Value`,
+          key: `${parentKey}~Value`,
         },
       },
     };
@@ -347,7 +364,7 @@ const Card = (props) => {
             <StatBlock
               key={`StatBlock_${i}`}
               data={data}
-              parentKey={`${parentKey}/Values/${key}`}
+              parentKey={`${parentKey}~Values~${key}`}
               Stats={Page[key]}
               onChange={onChange}
             ></StatBlock>
@@ -371,7 +388,7 @@ const Stack = (props) => {
       <Card
         key={`Card_${i}`}
         data={data}
-        parentKey={`${parentKey}/${key}`}
+        parentKey={`${parentKey}~${key}`}
         name={key}
         Value={Page.Value}
         Page={Page.Values}

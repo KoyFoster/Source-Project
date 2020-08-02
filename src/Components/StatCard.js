@@ -135,7 +135,7 @@ const defaultTemplates = {
               Max: 0,
               //Level: 0,
               // Points: 1000,
-              PointCalc: ['{"a": "Level"}', 'a * 12'],
+              PointCalc: undefined, //['a * 12', '{"a": "Level", "b": "Level"}'],
 
               Values: {
                 Health: {
@@ -144,7 +144,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 3]}', 'a * 12'],
+                  math: undefined, //['a * 12', '{"a": [2, 3]}'],
                 },
                 Mana: {
                   Value: 'Mana',
@@ -152,7 +152,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 5]}', 'a * 12'],
+                  math: undefined, //['a * 12', '{"a": [2, 5]}'],
                 },
               },
             },
@@ -167,7 +167,7 @@ const defaultTemplates = {
               Points: 1000,
               PointCalc: [
                 'a * 1',
-                '{"a": ["Values","Page One","Values","Primary Stats","Level"]}',
+                '{"a": ["Values","Page One","Values","Primary Stats","Level"], "b": ["Values","Page One","Values","Primary Stats","Level"]}',
               ],
               Values: {
                 Strength: {
@@ -220,7 +220,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 1]}', 'a * 0.2'],
+                  math: undefined, //['a * 0.2', '{"a": [2, 1]}'],
                 },
                 'Range Attack': {
                   Value: 'Range Attack',
@@ -228,7 +228,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 2]}', 'a * 0.2'],
+                  math: undefined, //['a * 0.2', '{"a": [2, 2]}'],
                 },
                 'Magic Attack': {
                   Value: 'Magic Attack',
@@ -236,7 +236,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 5]}', 'a * 0.2'],
+                  math: undefined, // ['a * 0.2', '{"a": [2, 5]}'],
                 },
                 'Healing Power': {
                   Value: 'Healing Power',
@@ -244,7 +244,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 4]}', 'a * 0.2'],
+                  math: undefined, //['{"a": [2, 4]}', 'a * 0.2'],
                 },
                 'Physical Defense': {
                   Value: 'Physical Defense',
@@ -252,7 +252,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 3]}', 'a * 1'],
+                  math: undefined, //['{"a": [2, 3]}', 'a * 1'],
                 },
                 'Magic Defense': {
                   Value: 'Magic Defense',
@@ -260,7 +260,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 0,
                   Unit: '',
-                  math: ['{"a": [2, 3]}', 'a * 1'],
+                  math: undefined, //['{"a": [2, 3]}', 'a * 1'],
                 },
               },
             },
@@ -277,7 +277,7 @@ const defaultTemplates = {
                   Min: 5.4,
                   Max: 10,
                   Unit: 'm/s',
-                  math: ['{}', ''],
+                  math: undefined, //['{}', ''],
                 },
                 'Cast Time': {
                   Value: 'Cast Time',
@@ -286,10 +286,10 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 100,
                   Unit: '%',
-                  math: [
+                  math: undefined /*[
                     '{"a": [2, 4], "b": [2, 5]}',
                     '(a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013))',
-                  ],
+                  ],*/,
                 },
                 'Attack Speed': {
                   Value: 'Attack Speed',
@@ -297,7 +297,7 @@ const defaultTemplates = {
                   Min: 0,
                   Max: 1200,
                   Unit: '%',
-                  math: ['{}', ''],
+                  math: undefined, //['{}', ''],
                 }, // end of attack speed
               }, // end of stat values
             }, // end of misc stats
@@ -848,7 +848,7 @@ function Stats(props) {
     // iterate through key string
     const newValue =
       e.target.checked !== undefined ? e.target.checked : e.target.value;
-    const keys = e.target.dataset.key.split('/');
+    const keys = e.target.dataset.key.split('~');
 
     if (!keys.length) return;
 
