@@ -845,6 +845,7 @@ function Stats(props) {
   );
 
   const handleChange = (e, skipState) => {
+    // console.log('handleChange:', e, skipState);
     // iterate through key string
     const newValue =
       e.target.checked !== undefined ? e.target.checked : e.target.value;
@@ -892,7 +893,7 @@ function Stats(props) {
     if (!skipState) setValue(buffer);
   };
 
-  console.log('value:', value);
+  // console.log('value:', value);
   return (
     <div>
       {/* <TemplateSelector

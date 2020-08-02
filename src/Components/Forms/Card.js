@@ -123,6 +123,7 @@ const StatBlock = (props) => {
 
   // handleChange
   const handleChange = (e, key, type) => {
+    console.log('3. Key:', e);
     const buffer = {
       target: {
         value: e.target.value,
@@ -132,7 +133,7 @@ const StatBlock = (props) => {
         },
       },
     };
-    console.log(`handleChange = (`, buffer, `${key}, ${type})`);
+    // console.log(`handleChange = (`, buffer, `${key}, ${type})`);
 
     if (onChange) onChange(buffer);
   };
@@ -221,7 +222,7 @@ const StatBlock = (props) => {
       rootKey={parentKey}
       data={data}
       style={buttonStyle}
-      onChange={undefined}
+      onChange={handleChange}
     >
       Data
     </MathInput>,
@@ -252,7 +253,6 @@ const StatBlock = (props) => {
             {['Calc', 'Static']}
           </ToggleButton>
           <input
-            key=""
             type="text"
             value={Value}
             style={cellStyle}
@@ -273,10 +273,11 @@ const StatBlock = (props) => {
           {Type === 'Calc' ? null : (
             <MathInput
               key="Num"
+              Key="PointCalc"
               math={PointCalc}
               data={data}
               style={buttonStyle}
-              onChange={undefined}
+              onChange={handleChange}
             >
               {Points}
             </MathInput>

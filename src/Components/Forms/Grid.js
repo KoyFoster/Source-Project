@@ -272,7 +272,7 @@ const RenderGrid = (props) => {
 
                                         if (onChange) {
                                           buffer.target.dataset.key = `${
-                                            parentKey ? parentKey + '/' : ''
+                                            parentKey ? parentKey + '~' : ''
                                           }${e.target.dataset.key}`;
 
                                           onChange(buffer);

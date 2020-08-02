@@ -3,10 +3,15 @@ import '../../App.css';
 import { TagList } from './Tags';
 
 const MathDialogue = (props) => {
+  const { Key } = props;
   const { style } = props;
   const { vars } = props;
   const { expression } = props;
-  const { onChange } = props;
+  const { onCancel } = props;
+  const { onAccept } = props;
+
+  const [newExpression, setExpression] = useState(expression);
+  const [newVars, setVars] = useState(vars ? JSON.parse(vars) : {});
 
   const parseKeysIntoLabel = (keys) => {
     if (!keys) return '';
@@ -39,7 +44,7 @@ const MathDialogue = (props) => {
   };
 
   const tags = vars ? getVarsAsTags() : undefined;
-  console.log('tags:', tags, 'vars:', vars, 'expression:', expression);
+  // console.log('vars:', vars);
 
   return (
     <table
@@ -64,10 +69,20 @@ const MathDialogue = (props) => {
       </thead>
       <tbody>
         <tr>
-          <td>{<input type="text" defaultValue={expression} />}</td>
+          <td>
+            {
+              <input
+                type="text"
+                value={newExpression}
+                onChange={(e) => {
+                  setExpression(e.target.value);
+                }}
+              />
+            }
+          </td>
           <td>
             <div style={{ display: 'flex' }}>
-              <TagList type="text" tags={tags} style={{ width: '100%' }} />
+              <TagList type="text" tags={newVars} style={{ width: '100%' }} />
               <button type="push" style={{ width: '24px' }}>
                 +
               </button>
@@ -90,10 +105,24 @@ const MathDialogue = (props) => {
       <tfoot>
         <tr>
           <td>
-            <button type="push"> Cancel </button>
+            <button type="push" onClick={(e) => onCancel()}>
+              {' '}
+              Cancel{' '}
+            </button>
           </td>
           <td>
-            <button type="push" onChange={(e) => onChange(e)}>
+            <button
+              type="push"
+              onClick={() => {
+                console.log('newVars:', newVars);
+                const result = {
+                  target: {
+                    value: [newExpression, JSON.stringify(newVars)],
+                  },
+                };
+                onAccept(result);
+              }}
+            >
               {' '}
               Accept{' '}
             </button>

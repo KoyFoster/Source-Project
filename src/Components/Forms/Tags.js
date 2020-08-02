@@ -3,10 +3,10 @@ import React from 'react';
 
 const Tags = (props) => {
   const { onChange } = props;
-  const { key } = props;
+  const { Key } = props;
   const { children } = props;
   return (
-    <button key={key} data-key={key} type="push" onChange={(e) => onChange(e)}>
+    <button key={Key} data-key={Key} type="push" onChange={(e) => onChange(e)}>
       {children} x
     </button>
   );
@@ -18,10 +18,10 @@ const TagList = (props) => {
   return (
     <div style={{ ...style, border: '1px solid black', overflowX: 'auto' }}>
       {tags
-        ? tags.map((tag) => {
+        ? Object.keys(tags).map((key) => {
             return (
-              <Tags key={tag.key} onChange={onChange}>
-                {tag.label}
+              <Tags key={key} onChange={onChange}>
+                {`{${key}: ${tags[key][tags[key].length - 1]}}`}
               </Tags>
             );
           })
