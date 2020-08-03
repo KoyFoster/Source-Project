@@ -2,11 +2,17 @@ import '../../App.css';
 import React from 'react';
 
 const Tags = (props) => {
-  const { onChange } = props;
+  const { onClick } = props;
   const { Key } = props;
   const { children } = props;
   return (
-    <button key={Key} data-key={Key} type="push" onChange={(e) => onChange(e)}>
+    <button
+      key={Key}
+      data-key={Key}
+      value={children}
+      type="push"
+      onClick={(e) => onClick(e)}
+    >
       {children} x
     </button>
   );
@@ -14,13 +20,28 @@ const Tags = (props) => {
 const TagList = (props) => {
   const { tags } = props;
   const { style } = props;
-  const { onChange } = props;
+  const { onClick } = props;
   return (
-    <div style={{ ...style, border: '1px solid black', overflowX: 'auto' }}>
+    <div
+      style={{
+        ...style,
+        border: '1px solid black',
+        overflowY: 'scroll',
+        maxHeight: '28px',
+      }}
+    >
       {tags
         ? Object.keys(tags).map((key) => {
             return (
-              <Tags key={key} onChange={onChange}>
+              <Tags
+                key={key}
+                Key={key}
+                onClick={(e) => {
+                  const value = { ...tags };
+                  delete value[e.target.dataset.key];
+                  onClick({ target: { value } });
+                }}
+              >
                 {`{${key}: ${tags[key][tags[key].length - 1]}}`}
               </Tags>
             );

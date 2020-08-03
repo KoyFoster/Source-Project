@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import '../../App.css';
 import { TagList } from './Tags';
+import Popup from './Popup';
 import StatData from '../StatData';
+import VariablePicker from './VariablePicker';
 
 const MathDialogue = (props) => {
   const { Key } = props;
@@ -14,6 +16,24 @@ const MathDialogue = (props) => {
 
   const [newExpression, setExpression] = useState(expression);
   const [newVars, setVars] = useState(vars ? JSON.parse(vars) : {});
+
+  const [seen, setSeen] = useState(false);
+  const togglePopup = () => {
+    setSeen(!seen);
+  };
+
+  const component = (
+    <VariablePicker
+      data={data}
+      varKey={String.fromCharCode(
+        Object.keys(newVars).length + 65,
+      ).toLowerCase()} // new var letter
+      onClick={(e) => {
+        setVars({ ...newVars, ...e.target.value });
+        togglePopup();
+      }}
+    ></VariablePicker>
+  );
 
   const parseKeysIntoLabel = (keys) => {
     if (!keys) return '';
@@ -46,10 +66,8 @@ const MathDialogue = (props) => {
   };
 
   const tags = vars ? getVarsAsTags() : undefined;
-  // console.log('vars:', vars);
 
   const getDefinedExpression = () => {
-    console.log('vars:', vars, newVars);
     let result = newExpression;
     const variables = StatData.parseVariables(newVars, data, true);
 
@@ -62,7 +80,6 @@ const MathDialogue = (props) => {
   };
 
   const getResult = () => {
-    console.log('vars:', vars, newVars);
     let result = StatData.GetCellValue(newExpression, newVars, data, true);
 
     if (result === undefined)
@@ -130,10 +147,27 @@ const MathDialogue = (props) => {
           </td>
           <td>
             <div style={{ display: 'flex' }}>
-              <TagList type="text" tags={newVars} style={{ width: '100%' }} />
-              <button type="push" style={{ width: '24px' }}>
+              <TagList
+                type="text"
+                tags={newVars}
+                style={{ width: '100%' }}
+                onClick={(e) => {
+                  setVars(e.target.value);
+                }}
+              />
+              <button
+                type="push"
+                style={{ width: '24px' }}
+                onClick={(e) => {
+                  togglePopup();
+                }}
+              >
                 +
               </button>
+              {seen ? (
+                // eslint-disable-next-line react/prop-types
+                <Popup bToggle={togglePopup} component={component} />
+              ) : null}
             </div>
           </td>
         </tr>
@@ -162,7 +196,6 @@ const MathDialogue = (props) => {
             <button
               type="push"
               onClick={() => {
-                console.log('newVars:', newVars);
                 const result = {
                   target: {
                     value: [newExpression, JSON.stringify(newVars)],

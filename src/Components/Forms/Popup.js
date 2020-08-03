@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 
 export default class Popup extends Component {
   handleClick = () => {
-    console.log('handleClick', this.props);
     this.props.bToggle();
   };
 

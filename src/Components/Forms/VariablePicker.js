@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Tree from './Forms/Tree';
 
 const ArcheAge = {
   Game: 'ArcheAge',
@@ -714,23 +713,6 @@ const depthColor = [
   ['black', 'magenta'],
 ];
 
-const GetKey = (props) => {
-  return (
-    <button
-      type="push"
-      key={props.fullKey}
-      data-key={props.fullKey}
-      style={props.style}
-      onClick={(e) => {
-        const result = e.target.dataset.key.split('~');
-        console.log('Keys:', { letter: result });
-      }}
-    >
-      {props.children}
-    </button>
-  );
-};
-
 // render
 const renderStats = (
   data,
@@ -739,11 +721,10 @@ const renderStats = (
   excludeKeyValues = 'Num,Min,Max,math,Level,Points,PointCalc,Unit,Type,Total',
   excludeKeys = 'math,Value,Values,PointCalc,Min,Max,Max,Unit,Type,Total',
   selectKeys = 'Num,Level,Points',
-  SelectElem = GetKey,
+  SelectElem = undefined,
   depth = 0,
   colors = depthColor,
 ) => {
-  // console.log('renderStats', data);
   const result = [];
 
   // get keys
@@ -752,7 +733,6 @@ const renderStats = (
   keys.forEach((key) => {
     let children = [];
     if (key === objKey) {
-      // console.log('Children?:', data[key]);
       const vKeys = Object.keys(data[key]);
       vKeys.forEach((vKey) => {
         children.push(
@@ -808,91 +788,51 @@ const renderStats = (
     );
   });
 
-  // console.log('result:', result);
   return result;
 };
 
-const renderStatsOld = (data) => {
-  // console.log('renderStats', data);
-  const result = [];
-
-  // iterate
-  for (let i = 0; i < data.length; i) {
-    // check for children
-    let children = null;
-    if (data[i].children) {
-      if (data[i].children.length) {
-        children = renderStats(data[i].children);
-      }
-    }
-    // console.log('Children?:', data[i].children);
-    result.push(
-      <div key={i}>
-        {data[i].value}
-        {children}
-      </div>,
-    );
-
-    i += 1;
-  }
-
-  // console.log({ data, result });
-  return result;
-};
-
-const Test = (props) => {
-  const [checked, setChecked] = useState([]);
-  const [expanded, setExpanded] = useState([]);
+const VariablePicker = (props) => {
   // Note: The idea is to have a node and polygon system
   // the user chooses points in which to draw lines
   // and that information is saved
+  const { onClick } = props;
+  const { data } = props;
+  const { varKey } = props;
 
-  return <div>{renderStats(ArcheAge, 'ArcheAge')}</div>;
+  const GetKey = (props) => {
+    return (
+      <button
+        type="push"
+        key={props.fullKey}
+        data-key={props.fullKey}
+        style={props.style}
+        onClick={(e) => {
+          const result = {};
+          result[varKey] = e.target.dataset.key
+            .split('~')
+            .slice(1, result.length);
 
-  // return (
-  //   // <Tree
-  //   //   primaryKey="value"
-  //   //   secondaryKey="label"
-  //   //   nodes={[
-  //   //     { value: 'one', label: 'one' },
-  //   //     {
-  //   //       value: 'two',
-  //   //       label: 'two',
-  //   //       children: [
-  //   //         {
-  //   //           value: 'three',
-  //   //           label: 'three',
-  //   //           children: [
-  //   //             {
-  //   //               value: 'four',
-  //   //               label: 'four',
-  //   //             },
-  //   //           ],
-  //   //         },
-  //   //         {
-  //   //           value: 'five',
-  //   //           label: 'five',
-  //   //         },
-  //   //       ],
-  //   //     },
-  //   //     { value: 'six', label: 'six' },
-  //   //   ]}
-  //   //   checked={checked}
-  //   //   expanded={expanded}
-  //   //   onCheck={(checked) => setChecked(checked)}
-  //   //   onExpand={(expanded) => setExpanded(expanded)}
+          onClick({ target: { value: result } });
+        }}
+      >
+        {props.children}
+      </button>
+    );
+  };
 
-  //   //   // value={[]}
-  //   //   // setValue={undefined}
-
-  //   //   // style={{
-  //   //   //   display: 'flexBox',
-  //   //   //   border: '2px solid red',
-  //   //   //   width: '256px',
-  //   //   //   height: '256px',
-  //   //   // }}
-  //   // ></Tree>
-  // );
+  return (
+    <div>
+      {renderStats(
+        data,
+        '',
+        'Values',
+        'Num,Min,Max,math,Level,Points,PointCalc,Unit,Type,Total',
+        'math,Value,Values,PointCalc,Min,Max,Max,Unit,Type,Total',
+        'Num,Level,Points',
+        GetKey,
+      )}
+    </div>
+  );
 };
 
-export default Test;
+export default VariablePicker;

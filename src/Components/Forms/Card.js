@@ -123,7 +123,6 @@ const StatBlock = (props) => {
 
   // handleChange
   const handleChange = (e, key, type) => {
-    console.log('3. Key:', e);
     const buffer = {
       target: {
         value: e.target.value,
@@ -133,18 +132,14 @@ const StatBlock = (props) => {
         },
       },
     };
-    // console.log(`handleChange = (`, buffer, `${key}, ${type})`);
 
     if (onChange) onChange(buffer);
   };
 
   const handleMinMaxChange = (e) => {
-    // console.log('handleStatChange:', e);
-
     const value =
       e.target.value === '' ? 0 : Number.parseFloat(e.target.value, 10);
     const keys = e.target.dataset.key.split('~');
-    // console.log('handelStatChange:', keys);
 
     e.target.value = StatData.HandleStatMinMax(
       Values[keys[0]],

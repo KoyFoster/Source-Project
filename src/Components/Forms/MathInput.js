@@ -29,8 +29,8 @@ const MathInput = (props) => {
   const { onBlur } = props;
   const { onFocus } = props;
   const events = { onChange, onClick, onBlur, onFocus };
-  // console.log('math:', math, 'vars:', vars, 'expression:', expression);
 
+  const [seen, setSeen] = useState(false);
   const togglePopup = () => {
     setSeen(!seen);
   };
@@ -51,8 +51,6 @@ const MathInput = (props) => {
       }}
     ></MathDialogue>
   );
-
-  const [seen, setSeen] = useState(false);
 
   return (
     <div>
