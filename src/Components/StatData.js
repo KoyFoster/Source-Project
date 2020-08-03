@@ -87,14 +87,15 @@ class StatData extends React.Component {
   }
 
   // parse scope
-  static parseVariables(variables, data) {
+  static parseVariables(variables, data, noParse) {
     console.log(`${variables}, ${data}`);
     let scope;
 
     try {
-      scope = JSON.parse(variables);
+      if (noParse) scope = { ...variables };
+      else scope = JSON.parse(variables);
     } catch {
-      console.error(`ERROR: Invalid Variables(${variables})`);
+      console.error('ERROR: Invalid Variables(', variables, ')');
       return {};
     }
 
@@ -120,16 +121,16 @@ class StatData extends React.Component {
     try {
       result = evaluate(expression, scope);
     } catch {
-      console.error(`ERROR: Invalid Expression(${(expression, scope)})`);
-      return {};
+      console.error('ERROR: Invalid Expression(', expression, scope, ')');
+      return undefined;
     }
 
     return result !== undefined ? this.Round(result) : 0;
   }
 
   // Get Calculated Value
-  static GetCellValue(expression, scope, data) {
-    const variables = this.parseVariables(scope, data);
+  static GetCellValue(expression, scope, data, noParse = false) {
+    const variables = this.parseVariables(scope, data, noParse);
 
     return this.GetCalculatedValue(expression, variables);
   }

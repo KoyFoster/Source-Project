@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import '../../App.css';
 import { TagList } from './Tags';
+import StatData from '../StatData';
 
 const MathDialogue = (props) => {
   const { Key } = props;
   const { style } = props;
-  const { vars } = props;
   const { expression } = props;
+  const { vars } = props;
+  const { data } = props;
   const { onCancel } = props;
   const { onAccept } = props;
 
@@ -46,6 +48,49 @@ const MathDialogue = (props) => {
   const tags = vars ? getVarsAsTags() : undefined;
   // console.log('vars:', vars);
 
+  const getDefinedExpression = () => {
+    console.log('vars:', vars, newVars);
+    let result = newExpression;
+    const variables = StatData.parseVariables(newVars, data, true);
+
+    // replace variables with values
+    Object.keys(variables).forEach((key) => {
+      result = result.replace(key, variables[key]);
+    });
+
+    return result;
+  };
+
+  const getResult = () => {
+    console.log('vars:', vars, newVars);
+    let result = StatData.GetCellValue(newExpression, newVars, data, true);
+
+    if (result === undefined)
+      return (
+        <div
+          style={{
+            backgroundColor: 'red',
+            color: 'darkRed',
+            border: '2px solid black',
+          }}
+        >
+          Invalid Expression
+        </div>
+      );
+    else
+      return (
+        <div
+          style={{
+            backgroundColor: 'green',
+            color: 'darkGreen',
+            border: '2px solid black',
+          }}
+        >
+          {result}
+        </div>
+      );
+  };
+
   return (
     <table
       style={{
@@ -63,7 +108,10 @@ const MathDialogue = (props) => {
       </colgroup>
       <thead>
         <tr>
-          <td>Math Expression</td>
+          <td colSpan="2">Calculation</td>
+        </tr>
+        <tr>
+          <td>Expression</td>
           <td>Variables</td>
         </tr>
       </thead>
@@ -93,13 +141,13 @@ const MathDialogue = (props) => {
           <td colSpan="2">Result</td>
         </tr>
         <tr>
-          <td colSpan="2">{<input type="text" defaultValue={undefined} />}</td>
+          <td colSpan="2">{getDefinedExpression()}</td>
         </tr>
         <tr>
           <td colSpan="2">=</td>
         </tr>
         <tr>
-          <td colSpan="2">{<input type="text" defaultValue={undefined} />}</td>
+          <td colSpan="2">{getResult()}</td>
         </tr>
       </tbody>
       <tfoot>

@@ -41,6 +41,7 @@ const MathInput = (props) => {
       Key={Key}
       expression={expression}
       vars={vars}
+      data={data}
       onCancel={() => {
         togglePopup();
       }}
