@@ -404,6 +404,7 @@ class Grid extends React.Component {
       this.props.funcs.modRow = this.modRows;
 
       this.props.funcs.getRow = this.getRow;
+      this.props.funcs.getCell = this.getCell;
       this.props.funcs.getSelRow = this.getSelRow;
       this.props.funcs.getSelection = this.getSelection;
       this.props.funcs.getRows = this.getRows;
@@ -513,11 +514,36 @@ class Grid extends React.Component {
     this.modRows(-1, this.state.selection.x);
   };
 
-  getRow(index) {
-    if (index < 0 || index > this.getValue().length || index === undefined)
+  getRow = (index) => {
+    const value = this.getValue();
+    if (value === undefined) return '';
+
+    if (index < 0 || index > value.length || index === undefined)
       return undefined;
-    return this.getValue()[index];
-  }
+    return value[index];
+  };
+  getCell = (row, col) => {
+    const value = this.getValue();
+    console.log('getCell:', value);
+    if (value === undefined) return '';
+
+    if (
+      value.length === 0 ||
+      row === undefined ||
+      row < 0 ||
+      row > value.length
+    )
+      return undefined;
+    if (
+      value.length[row] === 0 ||
+      col === undefined ||
+      col < 0 ||
+      col > value[row].length
+    )
+      return undefined;
+
+    return value[row][col];
+  };
 
   getSelection = () => this.state.selection;
 
