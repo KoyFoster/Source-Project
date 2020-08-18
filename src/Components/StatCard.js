@@ -780,7 +780,7 @@ const SaveStatCard = (props) => {
     <TogglePopup
       component={
         <div>
-          Profile Code
+          Save Code
           <textarea
             type="text"
             // readOnly
@@ -796,7 +796,54 @@ const SaveStatCard = (props) => {
         </div>
       }
     >
-      Profile Code
+      Save Code
+    </TogglePopup>
+  );
+};
+
+const LoadStatCard = (props) => {
+  // states
+  let { setValue } = props;
+  const [newVal, setNewValue] = useState('');
+  const [jsonValue, setJSONValue] = useState();
+
+  return (
+    <TogglePopup
+      component={
+        <div>
+          Load Code
+          <textarea
+            type="text"
+            style={{
+              display: 'block',
+              width: '100%',
+              height: '512px',
+              whiteSpace: 'nowrap',
+              resize: 'none',
+            }}
+            onChange={(e) => {
+              setNewValue(e.target.value);
+
+              let buffer = undefined;
+              try {
+                buffer = JSON.parse(e.target.value);
+              } catch {}
+              setJSONValue(buffer);
+            }}
+          />
+          <button
+            type="button"
+            disabled={jsonValue ? false : true}
+            onClick={(e) => {
+              setValue(jsonValue);
+            }}
+          >
+            Load
+          </button>
+        </div>
+      }
+    >
+      Load Code
     </TogglePopup>
   );
 };
@@ -872,6 +919,7 @@ function Stats(props) {
         // }}
       /> */}
       <SaveStatCard value={value}></SaveStatCard>
+      <LoadStatCard setValue={setValue}></LoadStatCard>
       <ProfileCard
         key="profile"
         value={value}
