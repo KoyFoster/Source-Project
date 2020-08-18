@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 // import StatCode from './StatCode';
 // import Tree from './Forms/Tree';
 import ProfileCard from './Forms/Card';
+import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 
 const defaultTemplates = {
@@ -121,422 +122,373 @@ const defaultTemplates = {
     Game: 'ArcheAge',
     Title: "Koy's Stats",
     Values: {
-      'Page One':
-        // page one
-        {
-          Value: 'Page One',
-          Values: {
-            // Start of stat table
-            'Visible Player Stats': {
-              Value: 'Visible Player Stats',
-              Type: 'Calc',
-              Total: 0,
-              Min: 0,
-              Max: 0,
-              //Level: 0,
-              // Points: 1000,
-              PointCalc: undefined, //['a * 12', '{"a": "Level", "b": "Level"}'],
+      'Page One': {
+        Value: 'Page One',
+        Values: {
+          'Visible Player Stats': {
+            Value: 'Visible Player Stats',
+            Type: 'Calc',
+            Total: 0,
+            Min: 0,
+            Max: 0,
+            Values: {
+              Health: { Value: 'Health', Num: 0, Min: 0, Max: 0, Unit: '' },
+              Mana: { Value: 'Mana', Num: 0, Min: 0, Max: 0, Unit: '' },
+            },
+          },
 
-              Values: {
-                Health: {
-                  Value: 'Health',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['a * 12', '{"a": [2, 3]}'],
-                },
-                Mana: {
-                  Value: 'Mana',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['a * 12', '{"a": [2, 5]}'],
-                },
+          'Primary Stats': {
+            Value: 'Primary Stats',
+            Type: 'Static',
+            Total: 2010,
+            Min: 70,
+            Max: 12800,
+            Level: 2560,
+            Points: 1000,
+            PointCalc: [
+              'a * 12',
+              '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+            ],
+            Values: {
+              Strength: {
+                Value: 'Strength',
+                Num: 103,
+                Min: 3,
+                Max: 2560,
+                Unit: '',
+              },
+              Agility: {
+                Value: 'Agility',
+                Num: 119,
+                Min: 3,
+                Max: 2560,
+                Unit: '',
+              },
+              Stamina: {
+                Value: 'Stamina',
+                Num: 181,
+                Min: 3,
+                Max: 2560,
+                Unit: '',
+              },
+              Spirit: {
+                Value: 'Spirit',
+                Num: 216,
+                Min: 3,
+                Max: 2560,
+                Unit: '',
+              },
+              Intelligence: {
+                Value: 'Intelligence',
+                Num: 1391,
+                Min: 58,
+                Max: 2560,
+                Unit: '',
               },
             },
-            // End of stat table
-            'Primary Stats': {
-              Value: 'Primary Stats',
-              Type: 'Static',
-              Total: 0,
-              Min: 0,
-              Max: 0,
-              Level: 2560,
-              Points: 1000,
-              PointCalc: [
-                'a * 1',
-                '{"a": ["Values","Page One","Values","Primary Stats","Level"], "b": ["Values","Page One","Values","Primary Stats","Level"]}',
-              ],
-              Values: {
-                Strength: {
-                  Value: 'Strength',
-                  Num: 103,
-                  Min: 3,
-                  Max: 2560,
-                  Unit: '',
-                },
-                Agility: {
-                  Value: 'Agility',
-                  Num: 119,
-                  Min: 3,
-                  Max: 2560,
-                  Unit: '',
-                },
-                Stamina: {
-                  Value: 'Stamina',
-                  Num: 181,
-                  Min: 3,
-                  Max: 2560,
-                  Unit: '',
-                },
-                Spirit: {
-                  Value: 'Spirit',
-                  Num: 216,
-                  Min: 3,
-                  Max: 2560,
-                  Unit: '',
-                },
-                Intelligence: {
-                  Value: 'Intelligence',
-                  Num: 1391,
-                  Min: 58,
-                  Max: 2560,
-                  Unit: '',
-                },
-              },
-            },
-            'Secondary Stats': {
-              Value: 'Secondary Stats',
-              Type: 'Calc',
-              Num: 0,
-              Min: 0,
-              Max: 0,
-              Values: {
-                'Melee Attack': {
-                  Value: 'Melee Attack',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['a * 0.2', '{"a": [2, 1]}'],
-                },
-                'Range Attack': {
-                  Value: 'Range Attack',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['a * 0.2', '{"a": [2, 2]}'],
-                },
-                'Magic Attack': {
-                  Value: 'Magic Attack',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, // ['a * 0.2', '{"a": [2, 5]}'],
-                },
-                'Healing Power': {
-                  Value: 'Healing Power',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['{"a": [2, 4]}', 'a * 0.2'],
-                },
-                'Physical Defense': {
-                  Value: 'Physical Defense',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['{"a": [2, 3]}', 'a * 1'],
-                },
-                'Magic Defense': {
-                  Value: 'Magic Defense',
-                  Num: 0,
-                  Min: 0,
-                  Max: 0,
-                  Unit: '',
-                  math: undefined, //['{"a": [2, 3]}', 'a * 1'],
-                },
-              },
-            },
-            'Misc Stats': {
-              Value: 'Misc Stats',
-              Type: 'Calc',
-              Num: 0,
-              Min: 0,
-              Max: 0,
-              Values: {
-                'Move Speed': {
-                  Value: 'Move Speed',
-                  Num: 5.4,
-                  Min: 5.4,
-                  Max: 10,
-                  Unit: 'm/s',
-                  math: undefined, //['{}', ''],
-                },
-                'Cast Time': {
-                  Value: 'Cast Time',
+          },
 
-                  Num: 0,
-                  Min: 0,
-                  Max: 100,
-                  Unit: '%',
-                  math: undefined /*[
-                    '{"a": [2, 4], "b": [2, 5]}',
-                    '(a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013))',
-                  ],*/,
-                },
-                'Attack Speed': {
-                  Value: 'Attack Speed',
-                  Num: 190,
-                  Min: 0,
-                  Max: 1200,
-                  Unit: '%',
-                  math: undefined, //['{}', ''],
-                }, // end of attack speed
-              }, // end of stat values
-            }, // end of misc stats
-          }, // end of stats
-        }, // end of page one
-      // page two
-      'Page Two: Attack Details':
-        // page two
-        {
-          Value: 'Page Two: Attack Details',
-          Values: {
-            'Melee Attack': {
-              Value: 'Melee Attack',
-              Type: 'Calc',
-              Total: 0,
-              Min: 0,
-              Max: 0,
-              // Level: 0,
-              // Points: 1000,
-              // PointCalc: ['{"a": "Level"}', 'a * 12'],
-              Values: {
-                'Melee Attack Speed': {
-                  Value: 'Melee Attack Speed',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Melee Accuracy': {
-                  Value: 'Melee Accuracy',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Melee Critical Status': {
-                  Value: 'Melee Critical Status',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Melee Critical Damage': {
-                  Value: 'Melee Critical Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Backstab Melee Damage': {
-                  Value: 'Backstab Melee Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Melee Skill Damage': {
-                  Value: 'Melee Skill Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'PvE Melee Skills': {
-                  Value: 'PvE Melee Skills',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
+          'Secondary Stats': {
+            Value: 'Secondary Stats',
+            Type: 'Calc',
+            Num: 0,
+            Min: 0,
+            Max: 0,
+            Values: {
+              'Melee Attack': {
+                Value: 'Melee Attack',
+                Num: 0,
+                Min: 0,
+                Max: 0,
+                Unit: '',
+              },
+              'Range Attack': {
+                Value: 'Range Attack',
+                Num: 0,
+                Min: 0,
+                Max: 0,
+                Unit: '',
+              },
+              'Magic Attack': {
+                Value: 'Magic Attack',
+                Num: 0,
+                Min: 0,
+                Max: 0,
+                Unit: '',
+              },
+              'Healing Power': {
+                Value: 'Healing Power',
+                Num: 0,
+                Min: 0,
+                Max: 0,
+                Unit: '',
+              },
+              'Physical Defense': {
+                Value: 'Physical Defense',
+                Num: 0,
+                Min: 0,
+                Max: 0,
+                Unit: '',
+              },
+              'Magic Defense': {
+                Value: 'Magic Defense',
+                Num: 0,
+                Min: 0,
+                Max: 0,
+                Unit: '',
               },
             },
-            'Ranged Attack': {
-              Value: 'Ranged Attack',
-              Type: 'Calc',
-              Total: 0,
-              Min: 0,
-              Max: 0,
-              // Level: -1,
-              // Points: 1000,
-              // PointCalc: ['{"a": "Level"}', 'a * 12'],
-              Values: {
-                'Ranged Accuracy': {
-                  Value: 'Ranged Accuracy',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Ranged Critical Status': {
-                  Value: 'Ranged Critical Status',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Ranged Critical Damage': {
-                  Value: 'Ranged Critical Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Backstab Ranged Damage': {
-                  Value: 'Backstab Ranged Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Ranged Skill Damage': {
-                  Value: 'Ranged Skill Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'PvE Ranged Skills': {
-                  Value: 'PvE Ranged Skills',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-              },
-            },
-            'Magic Attack': {
-              Value: 'Magic Attack',
-              Type: 'Calc',
-              Total: 0,
-              Min: 0,
-              Max: 0,
-              // Level: -1,
-              // Points: 1000,
-              // PointCalc: ['{"a": "Level"}', 'a * 12'],
-              Values: {
-                'Magic Accuracy': {
-                  Value: 'Magic Accuracy',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Magic Critical Status': {
-                  Value: 'Magic Critical Status',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Magic Critical Damage': {
-                  Value: 'Magic Critical Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Backstab Magic Damage': {
-                  Value: 'Backstab Magic Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Magic Skill Damage': {
-                  Value: 'Magic Skill Damage',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'PvE Magic Skills': {
-                  Value: 'PvE Magic Skills',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-              },
-            },
-            Misc: {
-              Value: 'Misc',
-              Type: 'Calc',
-              Total: 0,
-              Min: 0,
-              Max: 0,
-              // Level: -1,
-              // Points: 1000,
-              // PointCalc: ['{"a": "Level"}', 'a * 12'],
-              Values: {
-                Focus: { Value: 'Focus', Num: 1, Min: 1, Max: 10, Unit: '' },
-                'Shield Defense Penetration Rate': {
-                  Value: 'Shield Defense Penetration Rate',
+          },
 
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Shield Defense Penetration': {
-                  Value: 'Shield Defense Penetration',
-
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Defense Penetration': {
-                  Value: 'Defense Penetration',
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
-                'Magic Defense Penetration': {
-                  Value: 'Magic Defense Penetration',
-
-                  Num: 1,
-                  Min: 1,
-                  Max: 10,
-                  Unit: '',
-                },
+          'Misc Stats': {
+            Value: 'Misc Stats',
+            Type: 'Calc',
+            Num: 0,
+            Min: 5.4,
+            Max: 1310,
+            Values: {
+              'Move Speed': {
+                Value: 'Move Speed',
+                Num: 5.4,
+                Min: 5.4,
+                Max: 10,
+                Unit: 'm/s',
+              },
+              'Cast Time': {
+                Value: 'Cast Time',
+                Num: 0,
+                Min: 0,
+                Max: 100,
+                Unit: '%',
+              },
+              'Attack Speed': {
+                Value: 'Attack Speed',
+                Num: 190,
+                Min: 0,
+                Max: 1200,
+                Unit: '%',
               },
             },
-          }, // end of page two
+          },
         },
-      // page three
+      },
+
+      'Page Two: Attack Details': {
+        Value: 'Page Two: Attack Details',
+        Values: {
+          'Melee Attack': {
+            Value: 'Melee Attack',
+            Type: 'Calc',
+            Total: 7,
+            Min: 7,
+            Max: 70,
+            Values: {
+              'Melee Attack Speed': {
+                Value: 'Melee Attack Speed',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Melee Accuracy': {
+                Value: 'Melee Accuracy',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Melee Critical Status': {
+                Value: 'Melee Critical Status',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Melee Critical Damage': {
+                Value: 'Melee Critical Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Backstab Melee Damage': {
+                Value: 'Backstab Melee Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Melee Skill Damage': {
+                Value: 'Melee Skill Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Melee Skills': {
+                Value: 'PvE Melee Skills',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+
+          'Ranged Attack': {
+            Value: 'Ranged Attack',
+            Type: 'Calc',
+            Total: 6,
+            Min: 6,
+            Max: 60,
+            Values: {
+              'Ranged Accuracy': {
+                Value: 'Ranged Accuracy',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Ranged Critical Status': {
+                Value: 'Ranged Critical Status',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Ranged Critical Damage': {
+                Value: 'Ranged Critical Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Backstab Ranged Damage': {
+                Value: 'Backstab Ranged Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Ranged Skill Damage': {
+                Value: 'Ranged Skill Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Ranged Skills': {
+                Value: 'PvE Ranged Skills',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+
+          'Magic Attack': {
+            Value: 'Magic Attack',
+            Type: 'Calc',
+            Total: 6,
+            Min: 6,
+            Max: 60,
+            Values: {
+              'Magic Accuracy': {
+                Value: 'Magic Accuracy',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Magic Critical Status': {
+                Value: 'Magic Critical Status',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Magic Critical Damage': {
+                Value: 'Magic Critical Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Backstab Magic Damage': {
+                Value: 'Backstab Magic Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Magic Skill Damage': {
+                Value: 'Magic Skill Damage',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'PvE Magic Skills': {
+                Value: 'PvE Magic Skills',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+
+          Misc: {
+            Value: 'Misc',
+            Type: 'Calc',
+            Total: 5,
+            Min: 5,
+            Max: 50,
+            Values: {
+              Focus: { Value: 'Focus', Num: 1, Min: 1, Max: 10, Unit: '' },
+              'Shield Defense Penetration Rate': {
+                Value: 'Shield Defense Penetration Rate',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Shield Defense Penetration': {
+                Value: 'Shield Defense Penetration',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Defense Penetration': {
+                Value: 'Defense Penetration',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+              'Magic Defense Penetration': {
+                Value: 'Magic Defense Penetration',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+              },
+            },
+          },
+        },
+      },
+
       'Page Three: Defense Details': {
         Value: 'Page Three: Defense Details',
         Values: {
           Defense: {
             Value: 'Defense',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 7,
+            Min: 7,
+            Max: 70,
             Values: {
               'Parry Rate': {
                 Value: 'Parry Rate',
@@ -583,15 +535,13 @@ const defaultTemplates = {
               },
             },
           },
+
           'Melee Defense': {
             Value: 'Melee Defense',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 3,
+            Min: 3,
+            Max: 30,
             Values: {
               'Melee Damage Reduction': {
                 Value: 'Melee Damage Reduction',
@@ -602,7 +552,6 @@ const defaultTemplates = {
               },
               'Fixed Melee Damage Reduction': {
                 Value: 'Fixed Melee Damage Reduction',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -610,7 +559,6 @@ const defaultTemplates = {
               },
               'PvE Melee Damage Reduction': {
                 Value: 'PvE Melee Damage Reduction',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -618,15 +566,13 @@ const defaultTemplates = {
               },
             },
           },
+
           'Ranged Defense': {
             Value: 'Ranged Defense',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 3,
+            Min: 3,
+            Max: 30,
             Values: {
               'Ranged Damage Reduction': {
                 Value: 'Ranged Damage Reduction',
@@ -637,7 +583,6 @@ const defaultTemplates = {
               },
               'Fixed Ranged Damage Reduction': {
                 Value: 'Fixed Ranged Damage Reduction',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -645,7 +590,6 @@ const defaultTemplates = {
               },
               'PvE Ranged Damage Reduction': {
                 Value: 'PvE Ranged Damage Reduction',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -653,15 +597,13 @@ const defaultTemplates = {
               },
             },
           },
+
           'Magic Defense': {
             Value: 'Magic Defense',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 3,
+            Min: 3,
+            Max: 30,
             Values: {
               'Magic Damage Reduction': {
                 Value: 'Magic Damage Reduction',
@@ -672,7 +614,6 @@ const defaultTemplates = {
               },
               'Fixed Magic Damage Reduction': {
                 Value: 'Fixed Magic Damage Reduction',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -680,7 +621,6 @@ const defaultTemplates = {
               },
               'PvE Magic Damage Reduction': {
                 Value: 'PvE Magic Damage Reduction',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -688,20 +628,18 @@ const defaultTemplates = {
               },
             },
           },
-        }, // end of defense stats
-      }, // end of defense page
+        },
+      },
+
       'Regen/Misc': {
         Value: 'Regen/Misc',
         Values: {
           Heal: {
             Value: 'Heal',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 4,
+            Min: 4,
+            Max: 40,
             Values: {
               'Critical Heal Rate': {
                 Value: 'Critical Heal Rate',
@@ -727,15 +665,13 @@ const defaultTemplates = {
               },
             },
           },
+
           Regeneration: {
             Value: 'Regeneration',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 4,
+            Min: 4,
+            Max: 40,
             Values: {
               'Heal Regen': {
                 Value: 'Heal Regen',
@@ -746,7 +682,6 @@ const defaultTemplates = {
               },
               'Continuous Heal Regen': {
                 Value: 'Continuous Heal Regen',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -766,17 +701,15 @@ const defaultTemplates = {
                 Max: 10,
                 Unit: '',
               },
-            }, // end of Stat Values
+            },
           },
+
           Misc: {
             Value: 'Misc',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
-            // Level: -1,
-            // Points: 1000,
-            // PointCalc: ['{"a": "Level"}', 'a * 12'],
+            Total: 5,
+            Min: 5,
+            Max: 50,
             Values: {
               'Received Healing': {
                 Value: 'Received Healing',
@@ -787,7 +720,6 @@ const defaultTemplates = {
               },
               'Increased experience gain': {
                 Value: 'Increased experience gain',
-
                 Num: 1,
                 Min: 1,
                 Max: 10,
@@ -815,7 +747,7 @@ const defaultTemplates = {
                 Unit: '',
               },
             },
-          }, // end of Stat Values
+          },
         },
       },
     },
@@ -835,6 +767,39 @@ const defaultTemplates = {
 //   return result;
 // }
 // const tmplMenuItems = compileMenuItems();
+
+const SaveStatCard = (props) => {
+  let { value } = props;
+  const regex1 = /}}},/gi;
+  const regex2 = /:{/gi;
+  value = JSON.stringify(value)
+    .replace(regex1, '}}},\n\n')
+    .replace(regex2, '\n:{');
+
+  return (
+    <TogglePopup
+      component={
+        <div>
+          Profile Code
+          <textarea
+            type="text"
+            // readOnly
+            value={value}
+            style={{
+              display: 'block',
+              width: '100%',
+              height: '512px',
+              whiteSpace: 'nowrap',
+              resize: 'none',
+            }}
+          />
+        </div>
+      }
+    >
+      Profile Code
+    </TogglePopup>
+  );
+};
 
 // Stat Card
 function Stats(props) {
@@ -906,6 +871,7 @@ function Stats(props) {
         //   flexGrow: 1,
         // }}
       /> */}
+      <SaveStatCard value={value}></SaveStatCard>
       <ProfileCard
         key="profile"
         value={value}
