@@ -55,7 +55,7 @@ const RenderGrid = (props) => {
   const { columnStyle } = props;
   const { iColumns } = props;
   const { onClick } = props.events;
-  const { onChange } = props.events;
+  const cellOnChange = props.events.onChange;
   const { onFocus } = props.events;
   const { onBlur } = props.events;
   const value = arrCheck(props.value);
@@ -63,6 +63,8 @@ const RenderGrid = (props) => {
   const hRow = arrCheck(props.hRow);
   const { selection } = props;
   const { setSelection } = props;
+  const { onChangeOverride } = props;
+  const tableData = {};
 
   const getColumnGroup = (row) => {
     let x = -1;
@@ -155,13 +157,17 @@ const RenderGrid = (props) => {
     if (value[0] <= 0) return null;
     let children;
 
-    function handleEvent(e) {
+    function handleEvent(e, tableData) {
       const ds = e.target.dataset;
-      const { x, y, key } = ds;
-
+      const { x, y, key } = ds ? ds : {};
       const k = key ? key : y;
-
       let result;
+
+      if (hRow[y].props.checked !== undefined) {
+        result = e.target.checked;
+      } else if (hRow[y].props.value !== undefined) {
+        result = e.target.value;
+      }
 
       if (hRow[y].props.checked !== undefined) {
         result = e.target.checked;
@@ -171,13 +177,7 @@ const RenderGrid = (props) => {
 
       // set cell
       value[x][k] = result;
-      return {
-        target: {
-          value,
-          dataset: e.target.parentNode ? e.target.parentNode.dataset : {},
-        },
-      };
-      // return { target: { value: value, dataset: e.target.ds } };
+      return { x, y, key, value };
     }
 
     // map
@@ -197,7 +197,19 @@ const RenderGrid = (props) => {
             iY = -1;
             const isObj = Object.keys(row).length ? true : false;
             const ROW = isObj ? Object.keys(row) : row;
-            return [
+
+            // add and define new row data
+            tableData[iX] = {};
+
+            // define row data
+            //  console.log('1. ', { tableData, iX, rowKeys, iY });
+            // define row data
+            tableData['parentKey'] = parentKey;
+            tableData[iX]['key'] = `${rowKeys ? `${rowKeys[iX]}` : `${iX}`}`;
+            tableData[iX]['values'] = {};
+            tableData[iX]['keys'] = ROW;
+
+            const rowBuffer = [
               headerRows && iX > 0 ? getHeader(value, rHS, true) : null,
               <tr key={`tr${iX}`} name={`tr${iX}`} style={rowStyle}>
                 {rowHeader ? ( // row header
@@ -210,6 +222,15 @@ const RenderGrid = (props) => {
                     if (iColumns <= iY) return undefined;
                     iY += 1;
                     const CELL = isObj ? row[cell] : cell;
+
+                    // add cell values
+                    tableData[iX]['values'][ROW[iY]] = CELL;
+                    // console.log(
+                    //   'tableData[iX][values]:',
+                    //   tableData[iX]['values'],
+                    //   CELL,
+                    // );
+
                     const ds = {
                       // dataset
                       'data-x': iX,
@@ -217,150 +238,114 @@ const RenderGrid = (props) => {
                       'data-key': `${rowKeys ? `${rowKeys[iX]}~` : ''}${cell}`,
                     };
                     let hasElem = hRow.length > iY;
-                    if (hasElem) hasElem = hRow[iY] !== undefined;
-                    let elmOnChange = hasElem
-                      ? hRow[iY].props.onChange
+                    const hCell = hRow[iY];
+                    if (hasElem) hasElem = hCell !== undefined;
+                    let elemOnChange = hasElem
+                      ? hCell.props.onChange
                       : undefined;
                     const buffer = (
                       <td
                         key={`td${iY}`}
                         {...dataset}
-                        {...((hRow[iY] ? hRow[iY].props.break : false)
+                        {...((hCell ? hCell.props.break : false)
                           ? { colspan: ROW.length - 1 }
                           : {})}
                         style={{
                           ...cellStyle,
                         }}
                       >
-                        {hasElem
-                          ? {
-                              ...hRow[iY],
-                              props: {
-                                ...hRow[iY].props,
+                        {(hasElem
+                          ? (row) => {
+                              let newProps = {};
+                              const cp = hCell.props;
+                              // console.log('cp:', cp);
+
+                              // iterate through and reapply each individual props
+                              Object.keys(cp).forEach((k) => {
+                                // console.log(
+                                //   `key: "${k}"`,
+                                //   '\nprop:',
+                                //   cp[k],
+                                //   '\n isFunc:',
+                                //   cp[k] instanceof Function,
+                                // );
+                                if (
+                                  k !== 'onChange' &&
+                                  k !== 'onClick' &&
+                                  k !== 'onBlur' &&
+                                  k !== 'onFocus' &&
+                                  cp[k] instanceof Function === true
+                                ) {
+                                  newProps[k] = cp[k](row);
+                                } else {
+                                  newProps[k] = cp[k];
+                                }
+                              });
+
+                              newProps = {
+                                ...newProps,
                                 ...ds,
-                                ...(hRow[iY].props.checked !== undefined
+                                ...(hCell.props.checked !== undefined
                                   ? {
                                       checked: CELL,
                                     }
                                   : {}),
-                                ...(hRow[iY].props.value !== undefined
+                                ...(hCell.props.value !== undefined
                                   ? {
                                       value: CELL,
                                     }
                                   : {}),
-                                ...(hRow[iY].props.children !== undefined
+                                ...(hCell.props.children !== undefined
                                   ? {
                                       children: CELL,
                                     }
                                   : {}),
 
-                                ...(elmOnChange || onChange
+                                ...(elemOnChange || cellOnChange
                                   ? {
                                       onChange: (e) => {
-                                        const buffer = {
-                                          target: {
-                                            value: e.target.value,
-                                            dataset: {
-                                              key: `${e.target.dataset.key}`,
-                                            },
-                                          },
-                                        };
+                                        const data = handleEvent(e, tableData);
+                                        const rowdata = data.x
+                                          ? {
+                                              cell: data.key
+                                                ? data.key
+                                                : data.y,
+                                              key: tableData.parentKey,
+                                              value: tableData[data.x].values,
+                                            }
+                                          : {};
 
-                                        if (elmOnChange) {
-                                          elmOnChange(buffer);
+                                        // onChange event of the component passed into the cell passed
+                                        if (elemOnChange) {
+                                          elemOnChange(e, rowdata);
                                         }
-
-                                        if (onChange) {
-                                          buffer.target.dataset.key = `${
-                                            parentKey ? parentKey + '~' : ''
-                                          }${e.target.dataset.key}`;
-
-                                          onChange(buffer);
+                                        // onChange event passed to the table
+                                        if (
+                                          cellOnChange &&
+                                          (!elemOnChange ||
+                                            (!onChangeOverride && elemOnChange))
+                                        ) {
+                                          cellOnChange(e, rowdata);
                                         }
-
                                         // return value and key
-                                        return buffer;
+                                        return e;
                                       },
                                     }
                                   : {}),
+                              }; // end of props
 
-                                ...(hRow[iY].props.onClick || onClick
-                                  ? {
-                                      onClick: (e) => {
-                                        const { y } = e.target.dataset;
-                                        if (!y) {
-                                          console.error(
-                                            'ERROR: Element is not compatible with the Grid element',
-                                          );
-                                          return;
-                                        }
-                                        // cell event
-                                        if (hasElem)
-                                          if (hRow[y].props.onClick)
-                                            hRow[y].props.onClick(e);
-                                        // tree event
-                                        if (onClick) onClick(handleEvent(e));
-                                      },
-                                    }
-                                  : {}),
-
-                                ...(hRow[iY].props.onFocus ||
-                                onFocus ||
-                                setSelection
-                                  ? {
-                                      onFocus: (e) => {
-                                        const { y } = e.target.dataset;
-                                        const { x } = e.target.dataset;
-                                        if (!y || !x) {
-                                          console.error(
-                                            'ERROR: Element is not compatible with the Grid element',
-                                          );
-                                          return;
-                                        }
-                                        // set selection
-                                        if (setSelection)
-                                          setSelection(
-                                            parseInt(x, 10),
-                                            parseInt(y, 10),
-                                          );
-
-                                        // cell event
-                                        if (hasElem)
-                                          if (hRow[y].props.onFocus)
-                                            hRow[y].props.onFocus(e);
-                                        // tree event
-                                        if (onFocus) onFocus(handleEvent(e));
-                                      },
-                                    }
-                                  : {}),
-
-                                ...(hRow[iY].props.onBlur || onBlur
-                                  ? {
-                                      onBlur: (e) => {
-                                        const { y } = e.target.dataset;
-                                        if (!y) {
-                                          console.error(
-                                            'ERROR: Element is not compatible with the Grid element',
-                                          );
-                                          return;
-                                        }
-                                        // cell event
-                                        if (hasElem)
-                                          if (hRow[y].props.onBlur)
-                                            hRow[y].props.onBlur(e);
-                                        // tree event
-                                        if (onBlur) onBlur(handleEvent(e));
-                                      },
-                                    }
-                                  : {}),
-                              },
+                              return {
+                                ...hCell,
+                                props: newProps,
+                              };
                             }
                           : isObj
-                          ? CELL.toString()
-                          : CELL}
+                          ? () => CELL.toString()
+                          : () => CELL)(row)}
                       </td>
                     ); // end of buffer
-                    if (hRow[iY] ? hRow[iY].props.break : false) {
+
+                    if (hCell ? hCell.props.break : false) {
                       children = buffer;
                       return undefined;
                     }
@@ -370,6 +355,8 @@ const RenderGrid = (props) => {
               </tr>,
               children ? <tr style={rowStyle}>{children}</tr> : undefined,
             ];
+
+            return rowBuffer;
           })}
         </tbody>
         {getFooter()}
@@ -524,7 +511,6 @@ class Grid extends React.Component {
   };
   getCell = (row, col) => {
     const value = this.getValue();
-    console.log('getCell:', value);
     if (value === undefined) return '';
 
     if (

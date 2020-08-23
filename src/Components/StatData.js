@@ -12,14 +12,15 @@ class StatData extends React.Component {
       case 'Num':
         result = Calc.fMinMax(result, stats['Min'], stats['Max']);
         event = result - value;
-        // console.log('MinMax:', result, stats['Min'], stats['Max'], event);
         break;
       case 'Min':
         result = Calc.fMinMax(result, undefined, stats['Num']);
         event = result - value;
         break;
       case 'Max':
-        result = Calc.fMinMax(Calc.fMinMax(result, stats['Num']), stats['Min']);
+        result = Calc.fMinMax(result, stats['Num']);
+        result = Calc.fMinMax(result, stats['Min']);
+        // result = Calc.fMinMax(result, stats['Num']);
         event = result - value;
         break;
       default:
@@ -30,7 +31,6 @@ class StatData extends React.Component {
   }
 
   static TallyTotals(statBlock) {
-    // console.log('statBlock:', statBlock);
     const tallies = { Total: 0, Min: 0, Max: 0 };
 
     Object.keys(statBlock).forEach((key) => {
@@ -44,7 +44,6 @@ class StatData extends React.Component {
 
   static GetValue = (keys, data) => {
     if (!keys.length) return;
-    // console.log('keys:', keys);
 
     let buffer;
 
@@ -88,7 +87,6 @@ class StatData extends React.Component {
 
   // parse scope
   static parseVariables(variables, data, noParse) {
-    console.log(`${variables}, ${data}`);
     let scope;
 
     try {

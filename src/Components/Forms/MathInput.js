@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../App.css';
 import Popup from './Popup';
 import MathDialogue from './MathDialogue';
@@ -7,19 +7,9 @@ import StatData from '../StatData';
 const MathInput = (props) => {
   const { children } = props;
   const { data } = props;
-  const { rootKey } = props;
   const Key = props.Key ? props.Key : props['data-key'];
   // get math property
   let { math } = props;
-  // if math null, then get math from root
-  if (math === undefined) {
-    if (rootKey && Key) {
-      const path = `${rootKey}~Values~${Key}`.split('~');
-      const pathArr = path.slice(0, path.length - 1);
-      pathArr.push('math');
-      math = StatData.GetValue(pathArr, data);
-    }
-  }
   const expression = math ? math[0] : undefined;
   const vars = math ? math[1] : undefined;
 
@@ -30,6 +20,12 @@ const MathInput = (props) => {
   const { onFocus } = props;
   const events = { onChange, onClick, onBlur, onFocus };
 
+  // data sets
+  let dataset = {};
+  Object.keys(props).forEach((key) => {
+    if (key.slice(0, 5) === 'data-') dataset[key] = props[key];
+  });
+
   const [seen, setSeen] = useState(false);
   const togglePopup = () => {
     setSeen(!seen);
@@ -37,6 +33,7 @@ const MathInput = (props) => {
 
   const component = (
     <MathDialogue
+      {...dataset}
       key={Key}
       Key={Key}
       expression={expression}
@@ -46,15 +43,18 @@ const MathInput = (props) => {
         togglePopup();
       }}
       onAccept={(e) => {
-        if (onChange) onChange(e, Key);
+        if (onChange) onChange(e);
         togglePopup();
       }}
     ></MathDialogue>
   );
 
+  useEffect(() => {}, []);
+
   return (
     <div>
       <button
+        {...dataset}
         type="button"
         className="Button"
         style={{
@@ -71,7 +71,7 @@ const MathInput = (props) => {
           togglePopup();
         }}
       >
-        {children}
+        {math ? StatData.GetCellValue(math[0], math[1], data) : children}
       </button>
       {seen ? (
         // eslint-disable-next-line react/prop-types

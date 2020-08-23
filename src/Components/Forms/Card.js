@@ -11,26 +11,6 @@ import StatData from '../StatData.js';
 import ToggleButton from '../Forms/ToggleButton.js';
 import MathInput from '../Forms/MathInput.js';
 
-// TODO:
-// 1. Calculate Points
-// 2. Limit Point Allocation if in static mode
-
-// style={{
-//   maxwidth: '512px',
-//   overflow: 'scroll',
-//   backgroundColor: '#faf8e8',
-//   color: '#6e5735',
-//   fontFamily: 'NotoSansKR',
-//   border: '4px solid #6e5735',
-//   padding: '16px',
-//   margin: '4px',
-// }}
-// cellStyle={cellStyle}
-// // childrenAsRow
-// // columnWidths={['128px', '64px', '64px', '64px', '32px', '64px']}
-// headerRows
-// hRow={[]}
-
 // Steps To Rendering A Card
 // 1. Take Title
 // 2. Parse Out Pages
@@ -122,7 +102,56 @@ const StatBlock = (props) => {
   const { onChange } = props;
 
   // handleChange
-  const handleChange = (e, key, type) => {
+  const handleStatChange = (e, rowData, type) => {
+    let { value } = e.target;
+
+    const cell = rowData.cell.split('~');
+    const { key } = rowData;
+
+    const buffer = {
+      target: {
+        value: value,
+        checked: type === 'checkbox' ? e.target.checked : undefined,
+        dataset: {
+          key: `${key}~${cell[0]}~${cell[1]}`,
+        },
+      },
+    };
+
+    // This is the onChange event of the StatCard
+    // Update Calculation
+    if (onChange) onChange(buffer);
+  };
+
+  const handleMathStatChange = (e, rowData, type) => {
+    let { value } = e.target;
+
+    const cell = rowData.cell.split('~');
+    const { key } = rowData;
+
+    const buffer = {
+      target: {
+        value: value,
+        checked: type === 'checkbox' ? e.target.checked : undefined,
+        dataset: {
+          key: `${key}~${cell[0]}~${'Calc'}`,
+        },
+      },
+    };
+
+    // This is the onChange event of the StatCard
+    // Update Calculation
+    if (onChange) onChange(buffer);
+    // Update Results(Num, Min, Max)
+    buffer.target.dataset = {
+      key: `${key}~${cell[0]}~${'Num'}`,
+    };
+    buffer.target.value = StatData.GetCellValue(value[0], value[1], data);
+    if (onChange) onChange(buffer);
+  };
+
+  // handleChange
+  function handleChange(e, key, type) {
     const buffer = {
       target: {
         value: e.target.value,
@@ -134,24 +163,26 @@ const StatBlock = (props) => {
     };
 
     if (onChange) onChange(buffer);
-  };
+  }
 
-  const handleMinMaxChange = (e) => {
-    const value =
+  const handleMinMaxChange = (e, rowData) => {
+    let value =
       e.target.value === '' ? 0 : Number.parseFloat(e.target.value, 10);
-    const keys = e.target.dataset.key.split('~');
 
-    e.target.value = StatData.HandleStatMinMax(
-      Values[keys[0]],
-      keys[1],
-      value,
-    ).result;
+    const cell = rowData.cell.split('~');
+    const keys = rowData.key.split('~');
+    const stats = rowData.value;
+    let oldValue = stats['Min'];
 
-    // check for change and return early if no change in value
-    if (value === Values[keys[0]][keys[1]]) return;
+    value = StatData.HandleStatMinMax(stats, cell[1], value).result;
+
+    // Create synthetic event object
+    const E = {
+      target: { value, dataset: { key: `${rowData.key}~${rowData.cell}` } },
+    };
 
     setUpdateTotals(true);
-    if (onChange) onChange(e);
+    if (onChange) onChange(E);
   };
 
   // Update Totals
@@ -179,7 +210,13 @@ const StatBlock = (props) => {
 
   // input forms
   const inputForms = [
-    <input key="Value" type="text" value={''} style={cellStyle} />,
+    <input
+      key="Value"
+      type="text"
+      value={''}
+      style={cellStyle}
+      onChange={handleStatChange}
+    />,
     <input
       key="Num"
       type="number"
@@ -201,7 +238,13 @@ const StatBlock = (props) => {
       style={cellStyle}
       onChange={handleMinMaxChange}
     />,
-    <input key="Unit" type="text" value={''} style={cellStyle} />,
+    <input
+      key="Unit"
+      type="text"
+      value={''}
+      style={cellStyle}
+      onChange={handleStatChange}
+    />,
     <div key="Math" style={{ display: 'none' }}>
       Data
     </div>,
@@ -210,22 +253,29 @@ const StatBlock = (props) => {
     </div>,
   ];
 
+  function getCalc(row) {
+    return row['Calc'];
+  }
+
+  function getCellKey(rowData) {
+    return 'Values' + '~' + rowData['Value'] + '~' + 'Num';
+  }
+
   const displayForms = [
     <input key="Value" type="text" value={''} style={cellStyle} />,
     <MathInput
       key="Num"
-      rootKey={parentKey}
+      Key={getCellKey}
+      math={getCalc}
       data={data}
       style={buttonStyle}
-      onChange={handleChange}
+      onChange={handleMathStatChange}
     >
       Data
     </MathInput>,
     <div key="Min">Data</div>,
     <div key="Max">Data</div>,
     <input key="Unit" type="text" value={''} style={cellStyle} />,
-    <input key="Math" type="text" value={''} style={cellStyle} />,
-    <input key="Vars" type="text" value={''} style={cellStyle} />,
   ];
 
   return (
@@ -283,6 +333,7 @@ const StatBlock = (props) => {
         </div>
       </div>
       <Grid
+        value={Values}
         columnStyle={[
           { width: '128px' },
           { width: '64px' },
@@ -294,9 +345,9 @@ const StatBlock = (props) => {
         iColumns={4}
         parentKey={`${parentKey}~Values`}
         rowKeys={Object.keys(Values)}
-        value={Values}
         header
         onChange={onChange}
+        onChangeOverride
         // cellStyle={cellStyle}
         hRow={Type === 'Calc' ? displayForms : inputForms}
         hFooter={

@@ -13,6 +13,11 @@ const MathDialogue = (props) => {
   const { data } = props;
   const { onCancel } = props;
   const { onAccept } = props;
+  // data sets
+  let dataset = {};
+  Object.keys(props).forEach((key) => {
+    if (key.slice(0, 5) === 'data-') dataset[key] = props[key];
+  });
 
   const [newExpression, setExpression] = useState(expression);
   const [newVars, setVars] = useState(vars ? JSON.parse(vars) : {});
@@ -159,7 +164,7 @@ const MathDialogue = (props) => {
                 type="push"
                 style={{ width: '24px' }}
                 onClick={(e) => {
-                  togglePopup();
+                  togglePopup(e);
                 }}
               >
                 +
@@ -194,11 +199,13 @@ const MathDialogue = (props) => {
           </td>
           <td>
             <button
+              {...dataset}
               type="push"
-              onClick={() => {
+              onClick={(e) => {
                 const result = {
                   target: {
                     value: [newExpression, JSON.stringify(newVars)],
+                    dataset: e.target.dataset,
                   },
                 };
                 onAccept(result);

@@ -79,6 +79,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 200,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Defense: {
                 Value: 'Defense',
@@ -86,6 +87,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 200,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Defense': {
                 Value: 'Magic Defense',
@@ -93,6 +95,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 200,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Strength: {
                 Value: 'Strength',
@@ -100,6 +103,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 200,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Magic: { Value: 'Magic', Num: 31, Min: 1, Max: 200, Unit: '' },
               Vitality: {
@@ -108,6 +112,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 200,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Spirit: { Value: 'Spirit', Num: 23, Min: 1, Max: 200, Unit: '' },
               Luck: { Value: 'Luck', Num: 27, Min: 1, Max: 200, Unit: '' },
@@ -156,6 +161,7 @@ const defaultTemplates = {
                 Min: 3,
                 Max: 2560,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Agility: {
                 Value: 'Agility',
@@ -163,6 +169,7 @@ const defaultTemplates = {
                 Min: 3,
                 Max: 2560,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Stamina: {
                 Value: 'Stamina',
@@ -170,6 +177,7 @@ const defaultTemplates = {
                 Min: 3,
                 Max: 2560,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Spirit: {
                 Value: 'Spirit',
@@ -177,6 +185,7 @@ const defaultTemplates = {
                 Min: 3,
                 Max: 2560,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Intelligence: {
                 Value: 'Intelligence',
@@ -184,6 +193,7 @@ const defaultTemplates = {
                 Min: 58,
                 Max: 2560,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -201,13 +211,15 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 0,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Range Attack': {
                 Value: 'Range Attack',
-                Num: 0,
+                Num: 1,
                 Min: 0,
                 Max: 0,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Attack': {
                 Value: 'Magic Attack',
@@ -215,6 +227,10 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 0,
                 Unit: '',
+                Calc: [
+                  'a * 12',
+                  '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+                ],
               },
               'Healing Power': {
                 Value: 'Healing Power',
@@ -222,6 +238,7 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 0,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Physical Defense': {
                 Value: 'Physical Defense',
@@ -229,6 +246,7 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 0,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Defense': {
                 Value: 'Magic Defense',
@@ -236,6 +254,7 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 0,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -253,6 +272,7 @@ const defaultTemplates = {
                 Min: 5.4,
                 Max: 10,
                 Unit: 'm/s',
+                Calc: ['', '{}'],
               },
               'Cast Time': {
                 Value: 'Cast Time',
@@ -260,6 +280,7 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 100,
                 Unit: '%',
+                Calc: ['', '{}'],
               },
               'Attack Speed': {
                 Value: 'Attack Speed',
@@ -267,6 +288,7 @@ const defaultTemplates = {
                 Min: 0,
                 Max: 1200,
                 Unit: '%',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -289,6 +311,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Melee Accuracy': {
                 Value: 'Melee Accuracy',
@@ -296,6 +319,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Melee Critical Status': {
                 Value: 'Melee Critical Status',
@@ -303,6 +327,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Melee Critical Damage': {
                 Value: 'Melee Critical Damage',
@@ -310,6 +335,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Backstab Melee Damage': {
                 Value: 'Backstab Melee Damage',
@@ -317,6 +343,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Melee Skill Damage': {
                 Value: 'Melee Skill Damage',
@@ -324,6 +351,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Melee Skills': {
                 Value: 'PvE Melee Skills',
@@ -331,6 +359,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -348,6 +377,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Ranged Critical Status': {
                 Value: 'Ranged Critical Status',
@@ -355,6 +385,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Ranged Critical Damage': {
                 Value: 'Ranged Critical Damage',
@@ -362,6 +393,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Backstab Ranged Damage': {
                 Value: 'Backstab Ranged Damage',
@@ -369,6 +401,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Ranged Skill Damage': {
                 Value: 'Ranged Skill Damage',
@@ -376,6 +409,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Ranged Skills': {
                 Value: 'PvE Ranged Skills',
@@ -383,6 +417,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -400,6 +435,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Critical Status': {
                 Value: 'Magic Critical Status',
@@ -407,6 +443,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Critical Damage': {
                 Value: 'Magic Critical Damage',
@@ -414,6 +451,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Backstab Magic Damage': {
                 Value: 'Backstab Magic Damage',
@@ -421,6 +459,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Skill Damage': {
                 Value: 'Magic Skill Damage',
@@ -428,6 +467,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Magic Skills': {
                 Value: 'PvE Magic Skills',
@@ -435,6 +475,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -446,13 +487,21 @@ const defaultTemplates = {
             Min: 5,
             Max: 50,
             Values: {
-              Focus: { Value: 'Focus', Num: 1, Min: 1, Max: 10, Unit: '' },
+              Focus: {
+                Value: 'Focus',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+                Calc: ['', '{}'],
+              },
               'Shield Defense Penetration Rate': {
                 Value: 'Shield Defense Penetration Rate',
                 Num: 1,
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Shield Defense Penetration': {
                 Value: 'Shield Defense Penetration',
@@ -460,6 +509,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Defense Penetration': {
                 Value: 'Defense Penetration',
@@ -467,6 +517,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Magic Defense Penetration': {
                 Value: 'Magic Defense Penetration',
@@ -474,6 +525,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -496,6 +548,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Shield Block Rate': {
                 Value: 'Shield Block Rate',
@@ -503,14 +556,23 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
-              Evasion: { Value: 'Evasion', Num: 1, Min: 1, Max: 10, Unit: '' },
+              Evasion: {
+                Value: 'Evasion',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+                Calc: ['', '{}'],
+              },
               Resiliance: {
                 Value: 'Resiliance',
                 Num: 1,
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               Toughness: {
                 Value: 'Toughness',
@@ -518,6 +580,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Siege Damage Reduction': {
                 Value: 'Siege Damage Reduction',
@@ -525,6 +588,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Damage Reduction': {
                 Value: 'PvE Damage Reduction',
@@ -532,6 +596,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -549,6 +614,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Fixed Melee Damage Reduction': {
                 Value: 'Fixed Melee Damage Reduction',
@@ -556,6 +622,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Melee Damage Reduction': {
                 Value: 'PvE Melee Damage Reduction',
@@ -563,6 +630,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -580,6 +648,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Fixed Ranged Damage Reduction': {
                 Value: 'Fixed Ranged Damage Reduction',
@@ -587,6 +656,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Ranged Damage Reduction': {
                 Value: 'PvE Ranged Damage Reduction',
@@ -594,6 +664,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -611,6 +682,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Fixed Magic Damage Reduction': {
                 Value: 'Fixed Magic Damage Reduction',
@@ -618,6 +690,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'PvE Magic Damage Reduction': {
                 Value: 'PvE Magic Damage Reduction',
@@ -625,6 +698,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -647,6 +721,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Critical Heal Bonus': {
                 Value: 'Critical Heal Bonus',
@@ -654,14 +729,23 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
-              Healing: { Value: 'Healing', Num: 1, Min: 1, Max: 10, Unit: '' },
+              Healing: {
+                Value: 'Healing',
+                Num: 1,
+                Min: 1,
+                Max: 10,
+                Unit: '',
+                Calc: ['', '{}'],
+              },
               'Healing Skill Damage': {
                 Value: 'Healing Skill Damage',
                 Num: 1,
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -679,6 +763,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Continuous Heal Regen': {
                 Value: 'Continuous Heal Regen',
@@ -686,6 +771,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Mana Regen': {
                 Value: 'Mana Regen',
@@ -693,6 +779,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Post-Cast Mana Regen': {
                 Value: 'Post-Cast Mana Regen',
@@ -700,6 +787,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -717,6 +805,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Increased experience gain': {
                 Value: 'Increased experience gain',
@@ -724,6 +813,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Loot Drop Rate': {
                 Value: 'Loot Drop Rate',
@@ -731,6 +821,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Gold earned from hunting': {
                 Value: 'Gold earned from hunting',
@@ -738,6 +829,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
               'Stealth Detection': {
                 Value: 'Stealth Detection',
@@ -745,6 +837,7 @@ const defaultTemplates = {
                 Min: 1,
                 Max: 10,
                 Unit: '',
+                Calc: ['', '{}'],
               },
             },
           },
@@ -857,6 +950,7 @@ function Stats(props) {
   );
 
   const handleChange = (e, skipState) => {
+    if (!skipState) console.log('ValueChange:', e, skipState);
     // iterate through key string
     const newValue =
       e.target.checked !== undefined ? e.target.checked : e.target.value;
@@ -904,6 +998,7 @@ function Stats(props) {
     if (!skipState) setValue(buffer);
   };
 
+  // console.log('Card:', value);
   return (
     <div>
       {/* <TemplateSelector
