@@ -24,6 +24,13 @@ const RenderGrid = (props) => {
       : [];
   };
 
+  const processValue = (propVal, val) => {
+    if (propVal instanceof Function === true) {
+      return propVal(val);
+    }
+    return val;
+  };
+
   const getDataSet = (obj) => {
     const object = {};
     Object.keys(obj)
@@ -270,18 +277,24 @@ const RenderGrid = (props) => {
                                 //   cp[k] instanceof Function,
                                 // );
                                 if (
-                                  k !== 'onChange' &&
-                                  k !== 'onClick' &&
-                                  k !== 'onBlur' &&
-                                  k !== 'onFocus' &&
-                                  cp[k] instanceof Function === true
-                                ) {
-                                  newProps[k] = cp[k](row);
-                                } else {
-                                  newProps[k] = cp[k];
-                                }
+                                  k !== 'value' &&
+                                  k !== 'checked' &&
+                                  k !== 'children'
+                                )
+                                  if (
+                                    k !== 'onChange' &&
+                                    k !== 'onClick' &&
+                                    k !== 'onBlur' &&
+                                    k !== 'onFocus' &&
+                                    cp[k] instanceof Function === true
+                                  ) {
+                                    newProps[k] = cp[k](row);
+                                  } else {
+                                    newProps[k] = cp[k];
+                                  }
                               });
 
+                              // console.log({ value: hCell.props.value, CELL });
                               newProps = {
                                 ...newProps,
                                 ...ds,
@@ -292,7 +305,10 @@ const RenderGrid = (props) => {
                                   : {}),
                                 ...(hCell.props.value !== undefined
                                   ? {
-                                      value: CELL,
+                                      value: processValue(
+                                        hCell.props.value,
+                                        CELL,
+                                      ),
                                     }
                                   : {}),
                                 ...(hCell.props.children !== undefined

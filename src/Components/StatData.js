@@ -10,16 +10,16 @@ class StatData extends React.Component {
 
     switch (stat) {
       case 'Num':
-        result = Calc.fMinMax(result, stats['Min'], stats['Max']);
+        result = Calc.fMinMax(result, stats['Min'][0], stats['Max'][0]);
         event = result - value;
         break;
       case 'Min':
-        result = Calc.fMinMax(result, undefined, stats['Num']);
+        result = Calc.fMinMax(result, undefined, stats['Num'][0]);
         event = result - value;
         break;
       case 'Max':
-        result = Calc.fMinMax(result, stats['Num']);
-        result = Calc.fMinMax(result, stats['Min']);
+        result = Calc.fMinMax(result, stats['Num'][0]);
+        result = Calc.fMinMax(result, stats['Min'][0]);
         // result = Calc.fMinMax(result, stats['Num']);
         event = result - value;
         break;
@@ -34,9 +34,9 @@ class StatData extends React.Component {
     const tallies = { Total: 0, Min: 0, Max: 0 };
 
     Object.keys(statBlock).forEach((key) => {
-      tallies.Total = tallies.Total + statBlock[key]['Num'];
-      tallies.Min = tallies.Min + statBlock[key]['Min'];
-      tallies.Max = tallies.Max + statBlock[key]['Max'];
+      tallies.Total = tallies.Total + statBlock[key]['Num'][0];
+      tallies.Min = tallies.Min + statBlock[key]['Min'][0];
+      tallies.Max = tallies.Max + statBlock[key]['Max'][0];
     });
 
     return tallies;
@@ -98,7 +98,10 @@ class StatData extends React.Component {
     }
 
     for (let [key, value] of Object.entries(scope)) {
-      scope[key] = this.GetValue(value, data); // table, row, column="always 'Value'""
+      const buffer = this.GetValue(value, data); // table, row, column="always 'Value'""
+      buffer.constructor === Array
+        ? (scope[key] = buffer[0])
+        : (scope[key] = buffer);
     }
 
     return scope;

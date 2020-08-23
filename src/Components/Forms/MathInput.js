@@ -9,9 +9,13 @@ const MathInput = (props) => {
   const { data } = props;
   const Key = props.Key ? props.Key : props['data-key'];
   // get math property
-  let { math } = props;
+  const { value } = props;
+  const result = value[0];
+
+  const math = value[1];
   const expression = math ? math[0] : undefined;
   const vars = math ? math[1] : undefined;
+  // console.log('MathInput:', { result, math, expression, vars });
 
   const { style } = props;
   const { onChange } = props;
@@ -36,6 +40,7 @@ const MathInput = (props) => {
       {...dataset}
       key={Key}
       Key={Key}
+      result={result}
       expression={expression}
       vars={vars}
       data={data}
@@ -50,6 +55,8 @@ const MathInput = (props) => {
   );
 
   useEffect(() => {}, []);
+
+  const calcValue = StatData.GetCellValue(math[0], math[1], data);
 
   return (
     <div>
@@ -71,7 +78,11 @@ const MathInput = (props) => {
           togglePopup();
         }}
       >
-        {math ? StatData.GetCellValue(math[0], math[1], data) : children}
+        {math
+          ? calcValue && !Number.isNaN(calcValue)
+            ? calcValue
+            : 'Invalid'
+          : children}
       </button>
       {seen ? (
         // eslint-disable-next-line react/prop-types

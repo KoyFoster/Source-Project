@@ -126,7 +126,7 @@ const StatBlock = (props) => {
   const handleMathStatChange = (e, rowData, type) => {
     let { value } = e.target;
 
-    const cell = rowData.cell.split('~');
+    const { cell } = rowData;
     const { key } = rowData;
 
     const buffer = {
@@ -134,7 +134,7 @@ const StatBlock = (props) => {
         value: value,
         checked: type === 'checkbox' ? e.target.checked : undefined,
         dataset: {
-          key: `${key}~${cell[0]}~${'Calc'}`,
+          key: `${key}~${cell}`,
         },
       },
     };
@@ -143,11 +143,11 @@ const StatBlock = (props) => {
     // Update Calculation
     if (onChange) onChange(buffer);
     // Update Results(Num, Min, Max)
-    buffer.target.dataset = {
-      key: `${key}~${cell[0]}~${'Num'}`,
-    };
-    buffer.target.value = StatData.GetCellValue(value[0], value[1], data);
-    if (onChange) onChange(buffer);
+    // buffer.target.dataset = {
+    //   key: `${key}~${cell}`,
+    // };
+    // buffer.target.value = StatData.GetCellValue(value[1][0], value[1][1], data);
+    // if (onChange) onChange(buffer);
   };
 
   // handleChange
@@ -172,13 +172,15 @@ const StatBlock = (props) => {
     const cell = rowData.cell.split('~');
     const keys = rowData.key.split('~');
     const stats = rowData.value;
-    let oldValue = stats['Min'];
 
     value = StatData.HandleStatMinMax(stats, cell[1], value).result;
 
     // Create synthetic event object
     const E = {
-      target: { value, dataset: { key: `${rowData.key}~${rowData.cell}` } },
+      target: {
+        value: [value, ['', {}]],
+        dataset: { key: `${rowData.key}~${rowData.cell}` },
+      },
     };
 
     setUpdateTotals(true);
@@ -208,6 +210,11 @@ const StatBlock = (props) => {
     setUpdateTotals(false);
   }
 
+  const getStatValue = (val) => {
+    return !Number.isNaN(val[0]) ? val[0] : 0;
+    // return val[0];
+  };
+
   // input forms
   const inputForms = [
     <input
@@ -220,21 +227,21 @@ const StatBlock = (props) => {
     <input
       key="Num"
       type="number"
-      value={0}
+      value={getStatValue}
       style={cellStyle}
       onChange={handleMinMaxChange}
     />,
     <input
       key="Min"
       type="number"
-      value={0}
+      value={getStatValue}
       style={cellStyle}
       onChange={handleMinMaxChange}
     />,
     <input
       key="Max"
       type="number"
-      value={0}
+      value={getStatValue}
       style={cellStyle}
       onChange={handleMinMaxChange}
     />,
@@ -266,15 +273,33 @@ const StatBlock = (props) => {
     <MathInput
       key="Num"
       Key={getCellKey}
-      math={getCalc}
+      value={data} // comprises of [value,[expression, vars]]
       data={data}
       style={buttonStyle}
       onChange={handleMathStatChange}
     >
       Data
     </MathInput>,
-    <div key="Min">Data</div>,
-    <div key="Max">Data</div>,
+    <MathInput
+      key="Min"
+      Key={getCellKey}
+      value={data}
+      data={data}
+      style={buttonStyle}
+      onChange={handleMathStatChange}
+    >
+      Data
+    </MathInput>,
+    <MathInput
+      key="Max"
+      Key={getCellKey}
+      value={data}
+      data={data}
+      style={buttonStyle}
+      onChange={handleMathStatChange}
+    >
+      Data
+    </MathInput>,
     <input key="Unit" type="text" value={''} style={cellStyle} />,
   ];
 
@@ -309,7 +334,7 @@ const StatBlock = (props) => {
           {Type === 'Calc' ? null : (
             <input
               type="number"
-              value={Level}
+              value={Level ? Level : 0}
               style={formStyle}
               onChange={(e) => handleChange(e, 'Level')}
             />
@@ -317,18 +342,20 @@ const StatBlock = (props) => {
           {Type === 'Calc' ? null : 'Points: '}
           {Type === 'Calc' ? null : (
             <MathInput
-              key="Num"
+              key="PointCalc"
               Key="PointCalc"
-              math={PointCalc}
+              value={[Points, PointCalc]}
               data={data}
               style={buttonStyle}
               onChange={handleChange}
             >
-              {Points}
+              {Points ? Points : 'N/D'}
             </MathInput>
           )}
           {Type === 'Calc' ? null : (
-            <div style={{ width: '100%' }}>Remainder: {Points - Total}</div>
+            <div style={{ width: '100%' }}>
+              Remainder: {Points ? Points - Total : 'N/D'}
+            </div>
           )}
         </div>
       </div>

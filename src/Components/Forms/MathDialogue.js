@@ -8,6 +8,7 @@ import VariablePicker from './VariablePicker';
 const MathDialogue = (props) => {
   const { Key } = props;
   const { style } = props;
+  let { result } = props;
   const { expression } = props;
   const { vars } = props;
   const { data } = props;
@@ -73,19 +74,23 @@ const MathDialogue = (props) => {
   const tags = vars ? getVarsAsTags() : undefined;
 
   const getDefinedExpression = () => {
-    let result = newExpression;
+    let exp = newExpression;
     const variables = StatData.parseVariables(newVars, data, true);
 
     // replace variables with values
     Object.keys(variables).forEach((key) => {
-      result = result.replace(key, variables[key]);
+      exp = exp.replace(key, variables[key]);
     });
 
-    return result;
+    return exp;
   };
 
+  const defineResult = () => {
+    result = StatData.GetCellValue(newExpression, newVars, data, true);
+    return result;
+  };
   const getResult = () => {
-    let result = StatData.GetCellValue(newExpression, newVars, data, true);
+    defineResult();
 
     if (result === undefined)
       return (
@@ -204,7 +209,10 @@ const MathDialogue = (props) => {
               onClick={(e) => {
                 const result = {
                   target: {
-                    value: [newExpression, JSON.stringify(newVars)],
+                    value: [
+                      defineResult(),
+                      [newExpression, JSON.stringify(newVars)],
+                    ],
                     dataset: e.target.dataset,
                   },
                 };
