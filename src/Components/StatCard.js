@@ -193,9 +193,9 @@ const defaultTemplates = {
 
           'Primary Stats': {
             Value: 'Primary Stats',
-            Type: 'Calc',
-            Total: 2010,
-            Min: 70,
+            Type: 'Static',
+            Total: 1922,
+            Min: 82,
             Max: 12800,
             Level: 2560,
             Points: [
@@ -208,10 +208,12 @@ const defaultTemplates = {
             Values: {
               Strength: {
                 Value: 'Strength',
-                Num: [103, ['103', '{}']],
-                Min: [3, ['3', '{}']],
+                Num: [15, ['15', '{}']],
+                Min: [15, ['15', '{}']],
                 Max: [2560, ['2560', '{}']],
                 Unit: '',
+                'Strength~Num': '15',
+                'Strength~Min': '153',
               },
               Agility: {
                 Value: 'Agility',
@@ -410,8 +412,8 @@ const defaultTemplates = {
             Value: 'Misc Stats',
             Type: 'Calc',
             Num: 0,
-            Min: 5.4,
-            Max: 1220,
+            Min: 104.56,
+            Max: 1278.54,
             Level: 0,
             Points: [0, ['', '{}']],
             Values: {
@@ -1051,7 +1053,7 @@ const SaveStatCard = (props) => {
 const LoadStatCard = (props) => {
   // states
   let { setValue } = props;
-  const [newVal, setNewValue] = useState('');
+  // const [newVal, setNewValue] = useState('');
   const [jsonValue, setJSONValue] = useState();
 
   return (
@@ -1069,7 +1071,7 @@ const LoadStatCard = (props) => {
               resize: 'none',
             }}
             onChange={(e) => {
-              setNewValue(e.target.value);
+              // setNewValue(e.target.value);
 
               let buffer = undefined;
               try {

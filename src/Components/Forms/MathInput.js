@@ -60,7 +60,6 @@ const MathInput = (props) => {
   useEffect(() => {}, []);
 
   const calcValue = StatData.GetCellValue(math[0], math[1], data);
-
   return (
     <div>
       <button
@@ -81,7 +80,11 @@ const MathInput = (props) => {
           togglePopup();
         }}
       >
-        {math ? (!Number.isNaN(calcValue) ? calcValue : 'Invalid') : children}
+        {math
+          ? !Number.isNaN(calcValue) && calcValue !== undefined
+            ? calcValue
+            : 'Invalid'
+          : children}
       </button>
       {seen ? (
         // eslint-disable-next-line react/prop-types

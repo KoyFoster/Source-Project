@@ -1,4 +1,11 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable prefer-destructuring */
 import React, { useState, useEffect } from 'react';
+
+// TODO: Triggers: Drop Down, Close Up, Select OK, Select Cancel
+// Note: I didn't notice that on the windows side that the currently selected list item is highlighted.  -
+// This checks if the edit value has the same string as any list items and nothing else.
+// TODO: The user needs to be able to edit the simple ComboBox
 
 // drop down class
 const DropDown = (props) => {
@@ -6,13 +13,13 @@ const DropDown = (props) => {
   const { content } = props;
   const { checked } = props;
   const { setChecked } = props;
-  const [DDref, setRef] = useState(React.createRef);
   const [DDDim, setDim] = useState({
     top: undefined,
     left: undefined,
     width: undefined,
   });
   const [Fref, setFRef] = useState(React.createRef);
+  const [DDref, setRef] = useState(React.createRef);
   const { CBL } = props;
 
   // Checkbox that will be used
@@ -60,7 +67,7 @@ const DropDown = (props) => {
       DDref.focus();
       updateDDPosition();
     }
-  }, [checked, DDref.current]);
+  }, [checked, DDref]);
 
   return (
     <div

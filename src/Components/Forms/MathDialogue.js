@@ -6,7 +6,6 @@ import StatData from '../StatData';
 import VariablePicker from './VariablePicker';
 
 const MathDialogue = (props) => {
-  const { Key } = props;
   const { style } = props;
   let { result } = props;
   const { expression } = props;
@@ -42,37 +41,35 @@ const MathDialogue = (props) => {
     ></VariablePicker>
   );
 
-  const parseKeysIntoLabel = (keys) => {
-    if (!keys) return '';
+  // const parseKeysIntoLabel = (keys) => {
+  //   if (!keys) return '';
 
-    let buffer = '';
+  //   let buffer = '';
 
-    keys.forEach((key) => {
-      if (key !== 'Values') buffer += `${buffer ? '~' : ''}${key}`;
-    });
+  //   keys.forEach((key) => {
+  //     if (key !== 'Values') buffer += `${buffer ? '~' : ''}${key}`;
+  //   });
 
-    return buffer;
-  };
+  //   return buffer;
+  // };
 
-  const getVarsAsTags = () => {
-    const arr = [];
-    let scope;
+  // const getVarsAsTags = () => {
+  //   const arr = [];
+  //   let scope;
 
-    try {
-      scope = JSON.parse(vars);
-    } catch {
-      console.error(`ERROR: Invalid Variables(${vars})`);
-      return {};
-    }
+  //   try {
+  //     scope = JSON.parse(vars);
+  //   } catch {
+  //     console.error(`ERROR: Invalid Variables(${vars})`);
+  //     return {};
+  //   }
 
-    for (let [key, value] of Object.entries(scope)) {
-      arr.push({ key, label: `{${key}: ${parseKeysIntoLabel(value)}}` }); // make primary key accessible
-    }
+  //   for (let [key, value] of Object.entries(scope)) {
+  //     arr.push({ key, label: `{${key}: ${parseKeysIntoLabel(value)}}` }); // make primary key accessible
+  //   }
 
-    return arr;
-  };
-
-  const tags = vars ? getVarsAsTags() : undefined;
+  //   return arr;
+  // };
 
   const getDefinedExpression = () => {
     let exp = newExpression;

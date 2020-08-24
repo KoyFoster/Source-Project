@@ -89,7 +89,6 @@ const StatBlock = (props) => {
   let { Total } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
-  let { math } = Stats;
   const { Level } = Stats;
   const { Points } = Stats;
 
@@ -166,7 +165,6 @@ const StatBlock = (props) => {
       e.target.value === '' ? 0 : Number.parseFloat(e.target.value, 10);
 
     const cell = rowData.cell.split('~');
-    const keys = rowData.key.split('~');
     const stats = rowData.value;
 
     value = StatData.HandleStatMinMax(stats, cell[1], value).result;
@@ -256,12 +254,9 @@ const StatBlock = (props) => {
     </div>,
   ];
 
-  function getCalc(row) {
-    return row['Calc'];
-  }
-
   function getCellKey(rowData) {
-    return 'Values' + '~' + rowData['Value'] + '~' + 'Num';
+    // return 'Values' + '~' + rowData['Value'] + '~' + 'Num';
+    return `${Values}~${rowData['Value']}~Num`;
   }
 
   const displayForms = [

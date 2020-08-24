@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DropDown from './DropDown.js';
 
 const ComboBox = (props) => {
@@ -60,7 +60,6 @@ const ComboBox = (props) => {
   );
   const CheckBox = (props) => {
     const { checked } = props;
-    const { children } = props;
     const { onChange } = props;
 
     return (

@@ -111,7 +111,6 @@ const SVGCanvas = (props) => {
     if (index === undefined) return;
 
     // check if the start of a new node
-    const key = nodes.length + (nodes.length > 0 ? nodes[0].length : 0);
     let arr = [...nodes];
     arr.splice(index, 1);
 
@@ -123,7 +122,6 @@ const SVGCanvas = (props) => {
     if (index === undefined || index === pos || pos === undefined) return;
 
     // check if the start of a new node
-    const key = nodes.length + (nodes.length > 0 ? nodes[0].length : 0);
     let arr = [...nodes];
     let buffer = arr.splice(index, 1);
     arr.splice(pos, 0, buffer[0]);

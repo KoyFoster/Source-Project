@@ -61,8 +61,8 @@ const RenderGrid = (props) => {
   const { cellStyle } = props;
   const { columnStyle } = props;
   const { iColumns } = props;
+  const gridOnChange = props.events.onChange;
   const { onClick } = props.events;
-  const cellOnChange = props.events.onChange;
   const { onFocus } = props.events;
   const { onBlur } = props.events;
   const value = arrCheck(props.value);
@@ -158,34 +158,57 @@ const RenderGrid = (props) => {
     ) : null;
   };
 
+  function handleEvent(e, tableData) {
+    const ds = e.target.dataset;
+    const { x, y, key } = ds ? ds : {};
+    const k = key ? key : y;
+    let result;
+
+    if (hRow[y].props.checked !== undefined) {
+      result = e.target.checked;
+    } else if (hRow[y].props.value !== undefined) {
+      result = e.target.value;
+    }
+
+    if (hRow[y].props.checked !== undefined) {
+      result = e.target.checked;
+    } else if (hRow[y].props.value !== undefined) {
+      result = e.target.value;
+    }
+
+    // set cell
+    value[x][k] = result;
+    return { x, y, key, value };
+  }
+
+  // join funcs
+  const joinFuncs = (e, elemFunc, gridFunc, override) => {
+    const data = handleEvent(e, tableData);
+    const rowdata = data.x
+      ? {
+          cell: data.key ? data.key : data.y,
+          key: tableData.parentKey,
+          value: tableData[data.x].values,
+        }
+      : {};
+
+    // onChange event of the component passed into the cell passed
+    if (elemFunc) {
+      elemFunc(e, rowdata);
+    }
+    // onChange event passed to the table
+    if (gridFunc && (!elemFunc || (!override && elemFunc))) {
+      gridFunc(e, rowdata);
+    }
+    // return value and key
+    return { e, x: data.x, y: data.y };
+  };
+
   const parseValueIntoGrid = () => {
     if (!Array.isArray(value)) return null;
     if (value.length <= 0) return null;
     if (value[0] <= 0) return null;
     let children;
-
-    function handleEvent(e, tableData) {
-      const ds = e.target.dataset;
-      const { x, y, key } = ds ? ds : {};
-      const k = key ? key : y;
-      let result;
-
-      if (hRow[y].props.checked !== undefined) {
-        result = e.target.checked;
-      } else if (hRow[y].props.value !== undefined) {
-        result = e.target.value;
-      }
-
-      if (hRow[y].props.checked !== undefined) {
-        result = e.target.checked;
-      } else if (hRow[y].props.value !== undefined) {
-        result = e.target.value;
-      }
-
-      // set cell
-      value[x][k] = result;
-      return { x, y, key, value };
-    }
 
     // map
     // table
@@ -317,34 +340,54 @@ const RenderGrid = (props) => {
                                     }
                                   : {}),
 
-                                ...(elemOnChange || cellOnChange
+                                ...(elemOnChange || gridOnChange
                                   ? {
                                       onChange: (e) => {
-                                        const data = handleEvent(e, tableData);
-                                        const rowdata = data.x
-                                          ? {
-                                              cell: data.key
-                                                ? data.key
-                                                : data.y,
-                                              key: tableData.parentKey,
-                                              value: tableData[data.x].values,
-                                            }
-                                          : {};
-
-                                        // onChange event of the component passed into the cell passed
-                                        if (elemOnChange) {
-                                          elemOnChange(e, rowdata);
-                                        }
-                                        // onChange event passed to the table
-                                        if (
-                                          cellOnChange &&
-                                          (!elemOnChange ||
-                                            (!onChangeOverride && elemOnChange))
-                                        ) {
-                                          cellOnChange(e, rowdata);
-                                        }
-                                        // return value and key
-                                        return e;
+                                        return joinFuncs(
+                                          e,
+                                          elemOnChange,
+                                          gridOnChange,
+                                          onChangeOverride,
+                                        ).e;
+                                      },
+                                    }
+                                  : {}),
+                                ...(onClick
+                                  ? {
+                                      onClick: (e) => {
+                                        return joinFuncs(
+                                          e,
+                                          undefined,
+                                          onClick,
+                                          false,
+                                        ).e;
+                                      },
+                                    }
+                                  : {}),
+                                ...(onFocus
+                                  ? {
+                                      onFocus: (e) => {
+                                        const buffer = joinFuncs(
+                                          e,
+                                          undefined,
+                                          onFocus,
+                                          false,
+                                        );
+                                        const { x, y } = buffer;
+                                        setSelection(x, y);
+                                        return buffer.e;
+                                      },
+                                    }
+                                  : {}),
+                                ...(onBlur
+                                  ? {
+                                      onBlur: (e) => {
+                                        return joinFuncs(
+                                          e,
+                                          undefined,
+                                          onBlur,
+                                          false,
+                                        ).e;
                                       },
                                     }
                                   : {}),
