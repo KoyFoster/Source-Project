@@ -132,9 +132,9 @@ const defaultTemplates = {
           'Visible Player Stats': {
             Value: 'Visible Player Stats',
             Type: 'Calc',
-            Total: 0,
-            Min: 0,
-            Max: 0,
+            Total: 18864,
+            Min: 732,
+            Max: 61440,
             Level: 0,
             Points: [0, ['', '{}']],
             Values: {
@@ -248,8 +248,8 @@ const defaultTemplates = {
             Value: 'Secondary Stats',
             Type: 'Calc',
             Num: [0, ['', '{}']],
-            Min: 3,
-            Max: 10,
+            Min: 19.4,
+            Max: 7168,
             Level: 0,
             Points: [0, ['', '{}']],
             Values: {
@@ -424,10 +424,49 @@ const defaultTemplates = {
               },
               'Cast Time': {
                 Value: 'Cast Time',
-                Num: [0, ['0', '{}']],
-                Min: [0, ['0', '{}']],
-                Max: [10, ['10', '{}']],
+                Num: [
+                  82.83,
+                  [
+                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  ],
+                ],
+                Min: [
+                  99.16,
+                  [
+                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  ],
+                ],
+                Max: [
+                  68.54,
+                  [
+                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
+                  ],
+                ],
                 Unit: '%',
+                'Cast Time~Num': [
+                  82.83,
+                  [
+                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  ],
+                ],
+                'Cast Time~Min': [
+                  99.16,
+                  [
+                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  ],
+                ],
+                'Cast Time~Max': [
+                  68.54,
+                  [
+                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
+                  ],
+                ],
               },
               'Attack Speed': {
                 Value: 'Attack Speed',
