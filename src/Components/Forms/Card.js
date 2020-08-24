@@ -178,7 +178,7 @@ const StatBlock = (props) => {
     // Create synthetic event object
     const E = {
       target: {
-        value: [value, ['', {}]],
+        value: [value, [`${value}`, '{}']],
         dataset: { key: `${rowData.key}~${rowData.cell}` },
       },
     };

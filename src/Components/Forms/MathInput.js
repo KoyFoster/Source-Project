@@ -78,11 +78,7 @@ const MathInput = (props) => {
           togglePopup();
         }}
       >
-        {math
-          ? calcValue && !Number.isNaN(calcValue)
-            ? calcValue
-            : 'Invalid'
-          : children}
+        {math ? (!Number.isNaN(calcValue) ? calcValue : 'Invalid') : children}
       </button>
       {seen ? (
         // eslint-disable-next-line react/prop-types
