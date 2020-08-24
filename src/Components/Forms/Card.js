@@ -91,11 +91,7 @@ const StatBlock = (props) => {
   let { Max } = Stats;
   let { math } = Stats;
   const { Level } = Stats;
-  const { PointCalc } = Stats;
-  const Points =
-    Type !== 'Calc' && PointCalc
-      ? StatData.GetCellValue(PointCalc[0], PointCalc[1], data)
-      : Stats.Points;
+  const { Points } = Stats;
 
   // stat data
   const { Values } = Stats;
@@ -342,19 +338,21 @@ const StatBlock = (props) => {
           {Type === 'Calc' ? null : 'Points: '}
           {Type === 'Calc' ? null : (
             <MathInput
-              key="PointCalc"
-              Key="PointCalc"
-              value={[Points, PointCalc]}
+              key="Points"
+              Key="Points"
+              value={Points}
               data={data}
               style={buttonStyle}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e, 'Points');
+              }}
             >
               {Points ? Points : 'N/D'}
             </MathInput>
           )}
           {Type === 'Calc' ? null : (
             <div style={{ width: '100%' }}>
-              Remainder: {Points ? Points - Total : 'N/D'}
+              Remainder: {Points[0] ? Points[0] - Total : 'N/D'}
             </div>
           )}
         </div>

@@ -31,6 +31,9 @@ const MathInput = (props) => {
   });
 
   const [seen, setSeen] = useState(false);
+
+  if (seen) console.log({ value, math, expression });
+
   const togglePopup = () => {
     setSeen(!seen);
   };

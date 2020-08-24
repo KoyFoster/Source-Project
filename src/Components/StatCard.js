@@ -22,8 +22,7 @@ const defaultTemplates = {
       ['POTENTIAL', 2.0, 1, 10, ''],
     ],
     Level: 60,
-    Points: 1000,
-    PointCalc: ['{"a": "Level"}', 'a * 12'],
+    Points: [1000, ['{"a": "Level"}', 'a * 12']],
   },
   'Dark Souls III': {
     label: 'Dark Souls III',
@@ -137,21 +136,56 @@ const defaultTemplates = {
             Min: 0,
             Max: 0,
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               Health: {
                 Value: 'Health',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
+                Num: [
+                  2172,
+                  [
+                    '12 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
+                  ],
+                ],
+                Min: [
+                  36,
+                  [
+                    '12 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
+                  ],
+                ],
+                Max: [
+                  30720,
+                  [
+                    '12 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
+                  ],
+                ],
                 Unit: '',
               },
               Mana: {
                 Value: 'Mana',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
+                Num: [
+                  16692,
+                  [
+                    '12 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  ],
+                ],
+                Min: [
+                  696,
+                  [
+                    '12 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  ],
+                ],
+                Max: [
+                  30720,
+                  [
+                    '12 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
+                  ],
+                ],
                 Unit: '',
               },
             },
@@ -159,51 +193,52 @@ const defaultTemplates = {
 
           'Primary Stats': {
             Value: 'Primary Stats',
-            Type: 'Static',
+            Type: 'Calc',
             Total: 2010,
             Min: 70,
             Max: 12800,
-
             Level: 2560,
-            Points: 1000,
-            PointCalc: [
-              'a * 12',
-              '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+            Points: [
+              2560,
+              [
+                'a * 1',
+                '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+              ],
             ],
             Values: {
               Strength: {
                 Value: 'Strength',
-                Num: [103, ['', '{}']],
-                Min: [3, ['', '{}']],
-                Max: [2560, ['', '{}']],
+                Num: [103, ['103', '{}']],
+                Min: [3, ['3', '{}']],
+                Max: [2560, ['2560', '{}']],
                 Unit: '',
               },
               Agility: {
                 Value: 'Agility',
-                Num: [119, ['', '{}']],
-                Min: [3, ['', '{}']],
-                Max: [2560, ['', '{}']],
+                Num: [119, ['119', '{}']],
+                Min: [3, ['3', '{}']],
+                Max: [2560, ['2560', '{}']],
                 Unit: '',
               },
               Stamina: {
                 Value: 'Stamina',
-                Num: [181, ['', '{}']],
-                Min: [3, ['', '{}']],
-                Max: [2560, ['', '{}']],
+                Num: [181, ['181', '{}']],
+                Min: [3, ['3', '{}']],
+                Max: [2560, ['2560', '{}']],
                 Unit: '',
               },
               Spirit: {
                 Value: 'Spirit',
-                Num: [216, ['', '{}']],
-                Min: [3, ['', '{}']],
-                Max: [2560, ['', '{}']],
+                Num: [216, ['216', '{}']],
+                Min: [3, ['3', '{}']],
+                Max: [2560, ['2560', '{}']],
                 Unit: '',
               },
               Intelligence: {
                 Value: 'Intelligence',
-                Num: [1391, ['', '{}']],
-                Min: [58, ['', '{}']],
-                Max: [2560, ['', '{}']],
+                Num: [1391, ['1391', '{}']],
+                Min: [58, ['58', '{}']],
+                Max: [2560, ['2560', '{}']],
                 Unit: '',
               },
             },
@@ -213,78 +248,159 @@ const defaultTemplates = {
             Value: 'Secondary Stats',
             Type: 'Calc',
             Num: [0, ['', '{}']],
-            Min: [0, ['', '{}']],
-            Max: [0, ['', '{}']],
-
+            Min: 3,
+            Max: 10,
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
-
+            Points: [0, ['', '{}']],
             Values: {
               'Melee Attack': {
                 Value: 'Melee Attack',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
+                Num: [
+                  20.6,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Num"]}',
+                  ],
+                ],
+                Min: [
+                  0.6,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Min"]}',
+                  ],
+                ],
+                Max: [
+                  512,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Max"]}',
+                  ],
+                ],
                 Unit: '',
               },
               'Range Attack': {
                 Value: 'Range Attack',
-                Num: [1, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
-
-                Unit: '',
-              },
-
-              'Magic Attack': {
-                Value: 'Magic Attack',
                 Num: [
-                  0,
+                  23.8,
                   [
-                    'a * 12',
-                    '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Num"]}',
                   ],
                 ],
                 Min: [
-                  0,
+                  0.6,
                   [
-                    'a * 12',
-                    '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Min"]}',
                   ],
                 ],
                 Max: [
-                  0,
+                  512,
                   [
-                    'a * 12',
-                    '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Max"]}',
+                  ],
+                ],
+                Unit: '',
+              },
+              'Magic Attack': {
+                Value: 'Magic Attack',
+                Num: [
+                  278.2,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  ],
+                ],
+                Min: [
+                  11.6,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  ],
+                ],
+                Max: [
+                  512,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
                   ],
                 ],
                 Unit: '',
               },
               'Healing Power': {
                 Value: 'Healing Power',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
+                Num: [
+                  43.2,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"]}',
+                  ],
+                ],
+                Min: [
+                  0.6,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"]}',
+                  ],
+                ],
+                Max: [
+                  512,
+                  [
+                    '0.2 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"]}',
+                  ],
+                ],
                 Unit: '',
               },
-
               'Physical Defense': {
                 Value: 'Physical Defense',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
-
+                Num: [
+                  181,
+                  [
+                    '1 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
+                  ],
+                ],
+                Min: [
+                  3,
+                  [
+                    '1 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
+                  ],
+                ],
+                Max: [
+                  2560,
+                  [
+                    '1 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
+                  ],
+                ],
                 Unit: '',
               },
-
               'Magic Defense': {
                 Value: 'Magic Defense',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [0, ['', '{}']],
-
+                Num: [
+                  181,
+                  [
+                    '1 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
+                  ],
+                ],
+                Min: [
+                  3,
+                  [
+                    '1 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
+                  ],
+                ],
+                Max: [
+                  2560,
+                  [
+                    '1 * a',
+                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
+                  ],
+                ],
                 Unit: '',
               },
             },
@@ -295,31 +411,29 @@ const defaultTemplates = {
             Type: 'Calc',
             Num: 0,
             Min: 5.4,
-            Max: 1310,
-
+            Max: 1220,
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Move Speed': {
                 Value: 'Move Speed',
-                Num: [5.4, ['', '{}']],
-                Min: [5.4, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: [5.4, ['5.4', '{}']],
+                Min: [5.4, ['5.4', '{}']],
+                Max: [10, ['10', '{}']],
                 Unit: 'm/s',
               },
               'Cast Time': {
                 Value: 'Cast Time',
-                Num: [0, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: [0, ['0', '{}']],
+                Min: [0, ['0', '{}']],
+                Max: [10, ['10', '{}']],
                 Unit: '%',
               },
               'Attack Speed': {
                 Value: 'Attack Speed',
-                Num: [190, ['', '{}']],
-                Min: [0, ['', '{}']],
-                Max: [1200, ['', '{}']],
+                Num: [190, ['190', '{}']],
+                Min: [0, ['0', '{}']],
+                Max: [1200, ['1200', '{}']],
                 Unit: '%',
               },
             },
@@ -336,10 +450,8 @@ const defaultTemplates = {
             Total: 7,
             Min: 7,
             Max: 70,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Melee Attack Speed': {
                 Value: 'Melee Attack Speed',
@@ -399,10 +511,8 @@ const defaultTemplates = {
             Total: 6,
             Min: 6,
             Max: 60,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Ranged Accuracy': {
                 Value: 'Ranged Accuracy',
@@ -455,10 +565,8 @@ const defaultTemplates = {
             Total: 6,
             Min: 6,
             Max: 60,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Magic Accuracy': {
                 Value: 'Magic Accuracy',
@@ -511,10 +619,8 @@ const defaultTemplates = {
             Total: 5,
             Min: 5,
             Max: 50,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               Focus: {
                 Value: 'Focus',
@@ -565,10 +671,8 @@ const defaultTemplates = {
             Total: 7,
             Min: 7,
             Max: 70,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Parry Rate': {
                 Value: 'Parry Rate',
@@ -628,10 +732,8 @@ const defaultTemplates = {
             Total: 3,
             Min: 3,
             Max: 30,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Melee Damage Reduction': {
                 Value: 'Melee Damage Reduction',
@@ -663,10 +765,8 @@ const defaultTemplates = {
             Total: 3,
             Min: 3,
             Max: 30,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Ranged Damage Reduction': {
                 Value: 'Ranged Damage Reduction',
@@ -698,10 +798,8 @@ const defaultTemplates = {
             Total: 3,
             Min: 3,
             Max: 30,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Magic Damage Reduction': {
                 Value: 'Magic Damage Reduction',
@@ -738,10 +836,8 @@ const defaultTemplates = {
             Total: 4,
             Min: 4,
             Max: 40,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Critical Heal Rate': {
                 Value: 'Critical Heal Rate',
@@ -780,10 +876,8 @@ const defaultTemplates = {
             Total: 4,
             Min: 4,
             Max: 40,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Heal Regen': {
                 Value: 'Heal Regen',
@@ -822,10 +916,8 @@ const defaultTemplates = {
             Total: 5,
             Min: 5,
             Max: 50,
-
             Level: 0,
-            Points: 0,
-            PointCalc: ['', '{}'],
+            Points: [0, ['', '{}']],
             Values: {
               'Received Healing': {
                 Value: 'Received Healing',
@@ -973,7 +1065,7 @@ function Stats(props) {
   );
 
   const handleChange = (e, skipState) => {
-    if (!skipState) console.log('ValueChange:', e, skipState);
+    // if (!skipState) console.log('ValueChange:', e, skipState);
     // iterate through key string
     const newValue =
       e.target.checked !== undefined ? e.target.checked : e.target.value;

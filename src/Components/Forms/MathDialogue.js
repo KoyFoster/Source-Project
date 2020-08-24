@@ -14,6 +14,7 @@ const MathDialogue = (props) => {
   const { data } = props;
   const { onCancel } = props;
   const { onAccept } = props;
+
   // data sets
   let dataset = {};
   Object.keys(props).forEach((key) => {
