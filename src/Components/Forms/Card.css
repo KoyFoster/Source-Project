@@ -1,0 +1,10 @@
+.draggable {
+  cursor: move;
+}
+
+.notDraggable {
+  cursor: move;
+}
+
+.dragging {
+}

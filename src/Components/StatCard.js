@@ -1104,6 +1104,10 @@ function Stats(props) {
     // defaultTemplates['Final Fantasy 7 Remake'],
     defaultTemplates['ArcheAge'],
   );
+  const Update = () => {
+    const buffer = { ...value };
+    setValue(buffer);
+  };
 
   const handleChange = (e, skipState) => {
     // if (!skipState) console.log('ValueChange:', e, skipState);
@@ -1154,7 +1158,7 @@ function Stats(props) {
     if (!skipState) setValue(buffer);
   };
 
-  // console.log('Card:', value);
+  console.log('Card:', value);
   return (
     <div>
       {/* <TemplateSelector
@@ -1175,6 +1179,7 @@ function Stats(props) {
         key="profile"
         value={value}
         onChange={handleChange}
+        Update={Update}
       ></ProfileCard>
     </div>
   );

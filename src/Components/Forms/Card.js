@@ -10,6 +10,8 @@ import Grid from './Grid';
 import StatData from '../StatData.js';
 import ToggleButton from '../Forms/ToggleButton.js';
 import MathInput from '../Forms/MathInput.js';
+import Controls from '../Forms/Controls.js';
+import './Card.css';
 
 // TODO
 // 0. Be able to update all calculations after update object names
@@ -82,6 +84,7 @@ const buttonStyle = {
 
 const StatBlock = (props) => {
   const [bUpdateTotals, setUpdateTotals] = useState(true);
+  const [selection, setStatSelection] = useState('');
   const { data } = props;
   const { Stats } = props;
   const { parentKey } = props;
@@ -98,6 +101,9 @@ const StatBlock = (props) => {
   // stat data
   const { Values } = Stats;
   const { onChange } = props;
+  const { setSelection } = props;
+  const keys = Object.keys(Values);
+  const size = keys.length;
 
   // handleChange
   const handleStatChange = (e, rowData, type) => {
@@ -298,7 +304,12 @@ const StatBlock = (props) => {
   ];
 
   return (
-    <div style={statBlockStyle}>
+    <div
+      style={statBlockStyle}
+      onClick={() => {
+        setSelection(Value);
+      }}
+    >
       <div>
         <div style={{ display: 'flex' }}>
           <ToggleButton
@@ -355,6 +366,8 @@ const StatBlock = (props) => {
           )}
         </div>
       </div>
+
+      <Controls size={size} selection={selection}></Controls>
       <Grid
         value={Values}
         columnStyle={[
@@ -369,6 +382,10 @@ const StatBlock = (props) => {
         parentKey={`${parentKey}~Values`}
         rowKeys={Object.keys(Values)}
         header
+        onClick={(e, rowData) => {
+          console.log('rowData:', rowData.value.Value);
+          setStatSelection(rowData.value.Value);
+        }}
         onChange={onChange}
         onChangeOverride
         // cellStyle={cellStyle}
@@ -392,13 +409,57 @@ const StatBlock = (props) => {
 };
 
 const Card = (props) => {
+  const [selection, setBlockSelection] = useState('');
   const { data } = props;
   const { parentKey } = props;
   const { Page } = props;
   const { name } = props;
   const { Value } = props;
   const { onChange } = props;
+  const { Update } = props;
+  const { onDrag } = props;
+  const { setSelection } = props;
   const keys = Object.keys(Page);
+  const size = keys.length;
+
+  const AddBlock = (key, amt, pos) => {
+    // console.log('AddCard:', amt);
+    // if (!amt) return;
+    // if (amt > 0) {
+    //   let i = 1;
+    //   // generate card name
+    //   let name = `New Card ${i}`;
+    //   // iterate until card name does not exist
+    //   while (Values[name] !== undefined) {
+    //     i += 1;
+    //     name = `New Card ${i}`;
+    //   }
+    //   const objBuffer = {
+    //     Value: name,
+    //     Values: {},
+    //   };
+    //   // add new card with valid name
+    //   Values[name] = objBuffer;
+    //   setSelection(name);
+    // } // sub
+    // else {
+    //   let prevKey = '';
+    //   let keyFnd = false;
+    //   const keys = Object.keys(Values);
+    //   keys.forEach((k) => {
+    //     if (k !== key) keyFnd = true;
+    //     else if (!keyFnd || prevKey === '') prevKey = key;
+    //   });
+    //   if (Values[key]) {
+    //     delete Values[key];
+    //   } else {
+    //     console.error('Invalid Key:', key);
+    //   }
+    //   setSelection(prevKey);
+    // }
+    // // Update Renderer
+    // Update();
+  };
 
   // handleChange
   const handleChange = (e, key, type) => {
@@ -416,31 +477,47 @@ const Card = (props) => {
   };
   let i = -1;
   return (
-    <div>
-      <div style={cardStyle}>
-        <div style={{ display: 'flex' }}>
-          <div style={{ width: '100%' }}>
-            <input
-              type="text"
-              value={Value}
-              style={cellStyle}
-              onChange={(e) => handleChange(e, name)}
-            />
-          </div>
+    <div
+      style={cardStyle}
+      onMouseDown={(e) => {
+        // e = e || window.event;
+        // e.preventDefault();
+        // // get the mouse cursor position at startup:
+        // pos3 = e.clientX;
+        // pos4 = e.clientY;
+        // document.onmouseup = closeDragElement;
+        // // call a function whenever the cursor moves:
+        // document.onmousemove = elementDrag;
+        //nonDrag(e);
+      }}
+      onClick={() => {
+        setSelection(name);
+      }}
+    >
+      <Controls size={size} Add={AddBlock} selection={selection}></Controls>
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '100%' }}>
+          <input
+            type="text"
+            value={Value}
+            style={cellStyle}
+            onChange={(e) => handleChange(e, name)}
+          />
         </div>
-        {keys.map((key) => {
-          i += 1;
-          return (
-            <StatBlock
-              key={`StatBlock_${i}`}
-              data={data}
-              parentKey={`${parentKey}~Values~${key}`}
-              Stats={Page[key]}
-              onChange={onChange}
-            ></StatBlock>
-          );
-        })}
       </div>
+      {keys.map((key) => {
+        i += 1;
+        return (
+          <StatBlock
+            key={`StatBlock_${i}`}
+            data={data}
+            parentKey={`${parentKey}~Values~${key}`}
+            Stats={Page[key]}
+            onChange={onChange}
+            setSelection={setBlockSelection}
+          ></StatBlock>
+        );
+      })}
     </div>
   );
 };
@@ -449,6 +526,9 @@ const Stack = (props) => {
   const { data } = props;
   const { Pages } = props;
   const { parentKey } = props;
+  const { onChange } = props;
+  const { setSelection } = props;
+  const { Update } = props;
 
   let i = -1;
   return Object.keys(Pages).map((key) => {
@@ -462,7 +542,12 @@ const Stack = (props) => {
         name={key}
         Value={Page.Value}
         Page={Page.Values}
-        onChange={props.onChange}
+        onChange={onChange}
+        Update={Update}
+        setSelection={setSelection}
+        onDrag={(e) => {
+          console.log('onDrag:', e.target);
+        }}
       ></Card>
     );
   });
@@ -477,6 +562,7 @@ const ProfileCard = (props) => {
   const { Game } = props.value;
   const { Values } = props.value;
   const { onChange } = props;
+  const { Update } = props;
   // 2. Get Pages. Pages are anything that isn't the title
   const Pages = {};
   Object.keys(Values).forEach((key) => {
@@ -498,6 +584,58 @@ const ProfileCard = (props) => {
     if (onChange) onChange(buffer);
   };
 
+  // card handling
+  const size = Object.keys(Values).length;
+  const [selection, setSelection] = useState('');
+  const handleSelection = (newSel) => {
+    console.log('newSel:', newSel);
+    setSelection(newSel);
+  };
+  const AddCard = (key, amt, pos) => {
+    console.log('AddCard:', amt);
+    if (!amt) return;
+
+    if (amt > 0) {
+      let i = 1;
+      // generate card name
+      let name = `New Card ${i}`;
+
+      // iterate until card name does not exist
+      while (Values[name] !== undefined) {
+        i += 1;
+        name = `New Card ${i}`;
+      }
+
+      const objBuffer = {
+        Value: name,
+        Values: {},
+      };
+
+      // add new card with valid name
+      Values[name] = objBuffer;
+      setSelection(name);
+    } // sub
+    else {
+      let prevKey = '';
+      let keyFnd = false;
+      const keys = Object.keys(Values);
+      keys.forEach((k) => {
+        if (k !== key) keyFnd = true;
+        else if (!keyFnd || prevKey === '') prevKey = key;
+      });
+      if (Values[key]) {
+        delete Values[key];
+      } else {
+        console.error('Invalid Key:', key);
+      }
+      setSelection(prevKey);
+    }
+
+    // Update Renderer
+    Update();
+  };
+  const MoveCard = (key, pos) => {};
+
   return (
     <div>
       Game:{' '}
@@ -514,6 +652,7 @@ const ProfileCard = (props) => {
         style={cellStyle}
         onChange={(e) => handleChange(e, 'Title')}
       />
+      <Controls size={size} AddCard={AddCard} selection={selection}></Controls>
       <div
         style={{
           display: 'flex',
@@ -526,6 +665,8 @@ const ProfileCard = (props) => {
           parentKey={'Values'}
           Pages={Pages}
           onChange={onChange}
+          Update={Update}
+          setSelection={handleSelection}
         ></Stack>
       </div>
     </div>
