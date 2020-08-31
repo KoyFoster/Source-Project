@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ComboBox from './Forms/ComboBox';
+import Drag from './Forms/Drag';
 
 const Test = (props) => {
   const [checked, setChecked] = useState(false);
@@ -19,15 +19,7 @@ const Test = (props) => {
         }
       }
     >
-      <ComboBox
-        style={{ border: '2px dotted red', background: '#125346' }}
-        list={['1', '2', '3', '4']}
-        value={value}
-        checked={checked}
-        setChecked={setChecked}
-        onChange={handleChange}
-        CBL="right"
-      ></ComboBox>
+      <Drag></Drag>
     </div>
   );
 };

@@ -11,10 +11,13 @@ import StatData from '../StatData.js';
 import ToggleButton from '../Forms/ToggleButton.js';
 import MathInput from '../Forms/MathInput.js';
 
-// Steps To Rendering A Card
-// 1. Take Title
-// 2. Parse Out Pages
-// 3. Render Pages Out As Grids?
+// TODO
+// 0. Be able to update all calculations after update object names
+// 1. Adding/subtracting/moving pages
+//  a. Move parts by draging and dropping
+//  b. Be able to update all calculations after move
+// 2. Adding/subtracting/moving stat blocks
+// 3. Adding/subtracting/moving stats
 
 const baseInputStyle = {
   width: '100%',
