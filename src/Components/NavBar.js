@@ -4,6 +4,7 @@ import Stats from './StatCard';
 import { Row } from './DivGrid';
 import CanvasCard from './CanvasCard';
 import Test from './Test';
+import Test2 from './Test2';
 
 function NavBar(props) {
   return (
@@ -33,6 +34,9 @@ function NavBar(props) {
           <Link to="/Test">
             <button style={{ margin: '1px' }}>Test</button>
           </Link>
+          <Link to="/Test2">
+            <button style={{ margin: '1px' }}>Test2</button>
+          </Link>
         </Row>
         <hr style={{ display: 'none' }} />
 
@@ -47,6 +51,10 @@ function NavBar(props) {
         <div>
           <Route exact path="/" />
           <Route path="/Test" component={Test} />
+        </div>
+        <div>
+          <Route exact path="/" />
+          <Route path="/Test2" component={Test2} />
         </div>
       </HashRouter>
     </div>

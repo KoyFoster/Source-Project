@@ -42,10 +42,23 @@ const cardStyle = {
   textAlignLast: 'center',
 };
 
-const statBlockStyle = {
-  borderWidth: '1px',
+const statStyle = {
+  borderColor: '#ff0001',
+  borderWidth: '2px',
   borderStyle: 'dashed',
-  margin: '1px',
+  margin: '2px',
+};
+const statBlockStyle = {
+  borderColor: '#1d4a33',
+  borderWidth: '2px',
+  borderStyle: 'dashed',
+  margin: '2px',
+};
+const statCardStyle = {
+  borderColor: '#912d53',
+  borderWidth: '2px',
+  borderStyle: 'dashed',
+  margin: '2px',
 };
 
 const { backgroundColor } = cardStyle;
@@ -101,9 +114,72 @@ const StatBlock = (props) => {
   // stat data
   const { Values } = Stats;
   const { onChange } = props;
+  const { Update } = props;
   const { setSelection } = props;
   const keys = Object.keys(Values);
   const size = keys.length;
+
+  const AddStat = (key, amt, pos) => {
+    if (!amt) return;
+    if (amt > 0) {
+      let i = 1;
+      // generate card name
+      let name = `New Card ${i}`;
+      // iterate until card name does not exist
+      while (Values[name] !== undefined) {
+        i += 1;
+        name = `New Card ${i}`;
+      }
+      const objBuffer = {
+        Value: name,
+        Num: [0, []],
+        Min: [0, []],
+        Max: [0, []],
+        Unit: '',
+      };
+
+      // Position new entry to current location
+      let added = false;
+      const currKeys = Object.keys(Values);
+      if (currKeys.length && selection) {
+        currKeys.forEach((k) => {
+          // Reposition value to the end of the list
+          if (added) {
+            const buffer = Values[k];
+            delete Values[k];
+            Values[k] = buffer;
+          }
+
+          // Add new value
+          if (k === selection) {
+            Values[name] = objBuffer;
+            added = true;
+          }
+        });
+      } else {
+        Values[name] = objBuffer;
+      }
+
+      setStatSelection(name);
+    } // sub
+    else {
+      let prevKey = '';
+      let keyFnd = false;
+      const keys = Object.keys(Values);
+      keys.forEach((k) => {
+        if (k === key) keyFnd = true;
+        if (!keyFnd) prevKey = k;
+      });
+      if (Values[key]) {
+        delete Values[key];
+      } else {
+        console.error('Invalid Key:', key);
+      }
+      setStatSelection(prevKey);
+    }
+    // Update Renderer
+    Update();
+  };
 
   // handleChange
   const handleStatChange = (e, rowData, type) => {
@@ -361,15 +437,17 @@ const StatBlock = (props) => {
           )}
           {Type === 'Calc' ? null : (
             <div style={{ width: '100%' }}>
-              Remainder: {Points[0] ? Points[0] - Total : 'N/D'}
+              Remainder:{' '}
+              {Points ? (Points[0] ? Points[0] - Total : 'N/D') : 'N/D'}
             </div>
           )}
         </div>
       </div>
 
-      <Controls size={size} selection={selection}></Controls>
+      <Controls size={size} Add={AddStat} selection={selection}></Controls>
       <Grid
         value={Values}
+        style={statStyle}
         columnStyle={[
           { width: '128px' },
           { width: '64px' },
@@ -383,7 +461,6 @@ const StatBlock = (props) => {
         rowKeys={Object.keys(Values)}
         header
         onClick={(e, rowData) => {
-          console.log('rowData:', rowData.value.Value);
           setStatSelection(rowData.value.Value);
         }}
         onChange={onChange}
@@ -423,42 +500,63 @@ const Card = (props) => {
   const size = keys.length;
 
   const AddBlock = (key, amt, pos) => {
-    // console.log('AddCard:', amt);
-    // if (!amt) return;
-    // if (amt > 0) {
-    //   let i = 1;
-    //   // generate card name
-    //   let name = `New Card ${i}`;
-    //   // iterate until card name does not exist
-    //   while (Values[name] !== undefined) {
-    //     i += 1;
-    //     name = `New Card ${i}`;
-    //   }
-    //   const objBuffer = {
-    //     Value: name,
-    //     Values: {},
-    //   };
-    //   // add new card with valid name
-    //   Values[name] = objBuffer;
-    //   setSelection(name);
-    // } // sub
-    // else {
-    //   let prevKey = '';
-    //   let keyFnd = false;
-    //   const keys = Object.keys(Values);
-    //   keys.forEach((k) => {
-    //     if (k !== key) keyFnd = true;
-    //     else if (!keyFnd || prevKey === '') prevKey = key;
-    //   });
-    //   if (Values[key]) {
-    //     delete Values[key];
-    //   } else {
-    //     console.error('Invalid Key:', key);
-    //   }
-    //   setSelection(prevKey);
-    // }
-    // // Update Renderer
-    // Update();
+    if (!amt) return;
+    if (amt > 0) {
+      let i = 1;
+      // generate card name
+      let name = `New Card ${i}`;
+      // iterate until card name does not exist
+      while (Page[name] !== undefined) {
+        i += 1;
+        name = `New Card ${i}`;
+      }
+      const objBuffer = {
+        Value: name,
+        Values: {},
+      };
+
+      // Position new entry to current location
+      let added = false;
+      const currKeys = Object.keys(Page);
+      if (currKeys.length && selection) {
+        currKeys.forEach((k) => {
+          // Reposition value to the end of the list
+          if (added) {
+            const buffer = Page[k];
+            delete Page[k];
+            Page[k] = buffer;
+          }
+
+          // Add new value
+          if (k === selection) {
+            Page[name] = objBuffer;
+            added = true;
+          }
+        });
+      } else {
+        Page[name] = objBuffer;
+      }
+
+      setBlockSelection(name);
+    } // sub
+    else {
+      let prevKey = '';
+      let keyFnd = false;
+      const keys = Object.keys(Page);
+      keys.forEach((k) => {
+        if (k === key) keyFnd = true;
+        if (!keyFnd) prevKey = k;
+      });
+      console.log('Page Keys:', keys, prevKey);
+      if (Page[key]) {
+        delete Page[key];
+      } else {
+        console.error('Invalid Key:', key);
+      }
+      setBlockSelection(prevKey);
+    }
+    // Update Renderer
+    Update();
   };
 
   // handleChange
@@ -494,7 +592,6 @@ const Card = (props) => {
         setSelection(name);
       }}
     >
-      <Controls size={size} Add={AddBlock} selection={selection}></Controls>
       <div style={{ display: 'flex' }}>
         <div style={{ width: '100%' }}>
           <input
@@ -505,6 +602,7 @@ const Card = (props) => {
           />
         </div>
       </div>
+      <Controls size={size} Add={AddBlock} selection={selection}></Controls>
       {keys.map((key) => {
         i += 1;
         return (
@@ -514,6 +612,7 @@ const Card = (props) => {
             parentKey={`${parentKey}~Values~${key}`}
             Stats={Page[key]}
             onChange={onChange}
+            Update={Update}
             setSelection={setBlockSelection}
           ></StatBlock>
         );
@@ -546,7 +645,7 @@ const Stack = (props) => {
         Update={Update}
         setSelection={setSelection}
         onDrag={(e) => {
-          console.log('onDrag:', e.target);
+          // console.log('onDrag:', e.target);
         }}
       ></Card>
     );
@@ -588,11 +687,9 @@ const ProfileCard = (props) => {
   const size = Object.keys(Values).length;
   const [selection, setSelection] = useState('');
   const handleSelection = (newSel) => {
-    console.log('newSel:', newSel);
     setSelection(newSel);
   };
   const AddCard = (key, amt, pos) => {
-    console.log('AddCard:', amt);
     if (!amt) return;
 
     if (amt > 0) {
@@ -611,8 +708,29 @@ const ProfileCard = (props) => {
         Values: {},
       };
 
+      // Position new entry to current location
+      let added = false;
+      const currKeys = Object.keys(Values);
+      if (currKeys.length && selection) {
+        currKeys.forEach((k) => {
+          // Reposition value to the end of the list
+          if (added) {
+            const buffer = Values[k];
+            delete Values[k];
+            Values[k] = buffer;
+          }
+
+          // Add new value
+          if (k === selection) {
+            Values[name] = objBuffer;
+            added = true;
+          }
+        });
+      } else {
+        Values[name] = objBuffer;
+      }
+
       // add new card with valid name
-      Values[name] = objBuffer;
       setSelection(name);
     } // sub
     else {
@@ -620,8 +738,8 @@ const ProfileCard = (props) => {
       let keyFnd = false;
       const keys = Object.keys(Values);
       keys.forEach((k) => {
-        if (k !== key) keyFnd = true;
-        else if (!keyFnd || prevKey === '') prevKey = key;
+        if (k === key) keyFnd = true;
+        if (!keyFnd) prevKey = k;
       });
       if (Values[key]) {
         delete Values[key];
@@ -652,9 +770,10 @@ const ProfileCard = (props) => {
         style={cellStyle}
         onChange={(e) => handleChange(e, 'Title')}
       />
-      <Controls size={size} AddCard={AddCard} selection={selection}></Controls>
+      <Controls size={size} Add={AddCard} selection={selection}></Controls>
       <div
         style={{
+          ...statCardStyle,
           display: 'flex',
           flexWrap: 'wrap',
           alignContent: 'flex-start',

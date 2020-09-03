@@ -9,6 +9,8 @@ import React, { useState, useEffect } from 'react';
 
 // drop down class
 const DropDown = (props) => {
+  const { fieldStyle } = props;
+  const { ddStyle } = props;
   const { field } = props;
   const { content } = props;
   const { checked } = props;
@@ -80,6 +82,7 @@ const DropDown = (props) => {
         ref={(elem) => setFRef(elem)}
         style={{
           display: 'flex',
+          ...fieldStyle,
           height: '100%',
         }}
       >
@@ -91,6 +94,11 @@ const DropDown = (props) => {
         ref={(elem) => setRef(elem)}
         tabIndex="-1"
         style={{
+          maxHeight: '144px', // default
+          overflow: 'auto', // default
+          zIndex: 1,
+          ...ddStyle,
+
           display: checked ? 'inline' : 'none',
           position: 'fixed',
 

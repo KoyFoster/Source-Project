@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const Controls = (props) => {
   const { size } = props;
   const { selection } = props;
-  const { AddCard } = props;
+  const { Add } = props;
 
   const Size = (props) => {
     const { selection } = props;
@@ -13,7 +13,7 @@ const Controls = (props) => {
           <button
             type="submit"
             onClick={(e) => {
-              AddCard(selection, 1, 0);
+              Add(selection, 1, 0);
             }}
           >
             Add
@@ -21,7 +21,7 @@ const Controls = (props) => {
           <button
             type="submit"
             onClick={(e) => {
-              AddCard(selection, -1, 0);
+              Add(selection, -1, 0);
             }}
           >
             Remove

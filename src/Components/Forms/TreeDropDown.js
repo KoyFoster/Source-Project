@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useRef } from 'react';
-import { DDCB, DropDown } from './DropDown';
+/* eslint-disable react/jsx-no-duplicate-props */
+import React from 'react';
+import DropDown from './DropDown';
 import Tree from './Tree';
 
 // HardCode these two things to reproduce VS behavior
@@ -26,11 +27,32 @@ import Tree from './Tree';
 // 		-13. Use RichEdit(TDD)
 // Note: This is currently a shell
 // This control uses control: {data}, style: {disabled}, value,
+
+const Expand = (props) => {
+  const { checked } = props;
+  const { onChange } = props;
+
+  return (
+    <label
+      style={{
+        display: 'inline-block',
+        width: '14px',
+        textAlign: 'center',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        style={{ display: 'none' }}
+        onChange={onChange}
+      />
+      {checked ? '-' : '+'}
+    </label>
+  );
+};
+
 const TreeDropDown = (props) => {
-  // props
   const { id } = props;
-  const style = props.style ? props.style : {};
-  const { font } = props;
   const { separator } = props;
   const { parentSeparator } = props;
   const { separateLine } = props;
@@ -41,98 +63,102 @@ const TreeDropDown = (props) => {
   const { showCheckbox } = props;
   const { noCascade } = props;
   const { singleSelect } = props;
-  const { setValue } = props;
   const { setString } = props;
   const { string } = props;
   const { defaultValue } = props;
   const { Funcs } = props;
-  const [checked, setChecked] = useState(false);
 
-  // references
-  const parentRef = useRef(null);
+  const { checked } = props;
+  const { setChecked } = props;
+  const style = props.style ? props.style : {};
+  const { fieldStyle } = props;
+  const { ddStyle } = props;
 
-  // remaining things to restore
-  // 1. aqcuiring and setting value data
-  // 2. formatting value data according to tree properties
-  // 3. getting setting value data from exam data
-  const maxHeight = `${300 + (style.border ? 2 : 0)}px`;
+  const { onChange } = props;
+  const { onClick } = props;
+  const { onBlur } = props;
+  const { onFocus } = props;
+
+  // const dataset = { 'data-x': props['data-x'], 'data-y': props['data-y'] };
+
+  const handleSelection = (e) => {
+    onChange(e);
+  };
+
+  const hList = () => (
+    <Tree
+      style={style}
+      string={string}
+      font={style.font}
+      separator={separator}
+      parentSeparator={parentSeparator}
+      separateLine={separateLine}
+      saveChildren={saveChildren}
+      saveParents={saveParents}
+      saveExpanded={saveExpanded}
+      id={id}
+      nodes={nodes}
+      showCheckbox={showCheckbox}
+      noCascade={noCascade}
+      singleSelect={singleSelect}
+      onChange={onChange}
+      setString={setString}
+      defaultValue={defaultValue}
+      Funcs={Funcs}
+      onChange={(e) => {
+        handleSelection(e);
+      }}
+      onClick={(e) => {
+        onClick(e);
+      }}
+      onBlur={(e) => {
+        onBlur(e);
+      }}
+      onFocus={(e) => {
+        onFocus(e);
+      }}
+    />
+  );
+
+  const input = (
+    <textarea
+      type="text"
+      value={string}
+      onChange={(e) => {
+        onChange(e);
+      }}
+      // style={{ width: '100%', background: 'transparent', ...style, border: 'none', }}
+      style={{
+        whiteSpace: props.wordWrap ? 'wrap' : 'nowrap',
+        resize: 'none',
+        width: '100%',
+        background: 'transparent',
+        ...style,
+        border: 'none',
+      }}
+    />
+  );
+
   return (
     <div
       style={{
+        border: '1px solid #888888',
+        background: 'white',
+        borderRadius: '3px',
         ...style,
-        display: 'inline-flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        border: style.border ? style.border : '1px solid black',
+        height: '100%',
       }}
     >
-      <div
-        ref={parentRef}
-        style={{
-          display: 'flex',
-          height: 'inherit',
-          flexGrow: 1,
-          flexDirection: 'row',
-        }}
-      >
-        {/* TextAreas must be hard coded */}
-        <textarea
-          value={string}
-          style={{
-            // hard code
-            display: 'block',
-            position: 'relative',
-            width: '100%',
-            resize: 'none',
-            fontFamily: style.fontFamily,
-            fontStyle: style.fontStyle,
-            background: style.background,
-            color: style.color,
-            border: 'none',
-            whiteSpace: props.wordWrap ? 'wrap' : 'nowrap',
-            overflow: 'hidden',
-
-            // height must be hardcode for textarea as it has a soft minimum height of around 32px
-            height: `calc(100% - 2px)`,
-          }}
-          onChange={(e) => {
-            if (setString) setString(e.target.value);
-          }}
-        />
-        <DDCB
-          style={{ position: 'relative' }}
-          onChange={(e) => {
-            setChecked(e.target.checked);
-          }}
-        />
-      </div>
       <DropDown
-        parentRef={parentRef}
-        bVisible={checked}
-        style={{
-          maxHeight,
-          zIndex: props.tabOrder,
-        }}
-      >
-        <Tree
-          font={font}
-          separator={separator}
-          parentSeparator={parentSeparator}
-          separateLine={separateLine}
-          saveChildren={saveChildren}
-          saveParents={saveParents}
-          saveExpanded={saveExpanded}
-          id={id}
-          nodes={nodes}
-          showCheckbox={showCheckbox}
-          noCascade={noCascade}
-          singleSelect={singleSelect}
-          setValue={setValue}
-          setString={setString}
-          defaultValue="Normal,no tears,with tears,no tears,with tears,no tears,with tears,no tears,with tears,1+,2+,3+,4+"
-          Funcs={Funcs}
-        />
-      </DropDown>
+        checked={checked}
+        setChecked={setChecked}
+        field={input}
+        content={hList()}
+        fieldStyle={fieldStyle}
+        ddStyle={ddStyle}
+        CBL="right"
+        CB={Expand}
+      />
     </div>
   );
 };

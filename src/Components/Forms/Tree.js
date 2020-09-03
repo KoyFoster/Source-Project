@@ -1,3 +1,9 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable indent */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/prop-types */
 // Author: Koy
 // Date: 2020-17-2020
 // Note: heavily reference's Jake Zatecky's tree code
@@ -6,7 +12,6 @@ import React from 'react';
 // import NativeCheckbox from './NativeCheckbox';
 import classNames from 'classnames';
 import './Tree.css';
-// import { truncate } from 'lodash';
 
 // Remaining bugs:
 // 1. The last parent of a parent is has control over wether the parent is checked off or not, instead of referencing all items.
@@ -46,7 +51,7 @@ class NativeCheckbox extends React.PureComponent {
   }
 
   updateDeterminateProperty() {
-    // const { indeterminate } = this.props;
+    const { indeterminate } = this.props;
   }
 
   render() {
@@ -96,14 +101,6 @@ class Node {
   }
 
   getNode(value) {
-    // console.log(
-    //   'getNode: value:',
-    //   value,
-    //   '\nthis.flatNodes:',
-    //   this.flatNodes,
-    //   '\nthis.flatNodes[value]:',
-    //   this.flatNodes[value],
-    // );
     return this.flatNodes[value];
   }
 
@@ -118,6 +115,14 @@ class Node {
     nodes.forEach((node, index) => {
       const isParent = this.nodeHasChildren(node);
 
+      const disableParent =
+        this.props.noParentCheckbox &&
+        isParent &&
+        Object.keys(parent).length === 0;
+
+      // show checkbox
+      const showCheckbox = disableParent ? false : node.showCheckbox;
+
       this.flatNodes[node.value] = {
         label: node.label,
         value: node.value,
@@ -126,9 +131,13 @@ class Node {
         isChild: parent.value !== undefined,
         isParent,
         isLeaf: !isParent,
-        showCheckbox:
-          node.showCheckbox !== undefined ? node.showCheckbox : true,
-        disabled: this.getDisabledState(node, parent, disabled, noCascade),
+        showCheckbox: showCheckbox !== undefined ? showCheckbox : true,
+        disabled: this.getDisabledState(
+          node,
+          parent,
+          disableParent ? true : disabled,
+          noCascade,
+        ),
         treeDepth: depth,
         index,
       };
@@ -137,7 +146,9 @@ class Node {
   }
 
   nodeHasChildren(node) {
-    return Array.isArray(node.children);
+    let hasChildren = Array.isArray(node.children);
+    if (hasChildren) hasChildren = node.children.length > 0;
+    return hasChildren;
   }
 
   getDisabledState(node, parent, disabledProp, noCascade) {
@@ -177,10 +188,14 @@ class Node {
     if (!node) return path;
 
     if (node.parent.children)
-      path =
-        this.getParentPath(this.getNode(node.parent.value), node.parent.label) +
-        this.props.parentSeparator +
-        path;
+      if (node.parent.children.length)
+        path =
+          this.getParentPath(
+            this.getNode(node.parent.value),
+            node.parent.label,
+          ) +
+          this.props.parentSeparator +
+          path;
 
     return path;
   }
@@ -190,12 +205,6 @@ class Node {
     let string = '';
 
     Object.keys(this.flatNodes).forEach((value) => {
-      console.log(
-        `this.flatNodes[${value}]:`,
-        this.flatNodes[value],
-        `this.flatNodes[${value}][${key}]:`,
-        this.flatNodes[value][key],
-      );
       if (this.flatNodes[value][key]) {
         list.push(value);
         // compile string result
@@ -215,25 +224,23 @@ class Node {
           const bShowParent =
             (bAllSibs && this.props.saveParents) || this.props.saveExpanded;
           const bShowChild = !bAllSibs || this.props.saveChildren;
-          // console.log(
-          //   `${bShowChild} = ${!bAllSibs} || ${this.props.saveChildren}`,
-          // );
 
           // Append parent to child
           // Appends parent to list
           // check for parent
           if (parent)
-            if (bShowParent && parent.children) {
-              if (parent) {
-                buffer += this.getParentPath(
-                  this.getNode(parent.value),
-                  this.getNode(parent.value).label,
-                );
-              }
+            if (bShowParent && parent.children)
+              if (parent.children.length) {
+                if (parent) {
+                  buffer += this.getParentPath(
+                    this.getNode(parent.value),
+                    this.getNode(parent.value).label,
+                  );
+                }
 
-              // append parent child separator if child will be present
-              if (buffer && bShowChild) buffer += this.props.parentSeparator;
-            }
+                // append parent child separator if child will be present
+                if (buffer && bShowChild) buffer += this.props.parentSeparator;
+              }
 
           // child
           if (bShowChild || !buffer) buffer += this.flatNodes[value].label;
@@ -344,6 +351,7 @@ class TreeNode extends React.Component {
     expandOnClick: false,
     icon: null,
     showCheckbox: true,
+    noParentCheckbox: false,
     title: null,
     onClick: () => {},
   };
@@ -552,7 +560,7 @@ class TreeNode extends React.Component {
 
   // render the lable and checkbox
   renderLabel() {
-    const { label, /*showCheckbox, */ showNodeIcon } = this.props;
+    const { label, showCheckbox, noParentCheckbox, showNodeIcon } = this.props;
     const labelChildren = [
       showNodeIcon ? (
         <span key={0} className="rct-node-icon">
@@ -803,7 +811,7 @@ class TreeBase extends React.Component {
       icons,
       lang,
       noCascade,
-      // singleSelect,
+      singleSelect,
       onClick,
       onlyLeafCheckboxes,
       optimisticToggle,
@@ -860,6 +868,7 @@ class TreeBase extends React.Component {
           isLeaf={flatNode.isLeaf}
           isParent={flatNode.isParent}
           showCheckbox={showCheckbox}
+          noParentCheckbox={flatNode.noParentCheckbox}
           showNodeIcon={showNodeIcon}
           title={showNodeTitle ? node.title || node.label : node.title}
           treeId={id}
@@ -982,7 +991,7 @@ class Tree extends React.Component {
           if (depth === 0) {
             buffer.push({
               label: arr[i].slice(depth, arr[i].length),
-              value: `${arr[i].slice(depth, arr[i].length)}_${i}`,
+              value: `${i}`,
               children: [],
             });
 
@@ -995,7 +1004,7 @@ class Tree extends React.Component {
         else if (parent) {
           parent.children.push({
             label: arr[i].slice(depth + 1, arr[i].length),
-            value: `${arr[i].slice(depth + 1, arr[i].length)}_${i}`,
+            value: `${i}`,
             children: [],
           });
           const lastChild = parent.children[parent.children.length - 1];
@@ -1022,26 +1031,138 @@ class Tree extends React.Component {
     return { data: buffer, pos: 0 };
   }; // End of arrayToNodes
 
+  static stringToChecked = (
+    string,
+    nodeData,
+    separator,
+    parentSeparator,
+    sepatateLine,
+  ) => {
+    // console.log(`stringToChecked: ${string},
+    // ${nodeData},
+    // ${separator},
+    // ${parentSeparator},
+    // ${sepatateLine},`);
+    // parse string until nothing is left or the nodeData's end is reached
+    const checked = [];
+    // parse string
+    let strArr = Array.isArray(string) ? string : string.split(separator);
+    // parse out parents
+    if (parentSeparator && !Array.isArray(string))
+      for (let i = 0; i < strArr.length; i) {
+        const iPos = strArr[i].indexOf(parentSeparator);
+        if (iPos > -1) {
+          // versasuite technically fails to parse this out when parents are involved, so we are breaking and return nothing here
+          return { checked: undefined, strArr: undefined };
+          // strArr[i] = strArr[i].slice(iPos, strArr[i].length);
+          // console.log('new Str:', strArr[i]);
+        }
+        i += 1;
+      }
+
+    // console.log(`strArr${separator}`, strArr, 'nodeData:', nodeData);
+
+    // assume items are in sequential
+    for (let i = 0; i < nodeData.length; i) {
+      // console.log(`${strArr[0]} === ${nodeData[i].label}`);
+      // check for match
+      if (strArr[0] === nodeData[i].label) {
+        // push match
+        checked.push(nodeData[i].value);
+        // remove string from buffer
+        strArr = strArr.slice(1, strArr.length);
+        // console.log('new strArr:', strArr);
+      }
+      // check children
+      if (nodeData[i].children)
+        if (nodeData[i].children.length) {
+          // console.log('Check Children');
+          const result = Tree.stringToChecked(
+            strArr,
+            nodeData[i].children,
+            separator,
+            parentSeparator,
+            sepatateLine,
+          );
+          if (result.strArr.length) strArr = result.strArr;
+          if (result.checked.length)
+            checked.splice(checked.length, 0, ...result.checked);
+        }
+
+      if (strArr.length === 0) break;
+
+      i += 1;
+    }
+
+    // console.log('checked:', checked);
+    return { checked, strArr };
+  };
+
   // constructor
   constructor(props) {
     super(props);
     // if (this.props.funcs) this.props.funcs.setChecked = this.setChecked;
 
+    const defaultValueResult = () =>
+      Array.isArray(props.defaultValue)
+        ? props.defaultValue
+        : Tree.stringToChecked(
+            props.defaultValue,
+            props.nodes,
+            props.separator,
+            props.parentSeparator,
+            props.separateLine,
+          ).checked;
+
+    // get default value
+    const checked = props.defaultValue ? defaultValueResult() : undefined;
+
+    // console.log('checked:', checked, 'defaultValue:', props.defaultValue);
+
     this.state = {
-      // checked: ['Lattice_2'],
-      checked: [],
+      checked: Array.isArray(checked) ? checked : [],
       expanded: [],
     };
 
     // set checked function
-    // if (props.checked)
-    //   if (props.checked.setChecked) props.checked.setChecked = this.setChecked;
+    if (props.Funcs) {
+      props.Funcs.Update = this.handleUpdate;
+    }
   }
 
-  // setChecked(val) {
-  //   console.log('Tree setChecked', val);
-  //   this.setState({ checked: val });
-  // }
+  Update = (checked, value, string) => {
+    this.setState({ checked });
+    if (this.props.setString) {
+      this.props.onChange({ target: { value: string } });
+    } else {
+      this.props.onChange({ target: { value: checked } });
+    }
+  };
+
+  handleUpdate = (value) => {
+    const obj = this.handleUpdateValue(value);
+    this.Update(obj.checked, undefined, obj.string);
+  };
+
+  handleUpdateValue = (value) => {
+    const checked = Array.isArray(value)
+      ? value
+      : Tree.stringToChecked(
+          value,
+          this.props.nodes,
+          this.props.separator,
+          this.props.parentSeparator,
+          this.props.separateLine,
+        ).checked;
+    const string = Array.isArray(value) ? undefined : value;
+
+    // console.log(
+    //   `handleUpdate: value: ${value},
+    //   checked: ${checked},
+    //   string: ${string}`,
+    // );
+    return { checked, string };
+  };
 
   render() {
     return (
@@ -1063,13 +1184,13 @@ class Tree extends React.Component {
         nodes={this.props.nodes}
         id={this.props.id}
         showCheckbox={this.props.showCheckbox}
-        noCascade={this.props.noCascade} // single selection
-        singleSelect={this.props.singleSelect} // single selection
+        noParentCheckbox={this.props.noParentCheckbox}
+        noCascade={this.props.noCascade}
+        singleSelect={this.props.singleSelect}
         checked={this.state.checked}
         expanded={this.state.expanded}
         onCheck={(checked, value, string) => {
-          this.setState({ checked });
-          if (this.props.setValue) this.props.setValue(string);
+          this.Update(checked, value, string);
         }}
         onExpand={(expanded) => this.setState({ expanded })}
       />
