@@ -21,6 +21,110 @@ import './Card.css';
 // 2. Adding/subtracting/moving stat blocks
 // 3. Adding/subtracting/moving stats
 
+// Cell
+class Cell {
+  constructor(obj) {
+    // defaults
+    this.result = 0;
+    this.expression = '0';
+    this.vars = '{}';
+
+    // defined
+    if (obj) {
+      this.result = obj.result;
+      this.expression = obj.expression;
+      this.vars = obj.vars;
+    }
+  }
+}
+
+// Stat
+class Stat {
+  constructor(obj) {
+    // defaults
+    this.Value = 'Undefined';
+    this.Num = {};
+    this.Min = {};
+    this.Max = {};
+    this.Unit = 'Undefined';
+
+    // defined
+    if (obj) {
+      this.Value = obj.Value ? obj.Value : 'Undefined';
+      this.Num = new Cell(obj.Num);
+      this.Min = new Cell(obj.Min);
+      this.Max = new Cell(obj.Max);
+      this.Unit = obj.Unit ? obj.Unit : 'Undefined';
+    }
+  }
+
+  getPath = () => {};
+}
+
+// Block
+class Block {
+  constructor(obj) {
+    // defaults
+    this.Value = 'Undefined';
+    this.Values = [];
+
+    // defined
+    if (obj) {
+      this.Value = obj.Value;
+
+      const keys = Object.keys(obj.Values);
+      this.Values = keys.map((key) => {
+        return new Stat(obj.Values[key]);
+      });
+    }
+  }
+
+  getPath = () => {};
+}
+
+// Card
+class Card {
+  constructor(obj) {
+    // defaults
+    this.Value = 'Undefined';
+    this.Type = 'Undefined';
+    this.Level = 'Undefined';
+    this.Min = 'Undefined';
+    this.Max = 'Undefined';
+    this.Points = {};
+    this.Values = [];
+
+    // defined
+    if (obj) {
+      this.Value = obj.Value ? obj.Value : 'Undefined';
+      this.Type = obj.Type ? obj.Type : 'Undefined';
+      this.Level = obj.Level ? obj.Level : 'Undefined';
+      this.Min = obj.Min ? obj.Min : 'Undefined';
+      this.Max = obj.Max ? obj.Max : 'Undefined';
+      this.Points = new Cell(obj.Points);
+
+      const keys = Object.keys(obj.Values);
+      this.Values = keys.map((key) => {
+        return new Block(obj.Values[key]);
+      });
+    }
+  }
+}
+
+// Profile
+class Profile {
+  constructor(obj) {
+    // console.log('Profile:', obj);
+    this.Game = obj.Game;
+    this.Title = obj.Title;
+
+    const keys = Object.keys(obj.Values);
+    this.Values = keys.map((key) => {
+      return new Card(obj.Values[key]);
+    });
+  }
+}
+
 const baseInputStyle = {
   width: '100%',
   border: 'none',
@@ -222,12 +326,6 @@ const StatBlock = (props) => {
     // This is the onChange event of the StatCard
     // Update Calculation
     if (onChange) onChange(buffer);
-    // Update Results(Num, Min, Max)
-    // buffer.target.dataset = {
-    //   key: `${key}~${cell}`,
-    // };
-    // buffer.target.value = StatData.GetCellValue(value[1][0], value[1][1], data);
-    // if (onChange) onChange(buffer);
   };
 
   // handleChange
@@ -290,9 +388,49 @@ const StatBlock = (props) => {
   }
 
   const getStatValue = (val) => {
-    return !Number.isNaN(val[0]) ? val[0] : 0;
+    return !Number.isNaN(val.result) ? val.result : 0;
     // return val[0];
   };
+
+  function getCellKey(rowData) {
+    // return 'Values' + '~' + rowData['Value'] + '~' + 'Num';
+    return `${Values}~${rowData['Value']}~Num`;
+  }
+
+  const displayForms = [
+    <input key="Value" type="text" value={''} style={cellStyle} />,
+    <MathInput
+      key="Num"
+      Key={getCellKey}
+      value={''} // comprises of [value,[expression, vars]]
+      data={data}
+      style={buttonStyle}
+      onChange={handleMathStatChange}
+    >
+      Data
+    </MathInput>,
+    <MathInput
+      key="Min"
+      Key={getCellKey}
+      value={''}
+      data={data}
+      style={buttonStyle}
+      onChange={handleMathStatChange}
+    >
+      Data
+    </MathInput>,
+    <MathInput
+      key="Max"
+      Key={getCellKey}
+      value={''}
+      data={data}
+      style={buttonStyle}
+      onChange={handleMathStatChange}
+    >
+      Data
+    </MathInput>,
+    <input key="Unit" type="text" value={''} style={cellStyle} />,
+  ];
 
   // input forms
   const inputForms = [
@@ -337,46 +475,6 @@ const StatBlock = (props) => {
     <div key="Vars" style={{ display: 'none' }}>
       Data
     </div>,
-  ];
-
-  function getCellKey(rowData) {
-    // return 'Values' + '~' + rowData['Value'] + '~' + 'Num';
-    return `${Values}~${rowData['Value']}~Num`;
-  }
-
-  const displayForms = [
-    <input key="Value" type="text" value={''} style={cellStyle} />,
-    <MathInput
-      key="Num"
-      Key={getCellKey}
-      value={data} // comprises of [value,[expression, vars]]
-      data={data}
-      style={buttonStyle}
-      onChange={handleMathStatChange}
-    >
-      Data
-    </MathInput>,
-    <MathInput
-      key="Min"
-      Key={getCellKey}
-      value={data}
-      data={data}
-      style={buttonStyle}
-      onChange={handleMathStatChange}
-    >
-      Data
-    </MathInput>,
-    <MathInput
-      key="Max"
-      Key={getCellKey}
-      value={data}
-      data={data}
-      style={buttonStyle}
-      onChange={handleMathStatChange}
-    >
-      Data
-    </MathInput>,
-    <input key="Unit" type="text" value={''} style={cellStyle} />,
   ];
 
   return (
@@ -485,7 +583,7 @@ const StatBlock = (props) => {
   );
 };
 
-const Card = (props) => {
+const CARD = (props) => {
   const [selection, setBlockSelection] = useState('');
   const { data } = props;
   const { parentKey } = props;
@@ -634,7 +732,7 @@ const Stack = (props) => {
     i += 1;
     const Page = Pages[key];
     return (
-      <Card
+      <CARD
         key={`Card_${i}`}
         data={data}
         parentKey={`${parentKey}~${key}`}
@@ -647,13 +745,15 @@ const Stack = (props) => {
         onDrag={(e) => {
           // console.log('onDrag:', e.target);
         }}
-      ></Card>
+      ></CARD>
     );
   });
 };
 
 // handles grid data
 const ProfileCard = (props) => {
+  console.log('Card:', new Profile(props.value));
+
   // Parse out props
   // 1. Get Title
   const data = props.value;

@@ -136,56 +136,50 @@ const defaultTemplates = {
             Min: 732,
             Max: 61440,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               Health: {
                 Value: 'Health',
-                Num: [
-                  2172,
-                  [
-                    '12 * a',
+                Num: {
+                  result: 2172,
+                  expression: '12 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
-                  ],
-                ],
-                Min: [
-                  36,
-                  [
-                    '12 * a',
+                },
+                Min: {
+                  result: 36,
+                  expression: '12 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
-                  ],
-                ],
-                Max: [
-                  30720,
-                  [
-                    '12 * a',
+                },
+                Max: {
+                  result: 30720,
+                  expression: '12 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
-                  ],
-                ],
+                },
                 Unit: '',
               },
               Mana: {
                 Value: 'Mana',
-                Num: [
-                  16692,
-                  [
-                    '12 * a',
+                Num: {
+                  result: 16692,
+                  expression: '12 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
-                  ],
-                ],
-                Min: [
-                  696,
-                  [
-                    '12 * a',
+                },
+                Min: {
+                  result: 696,
+                  expression: '12 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
-                  ],
-                ],
-                Max: [
-                  30720,
-                  [
-                    '12 * a',
+                },
+                Max: {
+                  result: 30720,
+                  expression: '12 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
-                  ],
-                ],
+                },
                 Unit: '',
               },
             },
@@ -208,39 +202,38 @@ const defaultTemplates = {
             Values: {
               Strength: {
                 Value: 'Strength',
-                Num: [15, ['15', '{}']],
-                Min: [15, ['15', '{}']],
-                Max: [2560, ['2560', '{}']],
+                Num: { result: 15, expression: '15', vars: '{}' },
+                Min: { result: 15, expression: '15', vars: '{}' },
+                Max: { result: 2560, expression: '2560', vars: '{}' },
                 Unit: '',
-                'Strength~Num': '15',
-                'Strength~Min': '153',
               },
               Agility: {
                 Value: 'Agility',
-                Num: [119, ['119', '{}']],
-                Min: [3, ['3', '{}']],
-                Max: [2560, ['2560', '{}']],
+                Num: { result: 119, expression: '119', vars: '{}' },
+                Min: { result: 3, expression: '3', vars: '{}' },
+                Max: { result: 2560, expression: '2560', vars: '{}' },
                 Unit: '',
               },
               Stamina: {
                 Value: 'Stamina',
-                Num: [181, ['181', '{}']],
-                Min: [3, ['3', '{}']],
-                Max: [2560, ['2560', '{}']],
+                Num: { result: 181, expression: '181', vars: '{}' },
+                Min: { result: 3, expression: '3', vars: '{}' },
+                Max: { result: 2560, expression: '2560', vars: '{}' },
+
                 Unit: '',
               },
               Spirit: {
                 Value: 'Spirit',
-                Num: [216, ['216', '{}']],
-                Min: [3, ['3', '{}']],
-                Max: [2560, ['2560', '{}']],
+                Num: { result: 216, expression: '216', vars: '{}' },
+                Min: { result: 3, expression: '3', vars: '{}' },
+                Max: { result: 2560, expression: '2560', vars: '{}' },
                 Unit: '',
               },
               Intelligence: {
                 Value: 'Intelligence',
-                Num: [1391, ['1391', '{}']],
-                Min: [58, ['58', '{}']],
-                Max: [2560, ['2560', '{}']],
+                Num: { result: 1391, expression: '1391', vars: '{}' },
+                Min: { result: 58, expression: '58', vars: '{}' },
+                Max: { result: 2560, expression: '2560', vars: '{}' },
                 Unit: '',
               },
             },
@@ -249,160 +242,147 @@ const defaultTemplates = {
           'Secondary Stats': {
             Value: 'Secondary Stats',
             Type: 'Calc',
-            Num: [0, ['', '{}']],
+            Num: { result: 0, expression: '0', vars: '{}' },
             Min: 19.4,
             Max: 7168,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Melee Attack': {
                 Value: 'Melee Attack',
-                Num: [
-                  20.6,
-                  [
-                    '0.2 * a',
+                Num: {
+                  result: 20.6,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Num"]}',
-                  ],
-                ],
-                Min: [
-                  0.6,
-                  [
-                    '0.2 * a',
+                },
+                Min: {
+                  result: 0.6,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Min"]}',
-                  ],
-                ],
-                Max: [
-                  512,
-                  [
-                    '0.2 * a',
+                },
+                Max: {
+                  result: 512,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Max"]}',
-                  ],
-                ],
+                },
                 Unit: '',
               },
               'Range Attack': {
                 Value: 'Range Attack',
-                Num: [
-                  23.8,
-                  [
-                    '0.2 * a',
+                Num: {
+                  result: 23.8,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Num"]}',
-                  ],
-                ],
-                Min: [
-                  0.6,
-                  [
-                    '0.2 * a',
+                },
+                Min: {
+                  result: 0.6,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Min"]}',
-                  ],
-                ],
-                Max: [
-                  512,
-                  [
-                    '0.2 * a',
+                },
+                Max: {
+                  result: 512,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Max"]}',
-                  ],
-                ],
+                },
                 Unit: '',
               },
               'Magic Attack': {
                 Value: 'Magic Attack',
-                Num: [
-                  278.2,
-                  [
-                    '0.2 * a',
+                Num: {
+                  result: 278.2,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
-                  ],
-                ],
-                Min: [
-                  11.6,
-                  [
-                    '0.2 * a',
+                },
+                Min: {
+                  result: 11.6,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
-                  ],
-                ],
-                Max: [
-                  512,
-                  [
-                    '0.2 * a',
+                },
+                Max: {
+                  result: 512,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
-                  ],
-                ],
+                },
+
                 Unit: '',
               },
               'Healing Power': {
                 Value: 'Healing Power',
-                Num: [
-                  43.2,
-                  [
-                    '0.2 * a',
+                Num: {
+                  result: 43.2,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"]}',
-                  ],
-                ],
-                Min: [
-                  0.6,
-                  [
-                    '0.2 * a',
+                },
+                Min: {
+                  result: 11.6,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"]}',
-                  ],
-                ],
-                Max: [
-                  512,
-                  [
-                    '0.2 * a',
+                },
+                Max: {
+                  result: 512,
+                  expression: '0.2 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"]}',
-                  ],
-                ],
+                },
+
                 Unit: '',
               },
               'Physical Defense': {
                 Value: 'Physical Defense',
-                Num: [
-                  181,
-                  [
-                    '1 * a',
+                Value: 'Healing Power',
+                Num: {
+                  result: 181,
+                  expression: '1 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
-                  ],
-                ],
-                Min: [
-                  3,
-                  [
-                    '1 * a',
+                },
+                Min: {
+                  result: 3,
+                  expression: '1 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
-                  ],
-                ],
-                Max: [
-                  2560,
-                  [
-                    '1 * a',
+                },
+                Max: {
+                  result: 2560,
+                  expression: '1 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
-                  ],
-                ],
+                },
+
                 Unit: '',
               },
               'Magic Defense': {
                 Value: 'Magic Defense',
-                Num: [
-                  181,
-                  [
-                    '1 * a',
+                Num: {
+                  result: 181,
+                  expression: '1 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
-                  ],
-                ],
-                Min: [
-                  3,
-                  [
-                    '1 * a',
+                },
+                Min: {
+                  result: 3,
+                  expression: '1 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
-                  ],
-                ],
-                Max: [
-                  2560,
-                  [
-                    '1 * a',
+                },
+                Max: {
+                  result: 2560,
+                  expression: '1 * a',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
-                  ],
-                ],
+                },
+
                 Unit: '',
               },
             },
@@ -415,66 +395,48 @@ const defaultTemplates = {
             Min: 104.56,
             Max: 1278.54,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Move Speed': {
                 Value: 'Move Speed',
-                Num: [5.4, ['5.4', '{}']],
-                Min: [5.4, ['5.4', '{}']],
-                Max: [10, ['10', '{}']],
+                Num: { result: 5.4, expression: '5.4', vars: '{}' },
+                Min: { result: 5.4, expression: '5.4', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: 'm/s',
               },
               'Cast Time': {
                 Value: 'Cast Time',
-                Num: [
-                  82.83,
-                  [
+
+                Num: {
+                  result: 82.83,
+                  expression:
                     '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
-                  ],
-                ],
-                Min: [
-                  99.16,
-                  [
+                },
+                Min: {
+                  result: 99.16,
+                  expression:
                     '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
-                  ],
-                ],
-                Max: [
-                  68.54,
-                  [
+                },
+                Max: {
+                  result: 68.54,
+                  expression:
                     '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
+                  vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
-                  ],
-                ],
+                },
+
                 Unit: '%',
-                'Cast Time~Num': [
-                  82.83,
-                  [
-                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
-                  ],
-                ],
-                'Cast Time~Min': [
-                  99.16,
-                  [
-                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
-                  ],
-                ],
-                'Cast Time~Max': [
-                  68.54,
-                  [
-                    '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
-                  ],
-                ],
               },
               'Attack Speed': {
                 Value: 'Attack Speed',
-                Num: [190, ['190', '{}']],
-                Min: [0, ['0', '{}']],
-                Max: [1200, ['1200', '{}']],
+                Num: { result: 190, expression: '190', vars: '{}' },
+                Min: { result: 0, expression: '0', vars: '{}' },
+                Max: { result: 1200, expression: '1200', vars: '{}' },
+
                 Unit: '%',
               },
             },
@@ -492,55 +454,55 @@ const defaultTemplates = {
             Min: 7,
             Max: 70,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Melee Attack Speed': {
                 Value: 'Melee Attack Speed',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Melee Accuracy': {
                 Value: 'Melee Accuracy',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Melee Critical Status': {
                 Value: 'Melee Critical Status',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Melee Critical Damage': {
                 Value: 'Melee Critical Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Backstab Melee Damage': {
                 Value: 'Backstab Melee Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Melee Skill Damage': {
                 Value: 'Melee Skill Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Melee Skills': {
                 Value: 'PvE Melee Skills',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -553,48 +515,48 @@ const defaultTemplates = {
             Min: 6,
             Max: 60,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Ranged Accuracy': {
                 Value: 'Ranged Accuracy',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Ranged Critical Status': {
                 Value: 'Ranged Critical Status',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Ranged Critical Damage': {
                 Value: 'Ranged Critical Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Backstab Ranged Damage': {
                 Value: 'Backstab Ranged Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Ranged Skill Damage': {
                 Value: 'Ranged Skill Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Ranged Skills': {
                 Value: 'PvE Ranged Skills',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -607,48 +569,48 @@ const defaultTemplates = {
             Min: 6,
             Max: 60,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Magic Accuracy': {
                 Value: 'Magic Accuracy',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Magic Critical Status': {
                 Value: 'Magic Critical Status',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Magic Critical Damage': {
                 Value: 'Magic Critical Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Backstab Magic Damage': {
                 Value: 'Backstab Magic Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Magic Skill Damage': {
                 Value: 'Magic Skill Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Magic Skills': {
                 Value: 'PvE Magic Skills',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -661,41 +623,41 @@ const defaultTemplates = {
             Min: 5,
             Max: 50,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               Focus: {
                 Value: 'Focus',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Shield Defense Penetration Rate': {
                 Value: 'Shield Defense Penetration Rate',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Shield Defense Penetration': {
                 Value: 'Shield Defense Penetration',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Defense Penetration': {
                 Value: 'Defense Penetration',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Magic Defense Penetration': {
                 Value: 'Magic Defense Penetration',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -713,55 +675,55 @@ const defaultTemplates = {
             Min: 7,
             Max: 70,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Parry Rate': {
                 Value: 'Parry Rate',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Shield Block Rate': {
                 Value: 'Shield Block Rate',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               Evasion: {
                 Value: 'Evasion',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               Resiliance: {
                 Value: 'Resiliance',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               Toughness: {
                 Value: 'Toughness',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Siege Damage Reduction': {
                 Value: 'Siege Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Damage Reduction': {
                 Value: 'PvE Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -774,27 +736,27 @@ const defaultTemplates = {
             Min: 3,
             Max: 30,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Melee Damage Reduction': {
                 Value: 'Melee Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Fixed Melee Damage Reduction': {
                 Value: 'Fixed Melee Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Melee Damage Reduction': {
                 Value: 'PvE Melee Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -807,27 +769,27 @@ const defaultTemplates = {
             Min: 3,
             Max: 30,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Ranged Damage Reduction': {
                 Value: 'Ranged Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Fixed Ranged Damage Reduction': {
                 Value: 'Fixed Ranged Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Ranged Damage Reduction': {
                 Value: 'PvE Ranged Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -840,27 +802,27 @@ const defaultTemplates = {
             Min: 3,
             Max: 30,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Magic Damage Reduction': {
                 Value: 'Magic Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Fixed Magic Damage Reduction': {
                 Value: 'Fixed Magic Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'PvE Magic Damage Reduction': {
                 Value: 'PvE Magic Damage Reduction',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -878,34 +840,34 @@ const defaultTemplates = {
             Min: 4,
             Max: 40,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Critical Heal Rate': {
                 Value: 'Critical Heal Rate',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Critical Heal Bonus': {
                 Value: 'Critical Heal Bonus',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               Healing: {
                 Value: 'Healing',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Healing Skill Damage': {
                 Value: 'Healing Skill Damage',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -918,34 +880,34 @@ const defaultTemplates = {
             Min: 4,
             Max: 40,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Heal Regen': {
                 Value: 'Heal Regen',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Continuous Heal Regen': {
                 Value: 'Continuous Heal Regen',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Mana Regen': {
                 Value: 'Mana Regen',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Post-Cast Mana Regen': {
                 Value: 'Post-Cast Mana Regen',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },
@@ -958,41 +920,41 @@ const defaultTemplates = {
             Min: 5,
             Max: 50,
             Level: 0,
-            Points: [0, ['', '{}']],
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: {
               'Received Healing': {
                 Value: 'Received Healing',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Increased experience gain': {
                 Value: 'Increased experience gain',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Loot Drop Rate': {
                 Value: 'Loot Drop Rate',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Gold earned from hunting': {
                 Value: 'Gold earned from hunting',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
               'Stealth Detection': {
                 Value: 'Stealth Detection',
-                Num: [1, ['', '{}']],
-                Min: [1, ['', '{}']],
-                Max: [10, ['', '{}']],
+                Num: { result: 1, expression: '1', vars: '{}' },
+                Min: { result: 1, expression: '1', vars: '{}' },
+                Max: { result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             },

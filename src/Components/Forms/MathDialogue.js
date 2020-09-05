@@ -207,10 +207,11 @@ const MathDialogue = (props) => {
               onClick={(e) => {
                 const result = {
                   target: {
-                    value: [
-                      defineResult(),
-                      [newExpression, JSON.stringify(newVars)],
-                    ],
+                    value: {
+                      result: defineResult(),
+                      expression: newExpression,
+                      vars: JSON.stringify(newVars),
+                    },
                     dataset: e.target.dataset,
                   },
                 };

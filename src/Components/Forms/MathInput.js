@@ -10,12 +10,11 @@ const MathInput = (props) => {
   const Key = props.Key ? props.Key : props['data-key'];
   // get math property
   const { value } = props;
-  const result = value ? value[0] : 0;
+  const result = value ? value.result : 0;
+  const expression = value ? value.expression : undefined;
+  const vars = value ? value.vars : undefined;
 
-  const math = value ? value[1] : '';
-  const expression = math ? math[0] : undefined;
-  const vars = math ? math[1] : undefined;
-  // console.log('MathInput:', { result, math, expression, vars });
+  // console.log('MathInput:', { result, expression, vars });
 
   const { style } = props;
   const { onChange } = props;
@@ -31,8 +30,6 @@ const MathInput = (props) => {
   });
 
   const [seen, setSeen] = useState(false);
-
-  if (seen) console.log({ value, math, expression });
 
   const togglePopup = () => {
     setSeen(!seen);
@@ -59,8 +56,8 @@ const MathInput = (props) => {
 
   useEffect(() => {}, []);
 
-  const calcValue = math
-    ? StatData.GetCellValue(math[0], math[1], data)
+  const calcValue = value
+    ? StatData.GetCellValue(expression, vars, data)
     : undefined;
   return (
     <div>
@@ -82,7 +79,7 @@ const MathInput = (props) => {
           togglePopup();
         }}
       >
-        {math
+        {value
           ? !Number.isNaN(calcValue) && calcValue !== undefined
             ? calcValue
             : 'Invalid'

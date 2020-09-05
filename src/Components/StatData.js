@@ -2,7 +2,7 @@ import React from 'react';
 import { /*Coll, */ Calc } from './KoyMath.js';
 import { evaluate } from 'mathjs';
 
-class StatData extends React.Component {
+class StatData {
   // handles value range and returns event state
   static HandleStatMinMax(stats, stat, value) {
     let result = value;
@@ -34,9 +34,9 @@ class StatData extends React.Component {
     const tallies = { Total: 0, Min: 0, Max: 0 };
 
     Object.keys(statBlock).forEach((key) => {
-      tallies.Total = tallies.Total + statBlock[key]['Num'][0];
-      tallies.Min = tallies.Min + statBlock[key]['Min'][0];
-      tallies.Max = tallies.Max + statBlock[key]['Max'][0];
+      tallies.Total = tallies.Total + statBlock[key]['Num'].result;
+      tallies.Min = tallies.Min + statBlock[key]['Min'].result;
+      tallies.Max = tallies.Max + statBlock[key]['Max'].result;
     });
 
     return tallies;
@@ -63,6 +63,7 @@ class StatData extends React.Component {
       i += 1;
     });
 
+    // console.log('keys, buffer:', keys, buffer);
     return buffer;
   };
 
@@ -87,6 +88,7 @@ class StatData extends React.Component {
 
   // parse scope
   static parseVariables(variables, data, noParse) {
+    // console.log('parseVariables:', variables, data, noParse);
     let scope;
 
     try {
@@ -99,9 +101,17 @@ class StatData extends React.Component {
 
     for (let [key, value] of Object.entries(scope)) {
       const buffer = this.GetValue(value, data); // table, row, column="always 'Value'""
-      buffer.constructor === Array
-        ? (scope[key] = buffer[0])
-        : (scope[key] = buffer);
+      switch (buffer.constructor) {
+        case Object:
+          scope[key] = buffer.result;
+          break;
+        case Array:
+          scope[key] = buffer[0];
+          break;
+        default:
+          scope[key] = buffer;
+          break;
+      }
     }
 
     return scope;
@@ -122,7 +132,7 @@ class StatData extends React.Component {
     try {
       result = evaluate(expression, scope);
     } catch {
-      console.error('ERROR: Invalid Expression(', expression, scope, ')');
+      console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
       return undefined;
     }
 
