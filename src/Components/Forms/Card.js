@@ -66,11 +66,24 @@ class Block {
   constructor(obj) {
     // defaults
     this.Value = 'Undefined';
+
+    this.Type = 'Undefined';
+    this.Level = 'Undefined';
+    this.Min = 'Undefined';
+    this.Max = 'Undefined';
+    this.Points = {};
+
     this.Values = [];
 
     // defined
     if (obj) {
       this.Value = obj.Value;
+
+      this.Type = obj.Type ? obj.Type : 'Undefined';
+      this.Level = obj.Level ? obj.Level : 'Undefined';
+      this.Min = obj.Min ? obj.Min : 'Undefined';
+      this.Max = obj.Max ? obj.Max : 'Undefined';
+      this.Points = new Cell(obj.Points);
 
       const keys = Object.keys(obj.Values);
       this.Values = keys.map((key) => {
@@ -87,21 +100,11 @@ class Card {
   constructor(obj) {
     // defaults
     this.Value = 'Undefined';
-    this.Type = 'Undefined';
-    this.Level = 'Undefined';
-    this.Min = 'Undefined';
-    this.Max = 'Undefined';
-    this.Points = {};
     this.Values = [];
 
     // defined
     if (obj) {
       this.Value = obj.Value ? obj.Value : 'Undefined';
-      this.Type = obj.Type ? obj.Type : 'Undefined';
-      this.Level = obj.Level ? obj.Level : 'Undefined';
-      this.Min = obj.Min ? obj.Min : 'Undefined';
-      this.Max = obj.Max ? obj.Max : 'Undefined';
-      this.Points = new Cell(obj.Points);
 
       const keys = Object.keys(obj.Values);
       this.Values = keys.map((key) => {

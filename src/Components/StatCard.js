@@ -192,13 +192,12 @@ const defaultTemplates = {
             Min: 82,
             Max: 12800,
             Level: 2560,
-            Points: [
-              2560,
-              [
-                'a * 1',
+            Points: {
+              result: 2560,
+              expression: 'a * 1',
+              vars:
                 '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
-              ],
-            ],
+            },
             Values: {
               Strength: {
                 Value: 'Strength',
