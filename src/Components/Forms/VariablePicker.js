@@ -65,12 +65,9 @@ const renderStats = (
           // filter: 'brightness(66%)',
         }}
       >
-        {bKey ? (
+        {bKey && key.constructor !== Function ? (
           bSel ? (
-            <SelectElem
-              fullKey={`${parentKey}~${key}`}
-              style={{ width: '100%' }}
-            >
+            <SelectElem value={data[key]} style={{ width: '100%' }}>
               {key}
             </SelectElem>
           ) : (
@@ -79,7 +76,11 @@ const renderStats = (
         ) : null}
         {children.length === 0 && bVal && bKey ? '' : null}
         {bVal && bKey ? ': ' : null}
-        {children.length === 0 ? (bVal ? data[key] : null) : children}
+        {children.length === 0
+          ? bVal && data[key].constructor !== Function
+            ? data[key]
+            : null
+          : children}
       </div>,
     );
   });
@@ -95,7 +96,9 @@ const VariablePicker = (props) => {
   const { data } = props;
   const { varKey } = props;
 
-  const GetKey = (props) => {
+  const Picker = (props) => {
+    const { value } = props;
+
     return (
       <button
         type="push"
@@ -103,12 +106,12 @@ const VariablePicker = (props) => {
         data-key={props.fullKey}
         style={props.style}
         onClick={(e) => {
-          const result = {};
-          result[varKey] = e.target.dataset.key
-            .split('~')
-            .slice(1, result.length);
+          const keys = value.getPath();
+          const newVar = {};
+          newVar[varKey] = keys;
 
-          onClick({ target: { value: result } });
+          console.log('Picker 1:', newVar);
+          onClick({ target: { value: newVar } });
         }}
       >
         {props.children}
@@ -125,7 +128,7 @@ const VariablePicker = (props) => {
         'Num,Min,Max,math,Level,Points,PointCalc,Unit,Type,Total',
         'math,Value,Values,PointCalc,Unit,Type,Total',
         'Num,Min,Max,Level,Points',
-        GetKey,
+        Picker,
       )}
     </div>
   );

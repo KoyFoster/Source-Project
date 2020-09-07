@@ -14,12 +14,6 @@ const MathDialogue = (props) => {
   const { onCancel } = props;
   const { onAccept } = props;
 
-  // data sets
-  let dataset = {};
-  Object.keys(props).forEach((key) => {
-    if (key.slice(0, 5) === 'data-') dataset[key] = props[key];
-  });
-
   const [newExpression, setExpression] = useState(expression);
   const [newVars, setVars] = useState(vars ? JSON.parse(vars) : {});
 
@@ -41,39 +35,10 @@ const MathDialogue = (props) => {
     ></VariablePicker>
   );
 
-  // const parseKeysIntoLabel = (keys) => {
-  //   if (!keys) return '';
-
-  //   let buffer = '';
-
-  //   keys.forEach((key) => {
-  //     if (key !== 'Values') buffer += `${buffer ? '~' : ''}${key}`;
-  //   });
-
-  //   return buffer;
-  // };
-
-  // const getVarsAsTags = () => {
-  //   const arr = [];
-  //   let scope;
-
-  //   try {
-  //     scope = JSON.parse(vars);
-  //   } catch {
-  //     console.error(`ERROR: Invalid Variables(${vars})`);
-  //     return {};
-  //   }
-
-  //   for (let [key, value] of Object.entries(scope)) {
-  //     arr.push({ key, label: `{${key}: ${parseKeysIntoLabel(value)}}` }); // make primary key accessible
-  //   }
-
-  //   return arr;
-  // };
-
   const getDefinedExpression = () => {
+    console.log('newVars:', newVars);
     let exp = newExpression;
-    const variables = StatData.parseVariables(newVars, data, true);
+    const variables = StatData.parseVariables(newVars, data, true, false);
 
     // replace variables with values
     Object.keys(variables).forEach((key) => {
@@ -202,7 +167,6 @@ const MathDialogue = (props) => {
           </td>
           <td>
             <button
-              {...dataset}
               type="push"
               onClick={(e) => {
                 const result = {
@@ -212,7 +176,6 @@ const MathDialogue = (props) => {
                       expression: newExpression,
                       vars: JSON.stringify(newVars),
                     },
-                    dataset: e.target.dataset,
                   },
                 };
                 onAccept(result);

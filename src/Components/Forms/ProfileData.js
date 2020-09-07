@@ -1,10 +1,11 @@
 // Cell
 class Cell {
-  constructor(obj, parent) {
+  constructor(obj, value, parent) {
     // link
     this.P = parent;
 
     // defaults
+    this.Value = value;
     this.result = 0;
     this.expression = '0';
     this.vars = '{}';
@@ -18,7 +19,9 @@ class Cell {
   }
 
   getPath = () => {
-    return `${this.P.getPath()}~${this.Value}`;
+    const buffer = this.P.getPath();
+    buffer.push(this.Value);
+    return buffer;
   };
 }
 
@@ -38,15 +41,18 @@ class Stat {
     // defined
     if (obj) {
       this.Value = obj.Value ? obj.Value : '';
-      this.Num = new Cell(obj.Num);
-      this.Min = new Cell(obj.Min);
-      this.Max = new Cell(obj.Max);
+      this.Num = new Cell(obj.Num, 'Num', this);
+      this.Min = new Cell(obj.Min, 'Min', this);
+      this.Max = new Cell(obj.Max, 'Max', this);
       this.Unit = obj.Unit ? obj.Unit : '';
     }
   }
 
   getPath = () => {
-    return `${this.P.getPath()}~${this.Value}`;
+    const buffer = this.P.getPath();
+    buffer.push('Values');
+    buffer.push(this.Value);
+    return buffer;
   };
 }
 
@@ -87,7 +93,10 @@ class Block {
   }
 
   getPath = () => {
-    return `${this.P.getPath()}~${this.Value}`;
+    const buffer = this.P.getPath();
+    buffer.push('Values');
+    buffer.push(this.Value);
+    return buffer;
   };
 }
 
@@ -113,25 +122,29 @@ class Card {
   }
 
   getPath = () => {
-    return `${this.P.getPath()}~${this.Value}`;
+    const buffer = [];
+    buffer.push('Values');
+    buffer.push(this.Value);
+    return buffer;
   };
 }
 
 // Profile
 class Profile {
   constructor(obj) {
-    // console.log('Profile:', obj);
     this.Game = obj.Game;
     this.Title = obj.Title;
 
     const keys = Object.keys(obj.Values);
     this.Values = keys.map((key) => {
-      return new Card(obj.Values[key], this);
+      return obj.Values[key].constructor !== Card
+        ? new Card(obj.Values[key], this)
+        : obj.Values[key];
     });
   }
 
   getPath = () => {
-    return `${this.Game}`;
+    return [this.Game];
   };
 }
 

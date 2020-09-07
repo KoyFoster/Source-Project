@@ -49,6 +49,7 @@ class StatData {
     let dataBuffer = data;
 
     // iterate through array
+    // console.log('keys:', keys);
     keys.forEach((key) => {
       // step through data
       // handle differently if Array or object
@@ -72,7 +73,7 @@ class StatData {
       }
     });
 
-    // console.log('GetValue:', { keys, dataBuffer });
+    // console.log('key:', { dataBuffer });
     return dataBuffer;
   };
 
@@ -83,7 +84,7 @@ class StatData {
   }
 
   // parse scope
-  static parseVariables(variables, data, noParse) {
+  static parseVariables(variables, data, noParse, raw = false) {
     let scope;
 
     try {
@@ -94,19 +95,24 @@ class StatData {
       return {};
     }
 
+    // console.log('scope:', scope);
     for (let [key, value] of Object.entries(scope)) {
       const buffer = this.GetValue(value, data); // table, row, column="always 'Value'""
-      switch (buffer.constructor) {
-        case Cell:
-        case Object:
-          scope[key] = buffer.result;
-          break;
-        case Array:
-          scope[key] = buffer[0];
-          break;
-        default:
-          scope[key] = buffer;
-          break;
+      if (!raw) {
+        switch (buffer.constructor) {
+          case Cell:
+          case Object:
+            scope[key] = buffer.result;
+            break;
+          case Array:
+            scope[key] = buffer[0];
+            break;
+          default:
+            scope[key] = buffer;
+            break;
+        }
+      } else {
+        scope[key] = buffer;
       }
     }
 
@@ -132,8 +138,8 @@ class StatData {
   }
 
   // Get Calculated Value
-  static GetCellValue(expression, scope, data, noParse = false) {
-    const variables = this.parseVariables(scope, data, noParse);
+  static GetCellValue(expression, scope, data, noParse = false, raw = false) {
+    const variables = this.parseVariables(scope, data, noParse, raw);
 
     return this.GetCalculatedValue(expression, variables);
   }

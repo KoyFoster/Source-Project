@@ -1,7 +1,7 @@
 import React from 'react';
 // import Drag from './Forms/Drag';
 // import TreeDropDown from './Forms/TreeDropDown';
-import VariablePicker from './Forms/VariablePicker 2';
+import VariablePicker from './Forms/VariablePicker';
 import { Profile } from './Forms/ProfileData';
 
 const ArcheAge = {

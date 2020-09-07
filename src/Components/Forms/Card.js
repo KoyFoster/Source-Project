@@ -18,7 +18,8 @@ const ProfileCard = (props) => {
   const { EditMode } = props;
   const { Update } = props;
   // Parse out props
-  const data = new Profile(props.value);
+  const data =
+    props.value.contructor !== Profile ? new Profile(props.value) : props.value;
   const { Title } = data;
   const { Game } = data;
 
@@ -64,17 +65,15 @@ const ProfileCard = (props) => {
   // Page Data
   const Cards = data.Values;
 
-  const Card = (props) => {
-    const { cardData } = props;
+  function Card(argument) {
+    const { cardData } = argument;
     const Page = cardData.Values;
     const Value = cardData.Value;
     const keys = Object.keys(Page);
 
     let i = -1;
 
-    const Block = (props) => {
-      const { Stats } = props;
-
+    function Block(Stats) {
       // stat properties
       const { Value } = Stats;
       let { Type } = Stats;
@@ -100,7 +99,7 @@ const ProfileCard = (props) => {
       }
 
       // stat table
-      const StatTable = () => {
+      function StatTable() {
         // calculate largest column widths
         let i = 0;
         const w = new Array(5).fill(48);
@@ -141,7 +140,7 @@ const ProfileCard = (props) => {
         });
 
         // set row
-        const setRow = (i, key, value, num, min, max, unit) => {
+        function setRow(i, key, value, num, min, max, unit) {
           // console.log(`tr_${key}(${i})`);
           return (
             <tr key={`tr_${key}(${i})`}>
@@ -152,10 +151,10 @@ const ProfileCard = (props) => {
               <td key={`td_${key}(${i}) 4`}>{unit}</td>
             </tr>
           );
-        };
+        }
 
         i = -1;
-        const contents = () => {
+        function contents() {
           return Values.map((value) => {
             i += 1;
             if (EditMode) {
@@ -202,6 +201,7 @@ const ProfileCard = (props) => {
                   value={value.Min.result}
                   onChange={(e) => {
                     value.Min.result = e.target.value;
+                    Update(data);
                   }}
                 />,
                 <input
@@ -210,7 +210,10 @@ const ProfileCard = (props) => {
                     width: w[3],
                   }}
                   value={value.Max.result}
-                  onChange={(e) => {}}
+                  onChange={(e) => {
+                    value.Max.result = e.target.value;
+                    Update(data);
+                  }}
                 />,
                 <input
                   type="text"
@@ -218,7 +221,10 @@ const ProfileCard = (props) => {
                     width: w[4],
                   }}
                   value={value.Unit}
-                  onChange={(e) => {}}
+                  onChange={(e) => {
+                    value.Unit.result = e.target.value;
+                    Update(data);
+                  }}
                 />,
               );
             } else {
@@ -242,6 +248,10 @@ const ProfileCard = (props) => {
                     width: w[1],
                   }}
                   data={data}
+                  onChange={(e) => {
+                    value.Num = e.target.value;
+                    Update(data);
+                  }}
                 />,
                 <MathInput
                   value={value.Min}
@@ -249,6 +259,10 @@ const ProfileCard = (props) => {
                     width: w[2],
                   }}
                   data={data}
+                  onChange={(e) => {
+                    value.Min = e.target.value;
+                    Update(data);
+                  }}
                 />,
                 <MathInput
                   value={value.Max}
@@ -256,6 +270,10 @@ const ProfileCard = (props) => {
                     width: w[3],
                   }}
                   data={data}
+                  onChange={(e) => {
+                    value.Max = e.target.value;
+                    Update(data);
+                  }}
                 />,
 
                 <input
@@ -264,12 +282,15 @@ const ProfileCard = (props) => {
                     width: w[4],
                   }}
                   value={value.Unit}
-                  onChange={(e) => {}}
+                  onChange={(e) => {
+                    value.Unit = e.target.value;
+                    Update(data);
+                  }}
                 />,
               );
             }
           });
-        };
+        }
 
         return (
           <table>
@@ -296,10 +317,10 @@ const ProfileCard = (props) => {
             </tfoot>
           </table>
         );
-      };
+      }
 
       return (
-        <div style={blockStyle} onClick={() => {}}>
+        <div style={blockStyle}>
           <div>
             <div style={{ display: 'flex' }}>
               <ToggleButton
@@ -322,7 +343,10 @@ const ProfileCard = (props) => {
                 type="text"
                 value={Value}
                 style={cellStyle}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  Stats.Value = e.target.value;
+                  Update(data);
+                }}
               />
             </div>
             <div style={{ display: 'flex' }}>
@@ -359,21 +383,20 @@ const ProfileCard = (props) => {
               )}
             </div>
           </div>
-          <StatTable key={Stats.Value} />
+          {StatTable()}
         </div>
       );
-    };
+    }
 
-    // NOTE: This is preventing fields from updating properly
-    const Blocks = () => {
+    function Blocks() {
       return keys.map((key) => {
         i += 1;
-        return <Block key={i} data={data} Stats={Page[key]} />;
+        return Block(Page[key]);
       });
-    };
+    }
 
     return (
-      <div style={cardStyle} onMouseDown={(e) => {}} onClick={() => {}}>
+      <div style={cardStyle}>
         <div style={{ display: 'flex' }}>
           <div style={{ width: '100%' }}>
             <input
@@ -390,17 +413,17 @@ const ProfileCard = (props) => {
         {Blocks()}
       </div>
     );
-  };
+  }
 
   // render Pages
-  const Book = (props) => {
+  function Book() {
     const result = Object.keys(Cards).map((i) => {
       const card = Cards[i];
-      return <Card key={i} name={i} cardData={card}></Card>;
+      return Card({ cardData: card });
     });
 
     return result;
-  };
+  }
 
   return (
     <div>
@@ -432,7 +455,7 @@ const ProfileCard = (props) => {
           alignContent: 'flex-start',
         }}
       >
-        <Book key="Book" />
+        {Book()}
       </div>
     </div>
   );
