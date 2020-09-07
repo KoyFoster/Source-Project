@@ -24,38 +24,23 @@ const ProfileCard = (props) => {
   const { Game } = data;
   const Cards = data.Values;
 
-  // styles
-  const { cardStyle } = props;
-  const { blockStyle } = props;
-  const { profileStyle } = props;
-  const backgroundColor = cardStyle ? cardStyle.backgroundColor : {};
-  const cellStyle = {
-    borderRadius: '8px',
-    borderLeft: '2px solid black',
-    borderTop: '2px solid black',
-    borderBottom: '2px solid grey',
-    borderRight: '2px solid grey',
-    boxSizing: 'border-box', // inner border
-  };
-  const formStyle = {
-    display: 'inline-block',
-    borderRadius: '8px',
-    borderLeft: '2px solid black',
-    borderTop: '2px solid black',
-    borderBottom: '2px solid grey',
-    borderRight: '2px solid grey',
-    boxSizing: 'border-box', // inner border
-  };
-  const buttonStyle = {
-    backgroundColor,
-    display: 'block',
-    borderRadius: '8px',
-    borderLeft: '2px solid white',
-    borderTop: '2px solid white',
-    borderBottom: '2px solid grey',
-    borderRight: '2px solid grey',
-    boxSizing: 'border-box', // inner border
-  };
+  // Pull data object without circular keys
+  var cache = [];
+  console.log(
+    'data:',
+    JSON.stringify(data, function (key, value) {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    }),
+  );
+  cache = null;
 
   // get input width based on value
   const getTextWidth = (text) => {
@@ -240,7 +225,6 @@ const ProfileCard = (props) => {
                 <MathInput
                   value={value.Num}
                   style={{
-                    ...buttonStyle,
                     filter: 'brightness(88%)',
                     width: w[1],
                   }}
@@ -253,7 +237,6 @@ const ProfileCard = (props) => {
                 <MathInput
                   value={value.Min}
                   style={{
-                    ...buttonStyle,
                     filter: 'brightness(88%)',
                     width: w[2],
                   }}
@@ -266,7 +249,6 @@ const ProfileCard = (props) => {
                 <MathInput
                   value={value.Max}
                   style={{
-                    ...buttonStyle,
                     filter: 'brightness(88%)',
                     width: w[3],
                   }}
@@ -295,6 +277,13 @@ const ProfileCard = (props) => {
 
         return (
           <table>
+            <colgroup>
+              <col key={0} id="0" />
+              <col key={1} />
+              <col key={2} />
+              <col key={3} />
+              <col key={4} />
+            </colgroup>
             <thead>
               <tr>
                 <td>{EditMode ? 'Value' : null}</td>
@@ -323,14 +312,13 @@ const ProfileCard = (props) => {
       }
 
       return (
-        <div style={blockStyle}>
-          <div>
+        <div key={Type}>
+          <h2>
             <div style={{ display: 'flex' }}>
               {EditMode ? (
                 <ToggleButton
-                  style={{ ...buttonStyle, width: '56px', padding: '2px' }}
+                  style={{ width: '56px', padding: '2px' }}
                   toggledStyle={{
-                    ...buttonStyle,
                     width: '56px',
                     padding: '2px',
                     filter: 'brightness(88%)',
@@ -349,7 +337,6 @@ const ProfileCard = (props) => {
                 <input
                   type="text"
                   value={Value}
-                  style={cellStyle}
                   onChange={(e) => {
                     Stats.Value = e.target.value;
                     Update(data);
@@ -366,7 +353,6 @@ const ProfileCard = (props) => {
                   <input
                     type="number"
                     value={Level ? Level : 0}
-                    style={formStyle}
                     onChange={(e) => {}}
                   />
                 )}
@@ -376,7 +362,6 @@ const ProfileCard = (props) => {
                     Key="Points"
                     value={Points}
                     data={data}
-                    style={buttonStyle}
                     onChange={(e) => {}}
                   >
                     {Points ? Points : 'N/D'}
@@ -394,7 +379,7 @@ const ProfileCard = (props) => {
                 )}
               </div>
             ) : null}
-          </div>
+          </h2>
           {StatTable()}
         </div>
       );
@@ -403,19 +388,18 @@ const ProfileCard = (props) => {
     function Blocks() {
       return keys.map((key) => {
         i += 1;
-        return Block(Page[key]);
+        return [<hr key={i}></hr>, Block(Page[key])];
       });
     }
 
     return (
-      <div style={cardStyle}>
+      <h3 style={{ display: 'inline' }}>
         <div style={{ display: 'flex' }}>
-          <div style={{ width: '100%' }}>
+          <h1 className="h1" style={{ width: '100%' }}>
             {EditMode ? (
               <input
                 type="text"
                 value={Value}
-                style={cellStyle}
                 onChange={(e) => {
                   cardData.Value = e.target.value;
                   Update(data);
@@ -424,10 +408,10 @@ const ProfileCard = (props) => {
             ) : (
               Value
             )}
-          </div>
+          </h1>
         </div>
         {Blocks()}
-      </div>
+      </h3>
     );
   }
 
@@ -442,19 +426,14 @@ const ProfileCard = (props) => {
   }
 
   return (
-    <div style={profileStyle}>
-      <button
-        type="push"
-        style={buttonStyle}
-        onClick={() => setMode(!EditMode)}
-      >
+    <div>
+      <button type="push" onClick={() => setMode(!EditMode)}>
         {EditMode ? 'Edit Mode' : 'View Mode'}
       </button>
       Game:{' '}
       <input
         type="text"
         value={Game}
-        style={cellStyle}
         onChange={(e) => {
           data.Game = e.target.value;
           Update(data);
@@ -464,7 +443,6 @@ const ProfileCard = (props) => {
       <input
         type="text"
         value={Title}
-        style={cellStyle}
         onChange={(e) => {
           data.Title = e.target.value;
           Update(data);
