@@ -1882,9 +1882,12 @@ const defaultTemplates = {
 //   // height: 'fit-content',
 // };
 
+const profileStyle = {
+  background: '#119911',
+  borderRadius: '8px',
+};
 const cardStyle = {
   display: 'inline-block',
-  maxwidth: '512px',
   // overflow: 'scroll',
   backgroundColor: '#faf8e8',
   color: '#6e5735',
@@ -1898,19 +1901,11 @@ const cardStyle = {
 const statStyle = {
   borderColor: '#ff0001',
   borderWidth: '2px',
-  borderStyle: 'dashed',
   margin: '2px',
 };
 const blockStyle = {
   borderColor: '#1d4a33',
   borderWidth: '2px',
-  borderStyle: 'dashed',
-  margin: '2px',
-};
-const profileStyle = {
-  borderColor: '#912d53',
-  borderWidth: '2px',
-  borderStyle: 'dashed',
   margin: '2px',
 };
 

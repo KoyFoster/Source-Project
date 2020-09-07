@@ -36,7 +36,6 @@ const MathDialogue = (props) => {
   );
 
   const getDefinedExpression = () => {
-    console.log('newVars:', newVars);
     let exp = newExpression;
     const variables = StatData.parseVariables(newVars, data, true, false);
 

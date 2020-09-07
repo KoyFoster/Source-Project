@@ -5,7 +5,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { useState } from 'react';
 import StatData from '../StatData.js';
 import ToggleButton from './ToggleButton.js';
 import MathInput from './MathInput.js';
@@ -15,13 +15,14 @@ import './Card.css';
 
 // handles grid data
 const ProfileCard = (props) => {
-  const { EditMode } = props;
+  const [EditMode, setMode] = useState(false);
   const { Update } = props;
   // Parse out props
   const data =
     props.value.contructor !== Profile ? new Profile(props.value) : props.value;
   const { Title } = data;
   const { Game } = data;
+  const Cards = data.Values;
 
   // styles
   const { cardStyle } = props;
@@ -48,7 +49,6 @@ const ProfileCard = (props) => {
   const buttonStyle = {
     backgroundColor,
     display: 'block',
-    width: '100%',
     borderRadius: '8px',
     borderLeft: '2px solid white',
     borderTop: '2px solid white',
@@ -61,9 +61,6 @@ const ProfileCard = (props) => {
   const getTextWidth = (text) => {
     return (text.length + 1) * 8;
   };
-
-  // Page Data
-  const Cards = data.Values;
 
   function Card(argument) {
     const { cardData } = argument;
@@ -157,15 +154,13 @@ const ProfileCard = (props) => {
         function contents() {
           return Values.map((value) => {
             i += 1;
-            if (EditMode) {
+            if (!EditMode) {
               return setRow(
                 i,
                 Stats.Value,
                 value.Value,
-                value.Num.result,
-                value.Min.result,
-                value.Max.result,
-                value.Unit,
+                `${value.Num.result}${value.Unit}`,
+                '',
               );
             } else if (Type === 'Static') {
               return setRow(
@@ -245,6 +240,8 @@ const ProfileCard = (props) => {
                 <MathInput
                   value={value.Num}
                   style={{
+                    ...buttonStyle,
+                    filter: 'brightness(88%)',
                     width: w[1],
                   }}
                   data={data}
@@ -256,6 +253,8 @@ const ProfileCard = (props) => {
                 <MathInput
                   value={value.Min}
                   style={{
+                    ...buttonStyle,
+                    filter: 'brightness(88%)',
                     width: w[2],
                   }}
                   data={data}
@@ -267,6 +266,8 @@ const ProfileCard = (props) => {
                 <MathInput
                   value={value.Max}
                   style={{
+                    ...buttonStyle,
+                    filter: 'brightness(88%)',
                     width: w[3],
                   }}
                   data={data}
@@ -296,25 +297,27 @@ const ProfileCard = (props) => {
           <table>
             <thead>
               <tr>
-                <td>Value</td>
-                <td>Num</td>
-                <td>Min</td>
-                <td>Max</td>
-                <td>Unit</td>
+                <td>{EditMode ? 'Value' : null}</td>
+                <td>{EditMode ? 'Num' : null}</td>
+                {EditMode ? <td>Min</td> : null}
+                {EditMode ? <td>Max</td> : null}
+                <td>{EditMode ? 'Unit' : null}</td>
               </tr>
             </thead>
 
             <tbody>{contents()}</tbody>
 
-            <tfoot>
-              <tr>
-                <td>Totals:</td>
-                <td>{Total}</td>
-                <td>{Min}</td>
-                <td>{Max}</td>
-                <td></td>
-              </tr>
-            </tfoot>
+            {EditMode ? (
+              <tfoot>
+                <tr>
+                  <td>Totals:</td>
+                  <td>{Total}</td>
+                  <td>{Min}</td>
+                  <td>{Max}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            ) : null}
           </table>
         );
       }
@@ -323,65 +326,74 @@ const ProfileCard = (props) => {
         <div style={blockStyle}>
           <div>
             <div style={{ display: 'flex' }}>
-              <ToggleButton
-                style={{ ...buttonStyle, width: '56px', padding: '2px' }}
-                toggledStyle={{
-                  ...buttonStyle,
-                  width: '56px',
-                  padding: '2px',
-                  filter: 'brightness(88%)',
-                }}
-                checked={Type === 'Calc'}
-                onChange={(e) => {
-                  Stats.Type = e.target.checked ? 'Calc' : 'Static';
-                  Update(data);
-                }}
-              >
-                {['Calc', 'Static']}
-              </ToggleButton>
-              <input
-                type="text"
-                value={Value}
-                style={cellStyle}
-                onChange={(e) => {
-                  Stats.Value = e.target.value;
-                  Update(data);
-                }}
-              />
-            </div>
-            <div style={{ display: 'flex' }}>
-              {Type === 'Calc' ? null : 'Level: '}
-              {Type === 'Calc' ? null : (
-                <input
-                  type="number"
-                  value={Level ? Level : 0}
-                  style={formStyle}
-                  onChange={(e) => {}}
-                />
-              )}
-              {Type === 'Calc' ? null : 'Points: '}
-              {true ? null : (
-                <MathInput
-                  Key="Points"
-                  value={Points}
-                  data={data}
-                  style={buttonStyle}
-                  onChange={(e) => {}}
+              {EditMode ? (
+                <ToggleButton
+                  style={{ ...buttonStyle, width: '56px', padding: '2px' }}
+                  toggledStyle={{
+                    ...buttonStyle,
+                    width: '56px',
+                    padding: '2px',
+                    filter: 'brightness(88%)',
+                  }}
+                  checked={Type === 'Calc'}
+                  onChange={(e) => {
+                    Stats.Type = e.target.checked ? 'Calc' : 'Static';
+                    Update(data);
+                  }}
                 >
-                  {Points ? Points : 'N/D'}
-                </MathInput>
-              )}
-              {Type === 'Calc' ? null : (
-                <div style={{ width: '100%' }}>
-                  Remainder:{' '}
-                  {Points
-                    ? Points.result
-                      ? Points.result - Total
-                      : 'N/D'
-                    : 'N/D'}
-                </div>
+                  {['Calc', 'Static']}
+                </ToggleButton>
+              ) : null}
+
+              {EditMode ? (
+                <input
+                  type="text"
+                  value={Value}
+                  style={cellStyle}
+                  onChange={(e) => {
+                    Stats.Value = e.target.value;
+                    Update(data);
+                  }}
+                />
+              ) : (
+                Value
               )}
             </div>
+            {EditMode ? (
+              <div style={{ display: 'flex' }}>
+                {Type === 'Calc' ? null : 'Level: '}
+                {Type === 'Calc' ? null : (
+                  <input
+                    type="number"
+                    value={Level ? Level : 0}
+                    style={formStyle}
+                    onChange={(e) => {}}
+                  />
+                )}
+                {Type === 'Calc' ? null : 'Points: '}
+                {Type === 'Calc' ? null : (
+                  <MathInput
+                    Key="Points"
+                    value={Points}
+                    data={data}
+                    style={buttonStyle}
+                    onChange={(e) => {}}
+                  >
+                    {Points ? Points : 'N/D'}
+                  </MathInput>
+                )}
+                {Type === 'Calc' ? null : (
+                  <div style={{ width: '100%' }}>
+                    Remainder:{' '}
+                    {Points
+                      ? Points.result
+                        ? Points.result - Total
+                        : 'N/D'
+                      : 'N/D'}
+                  </div>
+                )}
+              </div>
+            ) : null}
           </div>
           {StatTable()}
         </div>
@@ -399,15 +411,19 @@ const ProfileCard = (props) => {
       <div style={cardStyle}>
         <div style={{ display: 'flex' }}>
           <div style={{ width: '100%' }}>
-            <input
-              type="text"
-              value={Value}
-              style={cellStyle}
-              onChange={(e) => {
-                cardData.Value = e.target.value;
-                Update(data);
-              }}
-            />
+            {EditMode ? (
+              <input
+                type="text"
+                value={Value}
+                style={cellStyle}
+                onChange={(e) => {
+                  cardData.Value = e.target.value;
+                  Update(data);
+                }}
+              />
+            ) : (
+              Value
+            )}
           </div>
         </div>
         {Blocks()}
@@ -426,7 +442,14 @@ const ProfileCard = (props) => {
   }
 
   return (
-    <div>
+    <div style={profileStyle}>
+      <button
+        type="push"
+        style={buttonStyle}
+        onClick={() => setMode(!EditMode)}
+      >
+        {EditMode ? 'Edit Mode' : 'View Mode'}
+      </button>
       Game:{' '}
       <input
         type="text"
@@ -449,7 +472,6 @@ const ProfileCard = (props) => {
       />
       <div
         style={{
-          ...profileStyle,
           display: 'flex',
           flexWrap: 'wrap',
           alignContent: 'flex-start',
