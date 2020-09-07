@@ -67,10 +67,7 @@ const renderStats = (
       >
         {bKey ? (
           bSel ? (
-            <SelectElem
-              fullKey={`${parentKey}~${key}`}
-              style={{ width: '100%' }}
-            >
+            <SelectElem value={data} style={{ width: '100%' }}>
               {key}
             </SelectElem>
           ) : (
@@ -93,9 +90,10 @@ const VariablePicker = (props) => {
   // and that information is saved
   const { onClick } = props;
   const { data } = props;
-  const { varKey } = props;
 
-  const GetKey = (props) => {
+  const Picker = (props) => {
+    const { value } = props;
+
     return (
       <button
         type="push"
@@ -103,12 +101,7 @@ const VariablePicker = (props) => {
         data-key={props.fullKey}
         style={props.style}
         onClick={(e) => {
-          const result = {};
-          result[varKey] = e.target.dataset.key
-            .split('~')
-            .slice(1, result.length);
-
-          onClick({ target: { value: result } });
+          onClick({ target: { value: value } });
         }}
       >
         {props.children}
@@ -125,7 +118,7 @@ const VariablePicker = (props) => {
         'Num,Min,Max,math,Level,Points,PointCalc,Unit,Type,Total',
         'math,Value,Values,PointCalc,Unit,Type,Total',
         'Num,Min,Max,Level,Points',
-        GetKey,
+        Picker,
       )}
     </div>
   );

@@ -56,40 +56,29 @@ const MathInput = (props) => {
 
   useEffect(() => {}, []);
 
-  const calcValue = value
-    ? StatData.GetCellValue(expression, vars, data)
-    : undefined;
-  return (
-    <div>
-      <button
-        {...dataset}
-        type="button"
-        className="Button"
-        style={{
-          background: 'inherit',
-          borderColor: 'inherit',
-          borderWidth: '3px',
-          borderStyle: 'solid',
-          textAlign: 'center',
-          ...style,
-        }}
-        {...events}
-        onClick={(e) => {
-          if (onClick) onClick(e);
-          togglePopup();
-        }}
-      >
-        {value
-          ? !Number.isNaN(calcValue) && calcValue !== undefined
-            ? calcValue
-            : 'Invalid'
-          : children}
-      </button>
-      {seen ? (
-        // eslint-disable-next-line react/prop-types
-        <Popup bToggle={togglePopup} component={component} />
-      ) : null}
-    </div>
+  const calcValue =
+    value && data ? StatData.GetCellValue(expression, vars, data) : undefined;
+  return seen ? (
+    // eslint-disable-next-line react/prop-types
+    <Popup bToggle={togglePopup} component={component} />
+  ) : (
+    <button
+      {...dataset}
+      type="button"
+      className="Button"
+      style={style}
+      {...events}
+      onClick={(e) => {
+        if (onClick) onClick(e);
+        togglePopup();
+      }}
+    >
+      {value
+        ? !Number.isNaN(calcValue) && calcValue !== undefined
+          ? calcValue
+          : 'Invalid'
+        : children}
+    </button>
   );
 };
 

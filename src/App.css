@@ -43,6 +43,12 @@ input[type='number']::-webkit-outer-spin-button {
   color: red;
 }
 
+/*fix for Firefox */
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
 table,
 th,
 td,
@@ -59,9 +65,15 @@ tfoot {
 .inherit div,
 button,
 input {
+  margin: 0;
+  padding: 0;
+
   color: inherit;
   font: inherit;
   background: inherit;
+
+  font: inherit;
+  box-sizing: border-box;
 }
 
 .value div,

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Drag from './Forms/Drag';
 
 const Test = (props) => {
-  const [checked, setChecked] = useState(false);
-  const [value, setValue] = useState('');
+  // const [checked, setChecked] = useState(false);
+  // const [value, setValue] = useState('');
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
+  // const handleChange = (e) => {
+  //   setValue(e.target.value);
+  // };
 
   return (
     <div

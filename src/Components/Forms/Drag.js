@@ -82,7 +82,7 @@ const Drag = (props) => {
   const { id } = props;
   const [dragged, setDragged] = useState(null);
 
-  const [draggables, setDraggables] = useState([
+  const [draggables /*, setDraggables*/] = useState([
     <Draggable id={id} color="red" setDragged={setDragged}></Draggable>,
     <Draggable id={id} color="green" setDragged={setDragged}></Draggable>,
     <Draggable id={id} color="blue" setDragged={setDragged}></Draggable>,
@@ -112,7 +112,7 @@ const Drag = (props) => {
     return buffer1;
   };
 
-  const [divs, setDivs] = useState(getDivs());
+  const [divs /*, setDivs*/] = useState(getDivs());
 
   const result = () => {
     let i = 0; // element iterator
