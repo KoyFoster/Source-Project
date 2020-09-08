@@ -44,14 +44,7 @@ const ToggleButton = (props) => {
 
     <button
       className="toggleButton"
-      style={{
-        background: 'inherit',
-        borderColor: 'inherit',
-        borderWidth: '3px',
-        borderStyle: 'solid',
-        textAlign: 'center',
-        ...style,
-      }}
+      style={style}
       {...event}
       onClick={(e) => {
         e.target.value = getLabel(checked ? 0 : 1);

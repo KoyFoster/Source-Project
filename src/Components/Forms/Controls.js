@@ -4,6 +4,7 @@ const Controls = (props) => {
   const { size } = props;
   const { selection } = props;
   const { Add } = props;
+  const { Tag } = props;
 
   const Size = (props) => {
     const { selection } = props;
@@ -16,15 +17,17 @@ const Controls = (props) => {
               Add(selection, 1, 0);
             }}
           >
-            Add
+            Add {Tag}
           </button>
           <button
             type="submit"
+            disabled={selection ? false : true}
             onClick={(e) => {
               Add(selection, -1, 0);
             }}
           >
-            Remove
+            Remove{' '}
+            <span style={{ color: 'red' }}>{selection ? selection : ''}</span>
           </button>
         </div>
       );
@@ -43,8 +46,12 @@ const Controls = (props) => {
     const Arrows = (props) => {
       return (
         <div>
-          <button type="submit">Move Up</button>
-          <button type="submit">Move Down</button>
+          <button type="submit" disabled={selection ? false : true}>
+            Move {Tag} Up
+          </button>
+          <button type="submit" disabled={selection ? false : true}>
+            Move {Tag} Down
+          </button>
         </div>
       );
     };
@@ -55,15 +62,15 @@ const Controls = (props) => {
     return (
       <div style={{ display: 'flex', maxHeight: '24px' }}>
         <Arrows />
-        <Selected value={selection} />
+        {/* <Selected value={selection} /> */}
       </div>
     );
   };
 
   return (
     <div style={{ display: 'flex', maxHeight: '24px' }}>
-      <Size size={size} selection={selection} />
       <Nav selection={selection} />
+      <Size size={size} selection={selection} />
     </div>
   );
 };

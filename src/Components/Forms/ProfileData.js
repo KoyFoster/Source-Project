@@ -32,7 +32,7 @@ class Stat {
     this.P = parent;
 
     // defaults
-    this.Value = '';
+    this.Value = '[New Stat]';
     this.Num = {};
     this.Min = {};
     this.Max = {};
@@ -63,14 +63,14 @@ class Block {
     this.P = parent;
 
     // defaults
-    this.Value = '';
+    this.Value = '[New Stats]';
 
-    this.Type = '';
+    this.Type = 'Static';
     this.Level = '';
     this.Total = '';
     this.Min = '';
     this.Max = '';
-    this.Points = {};
+    this.Points = { result: 0, expression: '0', vars: '{}' };
 
     this.Values = [];
 
@@ -89,6 +89,8 @@ class Block {
       this.Values = keys.map((key) => {
         return new Stat(obj.Values[key], this);
       });
+    } else {
+      this.Values.push(new Stat(undefined, this));
     }
   }
 
@@ -107,7 +109,7 @@ class Card {
     this.P = parent;
 
     // defaults
-    this.Value = '';
+    this.Value = '[New Card]';
     this.Values = [];
 
     // defined
@@ -118,6 +120,8 @@ class Card {
       this.Values = keys.map((key) => {
         return new Block(obj.Values[key], this);
       });
+    } else {
+      this.Values.push(new Block(undefined, this));
     }
   }
 
@@ -134,6 +138,7 @@ class Profile {
   constructor(obj) {
     this.Game = obj.Game;
     this.Title = obj.Title;
+    this.Style = obj.Style;
 
     const keys = Object.keys(obj.Values);
     this.Values = keys.map((key) => {
@@ -142,6 +147,29 @@ class Profile {
         : obj.Values[key];
     });
   }
+
+  // Add New Card
+  addCard = (selection, add = 1) => {
+    console.log('AddCard:', selection, add);
+    if (add > 0) {
+      const buffer = new Card(undefined, this);
+      this.Values.push(buffer);
+    } else {
+      console.log('Removed', selection);
+      if (selection) {
+        let i = 0;
+        const iSize = this.Values.length;
+        // iteraate
+        for (i; i < iSize; i) {
+          if (this.Values[i].Value === selection) {
+            delete this.Values[i];
+            i = iSize;
+          }
+          i += 1;
+        }
+      }
+    }
+  };
 
   getPath = () => {
     return [this.Game];
