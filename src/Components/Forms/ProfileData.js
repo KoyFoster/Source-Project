@@ -1,3 +1,45 @@
+class Funcs {
+  static add = (selection, add = 1, src, ELEMENT) => {
+    let newSel = selection;
+
+    // add
+    if (add > 0) {
+      const buffer = new ELEMENT(undefined, src);
+      src.Values.push(buffer);
+      newSel = buffer.Value;
+    }
+    // remove
+    else if (add < 0) {
+      if (selection) {
+        // Iterate
+        let i = 0;
+        let prevName = '';
+        const iSize = src.Values.length;
+        for (i; i < iSize; i) {
+          if (src.Values[i].Value === selection) {
+            // need to be deleted and poped
+            delete src.Values[i];
+            src.Values.splice(i, 1);
+            i = iSize;
+          } else {
+            prevName = src.Values[i].Value;
+          }
+          i += 1;
+        }
+        // if removed Value is the frist entry, prevName will not get defined prior
+        if (!prevName) {
+          if (src.Values.length > 0) {
+            prevName = src.Values[0].Value;
+          }
+        }
+        newSel = prevName;
+      }
+    }
+
+    return newSel;
+  };
+}
+
 // Cell
 class Cell {
   constructor(obj, value, parent) {
@@ -94,6 +136,12 @@ class Block {
     }
   }
 
+  // Add New Stat
+  // Teturn New Focused Stat
+  addStat = (selection, add = 1) => {
+    return Funcs.add(selection, add, this, Stat);
+  };
+
   getPath = () => {
     const buffer = this.P.getPath();
     buffer.push('Values');
@@ -125,6 +173,12 @@ class Card {
     }
   }
 
+  // Add New Block
+  // Teturn New Focused Block
+  addBlock = (selection, add = 1) => {
+    return Funcs.add(selection, add, this, Block);
+  };
+
   getPath = () => {
     const buffer = [];
     buffer.push('Values');
@@ -149,26 +203,9 @@ class Profile {
   }
 
   // Add New Card
+  // Teturn New Focused Card
   addCard = (selection, add = 1) => {
-    console.log('AddCard:', selection, add);
-    if (add > 0) {
-      const buffer = new Card(undefined, this);
-      this.Values.push(buffer);
-    } else {
-      console.log('Removed', selection);
-      if (selection) {
-        let i = 0;
-        const iSize = this.Values.length;
-        // iteraate
-        for (i; i < iSize; i) {
-          if (this.Values[i].Value === selection) {
-            delete this.Values[i];
-            i = iSize;
-          }
-          i += 1;
-        }
-      }
-    }
+    return Funcs.add(selection, add, this, Card);
   };
 
   getPath = () => {

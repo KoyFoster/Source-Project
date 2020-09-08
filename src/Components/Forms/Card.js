@@ -50,7 +50,12 @@ const Block = (props) => {
     function setRow(i, key, value, num, min, max, unit) {
       // console.log(`tr_${key}(${i})`);
       return (
-        <tr key={`tr_${key}(${i})`}>
+        <tr
+          key={`tr_${key}(${i})`}
+          onClick={() => {
+            setStatSelection(key);
+          }}
+        >
           <td key={`td_${key}(${i}) 0`}>{value}</td>
           <td key={`td_${key}(${i}) 1`}>{num}</td>
           <td key={`td_${key}(${i}) 2`}>{min}</td>
@@ -67,7 +72,7 @@ const Block = (props) => {
         if (Mode === 'View') {
           return setRow(
             i,
-            Stats.Value,
+            value.Value,
             value.Value,
             `${value.Num.result}${value.Unit}`,
             '',
@@ -76,7 +81,7 @@ const Block = (props) => {
           if (Type === 'Static') {
             return setRow(
               i,
-              Stats.Value,
+              value.Value,
               value.Value,
               <input
                 type="number"
@@ -91,7 +96,7 @@ const Block = (props) => {
           } else {
             return setRow(
               i,
-              Stats.Value,
+              value.Value,
               value.Value,
               `${value.Num.result}${value.Unit}`,
               '',
@@ -100,7 +105,7 @@ const Block = (props) => {
         } else if (Type === 'Static') {
           return setRow(
             i,
-            Stats.Value,
+            value.Value,
             <input
               type="text"
               value={value.Value}
@@ -145,7 +150,7 @@ const Block = (props) => {
         } else {
           return setRow(
             i,
-            Stats.Value,
+            value.Value,
             <input
               key="1"
               type="text"
@@ -312,6 +317,18 @@ const Block = (props) => {
           </div>
         ) : null}
       </h5>
+      {Mode === 'Edit' ? (
+        <h6>
+          <Controls
+            selection={statSelection}
+            Tag="Stat"
+            Add={(selection, i) => {
+              setStatSelection(Stats.addStat(selection, i));
+              Update(data);
+            }}
+          ></Controls>
+        </h6>
+      ) : null}
       {StatTable()}
     </div>
   );
@@ -373,7 +390,14 @@ const Card = (props) => {
 
       {Mode === 'Edit' ? (
         <h6>
-          <Controls selection={blockSelection} Tag="Stat"></Controls>
+          <Controls
+            selection={blockSelection}
+            Tag="Stats"
+            Add={(selection, i) => {
+              setBlockSelection(cardData.addBlock(selection, i));
+              Update(data);
+            }}
+          ></Controls>
         </h6>
       ) : null}
       {Blocks()}
@@ -462,7 +486,7 @@ const ProfileCard = (props) => {
               Tag="Card"
               selection={cardSelection}
               Add={(selection, i) => {
-                data.addCard(selection, i);
+                setCardSelection(data.addCard(selection, i));
                 Update(data);
               }}
             ></Controls>

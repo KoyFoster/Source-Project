@@ -127,9 +127,15 @@ const defaultTemplates = {
         justifyContent: 'inherit',
         textAlignLast: 'inherit',
 
-        '& input': {},
+        '& input': {
+          border: 'none',
+          borderWidth: '1px',
+          borderColor: 'inherit',
+          borderBottom: 'solid',
+        },
         '& hr': {
           color: '#6e573588',
+          backgroundColor: '#6e573588',
           borderWidth: '1px',
           borderStyle: 'solid',
           borderRadius: '10px',
