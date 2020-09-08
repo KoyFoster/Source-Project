@@ -474,7 +474,7 @@ const defaultTemplates = {
                 Num: {
                   result: 40,
                   expression:
-                    '(z = (100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013))) - 42.1)) z > 40 ? 40 : z',
+                    '(z = (100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013))) - 42.1) ) < 40 ? 40 : z',
                   vars:
                     '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
                 },
@@ -1602,135 +1602,30 @@ const defaultTemplates = {
 //   );
 // };
 
-// const baseInputStyle = {
-//   width: '100%',
-//   border: 'none',
-//   padding: '0px',
-//   // height: 'fit-content',
-// };
-
-const profileStyle = {
-  background: '#119911',
-  borderRadius: '8px',
-};
-const statStyle = {
-  borderColor: '#ff0001',
-  borderWidth: '2px',
-  margin: '2px',
-};
-const blockStyle = {
-  borderColor: '#1d4a33',
-  borderWidth: '2px',
-  margin: '2px',
-};
-const cellStyle = {
-  borderRadius: '8px',
-  borderLeft: '2px solid black',
-  borderTop: '2px solid black',
-  borderBottom: '2px solid grey',
-  borderRight: '2px solid grey',
-  boxSizing: 'border-box', // inner border
-};
-const formStyle = {
-  display: 'inline-block',
-  borderRadius: '8px',
-  borderLeft: '2px solid black',
-  borderTop: '2px solid black',
-  borderBottom: '2px solid grey',
-  borderRight: '2px solid grey',
-  boxSizing: 'border-box', // inner border
-};
-const buttonStyle = {
-  display: 'block',
-  borderRadius: '8px',
-  borderLeft: '2px solid white',
-  borderTop: '2px solid white',
-  borderBottom: '2px solid grey',
-  borderRight: '2px solid grey',
-  boxSizing: 'border-box', // inner border
-};
-
-/* Material-UI CSS Styles */
-const useStyles = makeStyles({
-  root: {
-    // default
-    fontFamily: 'NotoSansKR',
-    fontSize: 11,
-
-    color: '#6e5735',
-    backgroundColor: '#faf8e8',
-
-    justifyContent: 'top',
-    textAlignLast: 'center',
-
-    '& hr': {
-      color: '#6e573588',
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderRadius: '10px',
-    },
-    '& h1': {
-      // '& span': {
-      //   color: 'blue',
-      // },
-    },
-    '& h2': { display: 'none' },
-    '& h3': {
-      border: '4px solid #6e5735',
-      borderRadius: '5px',
-
-      padding: '4px',
-      margin: '4px',
-
-      minWidth: '360px',
-    },
-    '& h4': {},
-    '& h5': {},
-    '& h6': {},
-    '& tbody': {},
-    '& thead': {},
-    '& tfoot': {},
-    '& table': {
-      // borderCollapse: 'collapse',
-      '& tr': {
-        '& td:nth-child(1)': {
-          textAlignLast: 'left',
-          width: '200px',
-        },
-        '& td:nth-child(2)': {
-          textAlignLast: 'left',
-          width: '160px',
-        },
-        '& td:nth-child(3)': {
-          textAlignLast: 'left',
-        },
-        '& td:nth-child(4)': {
-          textAlignLast: 'left',
-        },
-        '& td:nth-child(5)': {
-          textAlignLast: 'left',
-        },
-      },
-      '& colgroup': {
-        '& col:nth-child(1)': {
-          /* border: '1px solid green' */
-        },
-        '& col:nth-child(2)': {},
-        '& col:nth-child(3)': {},
-        '& col:nth-child(4)': {},
-        '& col:nth-child(5)': {},
-      },
-    },
-  },
-});
-
 // Stat Card
 function Stats(props) {
+  const Modes = ['View', 'Calculator', 'Edit'];
+  const [Mode, setMode] = useState('View');
+  const handleModeChange = () => {
+    switch (Mode) {
+      case Modes[0]:
+        setMode(Modes[1]);
+        break;
+      case Modes[1]:
+        setMode(Modes[2]);
+        break;
+      case Modes[2]:
+        setMode(Modes[0]);
+        break;
+    }
+  };
+
   // member variables
   const [value, setValue] = useState(
     // defaultTemplates['Final Fantasy 7 Remake'],
     defaultTemplates['ArcheAge'],
   );
+
   const Update = (val) => {
     const buffer = { ...val };
     // console.log('buffer:', buffer);
@@ -1738,9 +1633,143 @@ function Stats(props) {
   };
 
   // console.log('Card:', value);
-  const classes = useStyles();
+
+  /* Material-UI CSS Styles */
+  const useStyles = makeStyles({
+    root: (props) => ({
+      // default
+      font: 'inherit',
+      fontSize: 'inherit',
+      fontFamily: 'inherit',
+
+      color: 'inherit',
+      background: 'inherit',
+      backgroundColor: 'inherit',
+
+      justifyContent: 'inherit',
+      textAlignLast: 'inherit',
+
+      '& button': {
+        width: '64px',
+        borderRadius: '8px',
+        filter: 'brightness(88%)',
+      },
+      '& input': {},
+      '& hr': {
+        color: '#6e573588',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderRadius: '10px',
+      },
+      // Profile
+      '& h0': {
+        backgroundColor: '#999999',
+      },
+      '& h1': {
+        font: 'Serif',
+        fontSize: 12,
+        fontFamily: 'NotoSansKR',
+
+        color: '#6e5735',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'top',
+        textAlignLast: 'center',
+      },
+      // Card
+      '& h2': {
+        font: 'inherit',
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+
+        color: 'inherit',
+        background: 'inherit',
+        backgroundColor: '#faf8e8',
+
+        justifyContent: 'inherit',
+        textAlignLast: 'inherit',
+
+        border: '4px solid #6e5735',
+        borderRadius: '5px',
+
+        padding: '16px',
+        margin: '4px',
+
+        minWidth: '328px',
+
+        // Level
+        "& input[type='number']": {
+          width: '64px',
+        },
+      },
+      // Card Title
+      '& h3': {},
+      // Stat Block Title
+      '& h4': {
+        display: Mode === 'Edit' ? undefined : 'none',
+
+        // Level
+        "& input[type='text']": {
+          width: '100%',
+        },
+      },
+      '& tbody': {},
+      '& thead': {},
+      '& tfoot': {},
+      '& table': {
+        // borderCollapse: 'collapse',
+        '& tr': {
+          '& td': {
+            '& button': {
+              width: '48px',
+            },
+            "& input[type='number']": {
+              width: '48px',
+            },
+            "& input[type='text']": {
+              width: '64px',
+            },
+          },
+          '& td:nth-child(1)': {
+            textAlignLast: 'left',
+            width: Mode !== 'Edit' ? '176px' : undefined,
+          },
+          '& td:nth-child(2)': {
+            textAlignLast: 'left',
+            width: Mode !== 'Edit' ? '140px' : undefined,
+            '& input': {
+              // borderRadius: props.Type === 'Static' ? '8px' : undefined,
+            },
+            '& button': {},
+          },
+          '& td:nth-child(3)': {
+            textAlignLast: 'left',
+          },
+          '& td:nth-child(4)': {
+            textAlignLast: 'left',
+          },
+          '& td:nth-child(5)': {
+            textAlignLast: 'left',
+          },
+        },
+        '& colgroup': {
+          '& col:nth-child(1)': {
+            /* border: '1px solid green' */
+          },
+          '& col:nth-child(2)': {},
+          '& col:nth-child(3)': {},
+          '& col:nth-child(4)': {},
+          '& col:nth-child(5)': {},
+        },
+      },
+    }),
+  });
+
+  const classes = useStyles({});
+
   return (
-    <div className={classes.root}>
+    <div>
       {/* <TemplateSelector
         // Name={defaultData.Name}
         // setData={dataFuncs}
@@ -1755,7 +1784,20 @@ function Stats(props) {
       /> */}
       {/* <SaveStatCard value={value}></SaveStatCard>
       <LoadStatCard setValue={setValue}></LoadStatCard> */}
-      <ProfileCard key="profile" value={value} Update={Update}></ProfileCard>
+
+      <div className={classes.root}>
+        <h0>
+          <button type="push" onClick={() => handleModeChange()}>
+            {Mode}
+          </button>
+          <ProfileCard
+            key="profile"
+            Mode={Mode}
+            value={value}
+            Update={Update}
+          ></ProfileCard>
+        </h0>
+      </div>
     </div>
   );
 }

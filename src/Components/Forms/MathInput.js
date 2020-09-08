@@ -65,7 +65,6 @@ const MathInput = (props) => {
     <button
       {...dataset}
       type="button"
-      className="Button"
       style={style}
       {...events}
       onClick={(e) => {

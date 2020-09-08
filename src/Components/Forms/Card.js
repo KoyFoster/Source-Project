@@ -15,7 +15,7 @@ import './Card.css';
 
 // handles grid data
 const ProfileCard = (props) => {
-  const [EditMode, setMode] = useState(false);
+  const { Mode } = props;
   const { Update } = props;
   // Parse out props
   const data =
@@ -139,7 +139,7 @@ const ProfileCard = (props) => {
         function contents() {
           return Values.map((value) => {
             i += 1;
-            if (!EditMode) {
+            if (Mode === 'View') {
               return setRow(
                 i,
                 Stats.Value,
@@ -147,15 +147,47 @@ const ProfileCard = (props) => {
                 `${value.Num.result}${value.Unit}`,
                 '',
               );
+            } else if (Mode === 'Calculator') {
+              if (Type === 'Static') {
+                return setRow(
+                  i,
+                  Stats.Value,
+                  value.Value,
+                  <input
+                    type="number"
+                    style={
+                      {
+                        // width: w[1],
+                      }
+                    }
+                    value={value.Num.result}
+                    onChange={(e) => {
+                      value.Num.result = parseInt(e.target.value, 10);
+                      Update(data);
+                    }}
+                  />,
+                  value.Unit,
+                );
+              } else {
+                return setRow(
+                  i,
+                  Stats.Value,
+                  value.Value,
+                  `${value.Num.result}${value.Unit}`,
+                  '',
+                );
+              }
             } else if (Type === 'Static') {
               return setRow(
                 i,
                 Stats.Value,
                 <input
                   type="text"
-                  style={{
-                    width: w[0],
-                  }}
+                  style={
+                    {
+                      // width: w[0],
+                    }
+                  }
                   value={value.Value}
                   onChange={(e) => {
                     value.Value = e.target.value;
@@ -164,9 +196,11 @@ const ProfileCard = (props) => {
                 />,
                 <input
                   type="number"
-                  style={{
-                    width: w[1],
-                  }}
+                  style={
+                    {
+                      // width: w[1],
+                    }
+                  }
                   value={value.Num.result}
                   onChange={(e) => {
                     value.Num.result = parseInt(e.target.value, 10);
@@ -175,9 +209,11 @@ const ProfileCard = (props) => {
                 />,
                 <input
                   type="number"
-                  style={{
-                    width: w[2],
-                  }}
+                  style={
+                    {
+                      // width: w[2],
+                    }
+                  }
                   value={value.Min.result}
                   onChange={(e) => {
                     value.Min.result = e.target.value;
@@ -186,9 +222,11 @@ const ProfileCard = (props) => {
                 />,
                 <input
                   type="number"
-                  style={{
-                    width: w[3],
-                  }}
+                  style={
+                    {
+                      // width: w[3],
+                    }
+                  }
                   value={value.Max.result}
                   onChange={(e) => {
                     value.Max.result = e.target.value;
@@ -197,9 +235,11 @@ const ProfileCard = (props) => {
                 />,
                 <input
                   type="text"
-                  style={{
-                    width: w[4],
-                  }}
+                  style={
+                    {
+                      // width: w[4],
+                    }
+                  }
                   value={value.Unit}
                   onChange={(e) => {
                     value.Unit.result = e.target.value;
@@ -213,9 +253,11 @@ const ProfileCard = (props) => {
                 Stats.Value,
                 <input
                   type="text"
-                  style={{
-                    width: w[0],
-                  }}
+                  style={
+                    {
+                      // width: w[0],
+                    }
+                  }
                   value={value.Value}
                   onChange={(e) => {
                     value.Value = e.target.value;
@@ -224,10 +266,6 @@ const ProfileCard = (props) => {
                 />,
                 <MathInput
                   value={value.Num}
-                  style={{
-                    filter: 'brightness(88%)',
-                    width: w[1],
-                  }}
                   data={data}
                   onChange={(e) => {
                     value.Num = e.target.value;
@@ -238,7 +276,7 @@ const ProfileCard = (props) => {
                   value={value.Min}
                   style={{
                     filter: 'brightness(88%)',
-                    width: w[2],
+                    // width: w[2],
                   }}
                   data={data}
                   onChange={(e) => {
@@ -250,7 +288,7 @@ const ProfileCard = (props) => {
                   value={value.Max}
                   style={{
                     filter: 'brightness(88%)',
-                    width: w[3],
+                    // width: w[3],
                   }}
                   data={data}
                   onChange={(e) => {
@@ -261,9 +299,11 @@ const ProfileCard = (props) => {
 
                 <input
                   type="text"
-                  style={{
-                    width: w[4],
-                  }}
+                  style={
+                    {
+                      // width: w[4],
+                    }
+                  }
                   value={value.Unit}
                   onChange={(e) => {
                     value.Unit = e.target.value;
@@ -278,7 +318,7 @@ const ProfileCard = (props) => {
         return (
           <table>
             <colgroup>
-              <col key={0} id="0" />
+              <col key={0} />
               <col key={1} />
               <col key={2} />
               <col key={3} />
@@ -286,17 +326,17 @@ const ProfileCard = (props) => {
             </colgroup>
             <thead>
               <tr>
-                <td>{EditMode ? 'Value' : null}</td>
-                <td>{EditMode ? 'Num' : null}</td>
-                {EditMode ? <td>Min</td> : null}
-                {EditMode ? <td>Max</td> : null}
-                <td>{EditMode ? 'Unit' : null}</td>
+                <td>{Mode === 'Edit' ? 'Value' : null}</td>
+                <td>{Mode === 'Edit' ? 'Num' : null}</td>
+                {Mode === 'Edit' ? <td>Min</td> : null}
+                {Mode === 'Edit' ? <td>Max</td> : null}
+                <td>{Mode === 'Edit' ? 'Unit' : null}</td>
               </tr>
             </thead>
 
             <tbody>{contents()}</tbody>
 
-            {EditMode ? (
+            {Mode === 'Edit' ? (
               <tfoot>
                 <tr>
                   <td>Totals:</td>
@@ -313,19 +353,19 @@ const ProfileCard = (props) => {
 
       return (
         <div key={Type}>
-          <h2>
+          <h4>
             <div style={{ display: 'flex' }}>
-              {EditMode ? (
+              {Mode === 'Edit' ? (
                 <ToggleButton
                   style={{ width: '56px', padding: '2px' }}
                   toggledStyle={{
-                    width: '56px',
+                    // width: '56px',
                     padding: '2px',
                     filter: 'brightness(88%)',
                   }}
                   checked={Type === 'Calc'}
-                  onChange={(e) => {
-                    Stats.Type = e.target.checked ? 'Calc' : 'Static';
+                  onClick={(e) => {
+                    Stats.Type = e.target.value;
                     Update(data);
                   }}
                 >
@@ -333,7 +373,7 @@ const ProfileCard = (props) => {
                 </ToggleButton>
               ) : null}
 
-              {EditMode ? (
+              {Mode === 'Edit' ? (
                 <input
                   type="text"
                   value={Value}
@@ -346,7 +386,7 @@ const ProfileCard = (props) => {
                 Value
               )}
             </div>
-            {EditMode ? (
+            {Mode === 'Edit' ? (
               <div style={{ display: 'flex' }}>
                 {Type === 'Calc' ? null : 'Level: '}
                 {Type === 'Calc' ? null : (
@@ -379,7 +419,7 @@ const ProfileCard = (props) => {
                 )}
               </div>
             ) : null}
-          </h2>
+          </h4>
           {StatTable()}
         </div>
       );
@@ -393,10 +433,10 @@ const ProfileCard = (props) => {
     }
 
     return (
-      <h3 style={{ display: 'inline' }}>
+      <h2 style={{ display: 'inline' }}>
         <div style={{ display: 'flex' }}>
-          <h1 className="h1" style={{ width: '100%' }}>
-            {EditMode ? (
+          <h3 style={{ width: '100%' }}>
+            {Mode === 'Edit' ? (
               <input
                 type="text"
                 value={Value}
@@ -408,10 +448,10 @@ const ProfileCard = (props) => {
             ) : (
               Value
             )}
-          </h1>
+          </h3>
         </div>
         {Blocks()}
-      </h3>
+      </h2>
     );
   }
 
@@ -426,38 +466,37 @@ const ProfileCard = (props) => {
   }
 
   return (
-    <div>
-      <button type="push" onClick={() => setMode(!EditMode)}>
-        {EditMode ? 'Edit Mode' : 'View Mode'}
-      </button>
-      Game:{' '}
-      <input
-        type="text"
-        value={Game}
-        onChange={(e) => {
-          data.Game = e.target.value;
-          Update(data);
-        }}
-      />
-      Title:{' '}
-      <input
-        type="text"
-        value={Title}
-        onChange={(e) => {
-          data.Title = e.target.value;
-          Update(data);
-        }}
-      />
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignContent: 'flex-start',
-        }}
-      >
-        {Book()}
+    <h1>
+      <div>
+        Game:{' '}
+        <input
+          type="text"
+          value={Game}
+          onChange={(e) => {
+            data.Game = e.target.value;
+            Update(data);
+          }}
+        />
+        Title:{' '}
+        <input
+          type="text"
+          value={Title}
+          onChange={(e) => {
+            data.Title = e.target.value;
+            Update(data);
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignContent: 'flex-start',
+          }}
+        >
+          {Book()}
+        </div>
       </div>
-    </div>
+    </h1>
   );
 };
 
