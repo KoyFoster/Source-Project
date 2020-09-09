@@ -1,14 +1,47 @@
 import React from 'react';
 import DropDown from './DropDown.js';
 
+const Expand = (props) => {
+  const { checked } = props;
+  const { onChange } = props;
+
+  return (
+    <label
+      style={{
+        display: 'inline-block',
+        width: '14px',
+
+        textAlign: 'center',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        style={{ display: 'none' }}
+        onChange={onChange}
+      />
+      {checked ? '-' : '+'}
+    </label>
+  );
+};
+
 const ComboBox = (props) => {
   const { value } = props;
   const { checked } = props;
   const { setChecked } = props;
   const { onChange } = props;
-  const style = props.style ? props.style : {};
+  const style = props.style ? style : {};
+  const { fieldStyle } = props;
+  const { ddStyle } = props;
   const { list } = props;
   const { type } = props;
+
+  const background =
+    type === 'droplist' ? '#cccccc' /* LighterGrey */ : style.background;
+  const border =
+    type === 'droplist' && style.border
+      ? '1px solid #bfbfbf' /* LightGrey */
+      : style.border;
 
   const hList = () => {
     let i = -1;
@@ -27,7 +60,7 @@ const ComboBox = (props) => {
               i += 1;
               return (
                 <button
-                  type="push"
+                  type="button"
                   key={i}
                   className="listitem"
                   style={{ border: 'none', width: '100%' }}
@@ -48,56 +81,49 @@ const ComboBox = (props) => {
     setChecked(false);
   };
 
-  const input = (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => {
-        onChange(e);
-      }}
-      style={{ width: '100%', border: 'none', background: 'transparent' }}
-    />
-  );
-  const CheckBox = (props) => {
-    const { checked } = props;
-    const { onChange } = props;
-
-    return (
+  const input =
+    type === 'droplist' ? (
       <label
         style={{
           display: 'inline-block',
-          width: '14px',
-
-          // borderTop: '2px solid black',
-          // borderLeft: 'none',
-          // borderBottom: '2px solid #767676',
-          // borderRight: '2px solid #767676',
-          // padding: '1px',
-
-          textAlign: 'center',
+          whiteSpace: props.wordWrap ? 'wrap' : 'nowrap',
+          resize: 'none',
+          width: '100%',
+          ...style,
+          background,
+          border: 'none',
+        }}
+        onClick={() => {
+          setChecked(true);
         }}
       >
-        <input
-          type="checkbox"
-          checked={checked}
-          style={{ display: 'none' }}
-          onChange={onChange}
-        />
-        {checked ? '-' : '+'}
+        {value}
       </label>
+    ) : (
+      <textarea
+        type="text"
+        value={value}
+        onChange={(e) => {
+          onChange(e);
+        }}
+        style={{
+          whiteSpace: props.wordWrap ? 'wrap' : 'nowrap',
+          resize: 'none',
+          width: '100%',
+          background: 'transparent',
+          ...style,
+          border: 'none',
+        }}
+      />
     );
-  };
 
   return (
     <div
       style={{
         ...style,
-        background:
-          type === 'droplist' ? '#cccccc' /* LighterGrey */ : style.background,
-        border:
-          type === 'droplist' && style.border
-            ? '1px solid #bfbfbf' /* LightGrey */
-            : style.border,
+        height: '100%',
+        background,
+        border,
       }}
     >
       <DropDown
@@ -105,9 +131,11 @@ const ComboBox = (props) => {
         setChecked={type === 'simple' ? undefined : setChecked}
         field={input}
         content={hList()}
+        fieldStyle={fieldStyle}
+        ddStyle={ddStyle}
         CBL="right"
-        CB={CheckBox}
-      ></DropDown>
+        CB={type === 'simple' ? () => null : Expand}
+      />
     </div>
   );
 };

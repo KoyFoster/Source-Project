@@ -1,4 +1,10 @@
 const defaultTemplates = {
+  Blank: {
+    Game: 'Blank',
+    Title: 'Blank',
+    Style: {},
+    Values: [],
+  },
   Jojo: {
     Game: 'Jojo',
     Title: 'Jojo',

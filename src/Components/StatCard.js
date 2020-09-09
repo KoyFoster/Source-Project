@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// import TemplateSelector from './TemplateSelector';
-// import { MenuItem } from '@material-ui/core';
+import TemplateSelector from './TemplateSelector';
+import { MenuItem } from '@material-ui/core';
 // import StatForm from './StatForm.js';
 // import Diagram from './Diagram.js';
 // import { Row, Col } from './DivGrid';
@@ -12,19 +12,19 @@ import { defaultTemplates as Templates } from './Templates';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
-// function compileMenuItems() {
-//   let result = [];
+function compileMenuItems() {
+  let result = [];
 
-//   for (let i = 0; i < Templates.length; i++) {
-//     result.push(
-//       <MenuItem key={Templates[i].label} value={Templates[i]}>
-//         {Templates[i].label}
-//       </MenuItem>,
-//     );
-//   }
-//   return result;
-// }
-// const tmplMenuItems = compileMenuItems();
+  for (let i = 0; i < Templates.length; i++) {
+    result.push(
+      <MenuItem key={Templates[i].label} value={Templates[i]}>
+        {Templates[i].label}
+      </MenuItem>,
+    );
+  }
+  return result;
+}
+const tmplMenuItems = compileMenuItems();
 
 // const SaveStatCard = (props) => {
 //   let { value } = props;
@@ -127,10 +127,7 @@ function Stats(props) {
   };
 
   // member variables
-  const [value, setValue] = useState(
-    // Templates['Final Fantasy 7 Remake'],
-    Templates['Dark Souls III'],
-  );
+  const [value, setValue] = useState(Templates['Blank']);
 
   const Update = (val) => {
     const buffer = { ...val };
@@ -144,18 +141,11 @@ function Stats(props) {
 
   return (
     <div>
-      {/* <TemplateSelector
-        // Name={defaultData.Name}
-        // setData={dataFuncs}
-        // funcs={funcs}
-        // defaultValue={defaultData.Name ? undefined : Templates[iDefTmpl]}
-        MenuItems={tmplMenuItems}
-        // style={{
-        //   marginBottom: 0,
-        //   padding: padding,
-        //   flexGrow: 1,
-        // }}
-      /> */}
+      <TemplateSelector
+        setTemplate={Update}
+        data={Templates}
+        defaultValue={'Dark Souls III'}
+      />
       {/* <SaveStatCard value={value}></SaveStatCard>
       <LoadStatCard setValue={setValue}></LoadStatCard> */}
 
