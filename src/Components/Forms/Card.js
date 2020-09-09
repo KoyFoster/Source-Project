@@ -47,13 +47,13 @@ const Block = (props) => {
   // stat table
   function StatTable() {
     // set row
-    function setRow(i, key, value, num, min, max, unit) {
+    function setRow(i, key, value, num, min, max, unit, row) {
       // console.log(`tr_${key}(${i})`);
       return (
         <tr
           key={`tr_${key}(${i})`}
           onClick={() => {
-            setStatSelection(key);
+            setStatSelection(row);
           }}
         >
           <td key={`td_${key}(${i}) 0`}>{value}</td>
@@ -72,7 +72,7 @@ const Block = (props) => {
         if (Mode === 'View') {
           return setRow(
             i,
-            value.Value,
+            Stats.Value,
             value.Value,
             `${value.Num.result}${value.Unit}`,
             '',
@@ -81,7 +81,7 @@ const Block = (props) => {
           if (Type === 'Static') {
             return setRow(
               i,
-              value.Value,
+              Stats.Value,
               value.Value,
               <input
                 type="number"
@@ -96,7 +96,7 @@ const Block = (props) => {
           } else {
             return setRow(
               i,
-              value.Value,
+              Stats.Value,
               value.Value,
               `${value.Num.result}${value.Unit}`,
               '',
@@ -105,7 +105,7 @@ const Block = (props) => {
         } else if (Type === 'Static') {
           return setRow(
             i,
-            value.Value,
+            Stats.Value,
             <input
               type="text"
               value={value.Value}
@@ -150,7 +150,7 @@ const Block = (props) => {
         } else {
           return setRow(
             i,
-            value.Value,
+            Stats.Value,
             <input
               key="1"
               type="text"
@@ -418,22 +418,22 @@ const ProfileCard = (props) => {
   const Cards = data.Values;
 
   // Pull data object without circular keys
-  // var cache = [];
-  // console.log(
-  //   'data:',
-  //   JSON.stringify(data, function (key, value) {
-  //     if (typeof value === 'object' && value !== null) {
-  //       if (cache.indexOf(value) !== -1) {
-  //         // Circular reference found, discard key
-  //         return;
-  //       }
-  //       // Store value in our collection
-  //       cache.push(value);
-  //     }
-  //     return value;
-  //   }),
-  // );
-  // cache = null;
+  var cache = [];
+  console.log(
+    'data:',
+    JSON.stringify(data, function (key, value) {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    }),
+  );
+  cache = null;
 
   // get input width based on value
   const getTextWidth = (text) => {

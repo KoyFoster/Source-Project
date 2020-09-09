@@ -1,114 +1,469 @@
 const defaultTemplates = {
   Jojo: {
-    label: 'Jojo',
-    Values: [
-      ['POWER', 3.0, 1, 10, ''],
-      ['SPEED', 4.0, 1, 10, ''],
-      ['RANGE', 4.0, 1, 10, ''],
-      ['DURABILITY', 8.0, 1, 10, ''],
-      ['PRECISION', 4.0, 1, 10, ''],
-      ['POTENTIAL', 2.0, 1, 10, ''],
-    ],
-    Level: 60,
-    Points: [1000, ['{"a": "Level"}', 'a * 12']],
-  },
-  'Dark Souls III': {
-    label: 'Dark Souls III',
-    Values: [
-      ['Vigor', 15, 1, 99, ''],
-      ['Attunement', 10, 1, 99, ''],
-      ['Endurance', 15, 1, 99, ''],
-      ['Vitality', 15, 1, 99, ''],
-      ['Strength', 20, 1, 99, ''],
-      ['Dexterity', 18, 1, 99, ''],
-      ['Intelligence', 10, 1, 99, ''],
-      ['Faith', 10, 1, 99, ''],
-      ['Luck', 10, 1, 99, ''],
-      ['Hollowing', 99, 1, 99, 'X'],
-    ],
-    Level: 802,
-    Points: true,
-  },
-  'Kono Subarashii': {
-    Game: 'Kono Subarashii',
-    Values: [
-      ['Strength', 79, 79, 99, ''],
-      ['Health', 21, 21, 99, ''],
-      ['Magic Power', 92, 92, 99, ''],
-      ['Dexterity', 3, 3, 99, ''],
-      ['Agility', 42, 42, 99, ''],
-      ['Luck', 1, 1, 99, ''],
-    ],
-    Level: 238,
-    Points: true,
-  },
-  'Final Fantasy 7 Remake': {
-    Game: 'Final Fantasy 7 Remake',
-    Title: '',
-    Values: {
-      'Page One': {
-        Value: 'Page One',
-        Values: {
-          Stats: {
-            Value: 'Stats',
-            Num: 0,
-            Min: 0,
-            Max: 0,
-            Level: 10000,
+    Game: 'Jojo',
+    Title: 'Jojo',
+    Style: {
+      root: (props) => ({
+        // default
+        font: 'inherit',
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
 
-            Points: 1000,
-            PointCalc: ['{"a": "Level"}', 'a * 12'],
-            Values: {
-              Attack: { Value: 'Attack', Num: 105, Min: 1, Max: 200, Unit: '' },
-              'Magic Attack': {
-                Value: 'Magic Attack',
-                Num: 97,
-                Min: 1,
-                Max: 200,
-                Unit: '',
-                Calc: ['', '{}'],
-              },
-              Defense: {
-                Value: 'Defense',
-                Num: 34,
-                Min: 1,
-                Max: 200,
-                Unit: '',
-                Calc: ['', '{}'],
-              },
-              'Magic Defense': {
-                Value: 'Magic Defense',
-                Num: 26,
-                Min: 1,
-                Max: 200,
-                Unit: '',
-                Calc: ['', '{}'],
-              },
-              Strength: {
-                Value: 'Strength',
-                Num: 35,
-                Min: 1,
-                Max: 200,
-                Unit: '',
-                Calc: ['', '{}'],
-              },
-              Magic: { Value: 'Magic', Num: 31, Min: 1, Max: 200, Unit: '' },
-              Vitality: {
-                Value: 'Vitality',
-                Num: 26,
-                Min: 1,
-                Max: 200,
-                Unit: '',
-                Calc: ['', '{}'],
-              },
-              Spirit: { Value: 'Spirit', Num: 23, Min: 1, Max: 200, Unit: '' },
-              Luck: { Value: 'Luck', Num: 27, Min: 1, Max: 200, Unit: '' },
-              Speed: { Value: 'Speed', Num: 19, Min: 1, Max: 200, Unit: '' },
-            },
+        color: 'inherit',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'inherit',
+        textAlignLast: 'inherit',
+
+        '& input': {
+          border: 'none',
+          borderWidth: '1px',
+          borderColor: 'inherit',
+          borderBottom: 'solid',
+        },
+        '& hr': {
+          color: '#6e573588',
+          backgroundColor: '#6e573588',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderRadius: '10px',
+        },
+        // Profile
+        '& h1': {
+          backgroundColor: '#999999',
+        },
+        // Profile
+        '& h2': {
+          font: 'Serif',
+          fontSize: 12,
+          fontFamily: 'NotoSansKR',
+
+          color: '#6e5735',
+          background: 'inherit',
+          backgroundColor: 'inherit',
+
+          justifyContent: 'top',
+          textAlignLast: 'center',
+
+          '& button': {
+            width: '64px',
+            borderRadius: '8px',
+
+            filter: 'brightness(88%)',
+
+            background: 'inherit',
+            backgroundColor: 'inherit',
           },
         },
-      },
+        // Card
+        '& h3': {
+          font: 'inherit',
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+
+          color: 'inherit',
+          background: 'inherit',
+          backgroundColor: '#faf8e8',
+
+          justifyContent: 'inherit',
+          textAlignLast: 'inherit',
+
+          border: '4px solid #6e5735',
+          borderRadius: '5px',
+
+          padding: '16px',
+          margin: '4px',
+
+          minWidth: '328px',
+
+          // Level
+          "& input[type='number']": {
+            width: '64px',
+          },
+          // Level
+          "& input[type='text']": {
+            width: '100%',
+          },
+        },
+        // Card Title
+        '& h4': {},
+        // Stat Block Title
+        '& h5': {
+          display: props.Mode === 'Edit' ? undefined : 'none',
+
+          // Level
+          "& input[type='text']": {
+            width: '100%',
+          },
+        },
+        '& h6': {
+          font: 'inherit',
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+
+          color: 'inherit',
+          background: 'inherit',
+          backgroundColor: '#faf8e8',
+          display: 'inline',
+          '& div': { '& button': { width: 'auto' } },
+        },
+        '& tbody': {},
+        '& thead': {},
+        '& tfoot': {},
+        '& table': {
+          // borderCollapse: 'collapse',
+          '& tr': {
+            '& td': {
+              '& button': {},
+              "& input[type='number']": {
+                width: '48px',
+              },
+              "& input[type='text']": {
+                width: '64px',
+              },
+            },
+            '& td:nth-child(1)': {
+              textAlignLast: 'left',
+              width: props.Mode !== 'Edit' ? '176px' : undefined,
+            },
+            '& td:nth-child(2)': {
+              textAlignLast: props.Mode !== 'View' ? 'center' : 'left',
+              width: props.Mode !== 'Edit' ? '140px' : undefined,
+              '& input': {
+                // borderRadius: props.Type === 'Static' ? '8px' : undefined,
+              },
+            },
+            '& td:nth-child(3)': {
+              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            },
+            '& td:nth-child(4)': {
+              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            },
+            '& td:nth-child(5)': {
+              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            },
+          },
+          '& colgroup': {
+            '& col:nth-child(1)': {
+              /* border: '1px solid green' */
+            },
+            '& col:nth-child(2)': {},
+            '& col:nth-child(3)': {},
+            '& col:nth-child(4)': {},
+            '& col:nth-child(5)': {},
+          },
+        },
+      }),
     },
+    Values: [
+      {
+        P: { Game: 'ArcheAge', Title: "Koy's Stats", Values: [null] },
+        Value: 'Stand',
+        Values: [
+          {
+            Value: 'Hermit Purple',
+            Type: 'Static',
+            Level: '',
+            Total: 25,
+            Min: '0111111',
+            Max: '011010101010',
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'POWER',
+                Num: { result: 3 },
+                Min: { result: '1' },
+                Max: { result: '10' },
+                Unit: '',
+              },
+              {
+                Value: 'SPEED',
+                Num: { result: 4 },
+                Min: { result: '1' },
+                Max: { result: '10' },
+                Unit: '',
+              },
+              {
+                Value: 'RANGE',
+                Num: { result: 4 },
+                Min: { result: '1' },
+                Max: { result: '10' },
+                Unit: '',
+              },
+              {
+                Value: 'DURABILITY',
+                Num: { result: 8 },
+                Min: { result: '1' },
+                Max: { result: '10' },
+                Unit: '',
+              },
+              {
+                Value: 'PRECISION',
+                Num: { result: 4 },
+                Min: { result: '1' },
+                Max: { result: '10' },
+                Unit: '',
+              },
+              {
+                Value: 'POTENTIAL',
+                Num: { result: 2 },
+                Min: { result: '1' },
+                Max: { result: '10' },
+                Unit: '',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  'Dark Souls III': {
+    Game: 'Dark Souls III',
+    Title: 'Dark Souls III',
+    Style: {
+      root: (props) => ({
+        // default
+        font: 'inherit',
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+
+        color: 'inherit',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'inherit',
+        textAlignLast: 'inherit',
+
+        '& input': {
+          border: 'none',
+          borderWidth: '1px',
+          borderColor: 'inherit',
+          borderBottom: 'solid',
+        },
+        '& hr': {
+          color: '#6e573588',
+          backgroundColor: '#6e573588',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderRadius: '10px',
+        },
+        // Profile
+        '& h1': {
+          backgroundColor: '#999999',
+        },
+        // Profile
+        '& h2': {
+          font: 'Serif',
+          fontSize: 12,
+          fontFamily: 'NotoSansKR',
+
+          color: '#6e5735',
+          background: 'inherit',
+          backgroundColor: 'inherit',
+
+          justifyContent: 'top',
+          textAlignLast: 'center',
+
+          '& button': {
+            width: '64px',
+            borderRadius: '8px',
+
+            filter: 'brightness(88%)',
+
+            background: 'inherit',
+            backgroundColor: 'inherit',
+          },
+        },
+        // Card
+        '& h3': {
+          font: 'inherit',
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+
+          color: 'inherit',
+          background: 'inherit',
+          backgroundColor: '#faf8e8',
+
+          justifyContent: 'inherit',
+          textAlignLast: 'inherit',
+
+          border: '4px solid #6e5735',
+          borderRadius: '5px',
+
+          padding: '16px',
+          margin: '4px',
+
+          minWidth: '328px',
+
+          // Level
+          "& input[type='number']": {
+            width: '64px',
+          },
+          // Level
+          "& input[type='text']": {
+            width: '100%',
+          },
+        },
+        // Card Title
+        '& h4': {},
+        // Stat Block Title
+        '& h5': {
+          display: props.Mode === 'Edit' ? undefined : 'none',
+
+          // Level
+          "& input[type='text']": {
+            width: '100%',
+          },
+        },
+        '& h6': {
+          font: 'inherit',
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+
+          color: 'inherit',
+          background: 'inherit',
+          backgroundColor: '#faf8e8',
+          display: 'inline',
+          '& div': { '& button': { width: 'auto' } },
+        },
+        '& tbody': {},
+        '& thead': {},
+        '& tfoot': {},
+        '& table': {
+          // borderCollapse: 'collapse',
+          '& tr': {
+            '& td': {
+              '& button': {},
+              "& input[type='number']": {
+                width: '48px',
+              },
+              "& input[type='text']": {
+                width: '64px',
+              },
+            },
+            '& td:nth-child(1)': {
+              textAlignLast: 'left',
+              width: props.Mode !== 'Edit' ? '176px' : undefined,
+            },
+            '& td:nth-child(2)': {
+              textAlignLast: props.Mode !== 'View' ? 'center' : 'left',
+              width: props.Mode !== 'Edit' ? '140px' : undefined,
+              '& input': {
+                // borderRadius: props.Type === 'Static' ? '8px' : undefined,
+              },
+            },
+            '& td:nth-child(3)': {
+              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            },
+            '& td:nth-child(4)': {
+              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            },
+            '& td:nth-child(5)': {
+              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            },
+          },
+          '& colgroup': {
+            '& col:nth-child(1)': {
+              /* border: '1px solid green' */
+            },
+            '& col:nth-child(2)': {},
+            '& col:nth-child(3)': {},
+            '& col:nth-child(4)': {},
+            '& col:nth-child(5)': {},
+          },
+        },
+      }),
+    },
+    Values: [
+      {
+        P: { Game: 'Jojo', Title: 'Jojo', Values: [null] },
+        Value: 'Player',
+        Values: [
+          {
+            Value: 'Stats',
+            Type: 'Static',
+            Level: '',
+            Total: 222,
+            Min: '01111111111',
+            Max: '099999999999999999999',
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'Vigor',
+                Num: { Value: 'Num', result: 15 },
+                Min: { Value: 'Min', result: '1' },
+                Max: { Value: 'Max', result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Attunement',
+                Num: { Value: 'Num', result: 10 },
+                Min: { Value: 'Min', result: '1' },
+                Max: { Value: 'Max', result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Endurance',
+                Num: { Value: 'Num', result: 15 },
+                Min: { Value: 'Min', result: '1' },
+                Max: { Value: 'Max', result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Vitality',
+                Num: { Value: 'Num', result: 15 },
+                Min: { Value: 'Min', result: '1' },
+                Max: { Value: 'Max', result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Strength',
+                Num: { Value: 'Num', result: 20 },
+                Min: { Value: 'Min', result: '1' },
+                Max: { Value: 'Max', result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Dexterity',
+                Num: { Value: 'Num', result: 18 },
+                Min: { Value: 'Min', result: '1' },
+                Max: { Value: 'Max', result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Intelligence',
+                Num: { result: 10 },
+                Min: { result: '1' },
+                Max: { result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Faith',
+                Num: { result: 10 },
+                Min: { result: '1' },
+                Max: { result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Luck',
+                Num: { result: 10 },
+                Min: { result: '1' },
+                Max: { result: '99' },
+                Unit: '',
+              },
+              {
+                Value: 'Hollowing',
+                Num: { result: 99 },
+                Min: { result: '1' },
+                Max: { result: '99' },
+                Unit: 'X',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   ArcheAge: {
     Game: 'ArcheAge',

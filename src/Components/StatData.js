@@ -33,10 +33,15 @@ class StatData {
   static TallyTotals(statBlock) {
     const tallies = { Total: 0, Min: 0, Max: 0 };
 
+    // I shouldn't have to parseInt here, but I am.
     Object.keys(statBlock).forEach((key) => {
-      tallies.Total = tallies.Total + statBlock[key]['Num'].result;
-      tallies.Min = tallies.Min + statBlock[key]['Min'].result;
-      tallies.Max = tallies.Max + statBlock[key]['Max'].result;
+      tallies.Total = Number.parseInt(
+        tallies.Total + statBlock[key]['Num'].result,
+      );
+      tallies.Min =
+        tallies.Min + Number.parseInt(statBlock[key]['Min'].result, 10);
+      tallies.Max =
+        tallies.Max + Number.parseInt(statBlock[key]['Max'].result, 10);
     });
 
     // console.log(tallies);

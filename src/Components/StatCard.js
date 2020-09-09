@@ -129,7 +129,7 @@ function Stats(props) {
   // member variables
   const [value, setValue] = useState(
     // Templates['Final Fantasy 7 Remake'],
-    Templates['ArcheAge'],
+    Templates['Dark Souls III'],
   );
 
   const Update = (val) => {
