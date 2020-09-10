@@ -10,18 +10,34 @@ class StatData {
 
     switch (stat) {
       case 'Num':
-        result = Calc.fMinMax(result, stats['Min'][0], stats['Max'][0]);
-        event = result - value;
+        if (Number.isNaN(result)) {
+          result = stats['Min'].result;
+        } else {
+          result = Calc.fMinMax(
+            result,
+            stats['Min'].result,
+            stats['Max'].result,
+          );
+          event = result - value;
+        }
         break;
       case 'Min':
-        result = Calc.fMinMax(result, undefined, stats['Num'][0]);
-        event = result - value;
+        if (Number.isNaN(result)) {
+          result = stats['Num'].result;
+        } else {
+          result = Calc.fMinMax(result, undefined, stats['Num'].result);
+          event = result - value;
+        }
         break;
       case 'Max':
-        result = Calc.fMinMax(result, stats['Num'][0]);
-        result = Calc.fMinMax(result, stats['Min'][0]);
-        // result = Calc.fMinMax(result, stats['Num']);
-        event = result - value;
+        if (Number.isNaN(result)) {
+          result = stats['Num'].result;
+        } else {
+          result = Calc.fMinMax(result, stats['Num'].result);
+          result = Calc.fMinMax(result, stats['Min'].result);
+          // result = Calc.fMinMax(result, stats['Num']);
+          event = result - value;
+        }
         break;
       default:
         break;

@@ -87,7 +87,11 @@ const Block = (props) => {
                 type="number"
                 value={value.Num.result}
                 onChange={(e) => {
-                  value.Num.result = parseInt(e.target.value, 10);
+                  value.Num.result = StatData.HandleStatMinMax(
+                    value,
+                    'Num',
+                    parseInt(e.target.value, 10),
+                  ).result;
                   Update(data);
                 }}
               />,
@@ -118,7 +122,11 @@ const Block = (props) => {
               type="number"
               value={value.Num.result}
               onChange={(e) => {
-                value.Num.result = parseInt(e.target.value, 10);
+                value.Num.result = StatData.HandleStatMinMax(
+                  value,
+                  'Num',
+                  parseInt(e.target.value, 10),
+                ).result;
                 Update(data);
               }}
             />,
@@ -126,7 +134,11 @@ const Block = (props) => {
               type="number"
               value={value.Min.result}
               onChange={(e) => {
-                value.Min.result = e.target.value;
+                value.Min.result = StatData.HandleStatMinMax(
+                  value,
+                  'Min',
+                  parseInt(e.target.value, 10),
+                ).result;
                 Update(data);
               }}
             />,
@@ -134,7 +146,11 @@ const Block = (props) => {
               type="number"
               value={value.Max.result}
               onChange={(e) => {
-                value.Max.result = e.target.value;
+                value.Max.result = StatData.HandleStatMinMax(
+                  value,
+                  'Max',
+                  parseInt(e.target.value, 10),
+                ).result;
                 Update(data);
               }}
             />,
@@ -488,23 +504,31 @@ const ProfileCard = (props) => {
     <h2>
       <div>
         Game:{' '}
-        <input
-          type="text"
-          value={Game}
-          onChange={(e) => {
-            data.Game = e.target.value;
-            Update(data);
-          }}
-        />
+        {Mode === 'Edit' ? (
+          <input
+            type="text"
+            value={Game}
+            onChange={(e) => {
+              data.Game = e.target.value;
+              Update(data);
+            }}
+          />
+        ) : (
+          Game
+        )}
         Title:{' '}
-        <input
-          type="text"
-          value={Title}
-          onChange={(e) => {
-            data.Title = e.target.value;
-            Update(data);
-          }}
-        />
+        {Mode === 'Edit' ? (
+          <input
+            type="text"
+            value={Title}
+            onChange={(e) => {
+              data.Title = e.target.value;
+              Update(data);
+            }}
+          />
+        ) : (
+          Game
+        )}
         {Mode === 'Edit' ? (
           <h6>
             <Controls

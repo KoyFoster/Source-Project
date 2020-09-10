@@ -70,7 +70,6 @@ class Cell {
 // Stat
 class Stat {
   constructor(obj, parent) {
-    this.bEdit = false;
     // link
     this.P = parent;
 
@@ -120,6 +119,7 @@ class Block {
 
     // defined
     if (obj) {
+      this.bEdit = obj.bEdit;
       this.Value = obj.Value;
 
       this.Type = obj.Type ? obj.Type : '';
@@ -155,6 +155,7 @@ class Block {
 // Card
 class Card {
   constructor(obj, parent) {
+    this.bEdit = false;
     // link
     this.P = parent;
 
@@ -164,6 +165,7 @@ class Card {
 
     // defined
     if (obj) {
+      this.bEdit = obj.bEdit;
       this.Value = obj.Value ? obj.Value : '';
 
       const keys = Object.keys(obj.Values);
