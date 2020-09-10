@@ -254,10 +254,7 @@ const Block = (props) => {
         <div style={{ display: 'flex' }}>
           {Mode === 'Edit' ? (
             <ToggleButton
-              style={{ width: '56px', padding: '2px' }}
               toggledStyle={{
-                // width: '56px',
-                padding: '2px',
                 filter: 'brightness(88%)',
               }}
               checked={Type === 'Calc'}
@@ -270,7 +267,7 @@ const Block = (props) => {
             </ToggleButton>
           ) : null}
 
-          {Mode === 'Edit' ? (
+          {Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
             <input
               type="text"
               value={Value}
@@ -282,6 +279,20 @@ const Block = (props) => {
           ) : (
             Value
           )}
+          {Mode === 'Edit' ? (
+            <ToggleButton
+              toggledStyle={{
+                filter: 'brightness(88%)',
+              }}
+              checked={Stats.bEdit}
+              onClick={(e) => {
+                Stats.bEdit = e.target.value === 'Do Edit' ? true : false;
+                Update(data);
+              }}
+            >
+              {['Do Edit', 'No Edit']}
+            </ToggleButton>
+          ) : null}
         </div>
         {Mode === 'Edit' ? (
           <div style={{ display: 'flex' }}>
@@ -373,7 +384,7 @@ const Card = (props) => {
     >
       <div style={{ display: 'flex' }}>
         <h4 style={{ width: '100%' }}>
-          {Mode === 'Edit' ? (
+          {Mode === 'Edit' || (Mode === 'Calculator' && cardData.bEdit) ? (
             <input
               type="text"
               value={Value}
@@ -385,6 +396,20 @@ const Card = (props) => {
           ) : (
             Value
           )}
+          {Mode === 'Edit' ? (
+            <ToggleButton
+              toggledStyle={{
+                filter: 'brightness(88%)',
+              }}
+              checked={cardData.bEdit}
+              onClick={(e) => {
+                cardData.bEdit = e.target.value === 'Do Edit' ? true : false;
+                Update(data);
+              }}
+            >
+              {['Do Edit', 'No Edit']}
+            </ToggleButton>
+          ) : null}
         </h4>
       </div>
 

@@ -109,7 +109,7 @@ const tmplMenuItems = compileMenuItems();
 // Stat Card
 function Stats(props) {
   const Modes = ['View', 'Calculator', 'Edit'];
-  const [Mode, setMode] = useState('Edit');
+  const [Mode, setMode] = useState('Calculator');
   const handleModeChange = () => {
     switch (Mode) {
       case Modes[0]:

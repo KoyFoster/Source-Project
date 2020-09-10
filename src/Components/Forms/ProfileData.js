@@ -70,6 +70,7 @@ class Cell {
 // Stat
 class Stat {
   constructor(obj, parent) {
+    this.bEdit = false;
     // link
     this.P = parent;
 
@@ -101,6 +102,7 @@ class Stat {
 // Block
 class Block {
   constructor(obj, parent) {
+    this.bEdit = false;
     // link
     this.P = parent;
 

@@ -96,8 +96,6 @@ const defaultTemplates = {
         '& h4': {},
         // Stat Block Title
         '& h5': {
-          display: props.Mode === 'Edit' ? undefined : 'none',
-
           // Level
           "& input[type='text']": {
             width: '100%',
@@ -315,8 +313,6 @@ const defaultTemplates = {
         '& h4': {},
         // Stat Block Title
         '& h5': {
-          display: props.Mode === 'Edit' ? undefined : 'none',
-
           // Level
           "& input[type='text']": {
             width: '100%',
@@ -562,8 +558,6 @@ const defaultTemplates = {
         '& h4': {},
         // Stat Block Title
         '& h5': {
-          display: props.Mode === 'Edit' ? undefined : 'none',
-
           // Level
           "& input[type='text']": {
             width: '100%',
