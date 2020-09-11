@@ -1,4 +1,5 @@
 import React from 'react';
+import { Profile, Card, Block, Stat, Cell } from './ProfileData';
 
 const depthColor = [
   ['black', 'red'],
@@ -53,6 +54,7 @@ const renderStats = (
     const bVal = excludeKeyValues ? excludeKeyValues.indexOf(key) === -1 : true;
     const bSel = selectKeys ? selectKeys.indexOf(key) > -1 : false;
 
+    console.log('key:', key);
     result.push(
       <div
         key={key}
