@@ -9,156 +9,154 @@ const defaultTemplates = {
     Game: 'Jojo',
     Title: 'Jojo',
     Style: {
-      root: (props) => ({
-        // default
-        font: 'inherit',
+      // default
+      fontSize: 'inherit',
+      fontFamily: 'inherit',
+      fontWeight: 'inherit',
+
+      color: 'inherit',
+      background: 'inherit',
+      backgroundColor: 'inherit',
+
+      justifyContent: 'inherit',
+      textAlignLast: 'inherit',
+
+      '& input': {
+        border: 'none',
+        borderWidth: '1px',
+        borderColor: 'inherit',
+        borderBottom: 'solid',
+      },
+      '& hr': {
+        color: '#6e573588',
+        backgroundColor: '#6e573588',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderRadius: '10px',
+      },
+      // Profile
+      '& h1': {
+        backgroundColor: '#999999',
+      },
+      // Profile
+      '& h2': {
+        fontSize: 12,
+        fontFamily: 'NotoSansKR, serif',
+        fontWeight: 'inherit',
+
+        color: '#6e5735',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'top',
+        textAlignLast: 'center',
+
+        '& button': {
+          width: '64px',
+          borderRadius: '8px',
+
+          filter: 'brightness(88%)',
+
+          background: 'inherit',
+          backgroundColor: 'inherit',
+        },
+      },
+      // Card
+      '& h3': {
         fontSize: 'inherit',
         fontFamily: 'inherit',
+        fontWeight: 'inherit',
 
         color: 'inherit',
         background: 'inherit',
-        backgroundColor: 'inherit',
+        backgroundColor: '#faf8e8',
 
         justifyContent: 'inherit',
         textAlignLast: 'inherit',
 
-        '& input': {
-          border: 'none',
-          borderWidth: '1px',
-          borderColor: 'inherit',
-          borderBottom: 'solid',
+        border: '4px solid #6e5735',
+        borderRadius: '5px',
+
+        padding: '16px',
+        margin: '4px',
+
+        minWidth: '328px',
+
+        // Level
+        "& input[type='number']": {
+          width: '64px',
         },
-        '& hr': {
-          color: '#6e573588',
-          backgroundColor: '#6e573588',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderRadius: '10px',
+        // Level
+        "& input[type='text']": {
+          width: '100%',
         },
-        // Profile
-        '& h1': {
-          backgroundColor: '#999999',
+      },
+      // Card Title
+      '& h4': {},
+      // Stat Block Title
+      '& h5': {
+        // Level
+        "& input[type='text']": {
+          width: '100%',
         },
-        // Profile
-        '& h2': {
-          font: 'Serif',
-          fontSize: 12,
-          fontFamily: 'NotoSansKR',
+      },
+      '& h6': {
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+        fontWeight: 'inherit',
 
-          color: '#6e5735',
-          background: 'inherit',
-          backgroundColor: 'inherit',
-
-          justifyContent: 'top',
-          textAlignLast: 'center',
-
-          '& button': {
-            width: '64px',
-            borderRadius: '8px',
-
-            filter: 'brightness(88%)',
-
-            background: 'inherit',
-            backgroundColor: 'inherit',
-          },
-        },
-        // Card
-        '& h3': {
-          font: 'inherit',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-
-          color: 'inherit',
-          background: 'inherit',
-          backgroundColor: '#faf8e8',
-
-          justifyContent: 'inherit',
-          textAlignLast: 'inherit',
-
-          border: '4px solid #6e5735',
-          borderRadius: '5px',
-
-          padding: '16px',
-          margin: '4px',
-
-          minWidth: '328px',
-
-          // Level
-          "& input[type='number']": {
-            width: '64px',
-          },
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-        },
-        // Card Title
-        '& h4': {},
-        // Stat Block Title
-        '& h5': {
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-        },
-        '& h6': {
-          font: 'inherit',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-
-          color: 'inherit',
-          background: 'inherit',
-          backgroundColor: '#faf8e8',
-          display: 'inline',
-          '& div': { '& button': { width: 'auto' } },
-        },
-        '& tbody': {},
-        '& thead': {},
-        '& tfoot': {},
-        '& table': {
-          // borderCollapse: 'collapse',
-          '& tr': {
-            '& td': {
-              '& button': {},
-              "& input[type='number']": {
-                width: '48px',
-              },
-              "& input[type='text']": {
-                width: '64px',
-              },
+        color: 'inherit',
+        background: 'inherit',
+        backgroundColor: '#faf8e8',
+        display: 'inline',
+        '& div': { '& button': { width: 'auto' } },
+      },
+      '& tbody': {},
+      '& thead': {},
+      '& tfoot': {},
+      '& table': {
+        // borderCollapse: 'collapse',
+        '& tr': {
+          '& td': {
+            '& button': {},
+            "& input[type='number']": {
+              width: '48px',
             },
-            '& td:nth-child(1)': {
-              textAlignLast: 'left',
-              width: props.Mode !== 'Edit' ? '176px' : undefined,
-            },
-            '& td:nth-child(2)': {
-              textAlignLast: props.Mode !== 'View' ? 'center' : 'left',
-              width: props.Mode !== 'Edit' ? '140px' : undefined,
-              '& input': {
-                // borderRadius: props.Type === 'Static' ? '8px' : undefined,
-              },
-            },
-            '& td:nth-child(3)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
-            },
-            '& td:nth-child(4)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
-            },
-            '& td:nth-child(5)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            "& input[type='text']": {
+              width: '64px',
             },
           },
-          '& colgroup': {
-            '& col:nth-child(1)': {
-              /* border: '1px solid green' */
+          '& td:nth-child(1)': {
+            textAlignLast: 'left',
+            width: ['props'].Mode !== 'Edit' ? '176px' : undefined,
+          },
+          '& td:nth-child(2)': {
+            textAlignLast: ['props'].Mode !== 'View' ? 'center' : 'left',
+            width: ['props'].Mode !== 'Edit' ? '140px' : undefined,
+            '& input': {
+              // borderRadius: ['props'].Type === 'Static' ? '8px' : undefined,
             },
-            '& col:nth-child(2)': {},
-            '& col:nth-child(3)': {},
-            '& col:nth-child(4)': {},
-            '& col:nth-child(5)': {},
+          },
+          '& td:nth-child(3)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+          },
+          '& td:nth-child(4)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+          },
+          '& td:nth-child(5)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
           },
         },
-      }),
+        '& colgroup': {
+          '& col:nth-child(1)': {
+            /* border: '1px solid green' */
+          },
+          '& col:nth-child(2)': {},
+          '& col:nth-child(3)': {},
+          '& col:nth-child(4)': {},
+          '& col:nth-child(5)': {},
+        },
+      },
     },
     Values: [
       {
@@ -227,160 +225,157 @@ const defaultTemplates = {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
     Style: {
-      root: (props) => ({
-        // default
-        font: 'inherit',
+      // default
+      fontSize: 'inherit',
+      fontFamily: 'inherit',
+      fontWeight: 'inherit',
+
+      color: 'inherit',
+      background: 'inherit',
+      backgroundColor: 'inherit',
+
+      justifyContent: 'inherit',
+      textAlignLast: 'inherit',
+
+      '& input': {
+        border: 'none',
+        borderWidth: '1px',
+        borderColor: 'inherit',
+      },
+      '& hr': {
+        color: '#6e573588',
+        backgroundColor: '#6e573588',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderRadius: '10px',
+      },
+      // Profile
+      '& h1': {
+        backgroundColor: '#999999',
+      },
+      // Profile
+      '& h2': {
+        fontSize: 22,
+        fontFamily: 'Adobe Garamond, serif',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+
+        color: '#bbbbbb',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'top',
+        textAlignLast: 'center',
+
+        '& button': {
+          width: '64px',
+          borderRadius: '8px',
+
+          filter: 'brightness(88%)',
+
+          background: 'inherit',
+          backgroundColor: 'inherit',
+        },
+      },
+      // Card
+      '& h3': {
         fontSize: 'inherit',
         fontFamily: 'inherit',
+        fontWeight: 'inherit',
 
         color: 'inherit',
         background: 'inherit',
-        backgroundColor: 'inherit',
+        backgroundColor: '#131114',
 
         justifyContent: 'inherit',
         textAlignLast: 'inherit',
 
-        '& input': {
-          border: 'none',
-          borderWidth: '1px',
-          borderColor: 'inherit',
-          borderBottom: 'solid',
+        border: '2px solid #dbdbdb',
+        borderRadius: '5px',
+
+        padding: '22px',
+        margin: '4px',
+
+        minWidth: '328px',
+
+        // Level
+        "& input[type='number']": {
+          width: '64px',
         },
-        '& hr': {
-          color: '#6e573588',
-          backgroundColor: '#6e573588',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderRadius: '10px',
+        // Level
+        "& input[type='text']": {
+          width: '100%',
         },
-        // Profile
-        '& h1': {
-          backgroundColor: '#999999',
+      },
+      // Card Title
+      '& h4': {},
+      // Stat Block Title
+      '& h5': {
+        // Level
+        "& input[type='text']": {
+          width: '100%',
         },
-        // Profile
-        '& h2': {
-          font: 'Serif',
-          fontSize: 12,
-          fontFamily: 'NotoSansKR',
+      },
+      '& h6': {
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+        fontWeight: 'inherit',
 
-          color: '#6e5735',
-          background: 'inherit',
-          backgroundColor: 'inherit',
-
-          justifyContent: 'top',
-          textAlignLast: 'center',
-
-          '& button': {
-            width: '64px',
-            borderRadius: '8px',
-
-            filter: 'brightness(88%)',
-
-            background: 'inherit',
-            backgroundColor: 'inherit',
-          },
-        },
-        // Card
-        '& h3': {
-          font: 'inherit',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-
-          color: 'inherit',
-          background: 'inherit',
-          backgroundColor: '#faf8e8',
-
-          justifyContent: 'inherit',
-          textAlignLast: 'inherit',
-
-          border: '4px solid #6e5735',
-          borderRadius: '5px',
-
-          padding: '16px',
-          margin: '4px',
-
-          minWidth: '328px',
-
-          // Level
-          "& input[type='number']": {
-            width: '64px',
-          },
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-        },
-        // Card Title
-        '& h4': {},
-        // Stat Block Title
-        '& h5': {
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-        },
-        '& h6': {
-          font: 'inherit',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-
-          color: 'inherit',
-          background: 'inherit',
-          backgroundColor: '#faf8e8',
-          display: 'inline',
-          '& div': { '& button': { width: 'auto' } },
-        },
-        '& tbody': {},
-        '& thead': {},
-        '& tfoot': {},
-        '& table': {
-          // borderCollapse: 'collapse',
-          '& tr': {
-            '& td': {
-              '& button': {},
-              "& input[type='number']": {
-                width: '48px',
-              },
-              "& input[type='text']": {
-                width: '64px',
-              },
+        color: 'inherit',
+        background: 'inherit',
+        backgroundColor: '#faf8e8',
+        display: 'inline',
+        '& div': { '& button': { width: 'auto' } },
+      },
+      '& tbody': {},
+      '& thead': {},
+      '& tfoot': {},
+      '& table': {
+        // borderCollapse: 'collapse',
+        '& tr': {
+          '& td': {
+            '& button': {},
+            "& input[type='number']": {
+              width: '48px',
             },
-            '& td:nth-child(1)': {
-              textAlignLast: 'left',
-              width: props.Mode !== 'Edit' ? '176px' : undefined,
-            },
-            '& td:nth-child(2)': {
-              textAlignLast: props.Mode !== 'View' ? 'center' : 'left',
-              width: props.Mode !== 'Edit' ? '140px' : undefined,
-              '& input': {
-                // borderRadius: props.Type === 'Static' ? '8px' : undefined,
-              },
-            },
-            '& td:nth-child(3)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
-            },
-            '& td:nth-child(4)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
-            },
-            '& td:nth-child(5)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            "& input[type='text']": {
+              width: '64px',
             },
           },
-          '& colgroup': {
-            '& col:nth-child(1)': {
-              /* border: '1px solid green' */
+          '& td:nth-child(1)': {
+            textAlignLast: 'left',
+            width: ['props'].Mode !== 'Edit' ? '176px' : undefined,
+          },
+          '& td:nth-child(2)': {
+            textAlignLast: ['props'].Mode !== 'View' ? 'center' : 'left',
+            width: ['props'].Mode !== 'Edit' ? '140px' : undefined,
+            '& input': {
+              // borderRadius: ['props'].Type === 'Static' ? '8px' : undefined,
             },
-            '& col:nth-child(2)': {},
-            '& col:nth-child(3)': {},
-            '& col:nth-child(4)': {},
-            '& col:nth-child(5)': {},
+          },
+          '& td:nth-child(3)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+          },
+          '& td:nth-child(4)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+          },
+          '& td:nth-child(5)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
           },
         },
-      }),
+        '& colgroup': {
+          '& col:nth-child(1)': {
+            /* border: '1px solid green' */
+          },
+          '& col:nth-child(2)': {},
+          '& col:nth-child(3)': {},
+          '& col:nth-child(4)': {},
+          '& col:nth-child(5)': {},
+        },
+      },
     },
     Values: [
       {
-        P: { Game: 'Jojo', Title: 'Jojo', Values: [null] },
         Value: 'Player',
         Values: [
           {
@@ -472,156 +467,154 @@ const defaultTemplates = {
     Game: 'ArcheAge',
     Title: "Koy's Stats",
     Style: {
-      root: (props) => ({
-        // default
-        font: 'inherit',
+      // default
+      fontSize: 'inherit',
+      fontFamily: 'inherit',
+      fontWeight: 'inherit',
+
+      color: 'inherit',
+      background: 'inherit',
+      backgroundColor: 'inherit',
+
+      justifyContent: 'inherit',
+      textAlignLast: 'inherit',
+
+      '& input': {
+        border: 'none',
+        borderWidth: '1px',
+        borderColor: 'inherit',
+        borderBottom: 'solid',
+      },
+      '& hr': {
+        color: '#6e573588',
+        backgroundColor: '#6e573588',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderRadius: '10px',
+      },
+      // Profile
+      '& h1': {
+        backgroundColor: '#999999',
+      },
+      // Profile
+      '& h2': {
+        fontSize: 12,
+        fontFamily: 'NotoSansKR, serif',
+        fontWeight: 'inherit',
+
+        color: '#6e5735',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'top',
+        textAlignLast: 'center',
+
+        '& button': {
+          width: '64px',
+          borderRadius: '8px',
+
+          filter: 'brightness(88%)',
+
+          background: 'inherit',
+          backgroundColor: 'inherit',
+        },
+      },
+      // Card
+      '& h3': {
         fontSize: 'inherit',
         fontFamily: 'inherit',
+        fontWeight: 'inherit',
 
         color: 'inherit',
         background: 'inherit',
-        backgroundColor: 'inherit',
+        backgroundColor: '#faf8e8',
 
         justifyContent: 'inherit',
         textAlignLast: 'inherit',
 
-        '& input': {
-          border: 'none',
-          borderWidth: '1px',
-          borderColor: 'inherit',
-          borderBottom: 'solid',
+        border: '4px solid #6e5735',
+        borderRadius: '5px',
+
+        padding: '16px',
+        margin: '4px',
+
+        minWidth: '328px',
+
+        // Level
+        "& input[type='number']": {
+          width: '64px',
         },
-        '& hr': {
-          color: '#6e573588',
-          backgroundColor: '#6e573588',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderRadius: '10px',
+        // Level
+        "& input[type='text']": {
+          width: '100%',
         },
-        // Profile
-        '& h1': {
-          backgroundColor: '#999999',
+      },
+      // Card Title
+      '& h4': {},
+      // Stat Block Title
+      '& h5': {
+        // Level
+        "& input[type='text']": {
+          width: '100%',
         },
-        // Profile
-        '& h2': {
-          font: 'Serif',
-          fontSize: 12,
-          fontFamily: 'NotoSansKR',
+      },
+      '& h6': {
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+        fontWeight: 'inherit',
 
-          color: '#6e5735',
-          background: 'inherit',
-          backgroundColor: 'inherit',
-
-          justifyContent: 'top',
-          textAlignLast: 'center',
-
-          '& button': {
-            width: '64px',
-            borderRadius: '8px',
-
-            filter: 'brightness(88%)',
-
-            background: 'inherit',
-            backgroundColor: 'inherit',
-          },
-        },
-        // Card
-        '& h3': {
-          font: 'inherit',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-
-          color: 'inherit',
-          background: 'inherit',
-          backgroundColor: '#faf8e8',
-
-          justifyContent: 'inherit',
-          textAlignLast: 'inherit',
-
-          border: '4px solid #6e5735',
-          borderRadius: '5px',
-
-          padding: '16px',
-          margin: '4px',
-
-          minWidth: '328px',
-
-          // Level
-          "& input[type='number']": {
-            width: '64px',
-          },
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-        },
-        // Card Title
-        '& h4': {},
-        // Stat Block Title
-        '& h5': {
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-        },
-        '& h6': {
-          font: 'inherit',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-
-          color: 'inherit',
-          background: 'inherit',
-          backgroundColor: '#faf8e8',
-          display: 'inline',
-          '& div': { '& button': { width: 'auto' } },
-        },
-        '& tbody': {},
-        '& thead': {},
-        '& tfoot': {},
-        '& table': {
-          // borderCollapse: 'collapse',
-          '& tr': {
-            '& td': {
-              '& button': {},
-              "& input[type='number']": {
-                width: '48px',
-              },
-              "& input[type='text']": {
-                width: '64px',
-              },
+        color: 'inherit',
+        background: 'inherit',
+        backgroundColor: '#faf8e8',
+        display: 'inline',
+        '& div': { '& button': { width: 'auto' } },
+      },
+      '& tbody': {},
+      '& thead': {},
+      '& tfoot': {},
+      '& table': {
+        // borderCollapse: 'collapse',
+        '& tr': {
+          '& td': {
+            '& button': {},
+            "& input[type='number']": {
+              width: '48px',
             },
-            '& td:nth-child(1)': {
-              textAlignLast: 'left',
-              width: props.Mode !== 'Edit' ? '176px' : undefined,
-            },
-            '& td:nth-child(2)': {
-              textAlignLast: props.Mode !== 'View' ? 'center' : 'left',
-              width: props.Mode !== 'Edit' ? '140px' : undefined,
-              '& input': {
-                // borderRadius: props.Type === 'Static' ? '8px' : undefined,
-              },
-            },
-            '& td:nth-child(3)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
-            },
-            '& td:nth-child(4)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
-            },
-            '& td:nth-child(5)': {
-              textAlignLast: props.Mode === 'Edit' ? 'center' : 'left',
+            "& input[type='text']": {
+              width: '64px',
             },
           },
-          '& colgroup': {
-            '& col:nth-child(1)': {
-              /* border: '1px solid green' */
+          '& td:nth-child(1)': {
+            textAlignLast: 'left',
+            width: ['props'].Mode !== 'Edit' ? '176px' : undefined,
+          },
+          '& td:nth-child(2)': {
+            textAlignLast: ['props'].Mode !== 'View' ? 'center' : 'left',
+            width: ['props'].Mode !== 'Edit' ? '140px' : undefined,
+            '& input': {
+              // borderRadius: ['props'].Type === 'Static' ? '8px' : undefined,
             },
-            '& col:nth-child(2)': {},
-            '& col:nth-child(3)': {},
-            '& col:nth-child(4)': {},
-            '& col:nth-child(5)': {},
+          },
+          '& td:nth-child(3)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+          },
+          '& td:nth-child(4)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+          },
+          '& td:nth-child(5)': {
+            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
           },
         },
-      }),
+        '& colgroup': {
+          '& col:nth-child(1)': {
+            /* border: '1px solid green' */
+          },
+          '& col:nth-child(2)': {},
+          '& col:nth-child(3)': {},
+          '& col:nth-child(4)': {},
+          '& col:nth-child(5)': {},
+        },
+      },
     },
     Values: [
       {
