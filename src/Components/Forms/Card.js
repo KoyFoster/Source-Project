@@ -13,6 +13,11 @@ import Controls from './Controls.js';
 import { Profile } from './ProfileData';
 import './Card.css';
 
+// styling elements
+const Level = (props) => {
+  return props.children;
+};
+
 const Block = (props) => {
   const { Update } = props;
   const { Mode } = props;
@@ -63,7 +68,7 @@ const Block = (props) => {
           <td key={`td_${key}(${i}) 3`}>{max}</td>
           <td key={`td_${key}(${i}) 4`}>{unit}</td>
         </tr>,
-        <tr>
+        <tr key={`trp_${key}(${i})`}>
           <td key={`td_${key}(${i}) 6`} colSpan="5"></td>
         </tr>,
       ];
@@ -385,6 +390,7 @@ const Card = (props) => {
       return [
         <hr key={i}></hr>,
         <Block
+          key={`B${i}`}
           Stats={Page[key]}
           Update={Update}
           Mode={Mode}
@@ -492,57 +498,59 @@ const ProfileCard = (props) => {
   }
 
   return (
-    <h2>
-      <div>
-        Game:{' '}
-        {Mode === 'Edit' ? (
-          <input
-            type="text"
-            value={Game}
-            onChange={(e) => {
-              data.Game = e.target.value;
-              Update(data);
-            }}
-          />
-        ) : (
-          Game
-        )}
-        Title:{' '}
-        {Mode === 'Edit' ? (
-          <input
-            type="text"
-            value={Title}
-            onChange={(e) => {
-              data.Title = e.target.value;
-              Update(data);
-            }}
-          />
-        ) : (
-          Game
-        )}
-        {Mode === 'Edit' ? (
-          <h6>
-            <Controls
-              Tag="Card"
-              selection={cardSelection}
-              Add={(selection, i) => {
-                setCardSelection(data.addCard(selection, i));
+    <Level>
+      <h2>
+        <div>
+          Game:{' '}
+          {Mode === 'Edit' ? (
+            <input
+              type="text"
+              value={Game}
+              onChange={(e) => {
+                data.Game = e.target.value;
                 Update(data);
               }}
-            ></Controls>
-          </h6>
-        ) : null}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignContent: 'flex-start',
-          }}
-        >
-          {Book()}
+            />
+          ) : (
+            Game
+          )}
+          Title:{' '}
+          {Mode === 'Edit' ? (
+            <input
+              type="text"
+              value={Title}
+              onChange={(e) => {
+                data.Title = e.target.value;
+                Update(data);
+              }}
+            />
+          ) : (
+            Game
+          )}
+          {Mode === 'Edit' ? (
+            <h6>
+              <Controls
+                Tag="Card"
+                selection={cardSelection}
+                Add={(selection, i) => {
+                  setCardSelection(data.addCard(selection, i));
+                  Update(data);
+                }}
+              ></Controls>
+            </h6>
+          ) : null}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignContent: 'flex-start',
+            }}
+          >
+            {Book()}
+          </div>
         </div>
-      </div>
-    </h2>
+      </h2>
+    </Level>
   );
 };
 
