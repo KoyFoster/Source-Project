@@ -68,7 +68,7 @@ const Controls = (props) => {
   };
 
   return (
-    <div style={{ display: 'flex', maxHeight: '24px' }}>
+    <div className="Controls" style={{ display: 'flex', maxHeight: '24px' }}>
       <Nav selection={selection} />
       <Size size={size} selection={selection} />
     </div>

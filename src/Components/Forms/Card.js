@@ -13,9 +13,24 @@ import Controls from './Controls.js';
 import { Profile } from './ProfileData';
 import './Card.css';
 
-// styling elements
-const Level = (props) => {
-  return props.children;
+// styling contrainers
+const ProfileContainer = (props) => {
+  return <div className="Profile">{props.children}</div>;
+};
+const CardContainer = (props) => {
+  return <div className="Card">{props.children}</div>;
+};
+const CardHeader = (props) => {
+  return <div className="CardHeader">{props.children}</div>;
+};
+const StatHeader = (props) => {
+  return <div className="StatHeader">{props.children}</div>;
+};
+const LevelHeader = (props) => {
+  return <div className="Level">{props.children}</div>;
+};
+const StatsContainer = (props) => {
+  return <div className="Stats">{props.children}</div>;
 };
 
 const Block = (props) => {
@@ -244,11 +259,11 @@ const Block = (props) => {
         </colgroup>
         <thead>
           <tr>
-            <td>{Mode === 'Edit' ? 'Value' : null}</td>
-            <td>{Mode === 'Edit' ? 'Num' : null}</td>
-            {Mode === 'Edit' ? <td>Min</td> : null}
-            {Mode === 'Edit' ? <td>Max</td> : null}
-            <td>{Mode === 'Edit' ? 'Unit' : null}</td>
+            <th>{Mode === 'Edit' ? 'Value' : null}</th>
+            <th>{Mode === 'Edit' ? 'Num' : null}</th>
+            {Mode === 'Edit' ? <th>Min</th> : null}
+            {Mode === 'Edit' ? <th>Max</th> : null}
+            <th>{Mode === 'Edit' ? 'Unit' : null}</th>
           </tr>
         </thead>
 
@@ -276,8 +291,9 @@ const Block = (props) => {
         setBlockSelection(Value);
       }}
     >
-      <h5>
+      <StatHeader>
         <div style={{ display: 'flex' }}>
+          {/* Stat Type */}
           {Mode === 'Edit' ? (
             <ToggleButton
               toggledStyle={{
@@ -293,6 +309,7 @@ const Block = (props) => {
             </ToggleButton>
           ) : null}
 
+          {/* Stat Label */}
           {Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
             <input
               type="text"
@@ -305,6 +322,7 @@ const Block = (props) => {
           ) : (
             <label>{Value}</label>
           )}
+          {/* Edittability */}
           {Mode === 'Edit' ? (
             <ToggleButton
               toggledStyle={{
@@ -320,7 +338,7 @@ const Block = (props) => {
             </ToggleButton>
           ) : null}
         </div>
-        {Mode === 'Edit' ? (
+        <LevelHeader>
           <div style={{ display: 'flex' }}>
             {Type === 'Calc' ? null : 'Level: '}
             {Type === 'Calc' ? null : (
@@ -352,10 +370,10 @@ const Block = (props) => {
               </div>
             )}
           </div>
-        ) : null}
-      </h5>
-      {Mode === 'Edit' ? (
-        <h6>
+        </LevelHeader>
+      </StatHeader>
+      <StatsContainer>
+        {Mode === 'Edit' ? (
           <Controls
             selection={statSelection}
             Tag="Stat"
@@ -364,9 +382,9 @@ const Block = (props) => {
               Update(data);
             }}
           ></Controls>
-        </h6>
-      ) : null}
-      {StatTable()}
+        ) : null}
+        {StatTable()}
+      </StatsContainer>
     </div>
   );
 };
@@ -402,7 +420,7 @@ const Card = (props) => {
   }
 
   return (
-    <h3
+    <CardContainer
       key={Page.Value}
       style={{ display: 'inline' }}
       onClick={() => {
@@ -410,7 +428,7 @@ const Card = (props) => {
       }}
     >
       <div style={{ display: 'flex' }}>
-        <h4 style={{ width: '100%' }}>
+        <CardHeader style={{ width: '100%' }}>
           {Mode === 'Edit' || (Mode === 'Calculator' && cardData.bEdit) ? (
             <input
               type="text"
@@ -439,23 +457,21 @@ const Card = (props) => {
               {['Do Edit', 'No Edit']}
             </ToggleButton>
           ) : null}
-        </h4>
+        </CardHeader>
       </div>
 
       {Mode === 'Edit' ? (
-        <h6>
-          <Controls
-            selection={blockSelection}
-            Tag="Stats"
-            Add={(selection, i) => {
-              setBlockSelection(cardData.addBlock(selection, i));
-              Update(data);
-            }}
-          ></Controls>
-        </h6>
+        <Controls
+          selection={blockSelection}
+          Tag="Stats"
+          Add={(selection, i) => {
+            setBlockSelection(cardData.addBlock(selection, i));
+            Update(data);
+          }}
+        ></Controls>
       ) : null}
       {Blocks()}
-    </h3>
+    </CardContainer>
   );
 };
 
@@ -498,59 +514,55 @@ const ProfileCard = (props) => {
   }
 
   return (
-    <Level>
-      <h2>
-        <div>
-          Game:{' '}
-          {Mode === 'Edit' ? (
-            <input
-              type="text"
-              value={Game}
-              onChange={(e) => {
-                data.Game = e.target.value;
-                Update(data);
-              }}
-            />
-          ) : (
-            Game
-          )}
-          Title:{' '}
-          {Mode === 'Edit' ? (
-            <input
-              type="text"
-              value={Title}
-              onChange={(e) => {
-                data.Title = e.target.value;
-                Update(data);
-              }}
-            />
-          ) : (
-            Game
-          )}
-          {Mode === 'Edit' ? (
-            <h6>
-              <Controls
-                Tag="Card"
-                selection={cardSelection}
-                Add={(selection, i) => {
-                  setCardSelection(data.addCard(selection, i));
-                  Update(data);
-                }}
-              ></Controls>
-            </h6>
-          ) : null}
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignContent: 'flex-start',
+    <ProfileContainer>
+      <div>
+        Game:{' '}
+        {Mode === 'Edit' ? (
+          <input
+            type="text"
+            value={Game}
+            onChange={(e) => {
+              data.Game = e.target.value;
+              Update(data);
             }}
-          >
-            {Book()}
-          </div>
+          />
+        ) : (
+          Game
+        )}
+        Title:{' '}
+        {Mode === 'Edit' ? (
+          <input
+            type="text"
+            value={Title}
+            onChange={(e) => {
+              data.Title = e.target.value;
+              Update(data);
+            }}
+          />
+        ) : (
+          Game
+        )}
+        {Mode === 'Edit' ? (
+          <Controls
+            Tag="Card"
+            selection={cardSelection}
+            Add={(selection, i) => {
+              setCardSelection(data.addCard(selection, i));
+              Update(data);
+            }}
+          ></Controls>
+        ) : null}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignContent: 'flex-start',
+          }}
+        >
+          {Book()}
         </div>
-      </h2>
-    </Level>
+      </div>
+    </ProfileContainer>
   );
 };
 

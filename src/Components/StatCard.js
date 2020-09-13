@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TemplateSelector from './TemplateSelector';
 import { MenuItem } from '@material-ui/core';
 // import StatForm from './StatForm.js';
@@ -120,8 +120,17 @@ const LoadStatCard = (props) => {
   );
 };
 
+const useStyles = makeStyles((props) => ({
+  root: (props) => props.Style,
+}));
 // Stat Card
-function Stats(props) {
+const Stats = (props) => {
+  // member variables
+  const [value, setValue] = useState(Templates['Blank']);
+  // const useStyles = makeStyles((props) => ({
+  //   root: (props) => value.Style,
+  // }));
+
   const Modes = ['View', 'Calculator', 'Edit'];
   const [Mode, setMode] = useState('Calculator');
   const handleModeChange = () => {
@@ -140,19 +149,15 @@ function Stats(props) {
     }
   };
 
-  // member variables
-  const [value, setValue] = useState(Templates['Blank']);
-
   const Update = (val) => {
     const buffer = { ...val };
     setValue(buffer);
   };
 
   /* Material-UI CSS Styles */
-  // const useStyles = makeStyles(value.Style);
-  const useStyles = makeStyles({ root: value.Style });
+  const classes = useStyles({ props: { Mode }, Style: value.Style });
 
-  const classes = useStyles({ Mode });
+  // useEffect(() => {}, [value.Style]);
 
   return (
     <div>
@@ -177,6 +182,6 @@ function Stats(props) {
       </div>
     </div>
   );
-}
+};
 
 export default Stats;
