@@ -72,7 +72,7 @@ input {
   font: inherit;
   background: inherit;
 
-  fontfamily: inherit;
+  font-family: inherit;
   box-sizing: border-box;
 }
 

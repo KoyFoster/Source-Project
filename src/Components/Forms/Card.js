@@ -49,10 +49,11 @@ const Block = (props) => {
     // set row
     function setRow(i, key, value, num, min, max, unit, row) {
       // console.log(`tr_${key}(${i})`);
-      return (
+      return [
         <tr
           key={`tr_${key}(${i})`}
           onClick={() => {
+            console.log('row:', row);
             setStatSelection(row);
           }}
         >
@@ -61,8 +62,11 @@ const Block = (props) => {
           <td key={`td_${key}(${i}) 2`}>{min}</td>
           <td key={`td_${key}(${i}) 3`}>{max}</td>
           <td key={`td_${key}(${i}) 4`}>{unit}</td>
-        </tr>
-      );
+        </tr>,
+        <tr>
+          <td key={`td_${key}(${i}) 6`} colSpan="5"></td>
+        </tr>,
+      ];
     }
 
     let i = -1;
@@ -162,6 +166,7 @@ const Block = (props) => {
                 Update(data);
               }}
             />,
+            value.Value,
           );
         } else {
           return setRow(
@@ -293,7 +298,7 @@ const Block = (props) => {
               }}
             />
           ) : (
-            Value
+            <label>{Value}</label>
           )}
           {Mode === 'Edit' ? (
             <ToggleButton
@@ -410,7 +415,9 @@ const Card = (props) => {
               }}
             />
           ) : (
-            Value
+            <div style={{ display: 'flex' }}>
+              <label>{Value}</label>
+            </div>
           )}
           {Mode === 'Edit' ? (
             <ToggleButton

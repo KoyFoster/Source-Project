@@ -225,148 +225,127 @@ const defaultTemplates = {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
     Style: {
-      // default
       fontSize: 'inherit',
       fontFamily: 'inherit',
       fontWeight: 'inherit',
-
       color: 'inherit',
       background: 'inherit',
       backgroundColor: 'inherit',
-
       justifyContent: 'inherit',
       textAlignLast: 'inherit',
-
-      '& input': {
-        border: 'none',
-        borderWidth: '1px',
-        borderColor: 'inherit',
-      },
-      '& hr': {
-        color: '#6e573588',
-        backgroundColor: '#6e573588',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderRadius: '10px',
-      },
-      // Profile
-      '& h1': {
-        backgroundColor: '#999999',
-      },
-      // Profile
+      '& input': { border: 'none', borderWidth: '1px', borderColor: 'inherit' },
+      '& hr': { display: 'none' },
+      '& h1': {},
       '& h2': {
         fontSize: 22,
         fontFamily: 'Adobe Garamond, serif',
         fontStyle: 'normal',
         fontWeight: 'normal',
-
-        color: '#bbbbbb',
+        color: 'inherit',
         background: 'inherit',
         backgroundColor: 'inherit',
-
         justifyContent: 'top',
         textAlignLast: 'center',
-
         '& button': {
           width: '64px',
           borderRadius: '8px',
-
           filter: 'brightness(88%)',
-
           background: 'inherit',
           backgroundColor: 'inherit',
         },
       },
-      // Card
       '& h3': {
         fontSize: 'inherit',
         fontFamily: 'inherit',
         fontWeight: 'inherit',
-
-        color: 'inherit',
+        color: '#bbbbbb',
         background: 'inherit',
-        backgroundColor: '#131114',
-
+        backgroundColor: '#232126',
         justifyContent: 'inherit',
         textAlignLast: 'inherit',
-
         border: '2px solid #dbdbdb',
         borderRadius: '5px',
-
         padding: '22px',
         margin: '4px',
-
         minWidth: '328px',
-
-        // Level
-        "& input[type='number']": {
-          width: '64px',
-        },
-        // Level
+        "& input[type='number']": { width: '64px' },
+        "& input[type='text']": { width: '100%' },
+      },
+      '& h4': {
+        color: '#aca69e',
+        textAlignLast: 'left',
         "& input[type='text']": {
           width: '100%',
+          borderBottom: '3px solid',
+          borderImage:
+            'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
+        },
+        '& label': {
+          width: '100%',
+          borderBottom: '3px solid',
+          borderImage:
+            'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
         },
       },
-      // Card Title
-      '& h4': {},
-      // Stat Block Title
       '& h5': {
-        // Level
+        color: '#aca69e',
+        textAlignLast: 'left',
         "& input[type='text']": {
+          color: '#bbb3a6',
           width: '100%',
+          borderBottom: '3px solid',
+          borderImage:
+            'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+        },
+        '& label': {
+          width: '100%',
+          borderBottom: '3px solid',
+          borderImage:
+            'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
         },
       },
       '& h6': {
         fontSize: 'inherit',
         fontFamily: 'inherit',
         fontWeight: 'inherit',
-
         color: 'inherit',
         background: 'inherit',
         backgroundColor: '#faf8e8',
         display: 'inline',
         '& div': { '& button': { width: 'auto' } },
       },
-      '& tbody': {},
-      '& thead': {},
-      '& tfoot': {},
+
       '& table': {
-        // borderCollapse: 'collapse',
-        '& tr': {
-          '& td': {
-            '& button': {},
-            "& input[type='number']": {
-              width: '48px',
+        borderCollapse: 'separate',
+        emptyCells: 'show',
+        '& tbody': {
+          '& tr': {
+            '& td': {
+              '& button': {},
+              "& input[type='number']": { width: '48px' },
+              "& input[type='text']": { width: '64px' },
             },
-            "& input[type='text']": {
-              width: '64px',
+            '& td:nth-child(1):empty': {
+              borderBottom: '3px solid red',
+              borderImage:
+                'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
             },
-          },
-          '& td:nth-child(1)': {
-            textAlignLast: 'left',
-            width: ['props'].Mode !== 'Edit' ? '176px' : undefined,
-          },
-          '& td:nth-child(2)': {
-            textAlignLast: ['props'].Mode !== 'View' ? 'center' : 'left',
-            width: ['props'].Mode !== 'Edit' ? '140px' : undefined,
-            '& input': {
-              // borderRadius: ['props'].Type === 'Static' ? '8px' : undefined,
+            '& td:nth-child(1)': { textAlignLast: 'left', width: '176px' },
+            '& td:nth-child(2)': {
+              textAlignLast: 'center',
+              width: '140px',
+              '& input': {},
             },
-          },
-          '& td:nth-child(3)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
-          },
-          '& td:nth-child(4)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
-          },
-          '& td:nth-child(5)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+            '& td:nth-child(3)': { textAlignLast: 'left' },
+            '& td:nth-child(4)': { textAlignLast: 'left' },
+            '& td:nth-child(5)': { textAlignLast: 'left' },
           },
         },
+
+        '& thead': {},
+        '& tfoot': {},
         '& colgroup': {
-          '& col:nth-child(1)': {
-            /* border: '1px solid green' */
-          },
+          '& col:nth-child(1)': {},
           '& col:nth-child(2)': {},
           '& col:nth-child(3)': {},
           '& col:nth-child(4)': {},
@@ -374,17 +353,19 @@ const defaultTemplates = {
         },
       },
     },
+
     Values: [
       {
-        Value: 'Player',
+        P: { Game: 'Dark Souls III', Title: 'Dark Souls III', Values: [null] },
+        Value: 'Koy',
         Values: [
           {
-            Value: 'Stats',
+            Value: 'Attributes',
             Type: 'Static',
             Level: '',
-            Total: 222,
-            Min: '10',
-            Max: '99',
+            Total: 123,
+            Min: 9,
+            Max: 891,
             Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
@@ -431,31 +412,43 @@ const defaultTemplates = {
               },
               {
                 Value: 'Intelligence',
-                Num: { result: 10 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Faith',
-                Num: { result: 10 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Luck',
-                Num: { result: 10 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
+            ],
+          },
+          {
+            bEdit: false,
+            Value: 'Misc',
+            Type: 'Static',
+            Level: '',
+            Total: 0,
+            Min: 0,
+            Max: 99,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
               {
                 Value: 'Hollowing',
-                Num: { result: 99 },
-                Min: { Value: 'Min', result: 1 },
-                Max: { Value: 'Max', result: 99 },
-                Unit: 'X',
+                Num: { result: 0 },
+                Min: { result: 0 },
+                Max: { result: 99 },
+                Unit: '',
               },
             ],
           },
