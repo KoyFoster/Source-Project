@@ -85,26 +85,4 @@ class Image {
   };
 }
 
-// class Image extends React.Component {
-//   render() {
-//     return (
-//       <svg style={props.style}>
-//         <rect stroke-alignment="inside" />
-//         <image
-//           style={{
-//             width: '100%',
-//             height: '100%',
-//           }}
-//           href={
-//             props.value
-//               ? props.isPath
-//                 ? `${process.env.API_URL}/exam/images/${props.value}`
-//                 : `data:image/tiff;base64,${props.value}`
-//               : undefined
-//           } // can accept image value directly if desired
-//         />
-//       </svg>)
-//   }
-// }
-
 export default Image;

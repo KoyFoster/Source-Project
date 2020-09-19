@@ -11,9 +11,11 @@ const SVGCanvas = (props) => {
   // Note: The idea is to have a node and polygon system
   // the user chooses points in which to draw lines
   // and that information is saved
+  const [mode, setMode] = useState(props.mode);
   const [nodes, setNodes] = useState([]);
   const [mouseDown, setMouseDown] = useState(false);
-  const [curColor, setCurColor] = useState('white');
+  const [curColor, setCurColor] = useState('#000000');
+  const [curStrokeWidth, setCurStrokeWidth] = useState(1);
   const [curItem, setCurItem] = useState(undefined);
   const [selection, setSelection] = useState(undefined);
   const getItemByID = (id) => {
@@ -23,6 +25,43 @@ const SVGCanvas = (props) => {
       items.forEach((item) => {
         if (item.id === id) buffer = item;
       });
+
+    return buffer;
+  };
+
+  // Image Border Canvas
+  const ImageBorderBG = () => {
+    const grid = [];
+
+    for (let x = 0; x < 3; x) {
+      for (let y = 0; y < 3; y) {
+        grid.push(
+          <rect
+            key={`${x},${y}`}
+            width="33%"
+            height="33%"
+            x={`${x * 33}%`}
+            y={`${y * 33}%`}
+            stroke="gold"
+            strokeWidth="1px"
+            fill="transparent"
+            style={{
+              strokeDasharray: '2 2',
+            }}
+            {...stopDrawPropagation}
+          ></rect>,
+        );
+        y += 1;
+      }
+
+      x += 1;
+    }
+
+    const buffer = (
+      <g width="100%" height="100%">
+        {grid}
+      </g>
+    );
 
     return buffer;
   };
@@ -99,7 +138,14 @@ const SVGCanvas = (props) => {
       // unset current item
       setCurItem(undefined);
 
-      const node = { key, x, y, color: curColor, ...item };
+      const node = {
+        key,
+        x,
+        y,
+        color: curColor,
+        strokeWidth: curStrokeWidth,
+        ...item,
+      };
       buffer.push([node]);
     }
 
@@ -146,6 +192,8 @@ const SVGCanvas = (props) => {
       const lineCoords = [];
 
       const color = parentNode.length > 0 ? parentNode[0].color : curColor;
+      const strokeWidth =
+        parentNode.length > 0 ? parentNode[0].strokeWidth : curStrokeWidth;
       const itemID = parentNode.length > 0 ? parentNode[0].itemID : undefined;
       const item = itemID ? getItemByID(itemID) : undefined;
 
@@ -187,7 +235,7 @@ const SVGCanvas = (props) => {
               style={{
                 fill: 'none',
                 stroke: color,
-                strokeWidth: '1px',
+                strokeWidth: strokeWidth,
               }}
               {...stopDrawPropagation}
               onClick={(e) => {
@@ -262,14 +310,17 @@ const SVGCanvas = (props) => {
     rendered = (
       <svg
         id="svgCanvas"
-        style={{ ...style }}
-        viewBox={props.viewBox}
+        style={{ ...style, fill: 'white' }}
+        // Canvas
+        width={mode === 'ImageBorder' ? '256px' : '100%'}
+        height={mode === 'ImageBorder' ? '256px' : '100%'}
         onMouseMove={(e) => {
-          if (mouseDown)
+          if (mouseDown) {
             addNode(
-              e.pageX - e.target.getBoundingClientRect().left,
-              e.pageY - e.target.getBoundingClientRect().top,
+              e.pageX - e.target.getBoundingClientRect().left - window.scrollX,
+              e.pageY - e.target.getBoundingClientRect().top - window.scrollY,
             );
+          }
         }}
         onMouseUp={() => {
           setMouseDown(false);
@@ -279,8 +330,8 @@ const SVGCanvas = (props) => {
           if (e.button !== 0) return;
 
           addNode(
-            e.pageX - e.target.getBoundingClientRect().left,
-            e.pageY - e.target.getBoundingClientRect().top,
+            e.pageX - e.target.getBoundingClientRect().left - window.scrollX,
+            e.pageY - e.target.getBoundingClientRect().top - window.scrollY,
           );
           setMouseDown(true);
         }}
@@ -300,47 +351,23 @@ const SVGCanvas = (props) => {
             href={props.bgImage}
           />
         ) : null}
+        {mode === 'ImageBorder' ? ImageBorderBG() : null}
+        {mode === 'ImageBorder' ? (
+          <svg width="256px" height="256px">
+            <rect // expands to the parent
+              style={{
+                fill: 'transparent',
+                width: '100%',
+                height: '100%',
+              }}
+            />
+          </svg>
+        ) : null}
         {renderNodes()}
       </svg>
     );
     return rendered;
   };
-
-  // const saveAsSVG = async (svg) => {
-  //   const svgCanvas = document.getElementById('svgCanvas');
-  //   const buffer =
-  //     'data:image/svg+xml,' + encodeURIComponent(svgCanvas.outerHTML);
-  //   console.log('save:', buffer);
-  // };
-
-  // var svgElement = document.getElementById('svgCanvas');
-  // let blobURL;
-  // if (svgElement) {
-  //   let { width, height } = svgElement.getBBox();
-  //   let clonedSvgElement = svgElement.cloneNode(true);
-  //   let outerHTML = clonedSvgElement.outerHTML,
-  //     blob = new Blob([outerHTML], { type: 'image/svg+xml;charset=utf-8' });
-  //   let URL = window.URL || window.webkitURL || window;
-  //   blobURL = URL.createObjectURL(blob);
-  // }
-  //   const SVG = document.querySelector('svg');
-  //   let svgData;
-  //   if (SVG) {
-  //     svgData = new XMLSerializer().serializeToString(SVG);
-  //   }
-
-  // thumbnail size 80x80.
-  //   const saveAsJPEG = (svg, canvas = document.getElementById('myCanvas')) => {
-  //     if (!svgData) return;
-  //     if (!canvas) return;
-  //     const ctx = canvas.getContext('2d');
-  //     if (!ctx) return;
-
-  //     const img = document.createElement('img');
-  //     img.setAttribute('src', `data:image/svg+xml;base64,${btoa(svgData)}`);
-
-  //     ctx.drawImage(img, 0, 0);
-  //   };
 
   const getItems = () => {
     let i = -1;
@@ -408,63 +435,6 @@ const SVGCanvas = (props) => {
   // menu
   const mainMenu = () => [
     selection !== undefined ? selectionMenu() : null,
-
-    <MenuItem
-      key="black"
-      onClick={() => {
-        setCurColor('black');
-      }}
-    >
-      Black
-    </MenuItem>,
-    <MenuItem
-      key="red"
-      onClick={() => {
-        setCurColor('red');
-      }}
-    >
-      Red
-    </MenuItem>,
-    <MenuItem
-      key="blue"
-      onClick={() => {
-        setCurColor('blue');
-      }}
-    >
-      Blue
-    </MenuItem>,
-    <MenuItem
-      key="green"
-      onClick={() => {
-        setCurColor('green');
-      }}
-    >
-      Green
-    </MenuItem>,
-    <MenuItem
-      key="yellow"
-      onClick={() => {
-        setCurColor('yellow');
-      }}
-    >
-      Yellow
-    </MenuItem>,
-    <MenuItem
-      key="pink"
-      onClick={() => {
-        setCurColor('pink');
-      }}
-    >
-      Pink
-    </MenuItem>,
-    <MenuItem
-      key="white"
-      onClick={() => {
-        setCurColor('white');
-      }}
-    >
-      White
-    </MenuItem>,
     <MenuItem key="div_1" divider />,
     <MenuItem
       key="Clear"
@@ -476,44 +446,36 @@ const SVGCanvas = (props) => {
     </MenuItem>,
     <MenuItem key="div_2" divider />,
     ...getItems(),
-    // <MenuItem key="5">{`Nodes:${nodes.length}`}</MenuItem>,
-    // <MenuItem
-    //   key="6"
-    //   onClick={() => {
-    //     saveAsJPEG(rendered);
-    //   }}
-    // >
-    //   {'Save'}
-    // </MenuItem>,
   ];
 
   return (
     <ContextMenuTrigger id="same_unique_identifier" holdToDisplay={-1}>
+      <div style={{ display: 'flex', height: '24px' }}>
+        <input
+          style={{ height: '100%' }}
+          type="color"
+          value={curColor}
+          onChange={(e) => {
+            setCurColor(e.target.value);
+          }}
+        />
+
+        <div>
+          Stroke Width:
+          <input
+            style={{ height: '100%', width: '32px' }}
+            type="number"
+            value={curStrokeWidth}
+            onChange={(e) => {
+              if (e.target.value && !Number.isNaN(e.target.value))
+                setCurStrokeWidth(e.target.value);
+            }}
+          />
+          px
+        </div>
+      </div>
       {getCM()}
       {renderSVG()}
-      {/* <div style={{ border: '2px solid green' }}>
-        <canvas
-          id="myCanvas"
-          style={{ ...style }}
-          width={style.width}
-          height={style.height}
-        />
-        <script>{saveAsJPEG(rendered)}</script>
-      </div> */}
-      {/* 
-      <div style={{ border: '2px solid green' }}>
-        <canvas
-          id="thumbnail"
-          style={{
-            border: '2px solid red',
-          }}
-          width={style.width}
-          height={style.height}
-        />
-        <script>
-          {saveAsJPEG(rendered, document.getElementById('thumbnail'))}
-        </script>
-      </div> */}
     </ContextMenuTrigger>
   );
 };
