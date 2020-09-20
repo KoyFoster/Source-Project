@@ -15,22 +15,46 @@ import './Card.css';
 
 // styling contrainers
 const ProfileContainer = (props) => {
-  return <div className="Profile">{props.children}</div>;
+  return (
+    <div className="Profile" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
 };
 const CardContainer = (props) => {
-  return <div className="Card">{props.children}</div>;
+  return (
+    <div className="Card" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
 };
 const CardHeader = (props) => {
-  return <div className="CardHeader">{props.children}</div>;
-};
-const StatHeader = (props) => {
-  return <div className="StatHeader">{props.children}</div>;
+  return (
+    <div className="CardHeader" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
 };
 const LevelHeader = (props) => {
-  return <div className="Level">{props.children}</div>;
+  return (
+    <div className="Level" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
+};
+const StatBlock = (props) => {
+  return (
+    <div className="StatBlock" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
 };
 const StatsContainer = (props) => {
-  return <div className="Stats">{props.children}</div>;
+  return (
+    <div className="Stats" onClick={props.onClick}>
+      {props.children}
+    </div>
+  );
 };
 
 const Block = (props) => {
@@ -73,7 +97,7 @@ const Block = (props) => {
         <tr
           key={`tr_${key}(${i})`}
           onClick={() => {
-            console.log('row:', row);
+            // console.log('row:', row);
             setStatSelection(row);
           }}
         >
@@ -291,7 +315,36 @@ const Block = (props) => {
         setBlockSelection(Value);
       }}
     >
-      <StatHeader>
+      {/* <LevelHeader>
+        <div style={{ display: 'flex' }}>
+          {Type === 'Calc' ? null : 'Level: '}
+          {Type === 'Calc' ? null : (
+            <input
+              type="number"
+              value={Level ? Level : 0}
+              onChange={(e) => {}}
+            />
+          )}
+          {Type === 'Calc' ? null : 'Points: '}
+          {Type === 'Calc' ? null : (
+            <MathInput
+              Key="Points"
+              value={Points}
+              data={data}
+              onChange={(e) => {}}
+            >
+              {Points ? Points : 'N/D'}
+            </MathInput>
+          )}
+          {Type === 'Calc' ? null : (
+            <div style={{ width: '100%' }}>
+              Remainder:{' '}
+              {Points ? (Points.result ? Points.result - Total : 'N/D') : 'N/D'}
+            </div>
+          )}
+        </div>
+      </LevelHeader> */}
+      <StatBlock>
         <div style={{ display: 'flex' }}>
           {/* Stat Type */}
           {Mode === 'Edit' ? (
@@ -338,53 +391,24 @@ const Block = (props) => {
             </ToggleButton>
           ) : null}
         </div>
-        <LevelHeader>
-          <div style={{ display: 'flex' }}>
-            {Type === 'Calc' ? null : 'Level: '}
-            {Type === 'Calc' ? null : (
-              <input
-                type="number"
-                value={Level ? Level : 0}
-                onChange={(e) => {}}
-              />
-            )}
-            {Type === 'Calc' ? null : 'Points: '}
-            {Type === 'Calc' ? null : (
-              <MathInput
-                Key="Points"
-                value={Points}
-                data={data}
-                onChange={(e) => {}}
-              >
-                {Points ? Points : 'N/D'}
-              </MathInput>
-            )}
-            {Type === 'Calc' ? null : (
-              <div style={{ width: '100%' }}>
-                Remainder:{' '}
-                {Points
-                  ? Points.result
-                    ? Points.result - Total
-                    : 'N/D'
-                  : 'N/D'}
-              </div>
-            )}
-          </div>
-        </LevelHeader>
-      </StatHeader>
-      <StatsContainer>
-        {Mode === 'Edit' ? (
-          <Controls
-            selection={statSelection}
-            Tag="Stat"
-            Add={(selection, i) => {
-              setStatSelection(Stats.addStat(selection, i));
-              Update(data);
-            }}
-          ></Controls>
-        ) : null}
-        {StatTable()}
-      </StatsContainer>
+        <StatsContainer>
+          {Mode === 'Edit' ? (
+            <Controls
+              selection={statSelection}
+              Tag="Stat"
+              Add={(selection, i) => {
+                setStatSelection(Stats.addStat(selection, i));
+                Update(data);
+              }}
+              Move={(selection, i) => {
+                setStatSelection(Stats.moveStat(selection, i));
+                Update(data);
+              }}
+            ></Controls>
+          ) : null}
+          {StatTable()}
+        </StatsContainer>
+      </StatBlock>
     </div>
   );
 };
@@ -424,6 +448,7 @@ const Card = (props) => {
       key={Page.Value}
       style={{ display: 'inline' }}
       onClick={() => {
+        console.log('setCardSelection:', Value);
         setCardSelection(Value);
       }}
     >
@@ -466,6 +491,10 @@ const Card = (props) => {
           Tag="Stats"
           Add={(selection, i) => {
             setBlockSelection(cardData.addBlock(selection, i));
+            Update(data);
+          }}
+          Move={(selection, i) => {
+            setBlockSelection(cardData.moveBlock(selection, i));
             Update(data);
           }}
         ></Controls>
@@ -548,6 +577,10 @@ const ProfileCard = (props) => {
             selection={cardSelection}
             Add={(selection, i) => {
               setCardSelection(data.addCard(selection, i));
+              Update(data);
+            }}
+            Move={(selection, i) => {
+              setCardSelection(data.moveCard(selection, i));
               Update(data);
             }}
           ></Controls>

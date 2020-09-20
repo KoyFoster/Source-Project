@@ -4,6 +4,7 @@ const Controls = (props) => {
   const { size } = props;
   const { selection } = props;
   const { Add } = props;
+  const { Move } = props;
   const { Tag } = props;
 
   const Size = (props) => {
@@ -46,10 +47,22 @@ const Controls = (props) => {
     const Arrows = (props) => {
       return (
         <div>
-          <button type="submit" disabled={selection ? false : true}>
+          <button
+            type="submit"
+            disabled={selection ? false : true}
+            onClick={(e) => {
+              Move(selection, -1, 0);
+            }}
+          >
             Move {Tag} Up
           </button>
-          <button type="submit" disabled={selection ? false : true}>
+          <button
+            type="submit"
+            disabled={selection ? false : true}
+            onClick={(e) => {
+              Move(selection, 1, 0);
+            }}
+          >
             Move {Tag} Down
           </button>
         </div>

@@ -38,6 +38,58 @@ class Funcs {
 
     return newSel;
   };
+  static move = (selection, pos = 1, src, ELEMENT) => {
+    console.log('move:', { selection, pos, src, ELEMENT });
+    if (pos === 0) return selection;
+
+    // get selection index
+    let index = 0;
+    if (selection) {
+      // Iterate
+      let i = 0;
+      let prevName = '';
+      const iSize = src.Values.length;
+      for (i; i < iSize; i) {
+        if (src.Values[i].Value === selection) {
+          index = i;
+          i = iSize;
+        } else {
+          prevName = src.Values[i].Value;
+        }
+        i += 1;
+      }
+      // if removed Value is the frist entry, prevName will not get defined prior
+      if (!prevName) {
+        if (src.Values.length > 0) {
+          prevName = src.Values[0].Value;
+        }
+      }
+    }
+
+    const buffer = src.Values.splice(index, 1);
+
+    // check new postion
+    let newPos = index + pos;
+    if (newPos > src.Values.length) {
+      newPos = 0;
+    } else if (newPos < 0) {
+      newPos = src.Values.length;
+    }
+    console.log({ newPos, index, pos, length: src.Values.length });
+
+    src.Values.splice(newPos, 0, buffer[0]);
+
+    // add
+    // if (pos > 0) {
+    //   src.Values.push(buffer);
+    //   newSel = buffer.Value;
+    // }
+    // // remove
+    // else if (pos < 0) {
+    // }
+
+    return selection;
+  };
 }
 
 // Cell
@@ -143,6 +195,9 @@ class Block {
   addStat = (selection, add = 1) => {
     return Funcs.add(selection, add, this, Stat);
   };
+  moveStat = (selection, add = 1) => {
+    return Funcs.move(selection, add, this, Stat);
+  };
 
   getPath = () => {
     const buffer = this.P.getPath();
@@ -182,6 +237,9 @@ class Card {
   addBlock = (selection, add = 1) => {
     return Funcs.add(selection, add, this, Block);
   };
+  moveBlock = (selection, add = 1) => {
+    return Funcs.move(selection, add, this, Block);
+  };
 
   getPath = () => {
     const buffer = [];
@@ -210,6 +268,9 @@ class Profile {
   // Teturn New Focused Card
   addCard = (selection, add = 1) => {
     return Funcs.add(selection, add, this, Card);
+  };
+  moveCard = (selection, add = 1) => {
+    return Funcs.move(selection, add, this, Card);
   };
 
   getPath = () => {
