@@ -112,7 +112,7 @@ class StatData {
       if (noParse) scope = { ...variables };
       else scope = JSON.parse(variables);
     } catch {
-      console.error('ERROR: Invalid Variables(', variables, ')');
+      // console.error('ERROR: Invalid Variables(', variables, ')');
       return {};
     }
 
@@ -151,7 +151,7 @@ class StatData {
     try {
       result = evaluate(expression, scope);
     } catch {
-      console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
+      // console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
       return undefined;
     }
 

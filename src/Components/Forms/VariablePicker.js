@@ -111,8 +111,6 @@ const VariablePicker = (props) => {
           const keys = value.getPath();
           const newVar = {};
           newVar[varKey] = keys;
-
-          console.log('Picker 1:', newVar);
           onClick({ target: { value: newVar } });
         }}
       >

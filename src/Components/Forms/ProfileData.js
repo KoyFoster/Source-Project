@@ -5,6 +5,7 @@ class Funcs {
     // add
     if (add > 0) {
       const buffer = new ELEMENT(undefined, src);
+      console.log('new Stat', new Stat(undefined, this));
       src.Values.push(buffer);
       newSel = buffer.Value;
     }
@@ -139,6 +140,10 @@ class Stat {
       this.Min = new Cell(obj.Min, 'Min', this);
       this.Max = new Cell(obj.Max, 'Max', this);
       this.Unit = obj.Unit ? obj.Unit : '';
+    } else {
+      this.Num = new Cell(0, 'Num', this);
+      this.Min = new Cell(0, 'Min', this);
+      this.Max = new Cell(0, 'Max', this);
     }
   }
 
