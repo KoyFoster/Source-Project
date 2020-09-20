@@ -67,7 +67,7 @@ const renderStats = (
           // filter: 'brightness(66%)',
         }}
       >
-        {bKey && key.constructor !== Function ? (
+        {bKey && (key ? key.constructor !== Function : true) ? (
           bSel ? (
             <SelectElem value={data[key]} style={{ width: '100%' }}>
               {key}
@@ -79,7 +79,7 @@ const renderStats = (
         {children.length === 0 && bVal && bKey ? '' : null}
         {bVal && bKey ? ': ' : null}
         {children.length === 0
-          ? bVal && data[key].constructor !== Function
+          ? bVal && (data[key] ? data[key].constructor !== Function : true)
             ? data[key]
             : null
           : children}

@@ -41,7 +41,7 @@ const MathDialogue = (props) => {
 
     // replace variables with values
     Object.keys(variables).forEach((key) => {
-      exp = exp.replace(key, variables[key]);
+      exp = exp ? exp.replace(key, variables[key]) : 'Nan';
     });
 
     return exp;

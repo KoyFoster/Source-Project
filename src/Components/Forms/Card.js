@@ -448,7 +448,6 @@ const Card = (props) => {
       key={Page.Value}
       style={{ display: 'inline' }}
       onClick={() => {
-        console.log('setCardSelection:', Value);
         setCardSelection(Value);
       }}
     >
