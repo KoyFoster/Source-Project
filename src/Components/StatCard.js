@@ -7,6 +7,7 @@ import { MenuItem } from '@material-ui/core';
 // import StatCode from './StatCode';
 // import Tree from './Forms/Tree';
 import ProfileCard from './Forms/Card';
+import { FileTools } from './Forms/FilePicker';
 import { defaultTemplates as Templates } from './Templates';
 import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
@@ -26,6 +27,16 @@ function compileMenuItems() {
 }
 const tmplMenuItems = compileMenuItems();
 
+// placeholder code for writing Style functions to js files
+// {
+//   FileTools.writeTextFile(
+//     'Style.js',
+//     `const Style = ${Templates[
+//       'Dark Souls III'
+//     ].Style.toString()}\r\n\r\nexport default Style;`,
+//   );
+// }
+
 const SaveStatCard = (props) => {
   let { value } = props;
   const regex1 = /}}},/gi;
@@ -36,11 +47,10 @@ const SaveStatCard = (props) => {
 
   value = JSON.stringify(value, function (key, value) {
     if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
+      if (cache.indexOf(value) !== -1 || key === 'P') {
         // Circular reference found, discard key
         return;
       }
-      // Store value in our collection
       cache.push(value);
     }
     return value;
@@ -120,16 +130,23 @@ const LoadStatCard = (props) => {
   );
 };
 
-const useStyles = makeStyles((props) => ({
-  root: (props) => props.Style,
-}));
+const useStyles = makeStyles((msProps) => {
+  return {
+    root: (props) => {
+      console.log(
+        'props.Style:',
+        props.Style ? props.Style({ Mode: props.Mode }) : {},
+        props.Mode,
+      );
+      return props.Style ? props.Style({ Mode: props.Mode }) : {};
+    },
+  };
+});
+
 // Stat Card
 const Stats = (props) => {
   // member variables
   const [value, setValue] = useState(Templates['Blank']);
-  // const useStyles = makeStyles((props) => ({
-  //   root: (props) => value.Style,
-  // }));
 
   const Modes = ['View', 'Calculator', 'Edit'];
   const [Mode, setMode] = useState('Calculator');
@@ -155,7 +172,7 @@ const Stats = (props) => {
   };
 
   /* Material-UI CSS Styles */
-  const classes = useStyles({ props: { Mode }, Style: value.Style });
+  const classes = useStyles({ Mode, Style: value.Style });
 
   // useEffect(() => {}, [value.Style]);
 

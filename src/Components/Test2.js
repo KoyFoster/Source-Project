@@ -3,6 +3,7 @@ import React from 'react';
 // import TreeDropDown from './Forms/TreeDropDown';
 import VariablePicker from './Forms/VariablePicker';
 import { Profile } from './Forms/ProfileData';
+import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
 
 const ArcheAge = {
   Game: 'ArcheAge',
@@ -831,7 +832,7 @@ const Test2 = () => {
     console.warn('onClick:', value.getPath());
   };
 
-  return <VariablePicker data={AA} varKey={'Values'} onClick={onClick} />;
+  return <div>{DS3Frame}</div>;
 };
 
 export default Test2;

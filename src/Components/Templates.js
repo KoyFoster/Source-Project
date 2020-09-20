@@ -1,163 +1,31 @@
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
+
+// const html = `${(
+//   <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+//     <circle
+//       cx="15"
+//       cy="15"
+//       r="10"
+//       stroke="green"
+//       stroke-width="4"
+//       fill="yellow"
+//     />
+//   </svg>
+// )}`;
+
 const defaultTemplates = {
   Blank: {
     Game: 'Blank',
     Title: 'Blank',
-    Style: {},
+    Style: (props) => {},
     Values: [],
   },
   Jojo: {
     Game: 'Jojo',
     Title: 'Jojo',
-    Style: {
-      // default
-      fontSize: 'inherit',
-      fontFamily: 'inherit',
-      fontWeight: 'inherit',
-
-      color: 'inherit',
-      background: 'inherit',
-      backgroundColor: 'inherit',
-
-      justifyContent: 'inherit',
-      textAlignLast: 'inherit',
-
-      '& input': {
-        border: 'none',
-        borderWidth: '1px',
-        borderColor: 'inherit',
-        borderBottom: 'solid',
-      },
-      '& hr': {
-        color: '#6e573588',
-        backgroundColor: '#6e573588',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderRadius: '10px',
-      },
-      // Profile
-      '& h1': {
-        backgroundColor: '#999999',
-      },
-      // Profile
-      '& h2': {
-        fontSize: 12,
-        fontFamily: 'NotoSansKR, serif',
-        fontWeight: 'inherit',
-
-        color: '#6e5735',
-        background: 'inherit',
-        backgroundColor: 'inherit',
-
-        justifyContent: 'top',
-        textAlignLast: 'center',
-
-        '& button': {
-          width: '64px',
-          borderRadius: '8px',
-
-          filter: 'brightness(88%)',
-
-          background: 'inherit',
-          backgroundColor: 'inherit',
-        },
-      },
-      // Card
-      '& h3': {
-        fontSize: 'inherit',
-        fontFamily: 'inherit',
-        fontWeight: 'inherit',
-
-        color: 'inherit',
-        background: 'inherit',
-        backgroundColor: '#faf8e8',
-
-        justifyContent: 'inherit',
-        textAlignLast: 'inherit',
-
-        border: '4px solid #6e5735',
-        borderRadius: '5px',
-
-        padding: '16px',
-        margin: '4px',
-
-        minWidth: '328px',
-
-        // Level
-        "& input[type='number']": {
-          width: '64px',
-        },
-        // Level
-        "& input[type='text']": {
-          width: '100%',
-        },
-      },
-      // Card Title
-      '& h4': {},
-      // Stat Block Title
-      '& h5': {
-        // Level
-        "& input[type='text']": {
-          width: '100%',
-        },
-      },
-      '& h6': {
-        fontSize: 'inherit',
-        fontFamily: 'inherit',
-        fontWeight: 'inherit',
-
-        color: 'inherit',
-        background: 'inherit',
-        backgroundColor: '#faf8e8',
-        display: 'inline',
-        '& div': { '& button': { width: 'auto' } },
-      },
-      '& tbody': {},
-      '& thead': {},
-      '& tfoot': {},
-      '& table': {
-        // borderCollapse: 'collapse',
-        '& tr': {
-          '& td': {
-            '& button': {},
-            "& input[type='number']": {
-              width: '48px',
-            },
-            "& input[type='text']": {
-              width: '64px',
-            },
-          },
-          '& td:nth-child(1)': {
-            textAlignLast: 'left',
-            width: ['props'].Mode !== 'Edit' ? '176px' : undefined,
-          },
-          '& td:nth-child(2)': {
-            textAlignLast: ['props'].Mode !== 'View' ? 'center' : 'left',
-            width: ['props'].Mode !== 'Edit' ? '140px' : undefined,
-            '& input': {
-              // borderRadius: ['props'].Type === 'Static' ? '8px' : undefined,
-            },
-          },
-          '& td:nth-child(3)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
-          },
-          '& td:nth-child(4)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
-          },
-          '& td:nth-child(5)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
-          },
-        },
-        '& colgroup': {
-          '& col:nth-child(1)': {
-            /* border: '1px solid green' */
-          },
-          '& col:nth-child(2)': {},
-          '& col:nth-child(3)': {},
-          '& col:nth-child(4)': {},
-          '& col:nth-child(5)': {},
-        },
-      },
-    },
+    Style: {},
     Values: [
       {
         bEdit: false,
@@ -224,7 +92,7 @@ const defaultTemplates = {
   'Dark Souls III': {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
-    Style: {
+    Style: (props) => ({
       fontSize: 'inherit',
       fontFamily: 'inherit',
       fontWeight: 'inherit',
@@ -233,7 +101,7 @@ const defaultTemplates = {
       backgroundColor: 'inherit',
       justifyContent: 'inherit',
       textAlignLast: 'inherit',
-      '& .Profile': (props) => ({
+      '& .Profile': {
         fontSize: 22,
         fontFamily: 'Adobe Garamond, serif',
         fontStyle: 'normal',
@@ -263,46 +131,58 @@ const defaultTemplates = {
             textAlignLast: 'left',
             "& input[type='text']": {
               width: '100%',
+              border: 'none',
               borderBottom: '3px solid',
               borderImage:
                 'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
             },
             '& label': {
               width: '100%',
+              border: 'none',
               borderBottom: '3px solid',
               borderImage:
                 'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
             },
           },
-          '& .StatHeader': {
+
+          '& .Level': {
+            display: props.Mode !== 'Edit' ? 'none' : 'inline',
+            '& div': {},
+            '& button': { fontSize: 22, textAlignLast: 'center' },
+          },
+
+          '& .StatBlock': {
+            border:
+              props.Mode === 'Calculator' ? '39px solid transparent' : 'none',
+            borderImageRepeat: 'repeat',
+            borderImage:
+              props.Mode === 'Calculator' ? `url("${DS3Frame}")` : 'none',
+            borderImageSlice: '34%',
+
             color: '#aca69e',
             textAlignLast: 'left',
             padding: '16px 0px 16px 0px',
             "& input[type='text']": {
               color: '#bbb3a6',
               width: '100%',
+              border: 'none',
               borderBottom: '3px solid',
               borderImage:
                 'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
             },
             '& label': {
               width: '100%',
+              border: 'none',
               borderBottom: '3px solid',
               borderImage:
                 'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
             },
           },
-          '& .Level': {
-            display: props.Mode !== 'Edit' ? 'none' : undefined,
-            '& div': {},
-            '& button': { fontSize: 22, textAlignLast: 'center' },
-          },
+
           '& .Stats': {
-            border: props.Mode === 'Calculator' ? '2px solid' : undefined,
-            borderImage:
-              props.Mode === 'Calculator'
-                ? 'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1'
-                : undefined,
+            // borderImage:
+            //   'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+            // border: '2px solid',
 
             '& input': { border: 'none', borderWidth: '1px' },
             '& table': {
@@ -316,6 +196,7 @@ const defaultTemplates = {
                   fontFamily: 'inherit',
                   fontStyle: 'inherit',
                   fontWeight: 'inherit',
+                  border: 'none',
                   borderBottom: '3px solid',
                   borderImage:
                     'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
@@ -331,12 +212,17 @@ const defaultTemplates = {
                     },
                     "& input[type='text']": { width: '100%' },
                   },
+
                   '& td:nth-child(1):empty': {
-                    borderBottom: '3px solid red',
+                    border: 'none',
+                    borderBottom: '2px solid',
                     borderImage:
-                      'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+                      'linear-gradient(to right, rgba(78,78,78, 0), rgba(78,78,78, 1), rgba(78,78,78, 0)) 1',
                   },
-                  '& td:nth-child(1)': { textAlignLast: 'left', width: '100%' },
+                  '& td:nth-child(1)': {
+                    textAlignLast: 'left',
+                    width: '100%',
+                  },
                   '& td:nth-child(2)': {
                     textAlignLast: 'center',
                     width: '140px',
@@ -346,6 +232,19 @@ const defaultTemplates = {
                   '& td:nth-child(4)': { textAlignLast: 'left' },
                   '& td:nth-child(5)': { textAlignLast: 'left' },
                 },
+                // hover row
+                '& tr:nth-child(odd):hover':
+                  props.Mode === 'Calculator'
+                    ? {
+                        backgroundImage:
+                          'radial-gradient(ellipse at bottom, #723a19, #723a1900 66%, #00000000 50%)',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'calc(100%) 5px',
+                      }
+                    : {
+                        backgroundImage: 'none',
+                      },
+
                 '& tfoot': {},
                 '& colgroup': {
                   '& col:nth-child(1)': {},
@@ -367,8 +266,9 @@ const defaultTemplates = {
             },
           },
         },
-      }),
-    },
+      },
+    }),
+    // end of style
 
     Values: [
       {
