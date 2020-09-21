@@ -1,31 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TemplateSelector from './TemplateSelector';
-import { MenuItem } from '@material-ui/core';
+// import { MenuItem } from '@material-ui/core';
 // import StatForm from './StatForm.js';
 // import Diagram from './Diagram.js';
 // import { Row, Col } from './DivGrid';
 // import StatCode from './StatCode';
 // import Tree from './Forms/Tree';
 import ProfileCard from './Forms/Card';
-import { FileTools } from './Forms/FilePicker';
 import { defaultTemplates as Templates } from './Templates';
 import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
-function compileMenuItems() {
-  let result = [];
+// function compileMenuItems() {
+//   let result = [];
 
-  for (let i = 0; i < Templates.length; i++) {
-    result.push(
-      <MenuItem key={Templates[i].label} value={Templates[i]}>
-        {Templates[i].label}
-      </MenuItem>,
-    );
-  }
-  return result;
-}
-const tmplMenuItems = compileMenuItems();
+//   for (let i = 0; i < Templates.length; i++) {
+//     result.push(
+//       <MenuItem key={Templates[i].label} value={Templates[i]}>
+//         {Templates[i].label}
+//       </MenuItem>,
+//     );
+//   }
+//   return result;
+// }
+// const tmplMenuItems = compileMenuItems();
 
 // placeholder code for writing Style functions to js files
 // {
@@ -133,11 +132,11 @@ const LoadStatCard = (props) => {
 const useStyles = makeStyles((msProps) => {
   return {
     root: (props) => {
-      console.log(
-        'props.Style:',
-        props.Style ? props.Style({ Mode: props.Mode }) : {},
-        props.Mode,
-      );
+      // console.log(
+      //   'props.Style:',
+      //   props.Style ? props.Style({ Mode: props.Mode }) : {},
+      //   props.Mode,
+      // );
       return props.Style ? props.Style({ Mode: props.Mode }) : {};
     },
   };

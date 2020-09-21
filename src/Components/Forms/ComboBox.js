@@ -30,7 +30,7 @@ const ComboBox = (props) => {
   const { checked } = props;
   const { setChecked } = props;
   const { onChange } = props;
-  const style = props.style ? style : {};
+  const style = props.style ? props.style : {};
   const { fieldStyle } = props;
   const { ddStyle } = props;
   const { list } = props;

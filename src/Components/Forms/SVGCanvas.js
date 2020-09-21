@@ -11,7 +11,7 @@ const SVGCanvas = (props) => {
   // Note: The idea is to have a node and polygon system
   // the user chooses points in which to draw lines
   // and that information is saved
-  const [mode, setMode] = useState(props.mode);
+  const [mode /* , setMode*/] = useState(props.mode);
   const [nodes, setNodes] = useState([]);
   const [mouseDown, setMouseDown] = useState(false);
   const [curColor, setCurColor] = useState('#000000');

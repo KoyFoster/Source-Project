@@ -1,5 +1,5 @@
 import React from 'react';
-import { Profile, Card, Block, Stat, Cell } from './ProfileData';
+// import { Profile, Card, Block, Stat, Cell } from './ProfileData';
 
 const depthColor = [
   ['black', 'red'],
@@ -108,9 +108,12 @@ const VariablePicker = (props) => {
         data-key={props.fullKey}
         style={props.style}
         onClick={(e) => {
+          // console.log('VariablePicker:', value);
           const keys = value.getPath();
           const newVar = {};
           newVar[varKey] = keys;
+
+          // console.log('Picker 1:', newVar);
           onClick({ target: { value: newVar } });
         }}
       >

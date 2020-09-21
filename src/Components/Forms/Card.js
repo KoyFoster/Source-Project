@@ -35,16 +35,17 @@ const CardHeader = (props) => {
     </div>
   );
 };
-const LevelHeader = (props) => {
-  return (
-    <div className="Level" onClick={props.onClick}>
-      {props.children}
-    </div>
-  );
-};
+// const LevelHeader = (props) => {
+//   return (
+//     <div className="Level" onClick={props.onClick}>
+//       {props.children}
+//     </div>
+//   );
+// };
 const StatBlock = (props) => {
+  console.log('StatClock Value:', props.value);
   return (
-    <div className="StatBlock" onClick={props.onClick}>
+    <div className="StatBlock" type={props.value} onClick={props.onClick}>
       {props.children}
     </div>
   );
@@ -70,8 +71,8 @@ const Block = (props) => {
   let { Total } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
-  const { Level } = Stats;
-  const { Points } = Stats;
+  // const { Level } = Stats;
+  // const { Points } = Stats;
 
   // stat data
   const { Values } = Stats;
@@ -97,7 +98,7 @@ const Block = (props) => {
         <tr
           key={`tr_${key}(${i})`}
           onClick={() => {
-            // console.log('row:', row);
+            console.log('row:', row);
             setStatSelection(row);
           }}
         >
@@ -230,7 +231,11 @@ const Block = (props) => {
               value={value.Num}
               data={data}
               onChange={(e) => {
-                value.Num = e.target.value;
+                console.log('MathInput:', e.target.value);
+                value.Num.result = e.target.value.result;
+                value.Num.expression = e.target.value.expression;
+                value.Num.vars = e.target.value.vars;
+
                 Update(data);
               }}
             />,
@@ -242,7 +247,10 @@ const Block = (props) => {
               }}
               data={data}
               onChange={(e) => {
-                value.Min = e.target.value;
+                console.log('MathInput:', e.target.value);
+                value.Min.result = e.target.value.result;
+                value.Min.expression = e.target.value.expression;
+                value.Min.vars = e.target.value.vars;
                 Update(data);
               }}
             />,
@@ -254,7 +262,10 @@ const Block = (props) => {
               }}
               data={data}
               onChange={(e) => {
-                value.Max = e.target.value;
+                // console.log('MathInput:', e.target.value);
+                value.Max.result = e.target.value.result;
+                value.Max.expression = e.target.value.expression;
+                value.Max.vars = e.target.value.vars;
                 Update(data);
               }}
             />,
@@ -267,6 +278,7 @@ const Block = (props) => {
                 Update(data);
               }}
             />,
+            value.Value,
           );
         }
       });
@@ -293,7 +305,7 @@ const Block = (props) => {
 
         <tbody>{contents()}</tbody>
 
-        {Mode === 'Edit' ? (
+        {/* {Mode === 'Edit' ? (
           <tfoot>
             <tr>
               <td>Totals:</td>
@@ -303,7 +315,7 @@ const Block = (props) => {
               <td></td>
             </tr>
           </tfoot>
-        ) : null}
+        ) : null} */}
       </table>
     );
   }
@@ -344,7 +356,7 @@ const Block = (props) => {
           )}
         </div>
       </LevelHeader> */}
-      <StatBlock>
+      <StatBlock value={Stats.Value}>
         <div style={{ display: 'flex' }}>
           {/* Stat Type */}
           {Mode === 'Edit' ? (
@@ -363,33 +375,51 @@ const Block = (props) => {
           ) : null}
 
           {/* Stat Label */}
-          {Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
-            <input
-              type="text"
-              value={Value}
-              onChange={(e) => {
-                Stats.Value = e.target.value;
-                Update(data);
-              }}
-            />
-          ) : (
-            <label>{Value}</label>
-          )}
-          {/* Edittability */}
-          {Mode === 'Edit' ? (
-            <ToggleButton
-              toggledStyle={{
-                filter: 'brightness(88%)',
-              }}
-              checked={Stats.bEdit}
-              onClick={(e) => {
-                Stats.bEdit = e.target.value === 'Do Edit' ? true : false;
-                Update(data);
-              }}
-            >
-              {['Do Edit', 'No Edit']}
-            </ToggleButton>
+          {Stats.bShow || Mode === 'Edit' ? (
+            Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
+              <input
+                type="text"
+                value={Value}
+                onChange={(e) => {
+                  Stats.Value = e.target.value;
+                  Update(data);
+                }}
+              />
+            ) : (
+              <label>{Value}</label>
+            )
           ) : null}
+          {/* Edittability */}
+          {Mode === 'Edit'
+            ? [
+                <ToggleButton
+                  key="Edit"
+                  toggledStyle={{
+                    filter: 'brightness(88%)',
+                  }}
+                  checked={Stats.bEdit}
+                  onClick={(e) => {
+                    Stats.bEdit = e.target.value === 'Do Edit' ? true : false;
+                    Update(data);
+                  }}
+                >
+                  {['Do Edit', 'No Edit']}
+                </ToggleButton>,
+                <ToggleButton
+                  key="Show"
+                  toggledStyle={{
+                    filter: 'brightness(88%)',
+                  }}
+                  checked={Stats.bShow}
+                  onClick={(e) => {
+                    Stats.bShow = e.target.value === 'Show' ? true : false;
+                    Update(data);
+                  }}
+                >
+                  {['Show', 'Hide']}
+                </ToggleButton>,
+              ]
+            : null}
         </div>
         <StatsContainer>
           {Mode === 'Edit' ? (
@@ -453,7 +483,8 @@ const Card = (props) => {
     >
       <div style={{ display: 'flex' }}>
         <CardHeader style={{ width: '100%' }}>
-          {Mode === 'Edit' || (Mode === 'Calculator' && cardData.bEdit) ? (
+          {Mode === 'Edit' ||
+          (Mode === 'Calculator' && cardData.bEdit && cardData.bShow) ? (
             <input
               type="text"
               value={Value}
@@ -462,25 +493,42 @@ const Card = (props) => {
                 Update(data);
               }}
             />
-          ) : (
+          ) : cardData.bShow ? (
             <div style={{ display: 'flex' }}>
               <label>{Value}</label>
             </div>
-          )}
-          {Mode === 'Edit' ? (
-            <ToggleButton
-              toggledStyle={{
-                filter: 'brightness(88%)',
-              }}
-              checked={cardData.bEdit}
-              onClick={(e) => {
-                cardData.bEdit = e.target.value === 'Do Edit' ? true : false;
-                Update(data);
-              }}
-            >
-              {['Do Edit', 'No Edit']}
-            </ToggleButton>
           ) : null}
+          {Mode === 'Edit'
+            ? [
+                <ToggleButton
+                  key="Edit"
+                  toggledStyle={{
+                    filter: 'brightness(88%)',
+                  }}
+                  checked={cardData.bEdit}
+                  onClick={(e) => {
+                    cardData.bEdit =
+                      e.target.value === 'Do Edit' ? true : false;
+                    Update(data);
+                  }}
+                >
+                  {['Do Edit', 'No Edit']}
+                </ToggleButton>,
+                <ToggleButton
+                  key="Show"
+                  toggledStyle={{
+                    filter: 'brightness(88%)',
+                  }}
+                  checked={cardData.bShow}
+                  onClick={(e) => {
+                    cardData.bShow = e.target.value === 'Show' ? true : false;
+                    Update(data);
+                  }}
+                >
+                  {['Show', 'Hide']}
+                </ToggleButton>,
+              ]
+            : null}
         </CardHeader>
       </div>
 
@@ -518,9 +566,9 @@ const ProfileCard = (props) => {
   // cache = null;
 
   // get input width based on value
-  const getTextWidth = (text) => {
-    return (text.length + 1) * 8;
-  };
+  // const getTextWidth = (text) => {
+  //   return (text.length + 1) * 8;
+  // };
 
   // render Pages
   function Book() {

@@ -5,7 +5,7 @@ class Funcs {
     // add
     if (add > 0) {
       const buffer = new ELEMENT(undefined, src);
-      console.log('new Stat', new Stat(undefined, this));
+      // console.log('add', new ELEMENT(undefined, src));
       src.Values.push(buffer);
       newSel = buffer.Value;
     }
@@ -40,7 +40,7 @@ class Funcs {
     return newSel;
   };
   static move = (selection, pos = 1, src, ELEMENT) => {
-    console.log('move:', { selection, pos, src, ELEMENT });
+    // console.log('move:', { selection, pos, src, ELEMENT });
     if (pos === 0) return selection;
 
     // get selection index
@@ -76,7 +76,7 @@ class Funcs {
     } else if (newPos < 0) {
       newPos = src.Values.length;
     }
-    console.log({ newPos, index, pos, length: src.Values.length });
+    // console.log({ newPos, index, pos, length: src.Values.length });
 
     src.Values.splice(newPos, 0, buffer[0]);
 
@@ -159,6 +159,7 @@ class Stat {
 class Block {
   constructor(obj, parent) {
     this.bEdit = false;
+    this.bShow = true;
     // link
     this.P = parent;
 
@@ -177,6 +178,7 @@ class Block {
     // defined
     if (obj) {
       this.bEdit = obj.bEdit;
+      this.bShow = obj.bShow;
       this.Value = obj.Value;
 
       this.Type = obj.Type ? obj.Type : '';
@@ -216,6 +218,7 @@ class Block {
 class Card {
   constructor(obj, parent) {
     this.bEdit = false;
+    this.bShow = true;
     // link
     this.P = parent;
 
@@ -226,6 +229,7 @@ class Card {
     // defined
     if (obj) {
       this.bEdit = obj.bEdit;
+      this.bShow = obj.bShow;
       this.Value = obj.Value ? obj.Value : '';
 
       const keys = Object.keys(obj.Values);

@@ -37,7 +37,6 @@ const Controls = (props) => {
     return (
       <div style={{ display: 'flex', maxHeight: '24px' }}>
         <Arrows />
-        <label style={{ display: 'block' }}>{size}</label>
       </div>
     );
   };
@@ -67,9 +66,6 @@ const Controls = (props) => {
           </button>
         </div>
       );
-    };
-    const Selected = (props) => {
-      return <label style={{ display: 'block' }}>{selection}</label>;
     };
 
     return (

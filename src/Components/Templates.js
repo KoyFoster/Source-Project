@@ -1,5 +1,5 @@
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+// import React from 'react';
+// import { renderToStaticMarkup } from 'react-dom/server';
 import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
 
 // const html = `${(
@@ -33,6 +33,7 @@ const defaultTemplates = {
         Values: [
           {
             bEdit: true,
+            bShow: false,
             Value: 'Hermit Purple',
             Type: 'Static',
             Level: '',
@@ -89,6 +90,7 @@ const defaultTemplates = {
       },
     ],
   },
+
   'Dark Souls III': {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
@@ -129,6 +131,7 @@ const defaultTemplates = {
           '& .CardHeader': {
             color: '#aca69e',
             textAlignLast: 'left',
+
             "& input[type='text']": {
               width: '100%',
               border: 'none',
@@ -152,11 +155,15 @@ const defaultTemplates = {
           },
 
           '& .StatBlock': {
-            border:
-              props.Mode === 'Calculator' ? '39px solid transparent' : 'none',
+            '& div[type=Attributes]:after': {
+              // '& div': {
+              // display: 'none',
+              color: 'red',
+            },
+
+            border: props.Mode !== 'View' ? '39px solid transparent' : 'none',
             borderImageRepeat: 'repeat',
-            borderImage:
-              props.Mode === 'Calculator' ? `url("${DS3Frame}")` : 'none',
+            borderImage: props.Mode !== 'View' ? `url("${DS3Frame}")` : 'none',
             borderImageSlice: '34%',
 
             color: '#aca69e',
@@ -234,7 +241,7 @@ const defaultTemplates = {
                 },
                 // hover row
                 '& tr:nth-child(odd):hover':
-                  props.Mode === 'Calculator'
+                  props.Mode !== 'View'
                     ? {
                         backgroundImage:
                           'radial-gradient(ellipse at bottom, #723a19, #723a1900 66%, #00000000 50%)',
@@ -269,14 +276,99 @@ const defaultTemplates = {
       },
     }),
     // end of style
-
     Values: [
       {
         bEdit: true,
-        P: { Game: 'Dark Souls III', Title: 'Dark Souls III' },
+        bShow: false,
         Value: 'Koy',
         Values: [
           {
+            bEdit: false,
+            bShow: false,
+            Value: 'Misc',
+            Type: 'Calc',
+            Level: '',
+            Total: 42534,
+            Min: 1347,
+            Max: 3719457,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'Level',
+                Num: {
+                  Value: 'Num',
+                  result: 34,
+                  expression: '(a+b+c+d+e+f+g+h+i)-90+1',
+                  vars:
+                    '{"a":["Values","Koy","Values","Attributes","Values","Vigor","Num"],"b":["Values","Koy","Values","Attributes","Values","Attunement","Num"],"c":["Values","Koy","Values","Attributes","Values","Endurance","Num"],"d":["Values","Koy","Values","Attributes","Values","Vitality","Num"],"e":["Values","Koy","Values","Attributes","Values","Strength","Num"],"f":["Values","Koy","Values","Attributes","Values","Dexterity","Num"],"g":["Values","Koy","Values","Attributes","Values","Intelligence","Num"],"h":["Values","Koy","Values","Attributes","Values","Faith","Num"],"i":["Values","Koy","Values","Attributes","Values","Luck","Num"]}',
+                },
+                Min: { Value: 'Min', result: 1, expression: '1', vars: '{}' },
+                Max: {
+                  Value: 'Max',
+                  result: 802,
+                  expression: '802',
+                  vars: '{}',
+                },
+                Unit: '',
+              },
+              {
+                Value: 'Hollowing',
+                Num: { Value: 'Num', result: 0 },
+                Min: { Value: 'Min', result: 0 },
+                Max: { Value: 'Max', result: 99 },
+                Unit: '',
+              },
+              {
+                Value: 'Souls',
+                Num: {
+                  Value: 'Num',
+                  result: 41266,
+                  expression: 'b * (a-1) + (17 * (a-2))',
+                  vars:
+                    '{"a":["Values","Koy","Values","Misc","Values","Level","Num"],"b":["Values","Koy","Values","Misc","Values","Required souls","Num"]}',
+                },
+                Min: {
+                  Value: 'Min',
+                  result: 673,
+                  expression: '673',
+                  vars: '{}',
+                },
+                Max: {
+                  Value: 'Max',
+                  result: 3624556,
+                  expression: '3624556',
+                  vars: '{}',
+                },
+                Unit: '',
+              },
+              {
+                Value: 'Required souls',
+                Num: {
+                  Value: 'Num',
+                  result: 1234,
+                  expression: '673 + 17 * (a-1)',
+                  vars:
+                    '{"a":["Values","Koy","Values","Misc","Values","Level","Num"]}',
+                },
+                Min: {
+                  Value: 'Min',
+                  result: 673,
+                  expression: '673',
+                  vars: '{}',
+                },
+                Max: {
+                  Value: 'Max',
+                  result: 94000,
+                  expression: '94000',
+                  vars: '{}',
+                },
+                Unit: '',
+              },
+            ],
+          },
+          {
+            bEdit: false,
+            bShow: true,
             Value: 'Attributes',
             Type: 'Static',
             Level: '',
@@ -350,21 +442,269 @@ const defaultTemplates = {
               },
             ],
           },
+        ],
+      },
+      {
+        bEdit: false,
+        bShow: false,
+        Value: 'Misc 1',
+        Values: [
           {
             bEdit: false,
-            Value: 'Misc',
+            bShow: true,
+            Value: 'Base power',
             Type: 'Static',
             Level: '',
             Total: 0,
             Min: 0,
-            Max: 99,
+            Max: 0,
             Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
-                Value: 'Hollowing',
-                Num: { Value: 'Num', result: 0 },
-                Min: { Value: 'Min', result: 0 },
-                Max: { Value: 'Max', result: 99 },
+                Value: 'HP',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'FP',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Stamina',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+            ],
+          },
+          {
+            bEdit: false,
+            bShow: false,
+            Value: 'Base power 2',
+            Type: 'Static',
+            Level: '',
+            Total: 0,
+            Min: 0,
+            Max: 0,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'Equip load',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Poise',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Item Discovery',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+            ],
+          },
+          {
+            bEdit: false,
+            bShow: true,
+            Value: 'Attack Power',
+            Type: 'Static',
+            Level: '',
+            Total: 0,
+            Min: 0,
+            Max: 0,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'R Weapon 1',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'R Weapon 2',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'R Weapon 3',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'L Weapon 1',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'L Weapon 2',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'L Weapon 3',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        bEdit: false,
+        bShow: false,
+        Value: 'Misc 2',
+        Values: [
+          {
+            bEdit: false,
+            bShow: true,
+            Value: 'Defense',
+            Type: 'Static',
+            Level: '',
+            Total: 0,
+            Min: 0,
+            Max: 0,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'Physical',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'VS strike',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'VS slash',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'VS thrust',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Magic',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Fire',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Lightning',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Dark',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+            ],
+          },
+          {
+            bEdit: false,
+            bShow: true,
+            Value: 'Resistances',
+            Type: 'Static',
+            Level: '',
+            Total: 0,
+            Min: 0,
+            Max: 0,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'Bleed',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Poison',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Frost',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+              {
+                Value: 'Curse',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 0, expression: '0', vars: '{}' },
+                Unit: '',
+              },
+            ],
+          },
+          {
+            bEdit: false,
+            bShow: false,
+            Value: 'Misc 3',
+            Type: 'Static',
+            Level: '',
+            Total: 0,
+            Min: 0,
+            Max: 10,
+            Points: { result: 0, expression: '0', vars: '{}' },
+            Values: [
+              {
+                Value: 'Attunement Slots',
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
             ],

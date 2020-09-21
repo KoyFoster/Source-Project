@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable prefer-destructuring */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 
 // TODO: Triggers: Drop Down, Close Up, Select OK, Select Cancel
@@ -43,7 +44,7 @@ const DropDown = (props) => {
       />
     );
 
-  const updateDDPosition = () => {
+  function updateDDPosition() {
     if (Fref) {
       const BCR = Fref.getBoundingClientRect();
       const iTop = BCR.height + BCR.y; /* + Fref.offsetTop */
@@ -61,12 +62,13 @@ const DropDown = (props) => {
     //   left: DDDim.left,
     //   width: DDDim.width,
     // });
-  };
+  }
 
   // useEffect
   useEffect(() => {
     if (checked && DDref.current !== null) {
       DDref.focus();
+
       updateDDPosition();
     }
   }, [checked, DDref]);
