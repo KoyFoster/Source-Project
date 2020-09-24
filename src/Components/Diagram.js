@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Vector2, Coll } from './KoyMath.js';
 
+// #globals
 const iLineWidth = 1;
 const iStrokeWidth = 0.5;
 const cLetterGrades = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', '?'];
@@ -22,9 +23,10 @@ const pallete = {
 let gradeCalc = function (index, values, bFlip) {
   let result = cLetterGrades[9]; //? grade
   //Take Values and divide it against it's max range
+  console.log('Values:', values, index);
   let percentage = !bFlip
-    ? (values[index][1] / values[index][3]) * 100
-    : -1 * ((values[index][1] / values[index][3]) * 100 - 100);
+    ? (values[index].value / values[index].max) * 100
+    : -1 * ((values[index].value / values[index].max) * 100 - 100);
 
   //Upper or lower value assignment
   let masymenos = (value) => {
@@ -63,16 +65,15 @@ let gradeCalc = function (index, values, bFlip) {
   }
   return result; //Return '?'
 };
+// #globals
 
 // -------------------------------------------------------------------
-function Diagram(props) {
+const Diagram = (props) => {
   // init functions
-  const getStart = () => {
-    return props.iStrt ? props.iStrt : 0;
-  };
   let vector = [];
-  const { Values } = props.data;
-  const iLen = Values.length - getStart();
+  const { Values } = props;
+
+  const iLen = Values.length;
   const angle = (1 / iLen) * 360;
 
   // Animation States
@@ -134,10 +135,8 @@ function Diagram(props) {
     if (iLen <= 1) return;
     const html = [];
 
-    let iFlip = Values[getStart()][4] === '%' ? 1 : 0;
-    let vecScale = Values[getStart()][3]
-      ? Values[getStart()][1] * (1 / Values[getStart()][3])
-      : 0;
+    let iFlip = Values[0].unit === '%' ? 1 : 0;
+    let vecScale = Values[0].max ? Values[0].value * (1 / Values[0].max) : 0;
 
     if (iFlip) {
       vecScale -= iFlip;
@@ -145,10 +144,8 @@ function Diagram(props) {
     }
     let lastPoint = new Vector2(vector[1][0], vector[1][1] * vecScale);
 
-    iFlip = Values[1 + getStart()][4] === '%' ? 1 : 0;
-    vecScale = Values[1 + getStart()][3]
-      ? Values[1 + getStart()][1] * (1 / Values[1 + getStart()][3])
-      : 0;
+    iFlip = Values[1].unit === '%' ? 1 : 0;
+    vecScale = Values[1].max ? Values[1].value * (1 / Values[1].max) : 0;
     if (iFlip) {
       vecScale -= iFlip;
       vecScale *= -1;
@@ -176,9 +173,9 @@ function Diagram(props) {
       );
       i += 1;
       if (i !== iLen) {
-        let iFlip = Values[i + getStart()][4] === '%' ? 1 : 0;
-        let vecScale = Values[i + getStart()][3]
-          ? Values[i + getStart()][1] * (1 / Values[i + getStart()][3])
+        let iFlip = Values[i].unit === '%' ? 1 : 0;
+        let vecScale = Values[i].max
+          ? Values[i].value * (1 / Values[i].max)
           : 0;
         if (iFlip) {
           vecScale -= iFlip;
@@ -190,9 +187,9 @@ function Diagram(props) {
 
         // Get NExt Point
         const iNext = i + 1 < iLen ? i + 1 : 0;
-        iFlip = Values[iNext + getStart()][4] === '%' ? 1 : 0;
-        vecScale = Values[iNext + getStart()][3]
-          ? Values[iNext + getStart()][1] * (1 / Values[iNext + getStart()][3])
+        iFlip = Values[iNext].unit === '%' ? 1 : 0;
+        vecScale = Values[iNext].max
+          ? Values[iNext].value * (1 / Values[iNext].max)
           : 0;
         if (iFlip) {
           vecScale -= iFlip;
@@ -269,8 +266,8 @@ function Diagram(props) {
         ')';
       const gradeSize = iFontSize / 5;
       const typeSize = iFontSize / 9;
-      const bPercentage = Values[i + 1][4] === '%';
-      const grade = gradeCalc(i + 1, Values, bPercentage);
+      const bPercentage = Values[i].unit === '%';
+      const grade = gradeCalc(i, Values, bPercentage);
       htmlResult.push(
         <text
           key={'Grade' + i + '_1'}
@@ -324,7 +321,7 @@ function Diagram(props) {
           y={typeCenter[1] + 1}
           transform={transform}
         >
-          {Values[i + getStart()][0]}
+          {Values[i].label}
         </text>,
       );
       htmlResult.push(
@@ -341,7 +338,7 @@ function Diagram(props) {
           y={typeCenter[1]}
           transform={transform}
         >
-          {`${Values[i + getStart()][0]}`}
+          {`${Values[i].label}`}
         </text>,
       );
 
@@ -380,8 +377,7 @@ function Diagram(props) {
 
           //Define and round off the TICK VALUES
           let tickValue = Math.ceil(
-            (bPercentage ? -iT + ticks : iT) *
-              (Values[i + getStart()][3] / ticks),
+            (bPercentage ? -iT + ticks : iT) * (Values[i].max / ticks),
           );
           let tickCenter = [iCenter, iCenter - ticks * iT];
           let iTick = 3;
@@ -406,10 +402,8 @@ function Diagram(props) {
           let bDraw =
             i === 0
               ? true
-              : `${Values[i + getStart()][3]}${Values[i + getStart()][4]}` !==
-                `${Values[i - 1 + getStart()][3]}${
-                  Values[i - 1 + getStart()][4]
-                }`;
+              : `${Values[i].max}${Values[i].unit}` !==
+                `${Values[i - 1].max}${Values[i - 1].unit}`;
           if (bDraw) {
             htmlResult.push(
               <text
@@ -421,7 +415,7 @@ function Diagram(props) {
                 style={{ fontSize: 10, strokeWidth: 0, fill: pallete.grid[1] }}
                 transform={transform}
               >
-                {`${tickValue}${Values[i + 1][4]}`}
+                {`${tickValue}${Values[i + 1].unit}`}
               </text>,
             );
             htmlResult.push(
@@ -439,7 +433,7 @@ function Diagram(props) {
                 }}
                 transform={transform}
               >
-                {`${tickValue}${Values[i + 1][4]}`}
+                {`${tickValue}${Values[i + 1].unit}`}
               </text>,
             );
           }
@@ -450,7 +444,7 @@ function Diagram(props) {
   };
 
   useEffect(() => {
-    props.funcs.randAnim = startAnimation;
+    if (props.funcs) props.funcs.randAnim = startAnimation;
     startAnimation();
     // eslint-disable-next-line
   }, []);
@@ -557,6 +551,6 @@ function Diagram(props) {
       </svg>
     </div>
   );
-}
+};
 
 export default Diagram;
