@@ -12,6 +12,7 @@ import MathInput from './MathInput.js';
 import Controls from './Controls.js';
 import { Profile } from './ProfileData';
 import './Card.css';
+import Diagram from '../Diagram.js';
 
 // styling contrainers
 const ProfileContainer = (props) => {
@@ -43,9 +44,13 @@ const CardHeader = (props) => {
 //   );
 // };
 const StatBlock = (props) => {
-  console.log('StatClock Value:', props.value);
   return (
-    <div className="StatBlock" type={props.value} onClick={props.onClick}>
+    <div
+      className="StatBlock"
+      dir={props.value}
+      target={props.value}
+      onClick={props.onClick}
+    >
       {props.children}
     </div>
   );
@@ -93,12 +98,10 @@ const Block = (props) => {
   function StatTable() {
     // set row
     function setRow(i, key, value, num, min, max, unit, row) {
-      // console.log(`tr_${key}(${i})`);
       return [
         <tr
           key={`tr_${key}(${i})`}
           onClick={() => {
-            console.log('row:', row);
             setStatSelection(row);
           }}
         >
@@ -231,7 +234,6 @@ const Block = (props) => {
               value={value.Num}
               data={data}
               onChange={(e) => {
-                console.log('MathInput:', e.target.value);
                 value.Num.result = e.target.value.result;
                 value.Num.expression = e.target.value.expression;
                 value.Num.vars = e.target.value.vars;
@@ -247,7 +249,6 @@ const Block = (props) => {
               }}
               data={data}
               onChange={(e) => {
-                console.log('MathInput:', e.target.value);
                 value.Min.result = e.target.value.result;
                 value.Min.expression = e.target.value.expression;
                 value.Min.vars = e.target.value.vars;
@@ -262,7 +263,6 @@ const Block = (props) => {
               }}
               data={data}
               onChange={(e) => {
-                // console.log('MathInput:', e.target.value);
                 value.Max.result = e.target.value.result;
                 value.Max.expression = e.target.value.expression;
                 value.Max.vars = e.target.value.vars;
@@ -551,6 +551,10 @@ const Card = (props) => {
   );
 };
 
+const Graph = (props) => {
+  return <Diagram Values={props.data.getValues()}></Diagram>;
+};
+
 // handles grid data
 const ProfileCard = (props) => {
   const [cardSelection, setCardSelection] = useState(undefined);
@@ -574,7 +578,7 @@ const ProfileCard = (props) => {
   function Book() {
     const result = Object.keys(Cards).map((i) => {
       const card = Cards[i];
-      return (
+      return card.Type === 'Card' ? (
         <Card
           key={i}
           cardData={card}
@@ -583,6 +587,8 @@ const ProfileCard = (props) => {
           data={data}
           setCardSelection={setCardSelection}
         ></Card>
+      ) : (
+        <Graph key={i} data={card}></Graph>
       );
     });
 

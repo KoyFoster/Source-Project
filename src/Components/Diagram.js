@@ -23,7 +23,7 @@ const pallete = {
 let gradeCalc = function (index, values, bFlip) {
   let result = cLetterGrades[9]; //? grade
   //Take Values and divide it against it's max range
-  console.log('Values:', values, index);
+  // console.log('Values:', values, index);
   let percentage = !bFlip
     ? (values[index].value / values[index].max) * 100
     : -1 * ((values[index].value / values[index].max) * 100 - 100);

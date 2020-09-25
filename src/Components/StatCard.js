@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TemplateSelector from './TemplateSelector';
 // import { MenuItem } from '@material-ui/core';
 // import StatForm from './StatForm.js';
-// import Diagram from './Diagram.js';
+import Diagram from './Diagram.js';
 // import { Row, Col } from './DivGrid';
 // import StatCode from './StatCode';
 // import Tree from './Forms/Tree';

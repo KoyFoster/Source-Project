@@ -1,3 +1,6 @@
+import { forEach } from 'mathjs';
+import StatData from '../StatData';
+
 class Funcs {
   static add = (selection, add = 1, src, ELEMENT) => {
     let newSel = selection;
@@ -5,7 +8,6 @@ class Funcs {
     // add
     if (add > 0) {
       const buffer = new ELEMENT(undefined, src);
-      // console.log('add', new ELEMENT(undefined, src));
       src.Values.push(buffer);
       newSel = buffer.Value;
     }
@@ -40,7 +42,6 @@ class Funcs {
     return newSel;
   };
   static move = (selection, pos = 1, src, ELEMENT) => {
-    // console.log('move:', { selection, pos, src, ELEMENT });
     if (pos === 0) return selection;
 
     // get selection index
@@ -76,7 +77,6 @@ class Funcs {
     } else if (newPos < 0) {
       newPos = src.Values.length;
     }
-    // console.log({ newPos, index, pos, length: src.Values.length });
 
     src.Values.splice(newPos, 0, buffer[0]);
 
@@ -225,6 +225,7 @@ class Card {
     // defaults
     this.Value = '[New Card]';
     this.Values = [];
+    this.Type = 'Card';
 
     // defined
     if (obj) {
@@ -258,6 +259,49 @@ class Card {
   };
 }
 
+// Graph
+class Graph {
+  constructor(obj, parent) {
+    this.bShow = true;
+
+    // defaults
+    this.Type = 'Graph';
+    this.Value = '[New Graph]';
+    // link
+    this.P = parent;
+
+    // defined
+    if (obj) {
+      this.bShow = obj.bShow;
+      this.Value = obj.Value ? obj.Value : '';
+
+      this.Keys = [...obj.Keys];
+    } else {
+      this.Values.push(new Block(undefined, this));
+    }
+  }
+
+  getValues = () => {
+    const Values = [];
+
+    this.Keys.forEach((key) => {
+      let buffer = StatData.GetValue(key, this.P);
+      buffer = {
+        key: buffer.Value,
+        label: buffer.Value,
+        value: buffer.Num.result,
+        min: buffer.Min.result,
+        max: buffer.Max.result,
+        unit: buffer.Unit,
+      };
+      console.log('Value Buffer:', buffer);
+      Values.push(buffer);
+    });
+
+    return Values;
+  };
+}
+
 // Profile
 class Profile {
   constructor(obj) {
@@ -267,9 +311,15 @@ class Profile {
 
     const keys = Object.keys(obj.Values);
     this.Values = keys.map((key) => {
-      return obj.Values[key].constructor !== Card
-        ? new Card(obj.Values[key], this)
-        : obj.Values[key];
+      if (obj.Values[key].Type === 'Card' || !obj.Values[key].Type) {
+        return obj.Values[key].constructor !== Card
+          ? new Card(obj.Values[key], this)
+          : obj.Values[key];
+      } else if (obj.Values[key].Type === 'Graph') {
+        return obj.Values[key].constructor !== Graph
+          ? new Graph(obj.Values[key], this)
+          : obj.Values[key];
+      }
     });
   }
 

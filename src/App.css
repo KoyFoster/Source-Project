@@ -184,3 +184,7 @@ input:focus {
 .toggleButton:active {
   filter: brightness(66%);
 }
+
+div[dir='Attributes'] {
+  color: red;
+}

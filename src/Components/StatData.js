@@ -60,7 +60,6 @@ class StatData {
         tallies.Max + Number.parseInt(statBlock[key]['Max'].result, 10);
     });
 
-    // console.log(tallies);
     return tallies;
   }
 
@@ -70,7 +69,6 @@ class StatData {
     let dataBuffer = data;
 
     // iterate through array
-    // console.log('keys:', keys);
     keys.forEach((key) => {
       // step through data
       // handle differently if Array or object
@@ -94,7 +92,6 @@ class StatData {
       }
     });
 
-    // console.log('key:', { dataBuffer });
     return dataBuffer;
   };
 
@@ -116,7 +113,6 @@ class StatData {
       return {};
     }
 
-    // console.log('scope:', scope);
     for (let [key, value] of Object.entries(scope)) {
       const buffer = this.GetValue(value, data); // table, row, column="always 'Value'""
       if (!raw) {
@@ -137,7 +133,6 @@ class StatData {
       }
     }
 
-    // console.log('scope:', scope);
     return scope;
   }
 

@@ -155,9 +155,7 @@ const defaultTemplates = {
           },
 
           '& .StatBlock': {
-            '& div[type=Attributes]:after': {
-              // '& div': {
-              // display: 'none',
+            '& div[target="Attributes"]': {
               color: 'red',
             },
 
@@ -276,6 +274,7 @@ const defaultTemplates = {
       },
     }),
     // end of style
+
     Values: [
       {
         bEdit: true,
@@ -443,7 +442,20 @@ const defaultTemplates = {
             ],
           },
         ],
+        Type: 'Card',
       },
+
+      {
+        bShow: true,
+        Value: 'Profficiencies',
+        Type: 'Graph',
+        Keys: [
+          ['Values', 'Koy', 'Values', 'Attributes', 'Values', 'Vigor'],
+          ['Values', 'Koy', 'Values', 'Attributes', 'Values', 'Strength'],
+          ['Values', 'Koy', 'Values', 'Attributes', 'Values', 'Luck'],
+        ],
+      },
+
       {
         bEdit: false,
         bShow: false,
@@ -573,6 +585,7 @@ const defaultTemplates = {
             ],
           },
         ],
+        Type: 'Card',
       },
       {
         bEdit: false,
@@ -710,6 +723,7 @@ const defaultTemplates = {
             ],
           },
         ],
+        Type: 'Card',
       },
     ],
   },
