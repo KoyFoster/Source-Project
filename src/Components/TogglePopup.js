@@ -18,6 +18,7 @@ export default class TogglePopup extends Component {
     return (
       <div>
         <button
+          style={this.props.style}
           type="button"
           onClick={() => {
             this.togglePop();

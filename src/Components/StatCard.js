@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import TemplateSelector from './TemplateSelector';
 // import { MenuItem } from '@material-ui/core';
 // import StatForm from './StatForm.js';
-import Diagram from './Diagram.js';
 // import { Row, Col } from './DivGrid';
 // import StatCode from './StatCode';
 // import Tree from './Forms/Tree';
@@ -11,6 +10,7 @@ import { defaultTemplates as Templates } from './Templates';
 import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
+import { Paper } from '@material-ui/core';
 
 // function compileMenuItems() {
 //   let result = [];
@@ -59,6 +59,7 @@ const SaveStatCard = (props) => {
 
   return (
     <TogglePopup
+      style={{ borderRadius: '4px' }}
       component={
         <div>
           Save Code
@@ -90,6 +91,7 @@ const LoadStatCard = (props) => {
 
   return (
     <TogglePopup
+      style={{ borderRadius: '4px' }}
       component={
         <div>
           Load Code
@@ -132,11 +134,6 @@ const LoadStatCard = (props) => {
 const useStyles = makeStyles((msProps) => {
   return {
     root: (props) => {
-      // console.log(
-      //   'props.Style:',
-      //   props.Style ? props.Style({ Mode: props.Mode }) : {},
-      //   props.Mode,
-      // );
       return props.Style ? props.Style({ Mode: props.Mode }) : {};
     },
   };
@@ -176,26 +173,45 @@ const Stats = (props) => {
   // useEffect(() => {}, [value.Style]);
 
   return (
-    <div>
-      <TemplateSelector
-        setTemplate={Update}
-        data={Templates}
-        defaultValue={'Dark Souls III'}
-      />
-      <SaveStatCard value={value}></SaveStatCard>
-      <LoadStatCard setValue={setValue}></LoadStatCard>
+    <div style={{ display: 'flex' }}>
+      <Paper style={{ margin: '4px', padding: '4px' }}>
+        <TemplateSelector
+          // style={{ filter: 'invert(88%)' }}
+          setTemplate={Update}
+          data={Templates}
+          defaultValue={'ArcheAge (V2020.10.13)'}
+        />
+        <Paper style={{ display: 'flex', padding: '2px' }}>
+          <SaveStatCard value={value}></SaveStatCard>
+          <LoadStatCard setValue={setValue}></LoadStatCard>
+        </Paper>
+        <Paper
+          style={{
+            display: 'flex',
+            whiteSpace: 'pre',
+            padding: '2px',
+            // filter: 'invert(88%)',
+          }}
+        >
+          Mode Change:{' '}
+          <button
+            type="push"
+            style={{ width: '80px' }}
+            onClick={() => handleModeChange()}
+          >
+            {Mode}
+          </button>
+        </Paper>
+      </Paper>
 
-      <div className={classes.root}>
-        <button type="push" onClick={() => handleModeChange()}>
-          {Mode}
-        </button>
+      <Paper className={classes.root} style={{ margin: '4px', padding: '4px' }}>
         <ProfileCard
           key="profile"
           Mode={Mode}
           value={value}
           Update={Update}
         ></ProfileCard>
-      </div>
+      </Paper>
     </div>
   );
 };

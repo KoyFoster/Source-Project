@@ -3,8 +3,8 @@ import { HashRouter, Link, Route } from 'react-router-dom';
 import Stats from './StatCard';
 import { Row } from './DivGrid';
 import CanvasCard from './CanvasCard';
-import Test from './Test';
-import Test2 from './Test2';
+// import Test from './Test';
+// import Test2 from './Test2';
 import { Paper, Button } from '@material-ui/core';
 
 function NavBar(props) {

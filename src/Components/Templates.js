@@ -23,69 +23,126 @@ const defaultTemplates = {
     Values: [],
   },
   Jojo: {
-    Game: 'Jojo',
-    Title: 'Jojo',
-    Style: {},
+    Game: "Jojo's Bizarre Adventure",
+    Title: 'Stand Calculator',
+    style: {},
     Values: [
       {
         bEdit: false,
-        Value: 'Stand',
+        bShow: true,
+        Value: "Joseph's Stand",
         Values: [
           {
-            bEdit: true,
-            bShow: false,
+            bEdit: false,
+            bShow: true,
             Value: 'Hermit Purple',
             Type: 'Static',
             Level: '',
-            Total: 25,
-            Min: '0',
-            Max: '10',
+            Total: 24,
+            Min: 6,
+            Max: 60,
             Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'POWER',
-                Num: { result: 3 },
-                Min: { result: 1 },
-                Max: { result: 10 },
+                Num: { Value: 'Num', result: 3, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 1, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
               {
                 Value: 'SPEED',
-                Num: { result: 4 },
-                Min: { result: 1 },
-                Max: { result: 10 },
+                Num: { Value: 'Num', result: 4, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 1, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
               {
                 Value: 'RANGE',
-                Num: { result: 4 },
-                Min: { result: 1 },
-                Max: { result: 10 },
+                Num: { Value: 'Num', result: 4, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 1, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
               {
                 Value: 'DURABILITY',
-                Num: { result: 8 },
-                Min: { result: 1 },
-                Max: { result: 10 },
+                Num: { Value: 'Num', result: 8, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 1, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
               {
                 Value: 'PRECISION',
-                Num: { result: 4 },
-                Min: { result: 1 },
-                Max: { result: 10 },
+                Num: { Value: 'Num', result: 4, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 1, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
               {
                 Value: 'POTENTIAL',
-                Num: { result: 2 },
-                Min: { result: 1 },
-                Max: { result: 10 },
+                Num: { Value: 'Num', result: 2, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 1, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
                 Unit: '',
               },
             ],
           },
+        ],
+        Type: 'Card',
+      },
+      {
+        bShow: true,
+        Type: 'Graph',
+        Value: 'Profficiencies',
+        Keys: [
+          [
+            'Values',
+            "Joseph's Stand",
+            'Values',
+            'Hermit Purple',
+            'Values',
+            'POWER',
+          ],
+          [
+            'Values',
+            "Joseph's Stand",
+            'Values',
+            'Hermit Purple',
+            'Values',
+            'SPEED',
+          ],
+          [
+            'Values',
+            "Joseph's Stand",
+            'Values',
+            'Hermit Purple',
+            'Values',
+            'RANGE',
+          ],
+          [
+            'Values',
+            "Joseph's Stand",
+            'Values',
+            'Hermit Purple',
+            'Values',
+            'DURABILITY',
+          ],
+          [
+            'Values',
+            "Joseph's Stand",
+            'Values',
+            'Hermit Purple',
+            'Values',
+            'PRECISION',
+          ],
+          [
+            'Values',
+            "Joseph's Stand",
+            'Values',
+            'Hermit Purple',
+            'Values',
+            'POTENTIAL',
+          ],
         ],
       },
     ],
@@ -446,17 +503,6 @@ const defaultTemplates = {
       },
 
       {
-        bShow: true,
-        Value: 'Profficiencies',
-        Type: 'Graph',
-        Keys: [
-          ['Values', 'Koy', 'Values', 'Attributes', 'Values', 'Vigor'],
-          ['Values', 'Koy', 'Values', 'Attributes', 'Values', 'Strength'],
-          ['Values', 'Koy', 'Values', 'Attributes', 'Values', 'Luck'],
-        ],
-      },
-
-      {
         bEdit: false,
         bShow: false,
         Value: 'Misc 1',
@@ -727,41 +773,21 @@ const defaultTemplates = {
       },
     ],
   },
-  ArcheAge: {
+
+  'ArcheAge (V2020.10.13)': {
     Game: 'ArcheAge',
     Title: "Koy's Stats",
-    Style: {
-      // default
+
+    Style: (props) => ({
       fontSize: 'inherit',
       fontFamily: 'inherit',
       fontWeight: 'inherit',
-
       color: 'inherit',
       background: 'inherit',
       backgroundColor: 'inherit',
-
       justifyContent: 'inherit',
       textAlignLast: 'inherit',
-
-      '& input': {
-        border: 'none',
-        borderWidth: '1px',
-        borderColor: 'inherit',
-        borderBottom: 'solid',
-      },
-      '& hr': {
-        color: '#6e573588',
-        backgroundColor: '#6e573588',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderRadius: '10px',
-      },
-      // Profile
-      '& h1': {
-        backgroundColor: '#999999',
-      },
-      // Profile
-      '& h2': {
+      '& .Profile': {
         fontSize: 12,
         fontFamily: 'NotoSansKR, serif',
         fontWeight: 'inherit',
@@ -782,104 +808,134 @@ const defaultTemplates = {
           background: 'inherit',
           backgroundColor: 'inherit',
         },
-      },
-      // Card
-      '& h3': {
-        fontSize: 'inherit',
-        fontFamily: 'inherit',
-        fontWeight: 'inherit',
+        '& .Card': {
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+          fontWeight: 'inherit',
 
-        color: 'inherit',
-        background: 'inherit',
-        backgroundColor: '#faf8e8',
+          color: 'inherit',
+          background: 'inherit',
+          backgroundColor: '#faf8e8',
 
-        justifyContent: 'inherit',
-        textAlignLast: 'inherit',
+          justifyContent: 'inherit',
+          textAlignLast: 'inherit',
 
-        border: '4px solid #6e5735',
-        borderRadius: '5px',
+          border: '4px solid #6e5735',
+          borderRadius: '5px',
 
-        padding: '16px',
-        margin: '4px',
+          padding: '16px',
+          margin: '4px',
 
-        minWidth: '328px',
+          minWidth: '328px',
 
-        // Level
-        "& input[type='number']": {
-          width: '64px',
-        },
-        // Level
-        "& input[type='text']": {
-          width: '100%',
-        },
-      },
-      // Card Title
-      '& h4': {},
-      // Stat Block Title
-      '& h5': {
-        // Level
-        "& input[type='text']": {
-          width: '100%',
-        },
-      },
-      '& h6': {
-        fontSize: 'inherit',
-        fontFamily: 'inherit',
-        fontWeight: 'inherit',
-
-        color: 'inherit',
-        background: 'inherit',
-        backgroundColor: '#faf8e8',
-        display: 'inline',
-        '& div': { '& button': { width: 'auto' } },
-      },
-      '& tbody': {},
-      '& thead': {},
-      '& tfoot': {},
-      '& table': {
-        // borderCollapse: 'collapse',
-        '& tr': {
-          '& td': {
-            '& button': {},
-            "& input[type='number']": {
-              width: '48px',
-            },
-            "& input[type='text']": {
-              width: '64px',
-            },
+          // Level
+          "& input[type='number']": {
+            width: '64px',
           },
-          '& td:nth-child(1)': {
+          // Level
+          "& input[type='text']": {
+            width: '100%',
+          },
+
+          '& .CardHeader': {
             textAlignLast: 'left',
-            width: ['props'].Mode !== 'Edit' ? '176px' : undefined,
-          },
-          '& td:nth-child(2)': {
-            textAlignLast: ['props'].Mode !== 'View' ? 'center' : 'left',
-            width: ['props'].Mode !== 'Edit' ? '140px' : undefined,
-            '& input': {
-              // borderRadius: ['props'].Type === 'Static' ? '8px' : undefined,
+
+            "& input[type='text']": {
+              width: '100%',
+            },
+            '& label': {
+              border: 'none',
             },
           },
-          '& td:nth-child(3)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+
+          '& .Level': {
+            display: props.Mode !== 'Edit' ? 'none' : 'inline',
+            '& div': {},
+            '& button': { fontSize: 22, textAlignLast: 'center' },
           },
-          '& td:nth-child(4)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+
+          '& .StatBlock': {
+            '& div[target="Attributes"]': {},
+
+            textAlignLast: 'left',
+            padding: '16px 0px 16px 0px',
+            "& input[type='text']": {
+              width: '100%',
+            },
+            '& label': {
+              width: '100%',
+            },
           },
-          '& td:nth-child(5)': {
-            textAlignLast: ['props'].Mode === 'Edit' ? 'center' : 'left',
+
+          '& .Stats': {
+            '& input': { border: 'none', borderWidth: '1px' },
+            '& table': {
+              borderCollapse: 'separate',
+              emptyCells: 'show',
+              '& thead': {
+                emptyCells: 'hide',
+                '& th': {
+                  color: 'inherit',
+                  fontSize: 'inherit',
+                  fontFamily: 'inherit',
+                  fontStyle: 'inherit',
+                  fontWeight: 'inherit',
+                  border: 'inherit',
+                  borderBottom: 'inherit',
+                },
+              },
+              '& tbody': {
+                '& tr': {
+                  '& td': {
+                    '& button': {},
+                    "& input[type='number']": {
+                      width: '48px',
+                      textAlignLast: 'center',
+                    },
+                    "& input[type='text']": { width: '100%' },
+                  },
+
+                  '& td:nth-child(1):empty': {},
+                  '& td:nth-child(1)': {
+                    textAlignLast: 'left',
+                    width: '100%',
+                  },
+                  '& td:nth-child(2)': {
+                    textAlignLast: 'left',
+                    width: '140px',
+                    '& input': {},
+                  },
+                  '& td:nth-child(3)': { textAlignLast: 'left' },
+                  '& td:nth-child(4)': { textAlignLast: 'left' },
+                  '& td:nth-child(5)': { textAlignLast: 'left' },
+                },
+                // hover row
+                '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
+
+                '& tfoot': {},
+                '& colgroup': {
+                  '& col:nth-child(1)': {},
+                  '& col:nth-child(2)': {},
+                  '& col:nth-child(3)': {},
+                  '& col:nth-child(4)': {},
+                  '& col:nth-child(5)': {},
+                },
+              },
+            },
           },
         },
-        '& colgroup': {
-          '& col:nth-child(1)': {
-            /* border: '1px solid green' */
+
+        '& .Controls': {
+          fontSize: 18,
+          '& div': {
+            '& button': {
+              width: 'auto',
+            },
           },
-          '& col:nth-child(2)': {},
-          '& col:nth-child(3)': {},
-          '& col:nth-child(4)': {},
-          '& col:nth-child(5)': {},
         },
       },
-    },
+    }),
+    // end of style
     Values: [
       {
         Value: 'Page One',

@@ -13,6 +13,7 @@ import Controls from './Controls.js';
 import { Profile } from './ProfileData';
 import './Card.css';
 import Diagram from '../Diagram.js';
+import { Paper } from '@material-ui/core';
 
 // styling contrainers
 const ProfileContainer = (props) => {
@@ -598,46 +599,54 @@ const ProfileCard = (props) => {
   return (
     <ProfileContainer>
       <div>
-        Game:{' '}
-        {Mode === 'Edit' ? (
-          <input
-            type="text"
-            value={Game}
-            onChange={(e) => {
-              data.Game = e.target.value;
-              Update(data);
-            }}
-          />
-        ) : (
-          Game
-        )}
-        Title:{' '}
-        {Mode === 'Edit' ? (
-          <input
-            type="text"
-            value={Title}
-            onChange={(e) => {
-              data.Title = e.target.value;
-              Update(data);
-            }}
-          />
-        ) : (
-          Game
-        )}
-        {Mode === 'Edit' ? (
-          <Controls
-            Tag="Card"
-            selection={cardSelection}
-            Add={(selection, i) => {
-              setCardSelection(data.addCard(selection, i));
-              Update(data);
-            }}
-            Move={(selection, i) => {
-              setCardSelection(data.moveCard(selection, i));
-              Update(data);
-            }}
-          ></Controls>
-        ) : null}
+        <div style={{ whiteSpace: 'pre' }}>
+          <div>
+            Game:{' '}
+            {Mode === 'Edit' ? (
+              <input
+                type="text"
+                value={Game}
+                onChange={(e) => {
+                  data.Game = e.target.value;
+                  Update(data);
+                }}
+              />
+            ) : (
+              Game
+            )}
+          </div>
+          <div>
+            Title:{' '}
+            {Mode === 'Edit' ? (
+              <input
+                type="text"
+                value={Title}
+                onChange={(e) => {
+                  data.Title = e.target.value;
+                  Update(data);
+                }}
+              />
+            ) : (
+              Title
+            )}
+          </div>
+          {Mode === 'Edit' ? (
+            <Paper>
+              <Controls
+                Tag="Card"
+                selection={cardSelection}
+                Add={(selection, i) => {
+                  setCardSelection(data.addCard(selection, i));
+                  Update(data);
+                }}
+                Move={(selection, i) => {
+                  setCardSelection(data.moveCard(selection, i));
+                  Update(data);
+                }}
+              ></Controls>
+            </Paper>
+          ) : null}
+        </div>
         <div
           style={{
             display: 'flex',

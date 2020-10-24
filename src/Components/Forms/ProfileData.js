@@ -1,4 +1,3 @@
-import { forEach } from 'mathjs';
 import StatData from '../StatData';
 
 class Funcs {
@@ -320,6 +319,7 @@ class Profile {
           ? new Graph(obj.Values[key], this)
           : obj.Values[key];
       }
+      return null;
     });
   }
 
