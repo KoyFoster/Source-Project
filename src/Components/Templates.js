@@ -22,10 +22,92 @@ const defaultTemplates = {
     Style: (props) => {},
     Values: [],
   },
-  Jojo: {
+  "Jojo's Bizarre Adventure": {
     Game: "Jojo's Bizarre Adventure",
     Title: 'Stand Calculator',
-    style: {},
+
+    Style: (props) => ({
+      fontSize: '14',
+      fontFamily: 'Arial Black',
+      fontWeight: 'bold',
+      color: 'white',
+      background: 'transparent',
+      backgroundColor: 'transparent',
+      justifyContent: 'left',
+      textAlignLast: 'left',
+      border: 'inherit',
+      '& .Profile': {
+        '& .ProfileHeader': {},
+        '& button': {},
+        '& .Card': {
+          // Level
+          "& input[type='number']": {},
+          // Level
+          "& input[type='text']": {},
+          '& .CardHeader': {
+            "& input[type='text']": {},
+            '& label': {},
+          },
+          '& .Level': {
+            '& div': {},
+            '& button': {},
+          },
+          '& .StatBlock': {
+            '& div[target="Attributes"]': {},
+            "& input[type='text']": {},
+            '& label': {},
+          },
+
+          '& .Stats': {
+            '& input': {},
+            '& table': {
+              '& thead': {
+                '& th': {},
+              },
+              '& tbody': {
+                '& tr': {
+                  '& td': {
+                    '& button': {},
+                    "& input[type='number']": {},
+                    "& input[type='text']": {},
+                  },
+
+                  '& td:nth-child(1):empty': {},
+                  '& td:nth-child(1)': {},
+                  '& td:nth-child(2)': {
+                    '& input': {},
+                  },
+                  '& td:nth-child(3)': {},
+                  '& td:nth-child(4)': {},
+                  '& td:nth-child(5)': {},
+                },
+                // hover row
+                '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
+
+                '& tfoot': {},
+                '& colgroup': {
+                  '& col:nth-child(1)': {},
+                  '& col:nth-child(2)': {},
+                  '& col:nth-child(3)': {},
+                  '& col:nth-child(4)': {},
+                  '& col:nth-child(5)': {},
+                },
+              },
+            },
+          },
+        },
+
+        '& .Controls': {
+          '& div': {
+            '& button': {
+              width: 'auto',
+            },
+          },
+        },
+      },
+    }),
+
+    // end of style
     Values: [
       {
         bEdit: false,
@@ -160,7 +242,11 @@ const defaultTemplates = {
       backgroundColor: 'inherit',
       justifyContent: 'inherit',
       textAlignLast: 'inherit',
+
       '& .Profile': {
+        // Title Card
+        '& .ProfileHeader': {},
+
         fontSize: 22,
         fontFamily: 'Adobe Garamond, serif',
         fontStyle: 'normal',
@@ -788,6 +874,7 @@ const defaultTemplates = {
       justifyContent: 'inherit',
       textAlignLast: 'inherit',
       '& .Profile': {
+        '& .ProfileHeader': {},
         fontSize: 12,
         fontFamily: 'NotoSansKR, serif',
         fontWeight: 'inherit',

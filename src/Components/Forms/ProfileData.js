@@ -293,7 +293,7 @@ class Graph {
         max: buffer.Max.result,
         unit: buffer.Unit,
       };
-      console.log('Value Buffer:', buffer);
+      // console.log('Value Buffer:', buffer);
       Values.push(buffer);
     });
 
