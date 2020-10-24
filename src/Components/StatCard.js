@@ -179,7 +179,7 @@ const Stats = (props) => {
           // style={{ filter: 'invert(88%)' }}
           setTemplate={Update}
           data={Templates}
-          defaultValue={'ArcheAge (V2020.10.13)'}
+          defaultValue={'Dark Souls III'}
         />
         <Paper style={{ display: 'flex', padding: '2px' }}>
           <SaveStatCard value={value}></SaveStatCard>

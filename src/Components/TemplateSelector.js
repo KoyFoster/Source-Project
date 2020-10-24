@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import ComboBox from './Forms/ComboBox';
-import { Paper } from '@material-ui/core';
+import { Paper, Select, MenuItem } from '@material-ui/core';
 
 function TemplateSelector(props) {
   // props
-  const [checked, setChecked] = useState(false);
-  const [value, setValue] = useState();
   const { data } = props;
+  const [value, setValue] = useState(props.defaultValue);
   const setTemplate = (val) => {
     setValue(val);
     props.setTemplate(data[val]);
@@ -15,7 +13,11 @@ function TemplateSelector(props) {
   // compile menu items
   const menuList = () =>
     Object.keys(data).map((k) => {
-      return k;
+      return (
+        <MenuItem key={k} value={k}>
+          {k}
+        </MenuItem>
+      );
     });
 
   useEffect(() => {
@@ -33,17 +35,14 @@ function TemplateSelector(props) {
       display="flex"
     >
       Template
-      <ComboBox
-        checked={checked}
-        setChecked={setChecked}
+      <Select
         value={value}
-        setValue={setValue}
         onChange={(e) => {
           setTemplate(e.target.value);
         }}
-        list={menuList()}
-        ddStyle={{ background: '#cfcfcf' }}
-      ></ComboBox>
+      >
+        {menuList()}
+      </Select>
     </Paper>
   );
 }

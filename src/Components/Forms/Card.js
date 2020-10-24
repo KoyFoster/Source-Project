@@ -599,7 +599,7 @@ const ProfileCard = (props) => {
   return (
     <ProfileContainer>
       <div>
-        <div style={{ whiteSpace: 'pre' }}>
+        <div className="ProfileHeader" style={{ whiteSpace: 'pre' }}>
           <div>
             Game:{' '}
             {Mode === 'Edit' ? (
