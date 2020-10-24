@@ -14,7 +14,6 @@ import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
 //     />
 //   </svg>
 // )}`;
-
 const defaultTemplates = {
   Blank: {
     Game: 'Blank',
@@ -25,25 +24,22 @@ const defaultTemplates = {
   "Jojo's Bizarre Adventure": {
     Game: "Jojo's Bizarre Adventure",
     Title: 'Stand Calculator',
-
     Style: (props) => ({
-      fontSize: '14',
-      fontFamily: 'Arial Black',
-      fontWeight: 'bold',
-      color: 'white',
-      background: 'transparent',
-      backgroundColor: 'transparent',
-      justifyContent: 'left',
-      textAlignLast: 'left',
-      border: 'inherit',
       '& .Profile': {
+        fontSize: '14',
+        fontFamily: 'Arial Black',
+        fontWeight: 'bold',
+        color: 'white',
+        justifyContent: 'left',
+        textAlignLast: 'left',
+
         '& .ProfileHeader': {},
         '& button': {},
         '& .Card': {
           // Level
-          "& input[type='number']": {},
+          "& input[type='number']": { borderRadius: '4px', width: '32px' },
           // Level
-          "& input[type='text']": {},
+          "& input[type='text']": { borderRadius: '4px' },
           '& .CardHeader': {
             "& input[type='text']": {},
             '& label': {},
@@ -107,20 +103,19 @@ const defaultTemplates = {
       },
     }),
 
-    // end of style
     Values: [
       {
-        bEdit: false,
+        bEdit: true,
         bShow: true,
         Value: "Joseph's Stand",
         Values: [
           {
-            bEdit: false,
+            bEdit: true,
             bShow: true,
             Value: 'Hermit Purple',
             Type: 'Static',
             Level: '',
-            Total: 24,
+            Total: 25,
             Min: 6,
             Max: 60,
             Points: { result: 0, expression: '0', vars: '{}' },
@@ -234,41 +229,41 @@ const defaultTemplates = {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
     Style: (props) => ({
-      fontSize: 'inherit',
-      fontFamily: 'inherit',
-      fontWeight: 'inherit',
-      color: 'inherit',
-      background: 'inherit',
-      backgroundColor: 'inherit',
-      justifyContent: 'inherit',
-      textAlignLast: 'inherit',
-
       '& .Profile': {
-        // Title Card
-        '& .ProfileHeader': {},
-
         fontSize: 22,
         fontFamily: 'Adobe Garamond, serif',
         fontStyle: 'normal',
         fontWeight: 'normal',
         justifyContent: 'top',
         textAlignLast: 'center',
+
+        // Title Card
+        '& .ProfileHeader': {
+          color: '#bbbbbb',
+          backgroundColor: '#232126',
+          border: '2px solid #dbdbdb',
+          borderRadius: '5px',
+        },
+
         '& button': {
           width: '64px',
           borderRadius: '8px',
           filter: 'brightness(88%)',
         },
         '& .Card': {
-          '& button': { fontSize: 12, textAlignLast: 'center' },
-          '& hr': { display: 'none' },
           color: '#bbbbbb',
           backgroundColor: '#232126',
           border: '2px solid #dbdbdb',
           borderRadius: '5px',
+
           padding: '22px',
           margin: '4px',
+
           minWidth: '328px',
           maxWidth: '512px',
+
+          '& button': { fontSize: 12, textAlignLast: 'center' },
+          '& hr': { display: 'none' },
           "& input[type='number']": { width: '64px' },
           "& input[type='text']": { width: '100%' },
           '& .CardHeader': {
@@ -865,19 +860,10 @@ const defaultTemplates = {
     Title: "Koy's Stats",
 
     Style: (props) => ({
-      fontSize: 'inherit',
-      fontFamily: 'inherit',
-      fontWeight: 'inherit',
-      color: 'inherit',
-      background: 'inherit',
-      backgroundColor: 'inherit',
-      justifyContent: 'inherit',
-      textAlignLast: 'inherit',
       '& .Profile': {
-        '& .ProfileHeader': {},
         fontSize: 12,
         fontFamily: 'NotoSansKR, serif',
-        fontWeight: 'inherit',
+        fontWeight: 'normal',
 
         color: '#6e5735',
         background: 'inherit',
@@ -895,13 +881,35 @@ const defaultTemplates = {
           background: 'inherit',
           backgroundColor: 'inherit',
         },
+
+        '& .ProfileHeader': {
+          fontSize: 'inherit',
+          fontFamily: 'inherit',
+          fontWeight: 'inherit',
+          color: 'inherit',
+          background: 'inherit',
+
+          backgroundColor: '#faf8e8',
+
+          justifyContent: 'inherit',
+          textAlignLast: 'inherit',
+
+          border: '4px solid #6e5735',
+          borderRadius: '5px',
+
+          padding: '16px',
+          margin: '4px',
+
+          minWidth: '328px',
+        },
+
         '& .Card': {
           fontSize: 'inherit',
           fontFamily: 'inherit',
           fontWeight: 'inherit',
-
           color: 'inherit',
           background: 'inherit',
+
           backgroundColor: '#faf8e8',
 
           justifyContent: 'inherit',
