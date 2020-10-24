@@ -5,11 +5,11 @@ import { Row } from './DivGrid';
 import CanvasCard from './CanvasCard';
 import Test from './Test';
 import Test2 from './Test2';
+import { Paper, Button } from '@material-ui/core';
 
 function NavBar(props) {
   return (
-    //style={{border: '1px solid red', width: '100%', height: '100%', align: 'center'}}
-    <div
+    <Paper
       align="left"
       style={{
         ...props.style,
@@ -19,25 +19,33 @@ function NavBar(props) {
       }}
     >
       <HashRouter basename="/">
-        <Row justifyContent="left" style={{ height: props.height }}>
-          {' '}
-          {/* The actual nav bar */}
-          <Link to="/">
-            <button style={{ margin: '1px' }}>Home</button>
-          </Link>
-          <Link to="/StatCard">
-            <button style={{ margin: '1px' }}>Stat Card</button>
-          </Link>
-          <Link to="/CanvasCard">
-            <button style={{ margin: '1px' }}>Canvas Card</button>
-          </Link>
-          <Link to="/Test">
-            <button style={{ margin: '1px' }}>Test</button>
-          </Link>
-          <Link to="/Test2">
-            <button style={{ margin: '1px' }}>Test2</button>
-          </Link>
-        </Row>
+        <Paper
+          style={{
+            ...props.style,
+            margin: 'none',
+            padding: '5px',
+          }}
+        >
+          <Row justifyContent="left" style={{ height: props.height }}>
+            {' '}
+            {/* The actual nav bar */}
+            <Link to="/">
+              <Button style={{ margin: '1px' }}>Home</Button>
+            </Link>
+            <Link to="/StatCard">
+              <Button style={{ margin: '1px' }}>Stat Card</Button>
+            </Link>
+            <Link to="/CanvasCard">
+              <Button style={{ margin: '1px' }}>Canvas Card</Button>
+            </Link>
+            {/* <Link to="/Test">
+              <Button style={{ margin: '1px' }}>Test</Button>
+            </Link>
+            <Link to="/Test2">
+              <Button style={{ margin: '1px' }}>Test2</Button>
+            </Link> */}
+          </Row>
+        </Paper>
         <hr style={{ display: 'none' }} />
 
         <div>
@@ -48,16 +56,16 @@ function NavBar(props) {
           <Route exact path="/" />
           <Route path="/CanvasCard" component={CanvasCard} />
         </div>
-        <div>
+        {/* <div>
           <Route exact path="/" />
           <Route path="/Test" component={Test} />
         </div>
         <div>
           <Route exact path="/" />
           <Route path="/Test2" component={Test2} />
-        </div>
+        </div> */}
       </HashRouter>
-    </div>
+    </Paper>
   );
 }
 
