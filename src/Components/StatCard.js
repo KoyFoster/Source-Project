@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TemplateSelector from './TemplateSelector';
 // import { MenuItem } from '@material-ui/core';
 // import StatForm from './StatForm.js';
@@ -168,9 +168,38 @@ const Stats = (props) => {
   };
 
   /* Material-UI CSS Styles */
-  const classes = useStyles({ Mode, Style: value.Style });
+  /* Hard coding useStyles for eadch templates style */
+  const classes1 = useStyles({ Mode, Style: Templates['Blank'].Style });
+  const classes2 = useStyles({
+    Mode,
+    Style: Templates["Jojo's Bizarre Adventure"].Style,
+  });
+  const classes3 = useStyles({
+    Mode,
+    Style: Templates['Dark Souls III'].Style,
+  });
+  const classes4 = useStyles({
+    Mode,
+    Style: Templates['ArcheAge (V2020.10.13)'].Style,
+  });
 
-  // useEffect(() => {}, [value.Style]);
+  /* Get useStyle of template */
+  const getClass = () => {
+    switch (value.Game) {
+      case 'Blank':
+        return classes1.root;
+      case "Jojo's Bizarre Adventure":
+        return classes2.root;
+      case 'Dark Souls III':
+        return classes3.root;
+      case 'ArcheAge':
+        return classes4.root;
+      default:
+        return classes1.root;
+    }
+  };
+
+  useEffect(() => {}, [value.Style]);
 
   return (
     <div style={{ display: 'flex' }}>
@@ -179,7 +208,7 @@ const Stats = (props) => {
           // style={{ filter: 'invert(88%)' }}
           setTemplate={Update}
           data={Templates}
-          defaultValue={'Dark Souls III'}
+          defaultValue={'ArcheAge (V2020.10.13)'}
         />
         <Paper style={{ display: 'flex', padding: '2px' }}>
           <SaveStatCard value={value}></SaveStatCard>
@@ -204,7 +233,7 @@ const Stats = (props) => {
         </Paper>
       </Paper>
 
-      <Paper className={classes.root} style={{ margin: '4px', padding: '4px' }}>
+      <Paper className={getClass()} style={{ margin: '4px', padding: '4px' }}>
         <ProfileCard
           key="profile"
           Mode={Mode}
