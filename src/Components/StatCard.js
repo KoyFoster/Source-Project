@@ -144,7 +144,7 @@ const Stats = (props) => {
   // member variables
   const [value, setValue] = useState(Templates['Blank']);
 
-  const Modes = ['View', 'Calculator', 'Edit'];
+  const Modes = ['Calculator', 'View', 'Edit'];
   const [Mode, setMode] = useState('Calculator');
   const handleModeChange = () => {
     switch (Mode) {
@@ -206,9 +206,10 @@ const Stats = (props) => {
       <Paper style={{ margin: '4px', padding: '4px' }}>
         <TemplateSelector
           // style={{ filter: 'invert(88%)' }}
+          label={'Series'}
           setTemplate={Update}
           data={Templates}
-          defaultValue={"Jojo's Bizarre Adventure"}
+          defaultValue={'Dark Souls III'}
         />
         <Paper style={{ display: 'flex', padding: '2px' }}>
           <SaveStatCard value={value}></SaveStatCard>
@@ -222,7 +223,7 @@ const Stats = (props) => {
             // filter: 'invert(88%)',
           }}
         >
-          Mode Change:{' '}
+          Mode:{' '}
           <button
             type="push"
             style={{ width: '80px' }}

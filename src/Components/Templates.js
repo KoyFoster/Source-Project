@@ -19,7 +19,123 @@ const defaultTemplates = {
   Blank: {
     Game: 'Blank',
     Title: 'Blank',
-    Style: (props) => {},
+    Style: (props) => ({
+      '& .Profile': {
+        fontSize: '14',
+        fontFamily: 'Arial Black',
+        fontWeight: 'bold',
+        color: 'white',
+        justifyContent: 'left',
+        textAlignLast: 'left',
+
+        // Profile Border
+        ...(props.Mode === 'Edit'
+          ? {
+              // StatBlock Debug Border
+              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
+        '& .ProfileHeader': {},
+        '& button': {},
+        '& .Card': {
+          // Card Border
+          ...(props.Mode === 'Edit'
+            ? {
+                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
+
+          // Level
+          "& input[type='number']": { borderRadius: '4px', width: '32px' },
+          // Level
+          "& input[type='text']": { borderRadius: '4px' },
+          '& .CardHeader': {
+            "& input[type='text']": {},
+            '& label': {},
+          },
+          '& .Level': {
+            '& div': {},
+            '& button': {},
+          },
+          '& .StatBlock': {
+            // Stat Block Border
+            ...(props.Mode === 'Edit'
+              ? {
+                  // StatBlock Debug Border
+                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+                }
+              : {
+                  border: 'initial',
+                  borderImageRepeat: 'initial',
+                  borderImage: 'initial',
+                  borderImageSlice: 'initial',
+                }),
+
+            '& div[target="Attributes"]': {},
+            "& input[type='text']": {},
+            '& label': {},
+          },
+
+          '& .Stats': {
+            '& input': {},
+            '& table': {
+              '& thead': {
+                '& th': {},
+              },
+              '& tbody': {
+                '& tr': {
+                  '& td': {
+                    '& button': {},
+                    "& input[type='number']": {},
+                    "& input[type='text']": {},
+                  },
+
+                  '& td:nth-child(1):empty': {},
+                  '& td:nth-child(1)': {},
+                  '& td:nth-child(2)': {
+                    '& input': {},
+                  },
+                  '& td:nth-child(3)': {},
+                  '& td:nth-child(4)': {},
+                  '& td:nth-child(5)': {},
+                },
+                // hover row
+                '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
+
+                '& tfoot': {},
+                '& colgroup': {
+                  '& col:nth-child(1)': {},
+                  '& col:nth-child(2)': {},
+                  '& col:nth-child(3)': {},
+                  '& col:nth-child(4)': {},
+                  '& col:nth-child(5)': {},
+                },
+              },
+            },
+          },
+        },
+
+        '& .Controls': {
+          '& div': {
+            '& button': {
+              width: 'auto',
+            },
+          },
+        },
+      },
+    }),
+
     Values: [],
   },
   "Jojo's Bizarre Adventure": {
@@ -34,9 +150,34 @@ const defaultTemplates = {
         justifyContent: 'left',
         textAlignLast: 'left',
 
+        // Profile Border
+        ...(props.Mode === 'Edit'
+          ? {
+              // StatBlock Debug Border
+              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
         '& .ProfileHeader': {},
         '& button': {},
         '& .Card': {
+          // Card Border
+          ...(props.Mode === 'Edit'
+            ? {
+                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
+
           // Level
           "& input[type='number']": { borderRadius: '4px', width: '32px' },
           // Level
@@ -50,6 +191,19 @@ const defaultTemplates = {
             '& button': {},
           },
           '& .StatBlock': {
+            // Stat Block Border
+            ...(props.Mode === 'Edit'
+              ? {
+                  // StatBlock Debug Border
+                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+                }
+              : {
+                  border: 'initial',
+                  borderImageRepeat: 'initial',
+                  borderImage: 'initial',
+                  borderImageSlice: 'initial',
+                }),
+
             '& div[target="Attributes"]': {},
             "& input[type='text']": {},
             '& label': {},
@@ -238,6 +392,19 @@ const defaultTemplates = {
         justifyContent: 'top',
         textAlignLast: 'center',
 
+        // Profile Border
+        ...(props.Mode === 'Edit'
+          ? {
+              // StatBlock Debug Border
+              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
         // Title Card
         '& .ProfileHeader': {
           color: '#bbbbbb',
@@ -262,6 +429,20 @@ const defaultTemplates = {
 
           minWidth: '328px',
           maxWidth: '512px',
+
+          border: 'initial',
+
+          // Card Border
+          ...(props.Mode === 'Edit'
+            ? {
+                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
 
           '& button': { fontSize: 12, textAlignLast: 'center' },
           '& hr': { display: 'none' },
@@ -298,10 +479,25 @@ const defaultTemplates = {
               color: 'red',
             },
 
-            border: props.Mode !== 'View' ? '39px solid transparent' : 'none',
-            borderImageRepeat: 'repeat',
-            borderImage: props.Mode !== 'View' ? `url("${DS3Frame}")` : 'none',
-            borderImageSlice: '34%',
+            ...(props.Mode === 'Calculator'
+              ? {
+                  border: '39px solid transparent',
+                  borderImageRepeat: 'repeat',
+                  borderImage: `url("${DS3Frame}")`,
+                  borderImageSlice: '34%',
+                }
+              : // Stat Block Border
+              props.Mode === 'Edit'
+              ? {
+                  // StatBlock Debug Border
+                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+                }
+              : {
+                  border: 'initial',
+                  borderImageRepeat: 'initial',
+                  borderImage: 'initial',
+                  borderImageSlice: 'initial',
+                }),
 
             color: '#aca69e',
             textAlignLast: 'left',
@@ -873,6 +1069,19 @@ const defaultTemplates = {
         justifyContent: 'top',
         textAlignLast: 'center',
 
+        // Profile Border
+        ...(props.Mode === 'Edit'
+          ? {
+              // StatBlock Debug Border
+              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
         '& button': {
           width: '64px',
           borderRadius: '8px',
@@ -924,6 +1133,18 @@ const defaultTemplates = {
 
           minWidth: '328px',
 
+          // Card Border
+          ...(props.Mode === 'Edit'
+            ? {
+                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
+
           // Level
           "& input[type='number']": {
             width: '64px',
@@ -951,10 +1172,24 @@ const defaultTemplates = {
           },
 
           '& .StatBlock': {
-            '& div[target="Attributes"]': {},
-
             textAlignLast: 'left',
             padding: '16px 0px 16px 0px',
+
+            '& div[target="Attributes"]': {},
+
+            // Stat Block Border
+            ...(props.Mode === 'Edit'
+              ? {
+                  // StatBlock Debug Border
+                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+                }
+              : {
+                  border: 'initial',
+                  borderImageRepeat: 'initial',
+                  borderImage: 'initial',
+                  borderImageSlice: 'initial',
+                }),
+
             "& input[type='text']": {
               width: '100%',
             },

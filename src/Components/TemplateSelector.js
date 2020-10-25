@@ -4,6 +4,7 @@ import { Paper, Select, MenuItem } from '@material-ui/core';
 function TemplateSelector(props) {
   // props
   const { data } = props;
+  const { label } = props;
   const [value, setValue] = useState(props.defaultValue);
   const setTemplate = (val) => {
     setValue(val);
@@ -34,7 +35,7 @@ function TemplateSelector(props) {
       }}
       display="flex"
     >
-      Template
+      {label ? label : 'Template'}
       <Select
         value={value}
         onChange={(e) => {

@@ -724,7 +724,7 @@ const ProfileCard = (props) => {
       <div>
         <div className="ProfileHeader" style={{ whiteSpace: 'pre' }}>
           <div>
-            Series:{' '}
+            {Mode !== 'View' ? 'Series: ' : null}
             {Mode === 'Edit' ? (
               <TextInputValidator
                 key={Game}
@@ -751,7 +751,7 @@ const ProfileCard = (props) => {
             )}
           </div>
           <div>
-            Title:{' '}
+            {Mode !== 'View' ? 'Title: ' : null}
             {Mode === 'Edit' ? (
               <input
                 type="text"
