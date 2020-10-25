@@ -33,44 +33,46 @@ const Test2 = () => {
         // update vars
         if (bUpdate) {
           varObj.vars = JSON.stringify(obj);
-          console.warn(`Match Found:`, varObj);
+          // console.warn(`Match Found:`, varObj);
         }
       });
     }
   };
 
   const UpdateAllKeys = (newKey, oldKey, data) => {
+    console.warn(`UpdateAllKeys:`, data);
     // newKey should be the same length as the old Key
     if (newKey.length !== oldKey.length) return;
 
     // Iterate through entire dataobject
     data.Values.forEach((Value) => {
-      Object.keys(Value.Values).forEach((key) => {
-        // 'Points' is the only variable carrying field at this depth
-        if (Value.Values[key].Points) {
-          // console.warn('Points:', Value.Values[key].Points);
-          replaceVar(newKey, oldKey, Value.Values[key].Points);
-        }
+      if (Value.Values)
+        Object.keys(Value.Values).forEach((key) => {
+          // 'Points' is the only variable carrying field at this depth
+          if (Value.Values[key].Points) {
+            console.warn('Points:', Value.Values[key].Points);
+            replaceVar(newKey, oldKey, Value.Values[key].Points);
+          }
 
-        // ITERATE through Num/Min/Max vars
-        Value.Values[key].Values.forEach((val) => {
-          if (val.Num.vars) {
-            replaceVar(newKey, oldKey, val.Num);
-          }
-          if (val.Min.vars) {
-            replaceVar(newKey, oldKey, val.Min);
-          }
-          if (val.Max.vars) {
-            replaceVar(newKey, oldKey, val.Max);
-          }
+          // ITERATE through Num/Min/Max vars
+          Value.Values[key].Values.forEach((val) => {
+            if (val.Num.vars) {
+              replaceVar(newKey, oldKey, val.Num);
+            }
+            if (val.Min.vars) {
+              replaceVar(newKey, oldKey, val.Min);
+            }
+            if (val.Max.vars) {
+              replaceVar(newKey, oldKey, val.Max);
+            }
+          });
         });
-      });
     });
 
     return data;
   };
 
-  const data = { ...Templates['ArcheAge (V2020.10.13)'] };
+  const data = { ...Templates["Jojo's Bizarre Adventure"] };
 
   return (
     <div>

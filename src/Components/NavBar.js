@@ -3,7 +3,7 @@ import { HashRouter, Link, Route } from 'react-router-dom';
 import Stats from './StatCard';
 import { Row } from './DivGrid';
 import CanvasCard from './CanvasCard';
-// import Test from './Test';
+import Test2 from './Test2';
 // import Test2 from './Test2';
 import { Paper, Button } from '@material-ui/core';
 
@@ -38,10 +38,10 @@ function NavBar(props) {
             <Link to="/CanvasCard">
               <Button style={{ margin: '1px' }}>Canvas Card</Button>
             </Link>
-            {/* <Link to="/Test">
-              <Button style={{ margin: '1px' }}>Test</Button>
-            </Link>
             <Link to="/Test2">
+              <Button style={{ margin: '1px' }}>Test2</Button>
+            </Link>
+            {/* <Link to="/Test2">
               <Button style={{ margin: '1px' }}>Test2</Button>
             </Link> */}
           </Row>
@@ -56,11 +56,11 @@ function NavBar(props) {
           <Route exact path="/" />
           <Route path="/CanvasCard" component={CanvasCard} />
         </div>
-        {/* <div>
-          <Route exact path="/" />
-          <Route path="/Test" component={Test} />
-        </div>
         <div>
+          <Route exact path="/" />
+          <Route path="/Test2" component={Test2} />
+        </div>
+        {/* <div>
           <Route exact path="/" />
           <Route path="/Test2" component={Test2} />
         </div> */}

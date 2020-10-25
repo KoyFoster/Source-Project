@@ -10,10 +10,85 @@ import StatData from '../StatData.js';
 import ToggleButton from './ToggleButton.js';
 import MathInput from './MathInput.js';
 import Controls from './Controls.js';
+import TextInputValidator from './TextInputValidator.js';
 import { Profile } from './ProfileData';
 import './Card.css';
 import Diagram from '../Diagram.js';
 import { Paper } from '@material-ui/core';
+
+// Current Objectives
+// 1. Add key validation
+// 2. Add key updating
+//   a. Check all properties containing variables with keys that are identical and update them
+
+const replaceVar = (newKey, oldKey, varObj) => {
+  console.warn(`replaceVar:`, { newKey, oldKey });
+  if (varObj.vars) {
+    const obj = JSON.parse(varObj.vars);
+    Object.keys(obj).forEach((key2) => {
+      // Cross compare against oldKey
+      // Size check
+      const pos = oldKey.length - 1;
+      let bUpdate = false;
+      if (oldKey.length > obj[key2].length) {
+      } else {
+        let i = 0;
+        let bMatch = true;
+
+        obj[key2].forEach((k) => {
+          if (obj[key2][i] !== oldKey[i]) {
+            bMatch = false;
+          }
+          if (bMatch && i === pos) {
+            console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
+            obj[key2][i] = newKey[i];
+            bUpdate = true;
+          }
+
+          i += 1;
+        });
+      }
+      // update vars
+      if (bUpdate) {
+        varObj.vars = JSON.stringify(obj);
+        console.warn(`Match Found:`, varObj);
+      }
+    });
+  }
+};
+
+const UpdateAllKeys = (newKey, oldKey, data) => {
+  console.warn(`UpdateAllKeys:`, data);
+  // newKey should be the same length as the old Key
+  if (newKey.length !== oldKey.length) return;
+
+  // Iterate through entire dataobject
+  data.Values.forEach((Value) => {
+    if (Value.Values)
+      Object.keys(Value.Values).forEach((key) => {
+        // 'Points' is the only variable carrying field at this depth
+        if (Value.Values[key].Points) {
+          console.warn('Points:', Value.Values[key].Points);
+          replaceVar(newKey, oldKey, Value.Values[key].Points);
+        }
+
+        // ITERATE through Num/Min/Max vars
+        Value.Values[key].Values.forEach((val) => {
+          if (val.Num.vars) {
+            replaceVar(newKey, oldKey, val.Num);
+          }
+          if (val.Min.vars) {
+            replaceVar(newKey, oldKey, val.Min);
+          }
+          if (val.Max.vars) {
+            replaceVar(newKey, oldKey, val.Max);
+          }
+        });
+      });
+  });
+
+  return data;
+};
 
 // styling contrainers
 const ProfileContainer = (props) => {
@@ -37,13 +112,6 @@ const CardHeader = (props) => {
     </div>
   );
 };
-// const LevelHeader = (props) => {
-//   return (
-//     <div className="Level" onClick={props.onClick}>
-//       {props.children}
-//     </div>
-//   );
-// };
 const StatBlock = (props) => {
   return (
     <div
@@ -65,6 +133,7 @@ const StatsContainer = (props) => {
 };
 
 const Block = (props) => {
+  let { keyPath } = props;
   const { Update } = props;
   const { Mode } = props;
   const { data } = props;
@@ -77,11 +146,15 @@ const Block = (props) => {
   let { Total } = Stats;
   let { Min } = Stats;
   let { Max } = Stats;
-  // const { Level } = Stats;
-  // const { Points } = Stats;
 
   // stat data
   const { Values } = Stats;
+
+  // Generate key blacklist
+  const blacklist = `~${Values.map((value) => {
+    return value.Value;
+  }).join('~')}~`;
+  // console.warn(`Block blacklist: ${blacklist}`);
 
   // Update Totals
   {
@@ -121,6 +194,9 @@ const Block = (props) => {
     let i = -1;
     function contents() {
       return Values.map((value) => {
+        const kp = [...keyPath, 'Values', Value, 'Values'];
+        // console.warn('kp:', kp);
+
         i += 1;
         if (Mode === 'View') {
           return setRow(
@@ -163,12 +239,25 @@ const Block = (props) => {
           return setRow(
             i,
             Stats.Value,
-            <input
-              type="text"
-              value={value.Value}
-              onChange={(e) => {
-                value.Value = e.target.value;
-                Update(data);
+            <TextInputValidator
+              defaultValue={value.Value}
+              blacklist={blacklist.replace(`${value.Value}~`, '')}
+              events={{
+                onKeyUp: (e) => {
+                  if (e.key === 'Enter') {
+                    console.warn('keyPath={kp}:', kp);
+                    const oldValue = value.Value;
+                    value.Value = e.target.value;
+                    console.warn(`${oldValue}, ${value.Value}, ${kp}`);
+                    Update(
+                      UpdateAllKeys(
+                        [...kp, e.target.value],
+                        [...kp, oldValue],
+                        data,
+                      ),
+                    );
+                  }
+                },
               }}
             />,
             <input
@@ -221,13 +310,18 @@ const Block = (props) => {
           return setRow(
             i,
             Stats.Value,
-            <input
+            <TextInputValidator
               key="1"
-              type="text"
-              value={value.Value}
-              onChange={(e) => {
-                value.Value = e.target.value;
-                Update(data);
+              blacklist={blacklist.replace(`${value.Value}~`, '')}
+              defaultValue={value.Value}
+              events={{
+                onKeyUp: (e) => {
+                  if (e.key === 'Enter') {
+                    value.Value = e.target.value;
+                    // UpdateAllKeys(0,0, data)
+                    Update(data);
+                  }
+                },
               }}
             />,
             <MathInput
@@ -328,35 +422,6 @@ const Block = (props) => {
         setBlockSelection(Value);
       }}
     >
-      {/* <LevelHeader>
-        <div style={{ display: 'flex' }}>
-          {Type === 'Calc' ? null : 'Level: '}
-          {Type === 'Calc' ? null : (
-            <input
-              type="number"
-              value={Level ? Level : 0}
-              onChange={(e) => {}}
-            />
-          )}
-          {Type === 'Calc' ? null : 'Points: '}
-          {Type === 'Calc' ? null : (
-            <MathInput
-              Key="Points"
-              value={Points}
-              data={data}
-              onChange={(e) => {}}
-            >
-              {Points ? Points : 'N/D'}
-            </MathInput>
-          )}
-          {Type === 'Calc' ? null : (
-            <div style={{ width: '100%' }}>
-              Remainder:{' '}
-              {Points ? (Points.result ? Points.result - Total : 'N/D') : 'N/D'}
-            </div>
-          )}
-        </div>
-      </LevelHeader> */}
       <StatBlock value={Stats.Value}>
         <div style={{ display: 'flex' }}>
           {/* Stat Type */}
@@ -378,12 +443,15 @@ const Block = (props) => {
           {/* Stat Label */}
           {Stats.bShow || Mode === 'Edit' ? (
             Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
-              <input
-                type="text"
-                value={Value}
-                onChange={(e) => {
-                  Stats.Value = e.target.value;
-                  Update(data);
+              <TextInputValidator
+                defaultValue={Value}
+                eventys={{
+                  onKeyUp: (e) => {
+                    if (e.key === 'Enter') {
+                      Stats.Value = e.target.value;
+                      Update(data);
+                    }
+                  },
                 }}
               />
             ) : (
@@ -445,6 +513,7 @@ const Block = (props) => {
 };
 
 const Card = (props) => {
+  const { keyPath } = props;
   const [blockSelection, setBlockSelection] = useState(undefined);
   const { cardData } = props;
   const { Update } = props;
@@ -460,10 +529,13 @@ const Card = (props) => {
   function Blocks() {
     return keys.map((key) => {
       i += 1;
+      const kp = [...keyPath, cardData.Value];
+
       return [
         <hr key={i}></hr>,
         <Block
           key={`B${i}`}
+          keyPath={kp}
           Stats={Page[key]}
           Update={Update}
           Mode={Mode}
@@ -486,12 +558,16 @@ const Card = (props) => {
         <CardHeader style={{ width: '100%' }}>
           {Mode === 'Edit' ||
           (Mode === 'Calculator' && cardData.bEdit && cardData.bShow) ? (
-            <input
+            <TextInputValidator
               type="text"
-              value={Value}
-              onChange={(e) => {
-                cardData.Value = e.target.value;
-                Update(data);
+              defaultValue={Value}
+              events={{
+                onKeyUp: (e) => {
+                  if (e.key === 'Enter') {
+                    cardData.Value = e.target.value;
+                    Update(data);
+                  }
+                },
               }}
             />
           ) : cardData.bShow ? (
@@ -582,6 +658,7 @@ const ProfileCard = (props) => {
       return card.Type === 'Card' ? (
         <Card
           key={i}
+          keyPath={['Values']}
           cardData={card}
           Update={Update}
           Mode={Mode}
@@ -603,12 +680,16 @@ const ProfileCard = (props) => {
           <div>
             Game:{' '}
             {Mode === 'Edit' ? (
-              <input
+              <TextInputValidator
                 type="text"
-                value={Game}
-                onChange={(e) => {
-                  data.Game = e.target.value;
-                  Update(data);
+                defaultValue={Game}
+                events={{
+                  onKeyUp: (e) => {
+                    if (e.key === 'Enter') {
+                      data.Game = e.target.value;
+                      Update(data);
+                    }
+                  },
                 }}
               />
             ) : (
