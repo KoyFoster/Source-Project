@@ -200,7 +200,7 @@ const Stats = (props) => {
   };
 
   useEffect(() => {}, [value.Style]);
-
+  // console.log(`Data:`, value);
   return (
     <div style={{ display: 'flex' }}>
       <Paper style={{ margin: '4px', padding: '4px' }}>

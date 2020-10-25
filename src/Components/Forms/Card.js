@@ -22,7 +22,7 @@ import { Paper } from '@material-ui/core';
 //   a. Check all properties containing variables with keys that are identical and update them
 
 const replaceVar = (newKey, oldKey, varObj) => {
-  console.warn(`replaceVar:`, { oldKey, newKey, varObj });
+  // console.warn(`replaceVar:`, { oldKey, newKey, varObj });
   if (varObj.vars) {
     const obj = JSON.parse(varObj.vars);
     Object.keys(obj).forEach((key2) => {
@@ -40,7 +40,7 @@ const replaceVar = (newKey, oldKey, varObj) => {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
+            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
             obj[key2][i] = newKey[i];
             bUpdate = true;
           }
@@ -51,7 +51,7 @@ const replaceVar = (newKey, oldKey, varObj) => {
       // update vars
       if (bUpdate) {
         varObj.vars = JSON.stringify(obj);
-        console.warn(`Match Found:`, varObj);
+        // console.warn(`Match Found:`, varObj);
       }
     });
   }
@@ -67,14 +67,14 @@ const replaceVar = (newKey, oldKey, varObj) => {
       } else {
         let i = 0;
         let bMatch = true;
-        console.warn(`Match Found:`, obj[key2]);
+        // console.warn(`Match Found:`, obj[key2]);
 
         obj[key2].forEach((k) => {
           if (obj[key2][i] !== oldKey[i]) {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
+            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
             obj[key2][i] = newKey[i];
           }
 
@@ -86,7 +86,7 @@ const replaceVar = (newKey, oldKey, varObj) => {
 };
 
 const UpdateAllKeys = (newKey, oldKey, data) => {
-  console.warn(`UpdateAllKeys:`, { newKey, oldKey, data });
+  // console.warn(`UpdateAllKeys:`, { newKey, oldKey, data });
   // newKey should be the same length as the old Key
   if (newKey.length !== oldKey.length) return;
 
@@ -98,7 +98,7 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
         Object.keys(Value.Values).forEach((key) => {
           // 'Points' is the only variable carrying field at this depth
           if (Value.Values[key].Points) {
-            console.warn('Points:', Value.Values[key].Points);
+            // console.warn('Points:', Value.Values[key].Points);
             replaceVar(newKey, oldKey, Value.Values[key].Points);
           }
 
@@ -117,10 +117,10 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
         });
     } else if (Value.Type === 'Graph') {
       // ITERATE through Values
-      console.warn(`Graph: `, Value.Keys);
+      // console.warn(`Graph: `, Value.Keys);
       // 'Points' is the only variable carrying field at this depth
       if (Value.Keys) {
-        console.warn('Replace Values:', Value.Keys);
+        // console.warn('Replace Values:', Value.Keys);
         replaceVar(newKey, oldKey, Value.Keys);
       }
     }
@@ -234,7 +234,6 @@ const Block = (props) => {
     function contents() {
       return Values.map((value) => {
         const kp = [...keyPath, 'Values', Value, 'Values'];
-        // console.warn('kp:', kp);
 
         i += 1;
         if (Mode === 'View') {
@@ -279,15 +278,14 @@ const Block = (props) => {
             i,
             Stats.Value,
             <TextInputValidator
+              key={value.Value}
               defaultValue={value.Value}
               blacklist={blacklist.replace(`${value.Value}~`, '')}
               events={{
                 onKeyUp: (e) => {
                   if (e.key === 'Enter') {
-                    console.warn('keyPath={kp}:', kp);
                     const oldValue = value.Value;
                     value.Value = e.target.value;
-                    console.warn(`${oldValue}, ${value.Value}, ${kp}`);
                     Update(
                       UpdateAllKeys(
                         [...kp, e.target.value],
@@ -350,7 +348,7 @@ const Block = (props) => {
             i,
             Stats.Value,
             <TextInputValidator
-              key="1"
+              key={value.Value}
               blacklist={blacklist.replace(`${value.Value}~`, '')}
               defaultValue={value.Value}
               events={{
@@ -483,6 +481,7 @@ const Block = (props) => {
           {Stats.bShow || Mode === 'Edit' ? (
             Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
               <TextInputValidator
+                key={Value}
                 defaultValue={Value}
                 eventys={{
                   onKeyUp: (e) => {
@@ -598,6 +597,7 @@ const Card = (props) => {
           {Mode === 'Edit' ||
           (Mode === 'Calculator' && cardData.bEdit && cardData.bShow) ? (
             <TextInputValidator
+              key={Value}
               type="text"
               defaultValue={Value}
               events={{
@@ -605,7 +605,6 @@ const Card = (props) => {
                   if (e.key === 'Enter') {
                     const oldValue = cardData.Value;
                     cardData.Value = e.target.value;
-                    console.warn(`${oldValue}, ${cardData.Value}, ${keyPath}`);
                     Update(
                       UpdateAllKeys(
                         [...keyPath, e.target.value],
@@ -728,6 +727,7 @@ const ProfileCard = (props) => {
             Series:{' '}
             {Mode === 'Edit' ? (
               <TextInputValidator
+                key={Game}
                 type="text"
                 defaultValue={Game}
                 events={{
@@ -735,7 +735,6 @@ const ProfileCard = (props) => {
                     if (e.key === 'Enter') {
                       const oldValue = data.Game;
                       data.Game = e.target.value;
-                      console.warn(`${oldValue}, ${data.Game}, ${'Values'}`);
                       Update(
                         UpdateAllKeys(
                           ['Values', data.Game],

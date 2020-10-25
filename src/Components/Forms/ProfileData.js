@@ -274,7 +274,12 @@ class Graph {
       this.bShow = obj.bShow;
       this.Value = obj.Value ? obj.Value : '';
 
-      this.Keys = [...obj.Keys];
+      // An array of arrays needs to be double cloned
+      this.Keys = [
+        ...obj.Keys.map((Key) => {
+          return [...Key];
+        }),
+      ];
     } else {
       this.Values.push(new Block(undefined, this));
     }
@@ -293,7 +298,6 @@ class Graph {
         max: buffer.Max.result,
         unit: buffer.Unit,
       };
-      // console.log('Value Buffer:', buffer);
       Values.push(buffer);
     });
 
