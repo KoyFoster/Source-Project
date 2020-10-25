@@ -415,7 +415,7 @@ const Diagram = (props) => {
                 style={{ fontSize: 10, strokeWidth: 0, fill: pallete.grid[1] }}
                 transform={transform}
               >
-                {`${tickValue}${Values[i + 1].unit}`}
+                {`${tickValue}${Values[i].unit}`}
               </text>,
             );
             htmlResult.push(
@@ -433,7 +433,7 @@ const Diagram = (props) => {
                 }}
                 transform={transform}
               >
-                {`${tickValue}${Values[i + 1].unit}`}
+                {`${tickValue}${Values[i].unit}`}
               </text>,
             );
           }
