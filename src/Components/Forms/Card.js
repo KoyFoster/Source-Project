@@ -85,6 +85,75 @@ const replaceVar = (newKey, oldKey, varObj) => {
   }
 };
 
+const bVarInUse = (newKey, oldKey, varObj) => {
+  // const vars = [];
+  let bFound = false;
+
+  // console.warn(`bVarInUse:`, { oldKey, newKey, varObj });
+  if (varObj.vars) {
+    const obj = JSON.parse(varObj.vars);
+    Object.keys(obj).forEach((key2) => {
+      // Cross compare against oldKey
+      // Size check
+      const pos = oldKey.length - 1;
+      let bUpdate = false;
+      if (oldKey.length > obj[key2].length) {
+      } else {
+        let i = 0;
+        let bMatch = true;
+
+        obj[key2].forEach((k) => {
+          if (obj[key2][i] !== oldKey[i]) {
+            bMatch = false;
+          }
+          if (bMatch && i === pos) {
+            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
+            bFound = true;
+          }
+
+          i += 1;
+        });
+      }
+      // update vars
+      if (bUpdate) {
+        varObj.vars = JSON.stringify(obj);
+        // console.warn(`Match Found:`, varObj);
+      }
+    });
+  }
+  // An array of objects or arrays
+  else if (Array.isArray(varObj)) {
+    // Is Raw Array
+    const obj = varObj;
+    Object.keys(obj).forEach((key2) => {
+      // Cross compare against oldKey
+      // Size check
+      const pos = oldKey.length - 1;
+      if (oldKey.length > obj[key2].length) {
+      } else {
+        let i = 0;
+        let bMatch = true;
+        // console.warn(`Match Found:`, obj[key2]);
+
+        obj[key2].forEach((k) => {
+          if (obj[key2][i] !== oldKey[i]) {
+            bMatch = false;
+          }
+          if (bMatch && i === pos) {
+            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
+            // vars.push(obj);
+            bFound = true;
+          }
+
+          i += 1;
+        });
+      }
+    });
+  }
+
+  return bFound;
+};
+
 const UpdateAllKeys = (newKey, oldKey, data) => {
   // console.warn(`UpdateAllKeys:`, { newKey, oldKey, data });
   // newKey should be the same length as the old Key
@@ -96,12 +165,6 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
     if (Value.Type === 'Card') {
       if (Value.Values)
         Object.keys(Value.Values).forEach((key) => {
-          // 'Points' is the only variable carrying field at this depth
-          if (Value.Values[key].Points) {
-            // console.warn('Points:', Value.Values[key].Points);
-            replaceVar(newKey, oldKey, Value.Values[key].Points);
-          }
-
           // ITERATE through Num/Min/Max vars
           Value.Values[key].Values.forEach((val) => {
             if (val.Num.vars) {
@@ -118,7 +181,6 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
     } else if (Value.Type === 'Graph') {
       // ITERATE through Values
       // console.warn(`Graph: `, Value.Keys);
-      // 'Points' is the only variable carrying field at this depth
       if (Value.Keys) {
         // console.warn('Replace Values:', Value.Keys);
         replaceVar(newKey, oldKey, Value.Keys);
@@ -127,6 +189,49 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
   });
 
   return data;
+};
+
+const ValidateAllKeys = (newKey, oldKey, data) => {
+  // console.warn(`ValidateAllKeys:`, { newKey, oldKey, data });
+  // newKey should be the same length as the old Key
+  if (newKey.length !== oldKey.length) return false;
+
+  let vars = [];
+
+  // Iterate through entire dataobject
+  data.Values.forEach((Value) => {
+    // Card
+    if (Value.Type === 'Card') {
+      if (Value.Values)
+        Object.keys(Value.Values).forEach((key) => {
+          // ITERATE through Num/Min/Max vars
+          Value.Values[key].Values.forEach((val) => {
+            if (val.Num.vars) {
+              if (bVarInUse(newKey, oldKey, val.Num))
+                vars.push(`${Value.Value}/${val.Value}/Num`);
+            }
+            if (val.Min.vars) {
+              if (bVarInUse(newKey, oldKey, val.Min))
+                vars.push(`${Value.Value}/${val.Value}/Min`);
+            }
+            if (val.Max.vars) {
+              if (bVarInUse(newKey, oldKey, val.Max))
+                vars.push(`${Value.Value}/${val.Value}/Max`);
+            }
+          });
+        });
+    } else if (Value.Type === 'Graph') {
+      // ITERATE through Values
+      // console.warn(`Graph: `, Value.Keys);
+      if (Value.Keys) {
+        // console.warn('Replace Values:', Value.Keys);
+        if (bVarInUse(newKey, oldKey, Value.Keys)) vars.push(Value.Value);
+      }
+    }
+  });
+
+  console.log('Existing Vars:', vars);
+  return vars.length ? false : true;
 };
 
 // styling contrainers
@@ -534,6 +639,12 @@ const Block = (props) => {
               selection={statSelection}
               Tag="Stat"
               Add={(selection, i) => {
+                // If subtraction, check for existing references to said item
+                if (i < 0) {
+                  const kp = [...keyPath, 'Values', Value, 'Values', selection];
+                  if (!ValidateAllKeys(kp, kp, data)) return;
+                }
+
                 setStatSelection(Stats.addStat(selection, i));
                 Update(data);
               }}
@@ -660,6 +771,18 @@ const Card = (props) => {
           selection={blockSelection}
           Tag="Stats"
           Add={(selection, i) => {
+            // If subtraction, check for existing references to said item
+            if (i < 0) {
+              if (
+                !ValidateAllKeys(
+                  [...keyPath, cardData.Value, 'Values', selection],
+                  [...keyPath, cardData.Value, 'Values', selection],
+                  data,
+                )
+              )
+                return;
+            }
+
             setBlockSelection(cardData.addBlock(selection, i));
             Update(data);
           }}
@@ -771,6 +894,18 @@ const ProfileCard = (props) => {
                 Tag="Card"
                 selection={cardSelection}
                 Add={(selection, i) => {
+                  // If subtraction, check for existing references to said item
+                  if (i < 0) {
+                    if (
+                      !ValidateAllKeys(
+                        ['Values', selection],
+                        ['Values', selection],
+                        data,
+                      )
+                    )
+                      return;
+                  }
+
                   setCardSelection(data.addCard(selection, i));
                   Update(data);
                 }}
