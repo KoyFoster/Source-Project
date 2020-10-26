@@ -18,12 +18,16 @@ import Diagram from '../Diagram.js';
 import { Paper } from '@material-ui/core';
 
 // Current Objectives
-// 1.
+// 1. Card specific styling
+//  a. Possibly doable by applying section names with variable names
+//  b. This may be another whole can of works where style classnames need to be validated and updated
 
 // Possible objectived
 // Current Objectives
 // 1. Create special case for when you want to update a field and have it also calculated
 //   a. No real example at this time
+// 2. May need to create a predefined index of all cells that have variabled,
+//  - so that one can search through that list, as appose to the entire data object
 
 const replaceVar = (newKey, oldKey, varObj) => {
   // console.warn(`replaceVar:`, { oldKey, newKey, varObj });

@@ -606,6 +606,7 @@ const defaultTemplates = {
       },
     }),
     // end of style
+
     Values: [
       {
         bEdit: true,
@@ -627,7 +628,7 @@ const defaultTemplates = {
                 Value: 'Level',
                 Num: {
                   Value: 'Num',
-                  result: 37,
+                  result: 21,
                   expression: '(a+b+c+d+e+f+g+h+i)-90+1',
                   vars:
                     '{"a":["Values","Koy","Values","Attributes","Values","Vigor","Num"],"b":["Values","Koy","Values","Attributes","Values","Attunement","Num"],"c":["Values","Koy","Values","Attributes","Values","Endurance","Num"],"d":["Values","Koy","Values","Attributes","Values","Vitality","Num"],"e":["Values","Koy","Values","Attributes","Values","Strength","Num"],"f":["Values","Koy","Values","Attributes","Values","Dexterity","Num"],"g":["Values","Koy","Values","Attributes","Values","Intelligence","Num"],"h":["Values","Koy","Values","Attributes","Values","Faith","Num"],"i":["Values","Koy","Values","Attributes","Values","Luck","Num"]}',
@@ -652,8 +653,8 @@ const defaultTemplates = {
                 Value: 'Souls',
                 Num: {
                   Value: 'Num',
-                  result: 46855,
-                  expression: 'b * (a-1) + (17 * (a-2))',
+                  result: 20583,
+                  expression: 'a == 1 ? 0 : b * (a-1) + (17 * (a-2))',
                   vars:
                     '{"a":["Values","Koy","Values","Misc","Values","Level","Num"],"b":["Values","Koy","Values","Misc","Values","Required souls","Num"]}',
                 },
@@ -675,7 +676,7 @@ const defaultTemplates = {
                 Value: 'Required souls',
                 Num: {
                   Value: 'Num',
-                  result: 1285,
+                  result: 1013,
                   expression: '673 + 17 * (a-1)',
                   vars:
                     '{"a":["Values","Koy","Values","Misc","Values","Level","Num"]}',
@@ -709,42 +710,42 @@ const defaultTemplates = {
             Values: [
               {
                 Value: 'Vigor',
-                Num: { Value: 'Num', result: 16 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Attunement',
-                Num: { Value: 'Num', result: 11 },
+                Num: { Value: 'Num', result: 30 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Endurance',
-                Num: { Value: 'Num', result: 15 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Vitality',
-                Num: { Value: 'Num', result: 16 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Strength',
-                Num: { Value: 'Num', result: 20 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Dexterity',
-                Num: { Value: 'Num', result: 18 },
+                Num: { Value: 'Num', result: 10 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
@@ -1025,7 +1026,7 @@ const defaultTemplates = {
             bEdit: false,
             bShow: false,
             Value: 'Misc 3',
-            Type: 'Static',
+            Type: 'Calc',
             Level: '',
             Total: '',
             Min: '',
@@ -1034,9 +1035,16 @@ const defaultTemplates = {
             Values: [
               {
                 Value: 'Attunement Slots',
-                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Num: {
+                  Value: 'Num',
+                  result: 2,
+                  expression:
+                    'a < 10 ? 0 :  a <= 18 ? floor( (a-10)/4 )+1 :  a <= 30 ? floor( (a-18)/6 )+3 :  a <= 60 ? floor( (a-30)/10 )+5 :  a <= 80 ? floor( (a-60)/20 )+8 :  a >= 99  ? 10 : 9',
+                  vars:
+                    '{"a":["Values","Koy","Values","Attributes","Values","Attunement","Num"]}',
+                },
                 Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
-                Max: { Value: 'Max', result: 10, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 10, expression: '10', vars: '{}' },
                 Unit: '',
               },
             ],
