@@ -429,8 +429,6 @@ const defaultTemplates = {
           minWidth: '328px',
           maxWidth: '512px',
 
-          border: 'initial',
-
           // Card Border
           ...(props.Mode === 'Edit'
             ? {

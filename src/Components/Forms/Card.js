@@ -5,7 +5,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import StatData from '../StatData.js';
 import ToggleButton from './ToggleButton.js';
 import MathInput from './MathInput.js';
