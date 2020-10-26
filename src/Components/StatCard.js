@@ -209,7 +209,7 @@ const Stats = (props) => {
           label={'Series'}
           setTemplate={Update}
           data={Templates}
-          defaultValue={"Jojo's Bizarre Adventure"}
+          defaultValue={'Dark Souls III'}
         />
         <Paper style={{ display: 'flex', padding: '2px' }}>
           <SaveStatCard value={value}></SaveStatCard>

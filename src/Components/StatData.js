@@ -146,7 +146,7 @@ class StatData {
     try {
       result = evaluate(expression, scope);
     } catch {
-      // console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
+      console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
       return undefined;
     }
 
@@ -154,6 +154,7 @@ class StatData {
   }
 
   // Get Calculated Value
+  // Note: When it says 'scope', I mean 'vars'.
   static GetCellValue(expression, scope, data, noParse = false, raw = false) {
     const variables = this.parseVariables(scope, data, noParse, raw);
 

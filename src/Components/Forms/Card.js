@@ -18,9 +18,8 @@ import Diagram from '../Diagram.js';
 import { Paper } from '@material-ui/core';
 
 // Current Objectives
-// 1. Add key validation
-// 2. Add key updating
-//   a. Check all properties containing variables with keys that are identical and update them
+// 1. Update all values of any cells that have references to currently comdified field
+// Basically, any onChange event that modifies a numerical field
 
 const replaceVar = (newKey, oldKey, varObj) => {
   // console.warn(`replaceVar:`, { oldKey, newKey, varObj });
@@ -192,6 +191,83 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
   return data;
 };
 
+const updateVal = (key, varObj, data) => {
+  // console.warn(`replaceVar:`, { key, varObj });
+  if (varObj.vars) {
+    const obj = JSON.parse(varObj.vars);
+    Object.keys(obj).forEach((key2) => {
+      // Cross compare against key
+      // Size check
+      const pos = key.length - 1;
+      let bUpdate = false;
+      if (key.length > obj[key2].length) {
+      } else {
+        let i = 0;
+        let bMatch = true;
+
+        obj[key2].forEach((k) => {
+          if (obj[key2][i] !== key[i]) {
+            bMatch = false;
+          }
+          if (bMatch && i === pos) {
+            // console.warn(`${obj[key2][i]} =/= ${key[i]}`);
+            obj[key2][i] = key[i];
+            bUpdate = true;
+          }
+
+          i += 1;
+        });
+      }
+      // update val
+      if (bUpdate) {
+        // varObj.vars = JSON.stringify(obj);
+        // console.warn(`Match Found:`, varObj, obj, { buffer });
+
+        const buffer = StatData.GetCellValue(
+          varObj.expression,
+          obj,
+          data,
+          true,
+        );
+
+        varObj.result = buffer;
+
+        // This is where recursion happens
+        // TODO: Big dangerous
+        UpdateAllVals(varObj.getPath(), data);
+      }
+    });
+  }
+};
+
+const UpdateAllVals = (varKey, data) => {
+  // console.warn(`UpdateAllKeys:`, { key, data });
+
+  // Iterate through entire dataobject
+  data.Values.forEach((Value) => {
+    // Card
+    if (Value.Type === 'Card') {
+      if (Value.Values)
+        Object.keys(Value.Values).forEach((key) => {
+          // ITERATE through Num/Min/Max vars
+          Value.Values[key].Values.forEach((val) => {
+            if (val.Num.vars) {
+              updateVal(varKey, val.Num, data);
+            }
+            if (val.Min.vars) {
+              updateVal(varKey, val.Min, data);
+            }
+            if (val.Max.vars) {
+              updateVal(varKey, val.Max, data);
+            }
+          });
+        });
+    }
+  });
+
+  return data;
+};
+
 const ValidateAllKeys = (newKey, oldKey, data) => {
   // console.warn(`ValidateAllKeys:`, { newKey, oldKey, data });
   // newKey should be the same length as the old Key
@@ -294,9 +370,6 @@ const Block = (props) => {
   const { Stats } = props;
   const { Value } = Stats;
   let { Type } = Stats;
-  let { Total } = Stats;
-  let { Min } = Stats;
-  let { Max } = Stats;
 
   // stat data
   const { Values } = Stats;
@@ -306,18 +379,6 @@ const Block = (props) => {
     return value.Value;
   }).join('~')}~`;
   // console.warn(`Block blacklist: ${blacklist}`);
-
-  // Update Totals
-  {
-    const Totals = StatData.TallyTotals(Values);
-    Total = Totals.Total;
-    Min = Totals.Min;
-    Max = Totals.Max;
-
-    Stats.Total = Total;
-    Stats.Min = Min;
-    Stats.Max = Max;
-  }
 
   // stat table
   function StatTable() {
@@ -371,7 +432,8 @@ const Block = (props) => {
                     'Num',
                     parseInt(e.target.value, 10),
                   ).result;
-                  Update(data);
+
+                  Update(UpdateAllVals(value.getPath(), data));
                 }}
               />,
               value.Unit,
@@ -418,7 +480,7 @@ const Block = (props) => {
                   'Num',
                   parseInt(e.target.value, 10),
                 ).result;
-                Update(data);
+                Update(UpdateAllVals(value.getPath(), data));
               }}
             />,
             <input
@@ -430,7 +492,7 @@ const Block = (props) => {
                   'Min',
                   parseInt(e.target.value, 10),
                 ).result;
-                Update(data);
+                Update(UpdateAllVals(value.getPath(), data));
               }}
             />,
             <input
@@ -442,7 +504,7 @@ const Block = (props) => {
                   'Max',
                   parseInt(e.target.value, 10),
                 ).result;
-                Update(data);
+                Update(UpdateAllVals(value.getPath(), data));
               }}
             />,
             <input
@@ -514,8 +576,8 @@ const Block = (props) => {
               }}
             />,
             <input
-              key="5"
               type="text"
+              key="5"
               value={value.Unit}
               onChange={(e) => {
                 value.Unit = e.target.value;
@@ -548,18 +610,6 @@ const Block = (props) => {
         </thead>
 
         <tbody>{contents()}</tbody>
-
-        {/* {Mode === 'Edit' ? (
-          <tfoot>
-            <tr>
-              <td>Totals:</td>
-              <td>{Total}</td>
-              <td>{Min}</td>
-              <td>{Max}</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        ) : null} */}
       </table>
     );
   }
@@ -925,7 +975,7 @@ const ProfileCard = (props) => {
       <div>
         <div className="ProfileHeader" style={{ whiteSpace: 'pre' }}>
           <div>
-            {Mode !== 'View' ? 'Series: ' : null}
+            {Mode === 'Edit' ? 'Series: ' : null}
             {Mode === 'Edit' ? (
               <TextInputValidator
                 key={Game}
@@ -952,7 +1002,7 @@ const ProfileCard = (props) => {
             )}
           </div>
           <div>
-            {Mode !== 'View' ? 'Title: ' : null}
+            {Mode === 'Edit' ? 'Title: ' : null}
             {Mode === 'Edit' ? (
               <input
                 type="text"

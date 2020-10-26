@@ -33,7 +33,7 @@ function NavBar(props) {
               <Button style={{ margin: '1px' }}>Home</Button>
             </Link>
             <Link to="/StatCard">
-              <Button style={{ margin: '1px' }}>Stat Card</Button>
+              <Button style={{ margin: '1px' }}>Stat Card (WIP)</Button>
             </Link>
             <Link to="/CanvasCard">
               <Button style={{ margin: '1px' }}>Canvas Card</Button>
