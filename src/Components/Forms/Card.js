@@ -18,8 +18,12 @@ import Diagram from '../Diagram.js';
 import { Paper } from '@material-ui/core';
 
 // Current Objectives
-// 1. Update all values of any cells that have references to currently comdified field
-// Basically, any onChange event that modifies a numerical field
+// 1.
+
+// Possible objectived
+// Current Objectives
+// 1. Create special case for when you want to update a field and have it also calculated
+//   a. No real example at this time
 
 const replaceVar = (newKey, oldKey, varObj) => {
   // console.warn(`replaceVar:`, { oldKey, newKey, varObj });

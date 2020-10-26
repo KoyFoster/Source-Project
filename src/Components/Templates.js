@@ -606,7 +606,6 @@ const defaultTemplates = {
       },
     }),
     // end of style
-
     Values: [
       {
         bEdit: true,
@@ -622,12 +621,13 @@ const defaultTemplates = {
             Total: 42534,
             Min: 1347,
             Max: 3719457,
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Level',
                 Num: {
                   Value: 'Num',
-                  result: 34,
+                  result: 37,
                   expression: '(a+b+c+d+e+f+g+h+i)-90+1',
                   vars:
                     '{"a":["Values","Koy","Values","Attributes","Values","Vigor","Num"],"b":["Values","Koy","Values","Attributes","Values","Attunement","Num"],"c":["Values","Koy","Values","Attributes","Values","Endurance","Num"],"d":["Values","Koy","Values","Attributes","Values","Vitality","Num"],"e":["Values","Koy","Values","Attributes","Values","Strength","Num"],"f":["Values","Koy","Values","Attributes","Values","Dexterity","Num"],"g":["Values","Koy","Values","Attributes","Values","Intelligence","Num"],"h":["Values","Koy","Values","Attributes","Values","Faith","Num"],"i":["Values","Koy","Values","Attributes","Values","Luck","Num"]}',
@@ -643,16 +643,16 @@ const defaultTemplates = {
               },
               {
                 Value: 'Hollowing',
-                Num: { Value: 'Num', result: 0 },
-                Min: { Value: 'Min', result: 0 },
-                Max: { Value: 'Max', result: 99 },
+                Num: { Value: 'Num', result: 0, expression: '0', vars: '{}' },
+                Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
+                Max: { Value: 'Max', result: 99, expression: '99', vars: '{}' },
                 Unit: '',
               },
               {
                 Value: 'Souls',
                 Num: {
                   Value: 'Num',
-                  result: 41266,
+                  result: 46855,
                   expression: 'b * (a-1) + (17 * (a-2))',
                   vars:
                     '{"a":["Values","Koy","Values","Misc","Values","Level","Num"],"b":["Values","Koy","Values","Misc","Values","Required souls","Num"]}',
@@ -675,7 +675,7 @@ const defaultTemplates = {
                 Value: 'Required souls',
                 Num: {
                   Value: 'Num',
-                  result: 1234,
+                  result: 1285,
                   expression: '673 + 17 * (a-1)',
                   vars:
                     '{"a":["Values","Koy","Values","Misc","Values","Level","Num"]}',
@@ -705,17 +705,18 @@ const defaultTemplates = {
             Total: 123,
             Min: 9,
             Max: 891,
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Vigor',
-                Num: { Value: 'Num', result: 15 },
+                Num: { Value: 'Num', result: 16 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
               },
               {
                 Value: 'Attunement',
-                Num: { Value: 'Num', result: 10 },
+                Num: { Value: 'Num', result: 11 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
@@ -729,7 +730,7 @@ const defaultTemplates = {
               },
               {
                 Value: 'Vitality',
-                Num: { Value: 'Num', result: 15 },
+                Num: { Value: 'Num', result: 16 },
                 Min: { Value: 'Min', result: 1 },
                 Max: { Value: 'Max', result: 99 },
                 Unit: '',
@@ -774,7 +775,6 @@ const defaultTemplates = {
         ],
         Type: 'Card',
       },
-
       {
         bEdit: false,
         bShow: false,
@@ -786,9 +786,10 @@ const defaultTemplates = {
             Value: 'Base power',
             Type: 'Static',
             Level: '',
-            Total: 0,
-            Min: 0,
-            Max: 0,
+            Total: '',
+            Min: '',
+            Max: '',
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'HP',
@@ -819,9 +820,10 @@ const defaultTemplates = {
             Value: 'Base power 2',
             Type: 'Static',
             Level: '',
-            Total: 0,
-            Min: 0,
-            Max: 0,
+            Total: '',
+            Min: '',
+            Max: '',
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Equip load',
@@ -852,9 +854,10 @@ const defaultTemplates = {
             Value: 'Attack Power',
             Type: 'Static',
             Level: '',
-            Total: 0,
-            Min: 0,
-            Max: 0,
+            Total: '',
+            Min: '',
+            Max: '',
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'R Weapon 1',
@@ -914,9 +917,10 @@ const defaultTemplates = {
             Value: 'Defense',
             Type: 'Static',
             Level: '',
-            Total: 0,
-            Min: 0,
-            Max: 0,
+            Total: '',
+            Min: '',
+            Max: '',
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Physical',
@@ -982,9 +986,10 @@ const defaultTemplates = {
             Value: 'Resistances',
             Type: 'Static',
             Level: '',
-            Total: 0,
-            Min: 0,
-            Max: 0,
+            Total: '',
+            Min: '',
+            Max: '',
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Bleed',
@@ -1022,9 +1027,10 @@ const defaultTemplates = {
             Value: 'Misc 3',
             Type: 'Static',
             Level: '',
-            Total: 0,
-            Min: 0,
+            Total: '',
+            Min: '',
             Max: 10,
+            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Attunement Slots',
