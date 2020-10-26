@@ -273,7 +273,6 @@ const defaultTemplates = {
             Total: 25,
             Min: 6,
             Max: 60,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'POWER',
@@ -625,7 +624,6 @@ const defaultTemplates = {
             Total: 42534,
             Min: 1347,
             Max: 3719457,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Level',
@@ -709,7 +707,6 @@ const defaultTemplates = {
             Total: 123,
             Min: 9,
             Max: 891,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Vigor',
@@ -794,7 +791,6 @@ const defaultTemplates = {
             Total: 0,
             Min: 0,
             Max: 0,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'HP',
@@ -828,7 +824,6 @@ const defaultTemplates = {
             Total: 0,
             Min: 0,
             Max: 0,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Equip load',
@@ -862,7 +857,6 @@ const defaultTemplates = {
             Total: 0,
             Min: 0,
             Max: 0,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'R Weapon 1',
@@ -925,7 +919,6 @@ const defaultTemplates = {
             Total: 0,
             Min: 0,
             Max: 0,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Physical',
@@ -994,7 +987,6 @@ const defaultTemplates = {
             Total: 0,
             Min: 0,
             Max: 0,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Bleed',
@@ -1035,7 +1027,6 @@ const defaultTemplates = {
             Total: 0,
             Min: 0,
             Max: 10,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Attunement Slots',
@@ -1278,7 +1269,6 @@ const defaultTemplates = {
             Total: 18864,
             Min: 732,
             Max: 61440,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Health',
@@ -1339,12 +1329,6 @@ const defaultTemplates = {
             Total: 2356,
             Min: 82,
             Max: 12800,
-            Points: {
-              result: 2560,
-              expression: 'a * 1',
-              vars:
-                '{"a":["Values","Page One","Values","Primary Stats","Level"],"b":["Values","Page One","Values","Primary Stats","Level"]}',
-            },
             Values: [
               {
                 Value: 'Strength',
@@ -1435,7 +1419,6 @@ const defaultTemplates = {
             Total: 727.8,
             Min: 30.4,
             Max: 7168,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Melee Attack',
@@ -1596,7 +1579,6 @@ const defaultTemplates = {
             Total: 109.1,
             Min: 104.56,
             Max: 1278.54,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Move Speed',
@@ -1663,7 +1645,6 @@ const defaultTemplates = {
             Total: 155.4,
             Min: 7,
             Max: 70,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Melee Attack Speed',
@@ -1793,7 +1774,6 @@ const defaultTemplates = {
             Total: 156.2,
             Min: 6,
             Max: 60,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Ranged Accuracy',
@@ -1906,7 +1886,6 @@ const defaultTemplates = {
             Total: 315,
             Min: 6,
             Max: 60,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Magic Accuracy',
@@ -2019,7 +1998,6 @@ const defaultTemplates = {
             Total: 590,
             Min: 5,
             Max: 50,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Focus',
@@ -2120,7 +2098,6 @@ const defaultTemplates = {
             Total: 10019.8,
             Min: 7,
             Max: 70,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Parry Rate',
@@ -2255,7 +2232,6 @@ const defaultTemplates = {
             Total: 74.7,
             Min: 0,
             Max: 100,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Melee Damage Reduction',
@@ -2287,7 +2263,6 @@ const defaultTemplates = {
             Total: 73.6,
             Min: 1,
             Max: 10,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Ranged Damage Reduction',
@@ -2329,7 +2304,6 @@ const defaultTemplates = {
             Total: 70.1,
             Min: 3,
             Max: 30,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Magic Damage Reduction',
@@ -2396,7 +2370,6 @@ const defaultTemplates = {
             Total: 66.7,
             Min: 4,
             Max: 40,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Critical Heal Rate',
@@ -2475,7 +2448,6 @@ const defaultTemplates = {
             Total: 211,
             Min: 4,
             Max: 40,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Heal Regen',
@@ -2554,7 +2526,6 @@ const defaultTemplates = {
             Total: 22,
             Min: 5,
             Max: 50,
-            Points: { result: 0, expression: '0', vars: '{}' },
             Values: [
               {
                 Value: 'Received Healing',
