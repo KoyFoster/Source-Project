@@ -1,5 +1,5 @@
 import '../../App.css';
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 
 export default class Popup extends Component {
   handleClick = () => {

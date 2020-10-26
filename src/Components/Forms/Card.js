@@ -5,10 +5,11 @@
 /* eslint-disable indent */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import StatData from '../StatData.js';
 import ToggleButton from './ToggleButton.js';
 import MathInput from './MathInput.js';
+import Popup from './Popup';
 import Controls from './Controls.js';
 import TextInputValidator from './TextInputValidator.js';
 import { Profile } from './ProfileData';
@@ -231,7 +232,7 @@ const ValidateAllKeys = (newKey, oldKey, data) => {
   });
 
   console.log('Existing Vars:', vars);
-  return vars.length ? false : true;
+  return vars;
 };
 
 // styling contrainers
@@ -277,6 +278,12 @@ const StatsContainer = (props) => {
 };
 
 const Block = (props) => {
+  const [seen, setSeen] = useState(false);
+  const [warnMSG, setWarn] = useState('[No Message]');
+  const togglePopup = () => {
+    setSeen(!seen);
+  };
+
   let { keyPath } = props;
   const { Update } = props;
   const { Mode } = props;
@@ -564,6 +571,24 @@ const Block = (props) => {
         setBlockSelection(Value);
       }}
     >
+      {seen ? (
+        <Popup
+          key="Stat Removal Warning"
+          bToggle={togglePopup}
+          component={
+            <div style={{ color: 'red', fontSize: '14', fontWeight: 'bold' }}>
+              Warning:
+              <div
+                style={{ color: 'black', fontSize: '12', fontWeight: 'normal' }}
+              >
+                <div>[{statSelection}] is being referenced.</div>
+                <div>Remove all references before removing this field.</div>
+                <div>Refs: {warnMSG.join(' - ')}</div>
+              </div>
+            </div>
+          }
+        />
+      ) : null}
       <StatBlock value={Stats.Value}>
         <div style={{ display: 'flex' }}>
           {/* Stat Type */}
@@ -642,7 +667,12 @@ const Block = (props) => {
                 // If subtraction, check for existing references to said item
                 if (i < 0) {
                   const kp = [...keyPath, 'Values', Value, 'Values', selection];
-                  if (!ValidateAllKeys(kp, kp, data)) return;
+                  const vars = ValidateAllKeys(kp, kp, data);
+                  if (vars.length > 0) {
+                    setWarn(vars);
+                    togglePopup();
+                    return;
+                  }
                 }
 
                 setStatSelection(Stats.addStat(selection, i));
@@ -662,6 +692,11 @@ const Block = (props) => {
 };
 
 const Card = (props) => {
+  const [seen, setSeen] = useState(false);
+  const [warnMSG, setWarn] = useState('[No Message]');
+  const togglePopup = () => {
+    setSeen(!seen);
+  };
   const { keyPath } = props;
   const [blockSelection, setBlockSelection] = useState(undefined);
   const { cardData } = props;
@@ -703,6 +738,24 @@ const Card = (props) => {
         setCardSelection(Value);
       }}
     >
+      {seen ? (
+        <Popup
+          key="Stat Removal Warning"
+          bToggle={togglePopup}
+          component={
+            <div style={{ color: 'red', fontSize: '14', fontWeight: 'bold' }}>
+              Warning:
+              <div
+                style={{ color: 'black', fontSize: '12', fontWeight: 'normal' }}
+              >
+                <div>[{blockSelection}] is being referenced.</div>
+                <div>Remove all references before removing this field.</div>
+                <div>Refs: {warnMSG.join(' - ')}</div>
+              </div>
+            </div>
+          }
+        />
+      ) : null}
       <div style={{ display: 'flex' }}>
         <CardHeader style={{ width: '100%' }}>
           {Mode === 'Edit' ||
@@ -773,14 +826,16 @@ const Card = (props) => {
           Add={(selection, i) => {
             // If subtraction, check for existing references to said item
             if (i < 0) {
-              if (
-                !ValidateAllKeys(
-                  [...keyPath, cardData.Value, 'Values', selection],
-                  [...keyPath, cardData.Value, 'Values', selection],
-                  data,
-                )
-              )
+              const vars = ValidateAllKeys(
+                [...keyPath, cardData.Value, 'Values', selection],
+                [...keyPath, cardData.Value, 'Values', selection],
+                data,
+              );
+              if (vars.length > 0) {
+                setWarn(vars);
+                togglePopup();
                 return;
+              }
             }
 
             setBlockSelection(cardData.addBlock(selection, i));
@@ -803,6 +858,11 @@ const Graph = (props) => {
 
 // handles grid data
 const ProfileCard = (props) => {
+  const [seen, setSeen] = useState(false);
+  const [warnMSG, setWarn] = useState('[No Message]');
+  const togglePopup = () => {
+    setSeen(!seen);
+  };
   const [cardSelection, setCardSelection] = useState(undefined);
   const { Mode } = props;
   const { Update } = props;
@@ -844,6 +904,24 @@ const ProfileCard = (props) => {
 
   return (
     <ProfileContainer>
+      {seen ? (
+        <Popup
+          key="Stat Removal Warning"
+          bToggle={togglePopup}
+          component={
+            <div style={{ color: 'red', fontSize: '14', fontWeight: 'bold' }}>
+              Warning:
+              <div
+                style={{ color: 'black', fontSize: '12', fontWeight: 'normal' }}
+              >
+                <div>[{cardSelection}] is being referenced.</div>
+                <div>Remove all references before removing this field.</div>
+                <div>Refs: {warnMSG.join(' - ')}</div>
+              </div>
+            </div>
+          }
+        />
+      ) : null}
       <div>
         <div className="ProfileHeader" style={{ whiteSpace: 'pre' }}>
           <div>
@@ -896,14 +974,16 @@ const ProfileCard = (props) => {
                 Add={(selection, i) => {
                   // If subtraction, check for existing references to said item
                   if (i < 0) {
-                    if (
-                      !ValidateAllKeys(
-                        ['Values', selection],
-                        ['Values', selection],
-                        data,
-                      )
-                    )
+                    const vars = ValidateAllKeys(
+                      ['Values', selection],
+                      ['Values', selection],
+                      data,
+                    );
+                    if (vars.length > 0) {
+                      setWarn(vars);
+                      togglePopup();
                       return;
+                    }
                   }
 
                   setCardSelection(data.addCard(selection, i));
