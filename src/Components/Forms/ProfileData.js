@@ -126,6 +126,7 @@ class Stat {
     this.P = parent;
 
     // defaults
+    this.Type = 'Static';
     this.Value = '[New Stat]';
     this.Num = {};
     this.Min = {};
@@ -135,6 +136,7 @@ class Stat {
     // defined
     if (obj) {
       this.Value = obj.Value ? obj.Value : '';
+      this.Type = obj.Type ? obj.Type : '';
       this.Num = new Cell(obj.Num, 'Num', this);
       this.Min = new Cell(obj.Min, 'Min', this);
       this.Max = new Cell(obj.Max, 'Max', this);
@@ -165,13 +167,6 @@ class Block {
     // defaults
     this.Value = '[New Stats]';
 
-    this.Type = 'Static';
-    this.Level = '';
-    this.Total = '';
-    this.Min = '';
-    this.Max = '';
-    this.Points = { result: 0, expression: '0', vars: '{}' };
-
     this.Values = [];
 
     // defined
@@ -179,13 +174,6 @@ class Block {
       this.bEdit = obj.bEdit;
       this.bShow = obj.bShow;
       this.Value = obj.Value;
-
-      this.Type = obj.Type ? obj.Type : '';
-      this.Total = obj.Total ? obj.Total : '';
-      this.Level = obj.Level ? obj.Level : '';
-      this.Min = obj.Min ? obj.Min : '';
-      this.Max = obj.Max ? obj.Max : '';
-      this.Points = new Cell(obj.Points, this);
 
       const keys = Object.keys(obj.Values);
       this.Values = keys.map((key) => {

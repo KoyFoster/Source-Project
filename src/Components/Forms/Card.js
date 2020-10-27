@@ -21,6 +21,8 @@ import { Paper } from '@material-ui/core';
 // 1. Card specific styling
 //  a. Possibly doable by applying section names with variable names
 //  b. This may be another whole can of works where style classnames need to be validated and updated
+// 2. Remove Static and Calc modes and have that as an individual cell property
+//  a.
 
 // Possible objectived
 // Current Objectives
@@ -315,7 +317,7 @@ const ValidateAllKeys = (newKey, oldKey, data) => {
     }
   });
 
-  console.log('Existing Vars:', vars);
+  // console.log('Existing Vars:', vars);
   return vars;
 };
 
@@ -377,7 +379,6 @@ const Block = (props) => {
   // stat properties
   const { Stats } = props;
   const { Value } = Stats;
-  let { Type } = Stats;
 
   // stat data
   const { Values } = Stats;
@@ -415,6 +416,9 @@ const Block = (props) => {
     function contents() {
       return Values.map((value) => {
         const kp = [...keyPath, 'Values', Value, 'Values'];
+
+        const { Type } = value;
+        // console.warn(`value:`, Type);
 
         i += 1;
         if (Mode === 'View') {
@@ -624,7 +628,7 @@ const Block = (props) => {
 
   return (
     <div
-      key={Type}
+      key={Value}
       onClick={() => {
         setBlockSelection(Value);
       }}
@@ -649,22 +653,6 @@ const Block = (props) => {
       ) : null}
       <StatBlock value={Stats.Value}>
         <div style={{ display: 'flex' }}>
-          {/* Stat Type */}
-          {Mode === 'Edit' ? (
-            <ToggleButton
-              toggledStyle={{
-                filter: 'brightness(88%)',
-              }}
-              checked={Type === 'Calc'}
-              onClick={(e) => {
-                Stats.Type = e.target.value;
-                Update(data);
-              }}
-            >
-              {['Calc', 'Static']}
-            </ToggleButton>
-          ) : null}
-
           {/* Stat Label */}
           {Stats.bShow || Mode === 'Edit' ? (
             Mode === 'Edit' || (Mode === 'Calculator' && Stats.bEdit) ? (
