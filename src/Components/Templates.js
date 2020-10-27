@@ -142,6 +142,34 @@ const defaultTemplates = {
     Game: "Jojo's Bizarre Adventure",
     Title: 'Stand Calculator',
     Style: (props) => ({
+      '& .react-contextmenu': {
+        zIndex: 1000,
+
+        fontSize: '14',
+        fontFamily: 'Arial Black',
+        fontWeight: 'bold',
+        color: 'white',
+        justifyContent: 'left',
+        textAlignLast: 'left',
+
+        backgroundColor: '#333333',
+        border: '2px solid black',
+      },
+
+      '& .react-contextmenu-item': {
+        zIndex: 1000,
+
+        fontSize: '14',
+        fontFamily: 'Arial Black',
+        fontWeight: 'bold',
+        color: 'white',
+        justifyContent: 'left',
+        textAlignLast: 'left',
+
+        backgroundColor: '#333333',
+        border: '2px solid black',
+      },
+
       '& .Profile': {
         fontSize: '14',
         fontFamily: 'Arial Black',
@@ -384,6 +412,22 @@ const defaultTemplates = {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
     Style: (props) => ({
+      '& .react-contextmenu': {
+        zIndex: 1000,
+        color: '#bbbbbb',
+        backgroundColor: '#232126',
+        border: '2px solid #dbdbdb',
+        borderRadius: '5px',
+      },
+
+      '& .react-contextmenu-item': {
+        zIndex: 1000,
+        color: '#bbbbbb',
+        backgroundColor: '#232126',
+        border: '2px solid #dbdbdb',
+        borderRadius: '5px',
+      },
+
       '& .Profile': {
         fontSize: 22,
         fontFamily: 'Adobe Garamond, serif',
@@ -607,7 +651,6 @@ const defaultTemplates = {
       },
     }),
     // end of style
-
     Values: [
       {
         bEdit: true,
@@ -1050,6 +1093,36 @@ const defaultTemplates = {
     Game: 'ArcheAge',
     Title: "Koy's Stats",
     Style: (props) => ({
+      '& .react-contextmenu': {
+        zIndex: 1000,
+        fontSize: 12,
+        fontFamily: 'NotoSansKR, serif',
+        fontWeight: 'normal',
+
+        color: '#6e5735',
+        backgroundColor: '#faf8e8',
+
+        border: '4px solid #6e5735',
+        borderRadius: '5px',
+
+        justifyContent: 'top',
+        textAlignLast: 'center',
+      },
+
+      '& .react-contextmenu-item': {
+        zIndex: 1000,
+        fontSize: 12,
+        fontFamily: 'NotoSansKR, serif',
+        fontWeight: 'normal',
+
+        color: '#6e5735',
+        background: 'inherit',
+        backgroundColor: 'inherit',
+
+        justifyContent: 'top',
+        textAlignLast: 'center',
+      },
+
       '& .Profile': {
         fontSize: 12,
         fontFamily: 'NotoSansKR, serif',
@@ -1113,11 +1186,10 @@ const defaultTemplates = {
           color: 'inherit',
           background: 'inherit',
 
-          backgroundColor: '#faf8e8',
-
           justifyContent: 'inherit',
           textAlignLast: 'inherit',
 
+          backgroundColor: '#faf8e8',
           border: '4px solid #6e5735',
           borderRadius: '5px',
 
