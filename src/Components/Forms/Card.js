@@ -14,7 +14,6 @@ import Controls from './Controls.js';
 import TextInputValidator from './TextInputValidator.js';
 import { Profile } from './ProfileData';
 import Diagram from '../Diagram.js';
-import { Paper } from '@material-ui/core';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 // Current Objectives
@@ -1063,34 +1062,32 @@ const ProfileCard = (props) => {
             )}
           </div>
           {Mode === 'Edit' ? (
-            <Paper>
-              <Controls
-                Tag="Card"
-                selection={cardSelection}
-                Add={(selection, i) => {
-                  // If subtraction, check for existing references to said item
-                  if (i < 0) {
-                    const vars = ValidateAllKeys(
-                      ['Values', selection],
-                      ['Values', selection],
-                      data,
-                    );
-                    if (vars.length > 0) {
-                      setWarn(vars);
-                      togglePopup();
-                      return;
-                    }
+            <Controls
+              Tag="Card"
+              selection={cardSelection}
+              Add={(selection, i) => {
+                // If subtraction, check for existing references to said item
+                if (i < 0) {
+                  const vars = ValidateAllKeys(
+                    ['Values', selection],
+                    ['Values', selection],
+                    data,
+                  );
+                  if (vars.length > 0) {
+                    setWarn(vars);
+                    togglePopup();
+                    return;
                   }
+                }
 
-                  setCardSelection(data.addCard(selection, i));
-                  Update(data);
-                }}
-                Move={(selection, i) => {
-                  setCardSelection(data.moveCard(selection, i));
-                  Update(data);
-                }}
-              ></Controls>
-            </Paper>
+                setCardSelection(data.addCard(selection, i));
+                Update(data);
+              }}
+              Move={(selection, i) => {
+                setCardSelection(data.moveCard(selection, i));
+                Update(data);
+              }}
+            ></Controls>
           ) : null}
         </div>
         <div

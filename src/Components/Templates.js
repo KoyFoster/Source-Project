@@ -1322,7 +1322,7 @@ const defaultTemplates = {
         },
 
         '& .Controls': {
-          fontSize: 18,
+          fontSize: 14,
           '& div': {
             '& button': {
               width: 'auto',
