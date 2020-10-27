@@ -16,6 +16,7 @@ import { Profile } from './ProfileData';
 import './Card.css';
 import Diagram from '../Diagram.js';
 import { Paper } from '@material-ui/core';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 // Current Objectives
 // 1. Card specific styling
@@ -30,6 +31,22 @@ import { Paper } from '@material-ui/core';
 //   a. No real example at this time
 // 2. May need to create a predefined index of all cells that have variabled,
 //  - so that one can search through that list, as appose to the entire data object
+
+// menu
+const mainMenu = (data) => [
+  <MenuItem key="div_1" divider />,
+  <MenuItem key="Change Stat">
+    Change [{data.Value}] to {data.Type === 'Static' ? 'Calc' : 'Static'}
+  </MenuItem>,
+  <MenuItem key="div_2" divider />,
+];
+
+const getCM = (data) => {
+  // console.warn(`Context Data:`, data);
+  return (
+    <ContextMenu id="same_unique_identifier">{mainMenu(data)}</ContextMenu>
+  );
+};
 
 const replaceVar = (newKey, oldKey, varObj) => {
   // console.warn(`replaceVar:`, { oldKey, newKey, varObj });
@@ -324,7 +341,11 @@ const ValidateAllKeys = (newKey, oldKey, data) => {
 // styling contrainers
 const ProfileContainer = (props) => {
   return (
-    <div className="Profile" onClick={props.onClick}>
+    <div
+      className="Profile"
+      onClick={props.onClick}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       {props.children}
     </div>
   );
@@ -376,6 +397,7 @@ const Block = (props) => {
   const { data } = props;
   const { setBlockSelection } = props;
   const [statSelection, setStatSelection] = useState(undefined);
+  const [iSelection, setISelection] = useState(undefined);
   // stat properties
   const { Stats } = props;
   const { Value } = Stats;
@@ -398,6 +420,7 @@ const Block = (props) => {
           key={`tr_${key}(${i})`}
           onClick={() => {
             setStatSelection(row);
+            setISelection(i);
           }}
         >
           <td key={`td_${key}(${i}) 0`}>{value}</td>
@@ -711,32 +734,44 @@ const Block = (props) => {
             : null}
         </div>
         <StatsContainer>
-          {Mode === 'Edit' ? (
-            <Controls
-              selection={statSelection}
-              Tag="Stat"
-              Add={(selection, i) => {
-                // If subtraction, check for existing references to said item
-                if (i < 0) {
-                  const kp = [...keyPath, 'Values', Value, 'Values', selection];
-                  const vars = ValidateAllKeys(kp, kp, data);
-                  if (vars.length > 0) {
-                    setWarn(vars);
-                    togglePopup();
-                    return;
+          <ContextMenuTrigger id="same_unique_identifier" holdToDisplay={-1}>
+            {Mode === 'Edit' ? (
+              <Controls
+                selection={statSelection}
+                Tag="Stat"
+                Add={(selection, i) => {
+                  // If subtraction, check for existing references to said item
+                  if (i < 0) {
+                    const kp = [
+                      ...keyPath,
+                      'Values',
+                      Value,
+                      'Values',
+                      selection,
+                    ];
+                    const vars = ValidateAllKeys(kp, kp, data);
+                    if (vars.length > 0) {
+                      setWarn(vars);
+                      togglePopup();
+                      return;
+                    }
                   }
-                }
 
-                setStatSelection(Stats.addStat(selection, i));
-                Update(data);
-              }}
-              Move={(selection, i) => {
-                setStatSelection(Stats.moveStat(selection, i));
-                Update(data);
-              }}
-            ></Controls>
-          ) : null}
-          {StatTable()}
+                  setStatSelection(Stats.addStat(selection, i));
+                  setISelection(i);
+                  Update(data);
+                }}
+                Move={(selection, i) => {
+                  setStatSelection(Stats.moveStat(selection, i));
+                  setISelection(i);
+                  Update(data);
+                }}
+              ></Controls>
+            ) : null}
+
+            {iSelection !== undefined ? getCM(Values[iSelection]) : null}
+            {StatTable()}
+          </ContextMenuTrigger>
         </StatsContainer>
       </StatBlock>
     </div>
