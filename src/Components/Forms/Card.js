@@ -41,11 +41,9 @@ const mainMenu = (data) => [
   <MenuItem key="div_2" divider />,
 ];
 
-const getCM = (data) => {
-  // console.warn(`Context Data:`, data);
-  return (
-    <ContextMenu id="same_unique_identifier">{mainMenu(data)}</ContextMenu>
-  );
+const getCM = (data, tag) => {
+  // console.warn(`Context Data:`, `Stat_CM_${tag}`);
+  return <ContextMenu id={`Stat_CM_${tag}`}>{mainMenu(data)}</ContextMenu>;
 };
 
 const replaceVar = (newKey, oldKey, varObj) => {
@@ -418,9 +416,12 @@ const Block = (props) => {
       return [
         <tr
           key={`tr_${key}(${i})`}
-          onClick={() => {
-            setStatSelection(row);
-            setISelection(i);
+          onMouseDown={(e) => {
+            // Right click and left click
+            if (e.button === 2 || e.button === 0) {
+              setStatSelection(row);
+              setISelection(i);
+            }
           }}
         >
           <td key={`td_${key}(${i}) 0`}>{value}</td>
@@ -734,7 +735,8 @@ const Block = (props) => {
             : null}
         </div>
         <StatsContainer>
-          <ContextMenuTrigger id="same_unique_identifier" holdToDisplay={-1}>
+          <ContextMenuTrigger id={`Stat_CM_${Value}`} holdToDisplay={-1}>
+            {iSelection !== undefined ? getCM(Values[iSelection], Value) : null}
             {Mode === 'Edit' ? (
               <Controls
                 selection={statSelection}
@@ -768,8 +770,6 @@ const Block = (props) => {
                 }}
               ></Controls>
             ) : null}
-
-            {iSelection !== undefined ? getCM(Values[iSelection]) : null}
             {StatTable()}
           </ContextMenuTrigger>
         </StatsContainer>
