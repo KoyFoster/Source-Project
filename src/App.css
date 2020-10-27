@@ -124,19 +124,14 @@ input:focus {
 }
 
 .react-contextmenu {
-  background-color: grey;
-  border: 3px solid red;
-  border-radius: 5px;
+  z-index: 1000;
 }
 
 .react-contextmenu.react-contextmenu--visible {
 }
 
 .react-contextmenu-item {
-  background-color: black;
-  border: 2px solid white;
-  border-radius: 5px;
-  color: white;
+  z-index: 1000;
 }
 
 .react-contextmenu-item.react-contextmenu-item--active,

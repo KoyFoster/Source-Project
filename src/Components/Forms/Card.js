@@ -13,7 +13,6 @@ import Popup from './Popup';
 import Controls from './Controls.js';
 import TextInputValidator from './TextInputValidator.js';
 import { Profile } from './ProfileData';
-import './Card.css';
 import Diagram from '../Diagram.js';
 import { Paper } from '@material-ui/core';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
@@ -22,8 +21,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 // 1. Card specific styling
 //  a. Possibly doable by applying section names with variable names
 //  b. This may be another whole can of works where style classnames need to be validated and updated
-// 2. Remove Static and Calc modes and have that as an individual cell property
-//  a.
+// 2. Clean up the look and feel of the context menus
 
 // Possible objectived
 // Current Objectives
@@ -31,20 +29,6 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 //   a. No real example at this time
 // 2. May need to create a predefined index of all cells that have variabled,
 //  - so that one can search through that list, as appose to the entire data object
-
-// menu
-const mainMenu = (data) => [
-  <MenuItem key="div_1" divider />,
-  <MenuItem key="Change Stat">
-    Change [{data.Value}] to {data.Type === 'Static' ? 'Calc' : 'Static'}
-  </MenuItem>,
-  <MenuItem key="div_2" divider />,
-];
-
-const getCM = (data, tag) => {
-  // console.warn(`Context Data:`, `Stat_CM_${tag}`);
-  return <ContextMenu id={`Stat_CM_${tag}`}>{mainMenu(data)}</ContextMenu>;
-};
 
 const replaceVar = (newKey, oldKey, varObj) => {
   // console.warn(`replaceVar:`, { oldKey, newKey, varObj });
@@ -656,6 +640,29 @@ const Block = (props) => {
     );
   }
 
+  // menu
+  const statMenu = (stat) => [
+    // <MenuItem key="div_1" divider />,
+    <MenuItem
+      key="Change Stat"
+      onClick={() => {
+        stat.Type = stat.Type === 'Static' ? 'Calc' : 'Static';
+        Update(data);
+      }}
+    >
+      Change [<span style={{ color: 'red' }}>{stat.Value}</span>] to{' '}
+      <span style={{ color: 'gold' }}>
+        {stat.Type === 'Static' ? 'Calc' : 'Static'}
+      </span>
+    </MenuItem>,
+    // <MenuItem key="div_2" divider />,
+  ];
+
+  const getTextCM = (stat, tag) => {
+    // console.warn(`Context Data:`, `Stat_CM_${tag}`);
+    return <ContextMenu id={`Stat_CM_${tag}`}>{statMenu(stat)}</ContextMenu>;
+  };
+
   return (
     <div
       key={Value}
@@ -736,7 +743,11 @@ const Block = (props) => {
         </div>
         <StatsContainer>
           <ContextMenuTrigger id={`Stat_CM_${Value}`} holdToDisplay={-1}>
-            {iSelection !== undefined ? getCM(Values[iSelection], Value) : null}
+            {Mode === 'Edit'
+              ? iSelection !== undefined
+                ? getTextCM(Values[iSelection], Value)
+                : null
+              : null}
             {Mode === 'Edit' ? (
               <Controls
                 selection={statSelection}
