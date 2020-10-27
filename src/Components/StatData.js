@@ -145,8 +145,9 @@ class StatData {
 
     try {
       result = evaluate(expression, scope);
+      // console.warn('Warn: Valid Expression(', expression, ',', scope, ')');
     } catch {
-      console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
+      // console.error('ERROR: Invalid Expression(', expression, ',', scope, ')');
       return undefined;
     }
 

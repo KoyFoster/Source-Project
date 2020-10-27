@@ -540,9 +540,15 @@ const Block = (props) => {
               events={{
                 onKeyUp: (e) => {
                   if (e.key === 'Enter') {
+                    const oldValue = value.Value;
                     value.Value = e.target.value;
-                    // UpdateAllKeys(0,0, data)
-                    Update(data);
+                    Update(
+                      UpdateAllKeys(
+                        [...kp, e.target.value],
+                        [...kp, oldValue],
+                        data,
+                      ),
+                    );
                   }
                 },
               }}
@@ -808,7 +814,6 @@ const Card = (props) => {
           (Mode === 'Calculator' && cardData.bEdit && cardData.bShow) ? (
             <TextInputValidator
               key={Value}
-              type="text"
               defaultValue={Value}
               events={{
                 onKeyUp: (e) => {
@@ -975,7 +980,6 @@ const ProfileCard = (props) => {
             {Mode === 'Edit' ? (
               <TextInputValidator
                 key={Game}
-                type="text"
                 defaultValue={Game}
                 events={{
                   onKeyUp: (e) => {
