@@ -21,6 +21,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 //  a. Possibly doable by applying section names with variable names
 //  b. This may be another whole can of works where style classnames need to be validated and updated
 // 2. Clean up the look and feel of the context menus
+// 3. Clean up variable picker and expression maker
 
 // Possible objectived
 // Current Objectives

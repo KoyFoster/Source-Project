@@ -11,6 +11,8 @@ import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
+import UserData from './Forms/UserData';
+import DateTime from './Forms/DateTime';
 
 // function compileMenuItems() {
 //   let result = [];
@@ -36,14 +38,12 @@ import { Paper } from '@material-ui/core';
 //   );
 // }
 
-const SaveStatCard = (props) => {
-  let { value } = props;
+const formatSaveData = (value) => {
   const regex1 = /}}},/gi;
   const regex2 = /:{/gi;
 
   // Pull data object without circular keys
   var cache = [];
-
   value = JSON.stringify(value, function (key, value) {
     if (typeof value === 'object' && value !== null) {
       if (cache.indexOf(value) !== -1 || key === 'P') {
@@ -56,6 +56,18 @@ const SaveStatCard = (props) => {
   })
     .replace(regex1, '}}},\n\n')
     .replace(regex2, '\n:{');
+
+  return value;
+};
+
+const deformatSaveData = (value) => {
+  return JSON.parse(value);
+};
+
+const SaveStatCard = (props) => {
+  let { value } = props;
+
+  value = formatSaveData(value);
 
   return (
     <TogglePopup
@@ -74,6 +86,7 @@ const SaveStatCard = (props) => {
               whiteSpace: 'nowrap',
               resize: 'none',
             }}
+            onChange={(e) => {}}
           />
         </div>
       }
@@ -141,21 +154,58 @@ const useStyles = makeStyles((msProps) => {
 
 // Stat Card
 const Stats = (props) => {
+  // user data
+  const [UD] = useState(new UserData('TemplateData'));
+
   // member variables
-  const [value, setValue] = useState(Templates['Blank']);
+  const [value, setValue] = useState(Templates['UserDefined']);
 
   const Modes = ['Calculator', 'View', 'Edit'];
-  const [Mode, setMode] = useState('Calculator');
+
+  const getDefaultMode = () => {
+    switch (props.state) {
+      case 'creator':
+        return Modes[2];
+      case 'calcs':
+        return Modes[0];
+      case 'profiles':
+        return Modes[1];
+      default:
+        return Modes[1];
+    }
+  };
+
+  const [Mode, setMode] = useState(getDefaultMode());
   const handleModeChange = () => {
-    switch (Mode) {
-      case Modes[0]:
-        setMode(Modes[1]);
+    switch (props.state) {
+      case 'creator':
+        switch (Mode) {
+          case Modes[0]:
+            setMode(Modes[1]);
+            break;
+          case Modes[1]:
+            setMode(Modes[2]);
+            break;
+          case Modes[2]:
+            setMode(Modes[0]);
+            break;
+          default:
+            break;
+        }
         break;
-      case Modes[1]:
-        setMode(Modes[2]);
+      case 'calcs':
+        switch (Mode) {
+          case Modes[0]:
+            setMode(Modes[1]);
+            break;
+          case Modes[1]:
+            setMode(Modes[0]);
+            break;
+          default:
+            break;
+        }
         break;
-      case Modes[2]:
-        setMode(Modes[0]);
+      case 'profiles':
         break;
       default:
         break;
@@ -169,7 +219,7 @@ const Stats = (props) => {
 
   /* Material-UI CSS Styles */
   /* Hard coding useStyles for eadch templates style */
-  const classes1 = useStyles({ Mode, Style: Templates['Blank'].Style });
+  const classes1 = useStyles({ Mode, Style: Templates['UserDefined'].Style });
   const classes2 = useStyles({
     Mode,
     Style: Templates["Jojo's Bizarre Adventure"].Style,
@@ -186,7 +236,7 @@ const Stats = (props) => {
   /* Get useStyle of template */
   const getClass = () => {
     switch (value.Game) {
-      case 'Blank':
+      case 'UserDefined':
         return classes1.root;
       case "Jojo's Bizarre Adventure":
         return classes2.root;
@@ -201,49 +251,175 @@ const Stats = (props) => {
 
   useEffect(() => {}, [value.Style]);
   // console.log(`Data:`, value);
-  return (
-    <div style={{ display: 'flex' }}>
-      <Paper style={{ margin: '4px', padding: '4px' }}>
-        <TemplateSelector
-          // style={{ filter: 'invert(88%)' }}
-          label={'Series'}
-          setTemplate={Update}
-          data={Templates}
-          defaultValue={'Dark Souls III'}
-        />
-        <Paper style={{ display: 'flex', padding: '2px' }}>
-          <SaveStatCard value={value}></SaveStatCard>
-          <LoadStatCard setValue={setValue}></LoadStatCard>
-        </Paper>
-        <Paper
-          style={{
-            display: 'flex',
-            whiteSpace: 'pre',
-            padding: '2px',
-            // filter: 'invert(88%)',
-          }}
-        >
-          Mode:{' '}
-          <button
-            type="push"
-            style={{ width: '80px' }}
-            onClick={() => handleModeChange()}
-          >
-            {Mode}
-          </button>
-        </Paper>
-      </Paper>
 
-      <Paper className={getClass()} style={{ margin: '4px', padding: '4px' }}>
-        <ProfileCard
-          key="profile"
-          Mode={Mode}
-          value={value}
-          Update={Update}
-        ></ProfileCard>
-      </Paper>
-    </div>
-  );
+  const CacheUserData = (props) => {
+    const [info, setInfo] = useState('[No Loaded]');
+
+    useEffect(() => {
+      // load user data if available
+    }, []);
+
+    return (
+      <div>
+        <div>
+          <button
+            key="save"
+            onClick={() => {
+              // set save time state
+              // set creation date if never set before
+              const now = new Date();
+              if (!value.DateCreated)
+                value.DateCreated = DateTime.FormatDate(now);
+              value.DateEdited = DateTime.FormatDate(now);
+              setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
+              UD.Set(formatSaveData(value));
+            }}
+          >
+            Cache Data
+          </button>
+          <button
+            key="clear"
+            onClick={() => {
+              setInfo('[Cache Cleared]');
+              UD.Set('');
+            }}
+          >
+            Clear Cache
+          </button>
+          <button
+            key="Load"
+            onClick={() => {
+              const data = UD.Get();
+              if (data !== '') {
+                const buffer = deformatSaveData(data);
+                setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
+                setValue(buffer);
+              } else {
+                setInfo(`[No data to load]`);
+              }
+            }}
+          >
+            Load Last Cache
+          </button>
+        </div>
+        <div>
+          <span
+            style={{
+              border: '2px solid black',
+              justifyContent: 'center',
+              display: 'flex',
+            }}
+          >
+            {info}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  switch (props.state) {
+    case 'creator':
+    case 'calcs':
+    case 'profiles':
+    default:
+  }
+
+  switch (props.state) {
+    case 'creator':
+      return (
+        <div style={{ display: 'flex' }}>
+          <Paper style={{ margin: '4px', padding: '4px' }}>
+            <TemplateSelector
+              label={'Series'}
+              setTemplate={Update}
+              data={Templates}
+              defaultValue={'Dark Souls III'}
+            />
+            {value.Type === 'UserDefined' ? (
+              <div>
+                <Paper style={{ display: 'flex', padding: '2px' }}>
+                  <SaveStatCard value={value}></SaveStatCard>
+                  <LoadStatCard setValue={setValue}></LoadStatCard>
+                </Paper>
+                <CacheUserData key="UserData" />
+              </div>
+            ) : null}
+            <Paper
+              style={{
+                display: 'flex',
+                whiteSpace: 'pre',
+                padding: '2px',
+              }}
+            >
+              Mode:{' '}
+              <button
+                type="push"
+                style={{ width: '80px' }}
+                onClick={() => handleModeChange()}
+              >
+                {Mode}
+              </button>
+            </Paper>
+          </Paper>
+
+          <Paper
+            className={getClass()}
+            style={{ margin: '4px', padding: '4px' }}
+          >
+            <ProfileCard
+              key="profile"
+              Mode={Mode}
+              value={value}
+              Update={Update}
+            ></ProfileCard>
+          </Paper>
+        </div>
+      );
+    case 'calcs':
+      return (
+        <div style={{ display: 'flex' }}>
+          <Paper style={{ margin: '4px', padding: '4px' }}>
+            <TemplateSelector
+              label={'Series'}
+              setTemplate={Update}
+              data={Templates}
+              defaultValue={'Dark Souls III'}
+            />
+            <Paper
+              style={{
+                display: 'flex',
+                whiteSpace: 'pre',
+                padding: '2px',
+              }}
+            >
+              Mode:{' '}
+              <button
+                type="push"
+                style={{ width: '80px' }}
+                onClick={() => handleModeChange()}
+              >
+                {Mode}
+              </button>
+            </Paper>
+          </Paper>
+
+          <Paper
+            className={getClass()}
+            style={{ margin: '4px', padding: '4px' }}
+          >
+            <ProfileCard
+              key="profile"
+              Mode={Mode}
+              value={value}
+              Update={Update}
+            ></ProfileCard>
+          </Paper>
+        </div>
+      );
+    case 'profiles':
+    default:
+      return null;
+  }
 };
 
 export default Stats;

@@ -16,7 +16,10 @@ import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
 // )}`;
 // Note: Forwhatever reason, Graph Key Arrays are not being cloned, but being passed by reference
 const defaultTemplates = {
-  Blank: {
+  UserDefined: {
+    Type: 'UserDefined',
+    DateCreated: undefined,
+    DateEdited: undefined,
     Game: 'Blank',
     Title: 'Blank',
     Style: (props) => ({
