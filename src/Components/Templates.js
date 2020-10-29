@@ -15,280 +15,648 @@ import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
 //   </svg>
 // )}`;
 // Note: Forwhatever reason, Graph Key Arrays are not being cloned, but being passed by reference
-const defaultTemplates = {
-  UserDefined: {
+const Styles = {
+  Default: (props) => ({
+    '& .react-contextmenu': {
+      zIndex: 1000,
+
+      fontSize: '14',
+      fontFamily: 'Arial Black',
+      fontWeight: 'bold',
+      color: 'white',
+      justifyContent: 'left',
+      textAlignLast: 'left',
+
+      backgroundColor: '#333333',
+      border: '2px solid black',
+    },
+
+    '& .react-contextmenu-item': {
+      zIndex: 1000,
+
+      fontSize: '14',
+      fontFamily: 'Arial Black',
+      fontWeight: 'bold',
+      color: 'white',
+      justifyContent: 'left',
+      textAlignLast: 'left',
+
+      backgroundColor: '#333333',
+      border: '2px solid black',
+    },
+
+    '& .Profile': {
+      fontSize: '14',
+      fontFamily: 'Arial Black',
+      fontWeight: 'bold',
+      color: 'white',
+      justifyContent: 'left',
+      textAlignLast: 'left',
+
+      // Profile Border
+      ...(props.Mode === 'Edit'
+        ? {
+            // StatBlock Debug Border
+            border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+          }
+        : {
+            border: 'initial',
+            borderImageRepeat: 'initial',
+            borderImage: 'initial',
+            borderImageSlice: 'initial',
+          }),
+
+      '& .ProfileHeader': {},
+      '& button': {},
+      '& .Card': {
+        // Card Border
+        ...(props.Mode === 'Edit'
+          ? {
+              border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
+        // Level
+        "& input[type='number']": { borderRadius: '4px', width: '32px' },
+        // Level
+        "& input[type='text']": { borderRadius: '4px' },
+        '& .CardHeader': {
+          "& input[type='text']": {},
+          '& label': {},
+        },
+        '& .Level': {
+          '& div': {},
+          '& button': {},
+        },
+        '& .StatBlock': {
+          // Stat Block Border
+          ...(props.Mode === 'Edit'
+            ? {
+                // StatBlock Debug Border
+                border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
+
+          '& div[target="Attributes"]': {},
+          "& input[type='text']": {},
+          '& label': {},
+        },
+
+        '& .Stats': {
+          '& input': {},
+          '& table': {
+            '& thead': {
+              '& th': {},
+            },
+            '& tbody': {
+              '& tr': {
+                '& td': {
+                  '& button': {},
+                  "& input[type='number']": {},
+                  "& input[type='text']": {},
+                },
+
+                '& td:nth-child(1):empty': {},
+                '& td:nth-child(1)': {},
+                '& td:nth-child(2)': {
+                  '& input': {},
+                },
+                '& td:nth-child(3)': {},
+                '& td:nth-child(4)': {},
+                '& td:nth-child(5)': {},
+              },
+              // hover row
+              '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
+
+              '& tfoot': {},
+              '& colgroup': {
+                '& col:nth-child(1)': {},
+                '& col:nth-child(2)': {},
+                '& col:nth-child(3)': {},
+                '& col:nth-child(4)': {},
+                '& col:nth-child(5)': {},
+              },
+            },
+          },
+        },
+      },
+
+      '& .Controls': {
+        '& div': {
+          '& button': {
+            width: 'auto',
+          },
+        },
+      },
+    },
+  }),
+
+  'Dark Souls III': (props) => ({
+    '& .react-contextmenu': {
+      zIndex: 1000,
+      color: '#bbbbbb',
+      backgroundColor: '#232126',
+      border: '2px solid #dbdbdb',
+      borderRadius: '5px',
+    },
+
+    '& .react-contextmenu-item': {
+      zIndex: 1000,
+      color: '#bbbbbb',
+      backgroundColor: '#232126',
+      border: '2px solid #dbdbdb',
+      borderRadius: '5px',
+    },
+
+    '& .Profile': {
+      fontSize: 22,
+      fontFamily: 'Adobe Garamond, serif',
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+      justifyContent: 'top',
+      textAlignLast: 'center',
+
+      // Profile Border
+      ...(props.Mode === 'Edit'
+        ? {
+            // StatBlock Debug Border
+            border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+          }
+        : {
+            border: 'initial',
+            borderImageRepeat: 'initial',
+            borderImage: 'initial',
+            borderImageSlice: 'initial',
+          }),
+
+      // Title Card
+      '& .ProfileHeader': {
+        color: '#bbbbbb',
+        backgroundColor: '#232126',
+        border: '2px solid #dbdbdb',
+        borderRadius: '5px',
+      },
+
+      '& button': {
+        width: '64px',
+        borderRadius: '8px',
+        filter: 'brightness(88%)',
+      },
+      '& .Card': {
+        color: '#bbbbbb',
+        backgroundColor: '#232126',
+        border: '2px solid #dbdbdb',
+        borderRadius: '5px',
+
+        padding: '22px',
+        margin: '4px',
+
+        minWidth: '328px',
+        maxWidth: '512px',
+
+        // Card Border
+        ...(props.Mode === 'Edit'
+          ? {
+              border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
+        '& button': { fontSize: 12, textAlignLast: 'center' },
+        '& hr': { display: 'none' },
+        "& input[type='number']": { width: '64px' },
+        "& input[type='text']": { width: '100%' },
+        '& .CardHeader': {
+          color: '#aca69e',
+          textAlignLast: 'left',
+
+          "& input[type='text']": {
+            width: '100%',
+            border: 'none',
+            borderBottom: '3px solid',
+            borderImage:
+              'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
+          },
+          '& label': {
+            width: '100%',
+            border: 'none',
+            borderBottom: '3px solid',
+            borderImage:
+              'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
+          },
+        },
+
+        '& .Level': {
+          display: props.Mode !== 'Edit' ? 'none' : 'inline',
+          '& div': {},
+          '& button': { fontSize: 22, textAlignLast: 'center' },
+        },
+
+        '& .StatBlock': {
+          '& div[target="Attributes"]': {
+            color: 'red',
+          },
+
+          ...(props.Mode === 'Calculator'
+            ? {
+                border: '39px solid transparent',
+                borderImageRepeat: 'repeat',
+                borderImage: `url("${DS3Frame}")`,
+                borderImageSlice: '34%',
+              }
+            : // Stat Block Border
+            props.Mode === 'Edit'
+            ? {
+                // StatBlock Debug Border
+                border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
+
+          color: '#aca69e',
+          textAlignLast: 'left',
+          padding: '16px 0px 16px 0px',
+          "& input[type='text']": {
+            color: '#bbb3a6',
+            width: '100%',
+            border: 'none',
+            borderBottom: '3px solid',
+            borderImage:
+              'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+          },
+          '& label': {
+            width: '100%',
+            border: 'none',
+            borderBottom: '3px solid',
+            borderImage:
+              'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+          },
+        },
+
+        '& .Stats': {
+          // borderImage:
+          //   'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+          // border: '2px solid',
+
+          '& input': { border: 'none', borderWidth: '1px' },
+          '& table': {
+            borderCollapse: 'separate',
+            emptyCells: 'show',
+            '& thead': {
+              emptyCells: 'hide',
+              '& th': {
+                color: '#aca69e',
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                fontStyle: 'inherit',
+                fontWeight: 'inherit',
+                border: 'none',
+                borderBottom: '3px solid',
+                borderImage:
+                  'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
+              },
+            },
+            '& tbody': {
+              '& tr': {
+                '& td': {
+                  '& button': {},
+                  "& input[type='number']": {
+                    width: '48px',
+                    textAlignLast: 'center',
+                  },
+                  "& input[type='text']": { width: '100%' },
+                },
+
+                '& td:nth-child(1):empty': {
+                  border: 'none',
+                  borderBottom: '2px solid',
+                  borderImage:
+                    'linear-gradient(to right, rgba(78,78,78, 0), rgba(78,78,78, 1), rgba(78,78,78, 0)) 1',
+                },
+                '& td:nth-child(1)': {
+                  textAlignLast: 'left',
+                  width: '100%',
+                },
+                '& td:nth-child(2)': {
+                  textAlignLast: 'center',
+                  width: '140px',
+                  '& input': {},
+                },
+                '& td:nth-child(3)': { textAlignLast: 'left' },
+                '& td:nth-child(4)': { textAlignLast: 'left' },
+                '& td:nth-child(5)': { textAlignLast: 'left' },
+              },
+              // hover row
+              '& tr:nth-child(odd):hover':
+                props.Mode !== 'View'
+                  ? {
+                      backgroundImage:
+                        'radial-gradient(ellipse at bottom, #723a19, #723a1900 66%, #00000000 50%)',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'calc(100%) 5px',
+                    }
+                  : {
+                      backgroundImage: 'none',
+                    },
+
+              '& tfoot': {},
+              '& colgroup': {
+                '& col:nth-child(1)': {},
+                '& col:nth-child(2)': {},
+                '& col:nth-child(3)': {},
+                '& col:nth-child(4)': {},
+                '& col:nth-child(5)': {},
+              },
+            },
+          },
+        },
+      },
+
+      '& .Controls': {
+        fontSize: 18,
+        '& div': {
+          '& button': {
+            width: 'auto',
+          },
+        },
+      },
+    },
+  }),
+
+  ArcheAge: (props) => ({
+    '& .react-contextmenu': {
+      zIndex: 1000,
+      fontSize: 12,
+      fontFamily: 'NotoSansKR, serif',
+      fontWeight: 'normal',
+
+      color: '#6e5735',
+      backgroundColor: '#faf8e8',
+
+      border: '4px solid #6e5735',
+      borderRadius: '5px',
+
+      justifyContent: 'top',
+      textAlignLast: 'center',
+    },
+
+    '& .react-contextmenu-item': {
+      zIndex: 1000,
+      fontSize: 12,
+      fontFamily: 'NotoSansKR, serif',
+      fontWeight: 'normal',
+
+      color: '#6e5735',
+      background: 'inherit',
+      backgroundColor: 'inherit',
+
+      justifyContent: 'top',
+      textAlignLast: 'center',
+    },
+
+    '& .Profile': {
+      fontSize: 12,
+      fontFamily: 'NotoSansKR, serif',
+      fontWeight: 'normal',
+
+      color: '#6e5735',
+      background: 'inherit',
+      backgroundColor: 'inherit',
+
+      justifyContent: 'top',
+      textAlignLast: 'center',
+
+      // Profile Border
+      ...(props.Mode === 'Edit'
+        ? {
+            // StatBlock Debug Border
+            border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
+          }
+        : {
+            border: 'initial',
+            borderImageRepeat: 'initial',
+            borderImage: 'initial',
+            borderImageSlice: 'initial',
+          }),
+
+      '& button': {
+        width: '64px',
+        borderRadius: '8px',
+
+        filter: 'brightness(88%)',
+
+        background: 'inherit',
+        backgroundColor: 'inherit',
+      },
+
+      '& .ProfileHeader': {
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+        fontWeight: 'inherit',
+        color: 'inherit',
+        background: 'inherit',
+
+        backgroundColor: '#faf8e8',
+
+        justifyContent: 'inherit',
+        textAlignLast: 'inherit',
+
+        border: '4px solid #6e5735',
+        borderRadius: '5px',
+
+        padding: '16px',
+        margin: '4px',
+
+        minWidth: '328px',
+      },
+
+      '& .Card': {
+        fontSize: 'inherit',
+        fontFamily: 'inherit',
+        fontWeight: 'inherit',
+        color: 'inherit',
+        background: 'inherit',
+
+        justifyContent: 'inherit',
+        textAlignLast: 'inherit',
+
+        backgroundColor: '#faf8e8',
+        border: '4px solid #6e5735',
+        borderRadius: '5px',
+
+        padding: '16px',
+        margin: '4px',
+
+        minWidth: '328px',
+
+        // Card Border
+        ...(props.Mode === 'Edit'
+          ? {
+              border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
+            }
+          : {
+              border: 'initial',
+              borderImageRepeat: 'initial',
+              borderImage: 'initial',
+              borderImageSlice: 'initial',
+            }),
+
+        // Level
+        "& input[type='number']": {
+          width: '64px',
+        },
+        // Level
+        "& input[type='text']": {
+          width: '100%',
+        },
+
+        '& .CardHeader': {
+          textAlignLast: 'left',
+
+          "& input[type='text']": {
+            width: '100%',
+          },
+          '& label': {
+            border: 'none',
+          },
+        },
+
+        '& .Level': {
+          display: props.Mode !== 'Edit' ? 'none' : 'inline',
+          '& div': {},
+          '& button': { fontSize: 22, textAlignLast: 'center' },
+        },
+
+        '& .StatBlock': {
+          textAlignLast: 'left',
+          padding: '16px 0px 16px 0px',
+
+          '& div[target="Attributes"]': {},
+
+          // Stat Block Border
+          ...(props.Mode === 'Edit'
+            ? {
+                // StatBlock Debug Border
+                border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
+              }
+            : {
+                border: 'initial',
+                borderImageRepeat: 'initial',
+                borderImage: 'initial',
+                borderImageSlice: 'initial',
+              }),
+
+          "& input[type='text']": {
+            width: '100%',
+          },
+          '& label': {
+            width: '100%',
+          },
+        },
+
+        '& .Stats': {
+          '& input': { border: 'none', borderWidth: '1px' },
+          '& table': {
+            borderCollapse: 'separate',
+            emptyCells: 'show',
+            '& thead': {
+              emptyCells: 'hide',
+              '& th': {
+                color: 'inherit',
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                fontStyle: 'inherit',
+                fontWeight: 'inherit',
+                border: 'inherit',
+                borderBottom: 'inherit',
+              },
+            },
+            '& tbody': {
+              '& tr': {
+                '& td': {
+                  '& button': {},
+                  "& input[type='number']": {
+                    width: '48px',
+                    textAlignLast: 'center',
+                  },
+                  "& input[type='text']": { width: '100%' },
+                },
+
+                '& td:nth-child(1):empty': {},
+                '& td:nth-child(1)': {
+                  textAlignLast: 'left',
+                  width: '100%',
+                },
+                '& td:nth-child(2)': {
+                  textAlignLast: 'left',
+                  width: '140px',
+                  '& input': {},
+                },
+                '& td:nth-child(3)': { textAlignLast: 'left' },
+                '& td:nth-child(4)': { textAlignLast: 'left' },
+                '& td:nth-child(5)': { textAlignLast: 'left' },
+              },
+              // hover row
+              '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
+
+              '& tfoot': {},
+              '& colgroup': {
+                '& col:nth-child(1)': {},
+                '& col:nth-child(2)': {},
+                '& col:nth-child(3)': {},
+                '& col:nth-child(4)': {},
+                '& col:nth-child(5)': {},
+              },
+            },
+          },
+        },
+      },
+
+      '& .Controls': {
+        fontSize: 14,
+        '& div': {
+          '& button': {
+            width: 'auto',
+          },
+        },
+      },
+    },
+  }),
+};
+
+const Templates = {
+  Blank: {
     Type: 'UserDefined',
     DateCreated: undefined,
     DateEdited: undefined,
     Game: 'Blank',
     Title: 'Blank',
-    Style: (props) => ({
-      '& .Profile': {
-        fontSize: '14',
-        fontFamily: 'Arial Black',
-        fontWeight: 'bold',
-        color: 'white',
-        justifyContent: 'left',
-        textAlignLast: 'left',
-
-        // Profile Border
-        ...(props.Mode === 'Edit'
-          ? {
-              // StatBlock Debug Border
-              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
-            }
-          : {
-              border: 'initial',
-              borderImageRepeat: 'initial',
-              borderImage: 'initial',
-              borderImageSlice: 'initial',
-            }),
-
-        '& .ProfileHeader': {},
-        '& button': {},
-        '& .Card': {
-          // Card Border
-          ...(props.Mode === 'Edit'
-            ? {
-                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
-              }
-            : {
-                border: 'initial',
-                borderImageRepeat: 'initial',
-                borderImage: 'initial',
-                borderImageSlice: 'initial',
-              }),
-
-          // Level
-          "& input[type='number']": { borderRadius: '4px', width: '32px' },
-          // Level
-          "& input[type='text']": { borderRadius: '4px' },
-          '& .CardHeader': {
-            "& input[type='text']": {},
-            '& label': {},
-          },
-          '& .Level': {
-            '& div': {},
-            '& button': {},
-          },
-          '& .StatBlock': {
-            // Stat Block Border
-            ...(props.Mode === 'Edit'
-              ? {
-                  // StatBlock Debug Border
-                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
-                }
-              : {
-                  border: 'initial',
-                  borderImageRepeat: 'initial',
-                  borderImage: 'initial',
-                  borderImageSlice: 'initial',
-                }),
-
-            '& div[target="Attributes"]': {},
-            "& input[type='text']": {},
-            '& label': {},
-          },
-
-          '& .Stats': {
-            '& input': {},
-            '& table': {
-              '& thead': {
-                '& th': {},
-              },
-              '& tbody': {
-                '& tr': {
-                  '& td': {
-                    '& button': {},
-                    "& input[type='number']": {},
-                    "& input[type='text']": {},
-                  },
-
-                  '& td:nth-child(1):empty': {},
-                  '& td:nth-child(1)': {},
-                  '& td:nth-child(2)': {
-                    '& input': {},
-                  },
-                  '& td:nth-child(3)': {},
-                  '& td:nth-child(4)': {},
-                  '& td:nth-child(5)': {},
-                },
-                // hover row
-                '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
-
-                '& tfoot': {},
-                '& colgroup': {
-                  '& col:nth-child(1)': {},
-                  '& col:nth-child(2)': {},
-                  '& col:nth-child(3)': {},
-                  '& col:nth-child(4)': {},
-                  '& col:nth-child(5)': {},
-                },
-              },
-            },
-          },
-        },
-
-        '& .Controls': {
-          '& div': {
-            '& button': {
-              width: 'auto',
-            },
-          },
-        },
-      },
-    }),
-
+    Style: 'Default',
     Values: [],
   },
+  //
   "Jojo's Bizarre Adventure": {
     Game: "Jojo's Bizarre Adventure",
     Title: 'Stand Calculator',
-    Style: (props) => ({
-      '& .react-contextmenu': {
-        zIndex: 1000,
-
-        fontSize: '14',
-        fontFamily: 'Arial Black',
-        fontWeight: 'bold',
-        color: 'white',
-        justifyContent: 'left',
-        textAlignLast: 'left',
-
-        backgroundColor: '#333333',
-        border: '2px solid black',
-      },
-
-      '& .react-contextmenu-item': {
-        zIndex: 1000,
-
-        fontSize: '14',
-        fontFamily: 'Arial Black',
-        fontWeight: 'bold',
-        color: 'white',
-        justifyContent: 'left',
-        textAlignLast: 'left',
-
-        backgroundColor: '#333333',
-        border: '2px solid black',
-      },
-
-      '& .Profile': {
-        fontSize: '14',
-        fontFamily: 'Arial Black',
-        fontWeight: 'bold',
-        color: 'white',
-        justifyContent: 'left',
-        textAlignLast: 'left',
-
-        // Profile Border
-        ...(props.Mode === 'Edit'
-          ? {
-              // StatBlock Debug Border
-              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
-            }
-          : {
-              border: 'initial',
-              borderImageRepeat: 'initial',
-              borderImage: 'initial',
-              borderImageSlice: 'initial',
-            }),
-
-        '& .ProfileHeader': {},
-        '& button': {},
-        '& .Card': {
-          // Card Border
-          ...(props.Mode === 'Edit'
-            ? {
-                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
-              }
-            : {
-                border: 'initial',
-                borderImageRepeat: 'initial',
-                borderImage: 'initial',
-                borderImageSlice: 'initial',
-              }),
-
-          // Level
-          "& input[type='number']": { borderRadius: '4px', width: '32px' },
-          // Level
-          "& input[type='text']": { borderRadius: '4px' },
-          '& .CardHeader': {
-            "& input[type='text']": {},
-            '& label': {},
-          },
-          '& .Level': {
-            '& div': {},
-            '& button': {},
-          },
-          '& .StatBlock': {
-            // Stat Block Border
-            ...(props.Mode === 'Edit'
-              ? {
-                  // StatBlock Debug Border
-                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
-                }
-              : {
-                  border: 'initial',
-                  borderImageRepeat: 'initial',
-                  borderImage: 'initial',
-                  borderImageSlice: 'initial',
-                }),
-
-            '& div[target="Attributes"]': {},
-            "& input[type='text']": {},
-            '& label': {},
-          },
-
-          '& .Stats': {
-            '& input': {},
-            '& table': {
-              '& thead': {
-                '& th': {},
-              },
-              '& tbody': {
-                '& tr': {
-                  '& td': {
-                    '& button': {},
-                    "& input[type='number']": {},
-                    "& input[type='text']": {},
-                  },
-
-                  '& td:nth-child(1):empty': {},
-                  '& td:nth-child(1)': {},
-                  '& td:nth-child(2)': {
-                    '& input': {},
-                  },
-                  '& td:nth-child(3)': {},
-                  '& td:nth-child(4)': {},
-                  '& td:nth-child(5)': {},
-                },
-                // hover row
-                '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
-
-                '& tfoot': {},
-                '& colgroup': {
-                  '& col:nth-child(1)': {},
-                  '& col:nth-child(2)': {},
-                  '& col:nth-child(3)': {},
-                  '& col:nth-child(4)': {},
-                  '& col:nth-child(5)': {},
-                },
-              },
-            },
-          },
-        },
-
-        '& .Controls': {
-          '& div': {
-            '& button': {
-              width: 'auto',
-            },
-          },
-        },
-      },
-    }),
-
+    Style: 'Default',
     Values: [
       {
         bEdit: true,
@@ -410,250 +778,11 @@ const defaultTemplates = {
       },
     ],
   },
-
+  //
   'Dark Souls III': {
     Game: 'Dark Souls III',
     Title: 'Dark Souls III',
-    Style: (props) => ({
-      '& .react-contextmenu': {
-        zIndex: 1000,
-        color: '#bbbbbb',
-        backgroundColor: '#232126',
-        border: '2px solid #dbdbdb',
-        borderRadius: '5px',
-      },
-
-      '& .react-contextmenu-item': {
-        zIndex: 1000,
-        color: '#bbbbbb',
-        backgroundColor: '#232126',
-        border: '2px solid #dbdbdb',
-        borderRadius: '5px',
-      },
-
-      '& .Profile': {
-        fontSize: 22,
-        fontFamily: 'Adobe Garamond, serif',
-        fontStyle: 'normal',
-        fontWeight: 'normal',
-        justifyContent: 'top',
-        textAlignLast: 'center',
-
-        // Profile Border
-        ...(props.Mode === 'Edit'
-          ? {
-              // StatBlock Debug Border
-              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
-            }
-          : {
-              border: 'initial',
-              borderImageRepeat: 'initial',
-              borderImage: 'initial',
-              borderImageSlice: 'initial',
-            }),
-
-        // Title Card
-        '& .ProfileHeader': {
-          color: '#bbbbbb',
-          backgroundColor: '#232126',
-          border: '2px solid #dbdbdb',
-          borderRadius: '5px',
-        },
-
-        '& button': {
-          width: '64px',
-          borderRadius: '8px',
-          filter: 'brightness(88%)',
-        },
-        '& .Card': {
-          color: '#bbbbbb',
-          backgroundColor: '#232126',
-          border: '2px solid #dbdbdb',
-          borderRadius: '5px',
-
-          padding: '22px',
-          margin: '4px',
-
-          minWidth: '328px',
-          maxWidth: '512px',
-
-          // Card Border
-          ...(props.Mode === 'Edit'
-            ? {
-                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
-              }
-            : {
-                border: 'initial',
-                borderImageRepeat: 'initial',
-                borderImage: 'initial',
-                borderImageSlice: 'initial',
-              }),
-
-          '& button': { fontSize: 12, textAlignLast: 'center' },
-          '& hr': { display: 'none' },
-          "& input[type='number']": { width: '64px' },
-          "& input[type='text']": { width: '100%' },
-          '& .CardHeader': {
-            color: '#aca69e',
-            textAlignLast: 'left',
-
-            "& input[type='text']": {
-              width: '100%',
-              border: 'none',
-              borderBottom: '3px solid',
-              borderImage:
-                'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
-            },
-            '& label': {
-              width: '100%',
-              border: 'none',
-              borderBottom: '3px solid',
-              borderImage:
-                'linear-gradient(to right, rgba(80.0,73.0,58.0, 0), rgba(80.0,73.0,58.0, 1), rgba(80.0,73.0,58.0, 0)) 1',
-            },
-          },
-
-          '& .Level': {
-            display: props.Mode !== 'Edit' ? 'none' : 'inline',
-            '& div': {},
-            '& button': { fontSize: 22, textAlignLast: 'center' },
-          },
-
-          '& .StatBlock': {
-            '& div[target="Attributes"]': {
-              color: 'red',
-            },
-
-            ...(props.Mode === 'Calculator'
-              ? {
-                  border: '39px solid transparent',
-                  borderImageRepeat: 'repeat',
-                  borderImage: `url("${DS3Frame}")`,
-                  borderImageSlice: '34%',
-                }
-              : // Stat Block Border
-              props.Mode === 'Edit'
-              ? {
-                  // StatBlock Debug Border
-                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
-                }
-              : {
-                  border: 'initial',
-                  borderImageRepeat: 'initial',
-                  borderImage: 'initial',
-                  borderImageSlice: 'initial',
-                }),
-
-            color: '#aca69e',
-            textAlignLast: 'left',
-            padding: '16px 0px 16px 0px',
-            "& input[type='text']": {
-              color: '#bbb3a6',
-              width: '100%',
-              border: 'none',
-              borderBottom: '3px solid',
-              borderImage:
-                'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
-            },
-            '& label': {
-              width: '100%',
-              border: 'none',
-              borderBottom: '3px solid',
-              borderImage:
-                'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
-            },
-          },
-
-          '& .Stats': {
-            // borderImage:
-            //   'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
-            // border: '2px solid',
-
-            '& input': { border: 'none', borderWidth: '1px' },
-            '& table': {
-              borderCollapse: 'separate',
-              emptyCells: 'show',
-              '& thead': {
-                emptyCells: 'hide',
-                '& th': {
-                  color: '#aca69e',
-                  fontSize: 'inherit',
-                  fontFamily: 'inherit',
-                  fontStyle: 'inherit',
-                  fontWeight: 'inherit',
-                  border: 'none',
-                  borderBottom: '3px solid',
-                  borderImage:
-                    'radial-gradient(rgba(80.0,73.0,58.0, 1) 40%, rgba(80.0,73.0,58.0, 0)) 1',
-                },
-              },
-              '& tbody': {
-                '& tr': {
-                  '& td': {
-                    '& button': {},
-                    "& input[type='number']": {
-                      width: '48px',
-                      textAlignLast: 'center',
-                    },
-                    "& input[type='text']": { width: '100%' },
-                  },
-
-                  '& td:nth-child(1):empty': {
-                    border: 'none',
-                    borderBottom: '2px solid',
-                    borderImage:
-                      'linear-gradient(to right, rgba(78,78,78, 0), rgba(78,78,78, 1), rgba(78,78,78, 0)) 1',
-                  },
-                  '& td:nth-child(1)': {
-                    textAlignLast: 'left',
-                    width: '100%',
-                  },
-                  '& td:nth-child(2)': {
-                    textAlignLast: 'center',
-                    width: '140px',
-                    '& input': {},
-                  },
-                  '& td:nth-child(3)': { textAlignLast: 'left' },
-                  '& td:nth-child(4)': { textAlignLast: 'left' },
-                  '& td:nth-child(5)': { textAlignLast: 'left' },
-                },
-                // hover row
-                '& tr:nth-child(odd):hover':
-                  props.Mode !== 'View'
-                    ? {
-                        backgroundImage:
-                          'radial-gradient(ellipse at bottom, #723a19, #723a1900 66%, #00000000 50%)',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'calc(100%) 5px',
-                      }
-                    : {
-                        backgroundImage: 'none',
-                      },
-
-                '& tfoot': {},
-                '& colgroup': {
-                  '& col:nth-child(1)': {},
-                  '& col:nth-child(2)': {},
-                  '& col:nth-child(3)': {},
-                  '& col:nth-child(4)': {},
-                  '& col:nth-child(5)': {},
-                },
-              },
-            },
-          },
-        },
-
-        '& .Controls': {
-          fontSize: 18,
-          '& div': {
-            '& button': {
-              width: 'auto',
-            },
-          },
-        },
-      },
-    }),
-    // end of style
+    Style: 'Dark Souls III',
     Values: [
       {
         bEdit: true,
@@ -1091,251 +1220,11 @@ const defaultTemplates = {
       },
     ],
   },
-
+  //
   'ArcheAge (V2020.10.13)': {
-    Game: 'ArcheAge',
+    Game: 'ArcheAge (V2020.10.13)',
     Title: "Koy's Stats",
-    Style: (props) => ({
-      '& .react-contextmenu': {
-        zIndex: 1000,
-        fontSize: 12,
-        fontFamily: 'NotoSansKR, serif',
-        fontWeight: 'normal',
-
-        color: '#6e5735',
-        backgroundColor: '#faf8e8',
-
-        border: '4px solid #6e5735',
-        borderRadius: '5px',
-
-        justifyContent: 'top',
-        textAlignLast: 'center',
-      },
-
-      '& .react-contextmenu-item': {
-        zIndex: 1000,
-        fontSize: 12,
-        fontFamily: 'NotoSansKR, serif',
-        fontWeight: 'normal',
-
-        color: '#6e5735',
-        background: 'inherit',
-        backgroundColor: 'inherit',
-
-        justifyContent: 'top',
-        textAlignLast: 'center',
-      },
-
-      '& .Profile': {
-        fontSize: 12,
-        fontFamily: 'NotoSansKR, serif',
-        fontWeight: 'normal',
-
-        color: '#6e5735',
-        background: 'inherit',
-        backgroundColor: 'inherit',
-
-        justifyContent: 'top',
-        textAlignLast: 'center',
-
-        // Profile Border
-        ...(props.Mode === 'Edit'
-          ? {
-              // StatBlock Debug Border
-              border: props.Mode === 'Edit' ? '2px dashed red' : 'none',
-            }
-          : {
-              border: 'initial',
-              borderImageRepeat: 'initial',
-              borderImage: 'initial',
-              borderImageSlice: 'initial',
-            }),
-
-        '& button': {
-          width: '64px',
-          borderRadius: '8px',
-
-          filter: 'brightness(88%)',
-
-          background: 'inherit',
-          backgroundColor: 'inherit',
-        },
-
-        '& .ProfileHeader': {
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-          fontWeight: 'inherit',
-          color: 'inherit',
-          background: 'inherit',
-
-          backgroundColor: '#faf8e8',
-
-          justifyContent: 'inherit',
-          textAlignLast: 'inherit',
-
-          border: '4px solid #6e5735',
-          borderRadius: '5px',
-
-          padding: '16px',
-          margin: '4px',
-
-          minWidth: '328px',
-        },
-
-        '& .Card': {
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-          fontWeight: 'inherit',
-          color: 'inherit',
-          background: 'inherit',
-
-          justifyContent: 'inherit',
-          textAlignLast: 'inherit',
-
-          backgroundColor: '#faf8e8',
-          border: '4px solid #6e5735',
-          borderRadius: '5px',
-
-          padding: '16px',
-          margin: '4px',
-
-          minWidth: '328px',
-
-          // Card Border
-          ...(props.Mode === 'Edit'
-            ? {
-                border: props.Mode === 'Edit' ? '2px dashed orange' : 'none',
-              }
-            : {
-                border: 'initial',
-                borderImageRepeat: 'initial',
-                borderImage: 'initial',
-                borderImageSlice: 'initial',
-              }),
-
-          // Level
-          "& input[type='number']": {
-            width: '64px',
-          },
-          // Level
-          "& input[type='text']": {
-            width: '100%',
-          },
-
-          '& .CardHeader': {
-            textAlignLast: 'left',
-
-            "& input[type='text']": {
-              width: '100%',
-            },
-            '& label': {
-              border: 'none',
-            },
-          },
-
-          '& .Level': {
-            display: props.Mode !== 'Edit' ? 'none' : 'inline',
-            '& div': {},
-            '& button': { fontSize: 22, textAlignLast: 'center' },
-          },
-
-          '& .StatBlock': {
-            textAlignLast: 'left',
-            padding: '16px 0px 16px 0px',
-
-            '& div[target="Attributes"]': {},
-
-            // Stat Block Border
-            ...(props.Mode === 'Edit'
-              ? {
-                  // StatBlock Debug Border
-                  border: props.Mode === 'Edit' ? '2px dashed gold' : 'none',
-                }
-              : {
-                  border: 'initial',
-                  borderImageRepeat: 'initial',
-                  borderImage: 'initial',
-                  borderImageSlice: 'initial',
-                }),
-
-            "& input[type='text']": {
-              width: '100%',
-            },
-            '& label': {
-              width: '100%',
-            },
-          },
-
-          '& .Stats': {
-            '& input': { border: 'none', borderWidth: '1px' },
-            '& table': {
-              borderCollapse: 'separate',
-              emptyCells: 'show',
-              '& thead': {
-                emptyCells: 'hide',
-                '& th': {
-                  color: 'inherit',
-                  fontSize: 'inherit',
-                  fontFamily: 'inherit',
-                  fontStyle: 'inherit',
-                  fontWeight: 'inherit',
-                  border: 'inherit',
-                  borderBottom: 'inherit',
-                },
-              },
-              '& tbody': {
-                '& tr': {
-                  '& td': {
-                    '& button': {},
-                    "& input[type='number']": {
-                      width: '48px',
-                      textAlignLast: 'center',
-                    },
-                    "& input[type='text']": { width: '100%' },
-                  },
-
-                  '& td:nth-child(1):empty': {},
-                  '& td:nth-child(1)': {
-                    textAlignLast: 'left',
-                    width: '100%',
-                  },
-                  '& td:nth-child(2)': {
-                    textAlignLast: 'left',
-                    width: '140px',
-                    '& input': {},
-                  },
-                  '& td:nth-child(3)': { textAlignLast: 'left' },
-                  '& td:nth-child(4)': { textAlignLast: 'left' },
-                  '& td:nth-child(5)': { textAlignLast: 'left' },
-                },
-                // hover row
-                '& tr:nth-child(odd):hover': props.Mode !== 'View' ? {} : {},
-
-                '& tfoot': {},
-                '& colgroup': {
-                  '& col:nth-child(1)': {},
-                  '& col:nth-child(2)': {},
-                  '& col:nth-child(3)': {},
-                  '& col:nth-child(4)': {},
-                  '& col:nth-child(5)': {},
-                },
-              },
-            },
-          },
-        },
-
-        '& .Controls': {
-          fontSize: 14,
-          '& div': {
-            '& button': {
-              width: 'auto',
-            },
-          },
-        },
-      },
-    }),
-    // end of style
-
+    Style: 'ArcheAge',
     Values: [
       {
         Value: 'Page One',
@@ -2322,4 +2211,4 @@ const defaultTemplates = {
   },
 };
 
-export { defaultTemplates };
+export { Templates, Styles };

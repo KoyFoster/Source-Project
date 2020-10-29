@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TemplateSelector from './TemplateSelector';
+import TemplateSelector from './Selector';
 import { MenuItem } from '@material-ui/core';
 import StatInputForm from './StatInputForm Old.js';
 import Diagram from './Diagram.js';

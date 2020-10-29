@@ -1,42 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import TemplateSelector from './TemplateSelector';
-// import { MenuItem } from '@material-ui/core';
-// import StatForm from './StatForm.js';
-// import { Row, Col } from './DivGrid';
-// import StatCode from './StatCode';
-// import Tree from './Forms/Tree';
+import Selector from './Selector';
 import ProfileCard from './Forms/Card';
-import { defaultTemplates as Templates } from './Templates';
+import { Templates, Styles } from './Templates';
 import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 import UserData from './Forms/UserData';
 import DateTime from './Forms/DateTime';
-
-// function compileMenuItems() {
-//   let result = [];
-
-//   for (let i = 0; i < Templates.length; i++) {
-//     result.push(
-//       <MenuItem key={Templates[i].label} value={Templates[i]}>
-//         {Templates[i].label}
-//       </MenuItem>,
-//     );
-//   }
-//   return result;
-// }
-// const tmplMenuItems = compileMenuItems();
-
-// placeholder code for writing Style functions to js files
-// {
-//   FileTools.writeTextFile(
-//     'Style.js',
-//     `const Style = ${Templates[
-//       'Dark Souls III'
-//     ].Style.toString()}\r\n\r\nexport default Style;`,
-//   );
-// }
 
 const formatSaveData = (value) => {
   const regex1 = /}}},/gi;
@@ -158,7 +129,9 @@ const Stats = (props) => {
   const [UD] = useState(new UserData('TemplateData'));
 
   // member variables
-  const [value, setValue] = useState(Templates['UserDefined']);
+  const [series, setSeries] = useState('Blank');
+  const [value, setValue] = useState(Templates['Blank']);
+  const [style, setStyle] = useState('Default');
 
   const Modes = ['Calculator', 'View', 'Edit'];
 
@@ -219,25 +192,26 @@ const Stats = (props) => {
 
   /* Material-UI CSS Styles */
   /* Hard coding useStyles for eadch templates style */
-  const classes1 = useStyles({ Mode, Style: Templates['UserDefined'].Style });
+  const classes1 = useStyles({
+    Mode,
+    Style: Styles[Templates['Blank'].Style],
+  });
   const classes2 = useStyles({
     Mode,
-    Style: Templates["Jojo's Bizarre Adventure"].Style,
+    Style: Styles[Templates["Jojo's Bizarre Adventure"].Style],
   });
   const classes3 = useStyles({
     Mode,
-    Style: Templates['Dark Souls III'].Style,
+    Style: Styles[Templates['Dark Souls III'].Style],
   });
   const classes4 = useStyles({
     Mode,
-    Style: Templates['ArcheAge (V2020.10.13)'].Style,
+    Style: Styles[Templates['ArcheAge (V2020.10.13)'].Style],
   });
 
   /* Get useStyle of template */
   const getClass = () => {
-    switch (value.Game) {
-      case 'UserDefined':
-        return classes1.root;
+    switch (style) {
       case "Jojo's Bizarre Adventure":
         return classes2.root;
       case 'Dark Souls III':
@@ -249,7 +223,7 @@ const Stats = (props) => {
     }
   };
 
-  useEffect(() => {}, [value.Style]);
+  useEffect(() => {}, []);
   // console.log(`Data:`, value);
 
   const CacheUserData = (props) => {
@@ -324,26 +298,54 @@ const Stats = (props) => {
     default:
   }
 
+  console.log({ value, style });
+  // renderer
   switch (props.state) {
     case 'creator':
       return (
         <div style={{ display: 'flex' }}>
           <Paper style={{ margin: '4px', padding: '4px' }}>
-            <TemplateSelector
+            <Selector
+              combobox
               label={'Series'}
-              setTemplate={Update}
-              data={Templates}
-              defaultValue={'Dark Souls III'}
+              value={value.Game}
+              inputSetter={(val) => {
+                setSeries(val);
+              }}
+              setter={(val) => {
+                Update(Templates[val]);
+                setSeries(val);
+                setStyle(Templates[val].Style);
+              }}
+              getter={(val) => {
+                console.log('getter 1:', val);
+                return val;
+              }}
+              list={Object.keys(Templates).map((key) => {
+                return key;
+              })}
             />
-            {value.Type === 'UserDefined' ? (
-              <div>
-                <Paper style={{ display: 'flex', padding: '2px' }}>
-                  <SaveStatCard value={value}></SaveStatCard>
-                  <LoadStatCard setValue={setValue}></LoadStatCard>
-                </Paper>
-                <CacheUserData key="UserData" />
-              </div>
-            ) : null}
+            <Selector
+              label={'Styles'}
+              value={style}
+              setter={(val) => {
+                setStyle(val);
+              }}
+              getter={(val) => {
+                console.log('getter 2:', val);
+                return val;
+              }}
+              list={Object.keys(Styles).map((key) => {
+                return key;
+              })}
+            />
+            <div>
+              <Paper style={{ display: 'flex', padding: '2px' }}>
+                <SaveStatCard value={value}></SaveStatCard>
+                <LoadStatCard setValue={setValue}></LoadStatCard>
+              </Paper>
+              <CacheUserData key="UserData" />
+            </div>
             <Paper
               style={{
                 display: 'flex',
@@ -379,7 +381,7 @@ const Stats = (props) => {
       return (
         <div style={{ display: 'flex' }}>
           <Paper style={{ margin: '4px', padding: '4px' }}>
-            <TemplateSelector
+            <Selector
               label={'Series'}
               setTemplate={Update}
               data={Templates}
