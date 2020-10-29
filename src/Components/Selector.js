@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Paper, Select, MenuItem, Input, TextField } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Paper, Select, MenuItem } from '@material-ui/core';
 
 function TemplateSelector(props) {
   // props
   const { value } = props;
-  const { combobox } = props;
-  const { inputValue } = props;
-  const { inputSetter } = props;
   const { list } = props;
   const { label } = props;
   const { setter } = props;
 
   // compile menu items
   const menuList = () => {
-    console.log('list:', list);
+    // console.log('list:', list);
     if (list)
       return list.map((k) => {
         return (

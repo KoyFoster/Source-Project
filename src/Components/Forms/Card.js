@@ -31,7 +31,6 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 //  - so that one can search through that list, as appose to the entire data object
 
 const replaceVar = (newKey, oldKey, varObj) => {
-  // console.warn(`replaceVar:`, { oldKey, newKey, varObj });
   if (varObj.vars) {
     const obj = JSON.parse(varObj.vars);
     Object.keys(obj).forEach((key2) => {
@@ -49,7 +48,6 @@ const replaceVar = (newKey, oldKey, varObj) => {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
             obj[key2][i] = newKey[i];
             bUpdate = true;
           }
@@ -60,7 +58,6 @@ const replaceVar = (newKey, oldKey, varObj) => {
       // update vars
       if (bUpdate) {
         varObj.vars = JSON.stringify(obj);
-        // console.warn(`Match Found:`, varObj);
       }
     });
   }
@@ -76,14 +73,12 @@ const replaceVar = (newKey, oldKey, varObj) => {
       } else {
         let i = 0;
         let bMatch = true;
-        // console.warn(`Match Found:`, obj[key2]);
 
         obj[key2].forEach((k) => {
           if (obj[key2][i] !== oldKey[i]) {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
             obj[key2][i] = newKey[i];
           }
 
@@ -98,7 +93,6 @@ const bVarInUse = (newKey, oldKey, varObj) => {
   // const vars = [];
   let bFound = false;
 
-  // console.warn(`bVarInUse:`, { oldKey, newKey, varObj });
   if (varObj.vars) {
     const obj = JSON.parse(varObj.vars);
     Object.keys(obj).forEach((key2) => {
@@ -116,7 +110,6 @@ const bVarInUse = (newKey, oldKey, varObj) => {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
             bFound = true;
           }
 
@@ -126,7 +119,6 @@ const bVarInUse = (newKey, oldKey, varObj) => {
       // update vars
       if (bUpdate) {
         varObj.vars = JSON.stringify(obj);
-        // console.warn(`Match Found:`, varObj);
       }
     });
   }
@@ -142,14 +134,12 @@ const bVarInUse = (newKey, oldKey, varObj) => {
       } else {
         let i = 0;
         let bMatch = true;
-        // console.warn(`Match Found:`, obj[key2]);
 
         obj[key2].forEach((k) => {
           if (obj[key2][i] !== oldKey[i]) {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            // console.warn(`${obj[key2][i]} =/= ${newKey[i]}`);
             // vars.push(obj);
             bFound = true;
           }
@@ -164,7 +154,6 @@ const bVarInUse = (newKey, oldKey, varObj) => {
 };
 
 const UpdateAllKeys = (newKey, oldKey, data) => {
-  // console.warn(`UpdateAllKeys:`, { newKey, oldKey, data });
   // newKey should be the same length as the old Key
   if (newKey.length !== oldKey.length) return;
 
@@ -189,9 +178,7 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
         });
     } else if (Value.Type === 'Graph') {
       // ITERATE through Values
-      // console.warn(`Graph: `, Value.Keys);
       if (Value.Keys) {
-        // console.warn('Replace Values:', Value.Keys);
         replaceVar(newKey, oldKey, Value.Keys);
       }
     }
@@ -201,7 +188,6 @@ const UpdateAllKeys = (newKey, oldKey, data) => {
 };
 
 const updateVal = (key, varObj, data) => {
-  // console.warn(`replaceVar:`, { key, varObj });
   if (varObj.vars) {
     const obj = JSON.parse(varObj.vars);
     Object.keys(obj).forEach((key2) => {
@@ -219,7 +205,6 @@ const updateVal = (key, varObj, data) => {
             bMatch = false;
           }
           if (bMatch && i === pos) {
-            // console.warn(`${obj[key2][i]} =/= ${key[i]}`);
             obj[key2][i] = key[i];
             bUpdate = true;
           }
@@ -230,7 +215,6 @@ const updateVal = (key, varObj, data) => {
       // update val
       if (bUpdate) {
         // varObj.vars = JSON.stringify(obj);
-        // console.warn(`Match Found:`, varObj, obj, { buffer });
 
         const buffer = StatData.GetCellValue(
           varObj.expression,
@@ -250,8 +234,6 @@ const updateVal = (key, varObj, data) => {
 };
 
 const UpdateAllVals = (varKey, data) => {
-  // console.warn(`UpdateAllKeys:`, { key, data });
-
   // Iterate through entire dataobject
   data.Values.forEach((Value) => {
     // Card
@@ -278,7 +260,6 @@ const UpdateAllVals = (varKey, data) => {
 };
 
 const ValidateAllKeys = (newKey, oldKey, data) => {
-  // console.warn(`ValidateAllKeys:`, { newKey, oldKey, data });
   // newKey should be the same length as the old Key
   if (newKey.length !== oldKey.length) return false;
 
@@ -308,15 +289,12 @@ const ValidateAllKeys = (newKey, oldKey, data) => {
         });
     } else if (Value.Type === 'Graph') {
       // ITERATE through Values
-      // console.warn(`Graph: `, Value.Keys);
       if (Value.Keys) {
-        // console.warn('Replace Values:', Value.Keys);
         if (bVarInUse(newKey, oldKey, Value.Keys)) vars.push(Value.Value);
       }
     }
   });
 
-  // console.log('Existing Vars:', vars);
   return vars;
 };
 
@@ -379,7 +357,6 @@ const Block = (props) => {
   const { data } = props;
   const { setBlockSelection } = props;
   const [statSelection, setStatSelection] = useState(undefined);
-  const [iSelection, setISelection] = useState(undefined);
   // stat properties
   const { Stats } = props;
   const { Value } = Stats;
@@ -387,11 +364,28 @@ const Block = (props) => {
   // stat data
   const { Values } = Stats;
 
+  // get element by key
+  const getStatByKey = (key) => {
+    let stat = undefined;
+    let i = 0;
+    const keys = Object.keys(Values);
+
+    for (i; i < keys.length; i++) {
+      if (stat === undefined) {
+        if (Values[i]['Value'] === key) {
+          stat = Values[i];
+          break;
+        }
+      }
+    }
+
+    return stat;
+  };
+
   // Generate key blacklist
   const blacklist = `~${Values.map((value) => {
     return value.Value;
   }).join('~')}~`;
-  // console.warn(`Block blacklist: ${blacklist}`);
 
   // stat table
   function StatTable() {
@@ -404,7 +398,6 @@ const Block = (props) => {
             // Right click and left click
             if (e.button === 2 || e.button === 0) {
               setStatSelection(row);
-              setISelection(i);
             }
           }}
         >
@@ -426,7 +419,6 @@ const Block = (props) => {
         const kp = [...keyPath, 'Values', Value, 'Values'];
 
         const { Type } = value;
-        // console.warn(`value:`, Type);
 
         i += 1;
         if (Mode === 'View') {
@@ -480,6 +472,8 @@ const Block = (props) => {
                   if (e.key === 'Enter') {
                     const oldValue = value.Value;
                     value.Value = e.target.value;
+                    // Update selection value
+                    setStatSelection(e.target.value);
                     Update(
                       UpdateAllKeys(
                         [...kp, e.target.value],
@@ -550,6 +544,8 @@ const Block = (props) => {
                   if (e.key === 'Enter') {
                     const oldValue = value.Value;
                     value.Value = e.target.value;
+                    // Update selection value
+                    setStatSelection(e.target.value);
                     Update(
                       UpdateAllKeys(
                         [...kp, e.target.value],
@@ -659,7 +655,6 @@ const Block = (props) => {
   ];
 
   const getTextCM = (stat, tag) => {
-    // console.warn(`Context Data:`, `Stat_CM_${tag}`);
     return <ContextMenu id={`Stat_CM_${tag}`}>{statMenu(stat)}</ContextMenu>;
   };
 
@@ -696,11 +691,20 @@ const Block = (props) => {
               <TextInputValidator
                 key={Value}
                 defaultValue={Value}
-                eventys={{
+                events={{
                   onKeyUp: (e) => {
                     if (e.key === 'Enter') {
+                      const oldValue = Stats.Value;
                       Stats.Value = e.target.value;
-                      Update(data);
+                      // Update selection value
+                      setBlockSelection(e.target.value);
+
+                      // Update(
+                      UpdateAllKeys(
+                        [...keyPath, 'Values', e.target.value],
+                        [...keyPath, 'Values', oldValue],
+                        data,
+                      );
                     }
                   },
                 }}
@@ -744,8 +748,8 @@ const Block = (props) => {
         <StatsContainer>
           <ContextMenuTrigger id={`Stat_CM_${Value}`} holdToDisplay={-1}>
             {Mode === 'Edit'
-              ? iSelection !== undefined
-                ? getTextCM(Values[iSelection], Value)
+              ? statSelection !== undefined
+                ? getTextCM(getStatByKey(statSelection), Value)
                 : null
               : null}
             {Mode === 'Edit' ? (
@@ -771,12 +775,10 @@ const Block = (props) => {
                   }
 
                   setStatSelection(Stats.addStat(selection, i));
-                  setISelection(i);
                   Update(data);
                 }}
                 Move={(selection, i) => {
                   setStatSelection(Stats.moveStat(selection, i));
-                  setISelection(i);
                   Update(data);
                 }}
               ></Controls>
@@ -866,6 +868,8 @@ const Card = (props) => {
                   if (e.key === 'Enter') {
                     const oldValue = cardData.Value;
                     cardData.Value = e.target.value;
+                    // Update selection value
+                    setBlockSelection(e.target.value);
                     Update(
                       UpdateAllKeys(
                         [...keyPath, e.target.value],
@@ -1032,6 +1036,8 @@ const ProfileCard = (props) => {
                     if (e.key === 'Enter') {
                       const oldValue = data.Game;
                       data.Game = e.target.value;
+                      // Update selection value
+                      setCardSelection(e.target.value);
                       Update(
                         UpdateAllKeys(
                           ['Values', data.Game],

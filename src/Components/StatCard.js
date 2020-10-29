@@ -129,7 +129,6 @@ const Stats = (props) => {
   const [UD] = useState(new UserData('TemplateData'));
 
   // member variables
-  const [series, setSeries] = useState('Blank');
   const [value, setValue] = useState(Templates['Blank']);
   const [style, setStyle] = useState('Default');
 
@@ -224,7 +223,6 @@ const Stats = (props) => {
   };
 
   useEffect(() => {}, []);
-  // console.log(`Data:`, value);
 
   const CacheUserData = (props) => {
     const [info, setInfo] = useState('[No Loaded]');
@@ -298,7 +296,6 @@ const Stats = (props) => {
     default:
   }
 
-  console.log({ value, style });
   // renderer
   switch (props.state) {
     case 'creator':
@@ -309,16 +306,11 @@ const Stats = (props) => {
               combobox
               label={'Series'}
               value={value.Game}
-              inputSetter={(val) => {
-                setSeries(val);
-              }}
               setter={(val) => {
                 Update(Templates[val]);
-                setSeries(val);
                 setStyle(Templates[val].Style);
               }}
               getter={(val) => {
-                console.log('getter 1:', val);
                 return val;
               }}
               list={Object.keys(Templates).map((key) => {
@@ -332,7 +324,6 @@ const Stats = (props) => {
                 setStyle(val);
               }}
               getter={(val) => {
-                console.log('getter 2:', val);
                 return val;
               }}
               list={Object.keys(Styles).map((key) => {
@@ -385,16 +376,11 @@ const Stats = (props) => {
               combobox
               label={'Series'}
               value={value.Game}
-              inputSetter={(val) => {
-                setSeries(val);
-              }}
               setter={(val) => {
                 Update(Templates[val]);
-                setSeries(val);
                 setStyle(Templates[val].Style);
               }}
               getter={(val) => {
-                console.log('getter 1:', val);
                 return val;
               }}
               list={Object.keys(Templates).map((key) => {
@@ -408,7 +394,6 @@ const Stats = (props) => {
                 setStyle(val);
               }}
               getter={(val) => {
-                console.log('getter 2:', val);
                 return val;
               }}
               list={Object.keys(Styles).map((key) => {
