@@ -382,11 +382,46 @@ const Stats = (props) => {
         <div style={{ display: 'flex' }}>
           <Paper style={{ margin: '4px', padding: '4px' }}>
             <Selector
+              combobox
               label={'Series'}
-              setTemplate={Update}
-              data={Templates}
-              defaultValue={'Dark Souls III'}
+              value={value.Game}
+              inputSetter={(val) => {
+                setSeries(val);
+              }}
+              setter={(val) => {
+                Update(Templates[val]);
+                setSeries(val);
+                setStyle(Templates[val].Style);
+              }}
+              getter={(val) => {
+                console.log('getter 1:', val);
+                return val;
+              }}
+              list={Object.keys(Templates).map((key) => {
+                return key;
+              })}
             />
+            <Selector
+              label={'Styles'}
+              value={style}
+              setter={(val) => {
+                setStyle(val);
+              }}
+              getter={(val) => {
+                console.log('getter 2:', val);
+                return val;
+              }}
+              list={Object.keys(Styles).map((key) => {
+                return key;
+              })}
+            />
+            <div>
+              <Paper style={{ display: 'flex', padding: '2px' }}>
+                <SaveStatCard value={value}></SaveStatCard>
+                <LoadStatCard setValue={setValue}></LoadStatCard>
+              </Paper>
+              <CacheUserData key="UserData" />
+            </div>
             <Paper
               style={{
                 display: 'flex',
