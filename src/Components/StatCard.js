@@ -18,7 +18,6 @@ const useStyles = makeStyles((msProps) => {
 // Stat Card
 const Stats = (props) => {
   // user data
-  // const [UD] = useState(new UserData('TemplateData'));
   const [SM] = useState(new SaveManager('Saves', 'Calc_Save'));
   const [refresh, setRefresh] = useState(false);
   const Refresh = () => {
@@ -27,7 +26,7 @@ const Stats = (props) => {
 
   // member variables
   const [value, setValue] = useState(Templates['Blank']);
-  // console.log('Stats:', value);
+  // console.log('values:', value);
   const [style, setStyle] = useState('Default');
 
   const Modes = ['Calculator', 'View', 'Edit'];
@@ -164,11 +163,6 @@ const Stats = (props) => {
               })}
             />
             <div>
-              {/* <Paper style={{ display: 'flex', padding: '2px' }}>
-                <SaveStatCard value={value}></SaveStatCard>
-                <LoadStatCard setValue={setValue}></LoadStatCard>
-              </Paper> */}
-              {/* <CacheUserData key="UserData" /> */}
               <Saves
                 key="UserData"
                 indexName={SM.getName()}
@@ -243,13 +237,7 @@ const Stats = (props) => {
                 return key;
               })}
             />
-            <div>
-              {/* <Paper style={{ display: 'flex', padding: '2px' }}>
-                <SaveStatCard value={value}></SaveStatCard>
-                <LoadStatCard setValue={setValue}></LoadStatCard>
-              </Paper>
-              <CacheUserData key="UserData" /> */}
-            </div>
+            <div></div>
             <Paper
               style={{
                 display: 'flex',
