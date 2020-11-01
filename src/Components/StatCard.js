@@ -6,7 +6,7 @@ import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import UserData from './Forms/UserData';
+import { UserData, SaveManager, Saves } from './UserData/UserData';
 import DateTime from './Forms/DateTime';
 
 const formatSaveData = (value) => {
@@ -126,10 +126,16 @@ const useStyles = makeStyles((msProps) => {
 // Stat Card
 const Stats = (props) => {
   // user data
-  const [UD] = useState(new UserData('TemplateData'));
+  // const [UD] = useState(new UserData('TemplateData'));
+  const [SM, setSM] = useState(new SaveManager('Saves', 'Calc_Save'));
+  const [refresh, setRefresh] = useState(false);
+  const Refresh = () => {
+    setRefresh(!refresh);
+  };
 
   // member variables
   const [value, setValue] = useState(Templates['Blank']);
+  console.log('values:', value);
   const [style, setStyle] = useState('Default');
 
   const Modes = ['Calculator', 'View', 'Edit'];
@@ -224,70 +230,70 @@ const Stats = (props) => {
 
   useEffect(() => {}, []);
 
-  const CacheUserData = (props) => {
-    const [info, setInfo] = useState('[No Loaded]');
+  // const CacheUserData = (props) => {
+  //   const [info, setInfo] = useState('[No Loaded]');
 
-    useEffect(() => {
-      // load user data if available
-    }, []);
+  //   useEffect(() => {
+  //     // load user data if available
+  //   }, []);
 
-    return (
-      <div>
-        <div>
-          <button
-            key="save"
-            onClick={() => {
-              // set save time state
-              // set creation date if never set before
-              const now = new Date();
-              if (!value.DateCreated)
-                value.DateCreated = DateTime.FormatDate(now);
-              value.DateEdited = DateTime.FormatDate(now);
-              setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
-              UD.Set(formatSaveData(value));
-            }}
-          >
-            Cache Data
-          </button>
-          <button
-            key="clear"
-            onClick={() => {
-              setInfo('[Cache Cleared]');
-              UD.Set('');
-            }}
-          >
-            Clear Cache
-          </button>
-          <button
-            key="Load"
-            onClick={() => {
-              const data = UD.Get();
-              if (data !== '') {
-                const buffer = deformatSaveData(data);
-                setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
-                setValue(buffer);
-              } else {
-                setInfo(`[No data to load]`);
-              }
-            }}
-          >
-            Load Last Cache
-          </button>
-        </div>
-        <div>
-          <span
-            style={{
-              border: '2px solid black',
-              justifyContent: 'center',
-              display: 'flex',
-            }}
-          >
-            {info}
-          </span>
-        </div>
-      </div>
-    );
-  };
+  //   return (
+  //     <div>
+  //       <div>
+  //         <button
+  //           key="save"
+  //           onClick={() => {
+  //             // set save time state
+  //             // set creation date if never set before
+  //             const now = new Date();
+  //             if (!value.DateCreated)
+  //               value.DateCreated = DateTime.FormatDate(now);
+  //             value.DateEdited = DateTime.FormatDate(now);
+  //             setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
+  //             UD.Set(formatSaveData(value));
+  //           }}
+  //         >
+  //           Cache Data
+  //         </button>
+  //         <button
+  //           key="clear"
+  //           onClick={() => {
+  //             setInfo('[Cache Cleared]');
+  //             UD.Set('');
+  //           }}
+  //         >
+  //           Clear Cache
+  //         </button>
+  //         <button
+  //           key="Load"
+  //           onClick={() => {
+  //             const data = UD.Get();
+  //             if (data !== '') {
+  //               const buffer = deformatSaveData(data);
+  //               setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
+  //               setValue(buffer);
+  //             } else {
+  //               setInfo(`[No data to load]`);
+  //             }
+  //           }}
+  //         >
+  //           Load Last Cache
+  //         </button>
+  //       </div>
+  //       <div>
+  //         <span
+  //           style={{
+  //             border: '2px solid black',
+  //             justifyContent: 'center',
+  //             display: 'flex',
+  //           }}
+  //         >
+  //           {info}
+  //         </span>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   switch (props.state) {
     case 'creator':
@@ -331,11 +337,21 @@ const Stats = (props) => {
               })}
             />
             <div>
-              <Paper style={{ display: 'flex', padding: '2px' }}>
+              {/* <Paper style={{ display: 'flex', padding: '2px' }}>
                 <SaveStatCard value={value}></SaveStatCard>
                 <LoadStatCard setValue={setValue}></LoadStatCard>
-              </Paper>
-              <CacheUserData key="UserData" />
+              </Paper> */}
+              {/* <CacheUserData key="UserData" /> */}
+              <Saves
+                key="UserData"
+                indexName={SM.getName()}
+                SM={SM}
+                Update={() => {
+                  Refresh();
+                }}
+                currentData={value}
+                setData={setValue}
+              ></Saves>
             </div>
             <Paper
               style={{
@@ -401,11 +417,11 @@ const Stats = (props) => {
               })}
             />
             <div>
-              <Paper style={{ display: 'flex', padding: '2px' }}>
+              {/* <Paper style={{ display: 'flex', padding: '2px' }}>
                 <SaveStatCard value={value}></SaveStatCard>
                 <LoadStatCard setValue={setValue}></LoadStatCard>
               </Paper>
-              <CacheUserData key="UserData" />
+              <CacheUserData key="UserData" /> */}
             </div>
             <Paper
               style={{

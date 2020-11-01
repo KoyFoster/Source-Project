@@ -17,11 +17,11 @@ import Diagram from '../Diagram.js';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 // Current Objectives
-// 1. Card specific styling
-//  a. Possibly doable by applying section names with variable names
-//  b. This may be another whole can of works where style classnames need to be validated and updated
-// 2. Clean up the look and feel of the context menus
-// 3. Clean up variable picker and expression maker
+// 1. For watchever reason, newly added entries are not given unique names like they use to
+// 2. Make it difficult for a user to overwrite their work.
+// 3. Consider allowing for multiple saves
+// 4. Consider making a widget system
+//  a. Cards, Diagrams, Inventories, Skills, Equipment, ect
 
 // Possible objectived
 // Current Objectives
@@ -379,7 +379,7 @@ const Block = (props) => {
       }
     }
 
-    return stat;
+    return stat ? stat : {};
   };
 
   // Generate key blacklist

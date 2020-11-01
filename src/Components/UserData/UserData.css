@@ -1,0 +1,30 @@
+.Saves {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.Header {
+  border-style: solid;
+  border-width: 2px;
+  text-align: center;
+}
+
+.SaveEntry {
+  border-style: dotted;
+  border-width: 2px;
+  border-color: red;
+  text-align: center;
+}
+
+.saveContainer input ~ .saveBody {
+  display: block;
+}
+
+.saveContainer input:checked ~ .saveBody {
+  filter: brightness(50%);
+}
+
+.EntryDates {
+  display: flex;
+  justify-content: center;
+}
