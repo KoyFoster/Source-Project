@@ -2,118 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Selector from './Selector';
 import ProfileCard from './Forms/Card';
 import { Templates, Styles } from './Templates';
-import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import { UserData, SaveManager, Saves } from './UserData/UserData';
-import DateTime from './Forms/DateTime';
-
-const formatSaveData = (value) => {
-  const regex1 = /}}},/gi;
-  const regex2 = /:{/gi;
-
-  // Pull data object without circular keys
-  var cache = [];
-  value = JSON.stringify(value, function (key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1 || key === 'P') {
-        // Circular reference found, discard key
-        return;
-      }
-      cache.push(value);
-    }
-    return value;
-  })
-    .replace(regex1, '}}},\n\n')
-    .replace(regex2, '\n:{');
-
-  return value;
-};
-
-const deformatSaveData = (value) => {
-  return JSON.parse(value);
-};
-
-const SaveStatCard = (props) => {
-  let { value } = props;
-
-  value = formatSaveData(value);
-
-  return (
-    <TogglePopup
-      style={{ borderRadius: '4px' }}
-      component={
-        <div>
-          Save Code
-          <textarea
-            type="text"
-            // readOnly
-            value={value}
-            style={{
-              display: 'block',
-              width: '100%',
-              height: '512px',
-              whiteSpace: 'nowrap',
-              resize: 'none',
-            }}
-            onChange={(e) => {}}
-          />
-        </div>
-      }
-    >
-      Save Code
-    </TogglePopup>
-  );
-};
-
-const LoadStatCard = (props) => {
-  // states
-  let { setValue } = props;
-  // const [newVal, setNewValue] = useState('');
-  const [jsonValue, setJSONValue] = useState();
-
-  return (
-    <TogglePopup
-      style={{ borderRadius: '4px' }}
-      component={
-        <div>
-          Load Code
-          <textarea
-            type="text"
-            style={{
-              display: 'block',
-              width: '100%',
-              height: '512px',
-              whiteSpace: 'nowrap',
-              resize: 'none',
-            }}
-            onChange={(e) => {
-              // setNewValue(e.target.value);
-
-              let buffer = undefined;
-              try {
-                buffer = JSON.parse(e.target.value);
-              } catch {}
-              setJSONValue(buffer);
-            }}
-          />
-          <button
-            type="button"
-            disabled={jsonValue ? false : true}
-            onClick={(e) => {
-              setValue(jsonValue);
-            }}
-          >
-            Load
-          </button>
-        </div>
-      }
-    >
-      Load Code
-    </TogglePopup>
-  );
-};
+import { SaveManager, Saves } from './UserData/UserData';
 
 const useStyles = makeStyles((msProps) => {
   return {
@@ -127,7 +19,7 @@ const useStyles = makeStyles((msProps) => {
 const Stats = (props) => {
   // user data
   // const [UD] = useState(new UserData('TemplateData'));
-  const [SM, setSM] = useState(new SaveManager('Saves', 'Calc_Save'));
+  const [SM] = useState(new SaveManager('Saves', 'Calc_Save'));
   const [refresh, setRefresh] = useState(false);
   const Refresh = () => {
     setRefresh(!refresh);
@@ -135,7 +27,7 @@ const Stats = (props) => {
 
   // member variables
   const [value, setValue] = useState(Templates['Blank']);
-  console.log('values:', value);
+  // console.log('Stats:', value);
   const [style, setStyle] = useState('Default');
 
   const Modes = ['Calculator', 'View', 'Edit'];
@@ -229,71 +121,6 @@ const Stats = (props) => {
   };
 
   useEffect(() => {}, []);
-
-  // const CacheUserData = (props) => {
-  //   const [info, setInfo] = useState('[No Loaded]');
-
-  //   useEffect(() => {
-  //     // load user data if available
-  //   }, []);
-
-  //   return (
-  //     <div>
-  //       <div>
-  //         <button
-  //           key="save"
-  //           onClick={() => {
-  //             // set save time state
-  //             // set creation date if never set before
-  //             const now = new Date();
-  //             if (!value.DateCreated)
-  //               value.DateCreated = DateTime.FormatDate(now);
-  //             value.DateEdited = DateTime.FormatDate(now);
-  //             setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
-  //             UD.Set(formatSaveData(value));
-  //           }}
-  //         >
-  //           Cache Data
-  //         </button>
-  //         <button
-  //           key="clear"
-  //           onClick={() => {
-  //             setInfo('[Cache Cleared]');
-  //             UD.Set('');
-  //           }}
-  //         >
-  //           Clear Cache
-  //         </button>
-  //         <button
-  //           key="Load"
-  //           onClick={() => {
-  //             const data = UD.Get();
-  //             if (data !== '') {
-  //               const buffer = deformatSaveData(data);
-  //               setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
-  //               setValue(buffer);
-  //             } else {
-  //               setInfo(`[No data to load]`);
-  //             }
-  //           }}
-  //         >
-  //           Load Last Cache
-  //         </button>
-  //       </div>
-  //       <div>
-  //         <span
-  //           style={{
-  //             border: '2px solid black',
-  //             justifyContent: 'center',
-  //             display: 'flex',
-  //           }}
-  //         >
-  //           {info}
-  //         </span>
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   switch (props.state) {
     case 'creator':

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DateTime from '../Forms/DateTime';
 import './UserData.css';
 
@@ -110,7 +110,7 @@ class SaveManager {
   }
 
   setSel(sel) {
-    console.log('setSel:', sel);
+    // console.log('setSel:', sel);
     this.iSelection = sel;
     // update UserData name
     this.SAVE.setName(`${this.saveName}_${this.iSelection}`);
@@ -256,74 +256,6 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
   };
 
   return <Entries />;
-};
-
-const CacheUserData = (props) => {
-  const [info, setInfo] = useState('[No Loaded]');
-  const { UD } = props;
-  const { value } = props;
-  const { setValue } = props;
-
-  useEffect(() => {
-    // load user data if available
-  }, []);
-
-  return (
-    <div>
-      <div>
-        <button
-          key="save"
-          onClick={() => {
-            // set save time state
-            // set creation date if never set before
-            const now = new Date();
-            if (!value.DateCreated)
-              value.DateCreated = DateTime.FormatDate(now);
-            value.DateEdited = DateTime.FormatDate(now);
-            setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
-            UD.Set(formatSaveData(value));
-          }}
-        >
-          Cache Data
-        </button>
-        <button
-          key="clear"
-          onClick={() => {
-            setInfo('[Cache Cleared]');
-            UD.Set('');
-          }}
-        >
-          Clear Cache
-        </button>
-        <button
-          key="Load"
-          onClick={() => {
-            const data = UD.Get();
-            if (data !== '') {
-              const buffer = deformatSaveData(data);
-              setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
-              setValue(buffer);
-            } else {
-              setInfo(`[No data to load]`);
-            }
-          }}
-        >
-          Load Last Cache
-        </button>
-      </div>
-      <div>
-        <span
-          style={{
-            border: '2px solid black',
-            justifyContent: 'center',
-            display: 'flex',
-          }}
-        >
-          {info}
-        </span>
-      </div>
-    </div>
-  );
 };
 
 export { UserData, SaveManager, Saves };
