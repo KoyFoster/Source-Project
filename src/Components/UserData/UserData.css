@@ -10,9 +10,8 @@
 }
 
 .SaveEntry {
-  border-style: dotted;
+  border-style: dashed;
   border-width: 2px;
-  border-color: red;
   text-align: center;
 }
 

@@ -123,6 +123,13 @@ class SaveManager {
     this.INDEX.Set(formatSaveData(this.data));
   }
 
+  clearSelEntry() {
+    // remove from index
+    if (this.iSelection > -1)
+      this.saveEntries[this.iSelection] = { ...this.defaultSave };
+    this.INDEX.Set(formatSaveData(this.data));
+  }
+
   GetCurrent() {
     return this.saveEntries[this.iSelection];
   }
@@ -238,7 +245,7 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
           >
             Load
           </button>
-          <button
+          {/* <button
             disabled={SM.saveEntries.length < 2}
             onClick={() => {
               SM.removeSelEntry();
@@ -246,6 +253,15 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
             }}
           >
             Delete
+          </button> */}
+          <button
+            disabled={SM.saveEntries.length < 2}
+            onClick={() => {
+              SM.clearSelEntry();
+              Update();
+            }}
+          >
+            Clear
           </button>
         </div>
         {SM.saveEntries.map((save) => {
