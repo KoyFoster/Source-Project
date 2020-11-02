@@ -154,7 +154,9 @@ class SaveManager {
 
   LoadFromEntry(setData) {
     if (setData)
-      if (this.GetCurrent().hasData) setData(deformatSaveData(this.SAVE.Get()));
+      if (this.GetCurrent())
+        if (this.GetCurrent().hasData)
+          setData(deformatSaveData(this.SAVE.Get()));
   }
 
   // Timestamp handling
