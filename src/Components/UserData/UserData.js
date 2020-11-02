@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DateTime from '../Forms/DateTime';
 import './UserData.css';
 
@@ -30,7 +30,7 @@ const deformatSaveData = (value) => {
 
 class UserData {
   constructor(name) {
-    // vars
+    // varsev
     this.var = name;
   }
   getName() {
@@ -173,8 +173,8 @@ class SaveManager {
 
 // simple ui for using rendering
 const Saves = ({ indexName, SM, Update, currentData, setData }) => {
-  // const [SM] = useState(new SaveManager(indexName));
-  //
+  const [states] = useState(['Base', 'Save', 'Clear', 'Delete']);
+  const [currentState, setState] = useState(states[0]);
 
   const Entry = ({ save, index }) => {
     // console.warn('Render Entry Save:', save);
@@ -205,58 +205,165 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
     );
   };
 
-  const Entries = (props) => {
-    // keys
-    let key = 0;
-    return (
-      <div className="Saves">
-        <div className="Header">
-          Save {SM.iSelection + 1} selected
-          <div style={{ display: 'flex' }}></div>
-          <button
-            onClick={() => {
-              SM.AddEntry();
-              Update();
-            }}
-          >
-            Add
-          </button>
-          <button
-            onClick={() => {
-              SM.SaveToEntry(currentData);
-              Update();
-            }}
-          >
-            Save
-          </button>
-          <button
-            disabled={SM.GetCurrent().hasData === false}
-            onClick={() => {
-              SM.LoadFromEntry(setData);
-              Update();
-            }}
-          >
-            Load
-          </button>
-          {/* <button
+  const Header = (props) => {
+    switch (currentState) {
+      // Base
+      case states[0]:
+        return (
+          <div className="Header">
+            Save {SM.iSelection + 1} selected
+            <div style={{ display: 'flex' }}></div>
+            <button
+              onClick={() => {
+                SM.AddEntry();
+                Update();
+              }}
+            >
+              Add
+            </button>
+            <button
+              onClick={() => {
+                setState(states[1]);
+              }}
+            >
+              Save
+            </button>
+            <button
+              disabled={SM.GetCurrent().hasData === false}
+              onClick={() => {
+                SM.LoadFromEntry(setData);
+                Update();
+              }}
+            >
+              Load
+            </button>
+            {/* <button
             disabled={SM.saveEntries.length < 2}
             onClick={() => {
               SM.removeSelEntry();
               Update();
             }}
-          >
-            Delete
-          </button> */}
-          <button
-            disabled={SM.saveEntries.length < 2}
-            onClick={() => {
-              SM.clearSelEntry();
-              Update();
-            }}
-          >
-            Clear
-          </button>
-        </div>
+            >
+              Delete
+            </button> */}
+            <button
+              disabled={SM.saveEntries.length < 2}
+              onClick={() => {
+                setState(states[2]);
+              }}
+            >
+              Clear
+            </button>
+          </div>
+        );
+      // Save
+      case states[1]:
+        return (
+          <div className="Header">
+            Save {SM.iSelection + 1} selected
+            <div style={{ display: 'flex' }}></div>
+            <button
+              onClick={() => {
+                SM.SaveToEntry(currentData);
+                Update();
+                setState(states[0]);
+              }}
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setState(states[0]);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        );
+      // Clear
+      case states[2]:
+        return (
+          <div className="Header">
+            Save {SM.iSelection + 1} selected
+            <div style={{ display: 'flex' }}></div>
+            <button
+              disabled={SM.saveEntries.length < 2}
+              onClick={() => {
+                SM.clearSelEntry();
+                Update();
+                setState(states[0]);
+              }}
+            >
+              Clear
+            </button>
+            <button
+              onClick={() => {
+                setState(states[0]);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        );
+      default:
+        return (
+          <div className="Header">
+            Save {SM.iSelection + 1} selected
+            <div style={{ display: 'flex' }}></div>
+            <button
+              onClick={() => {
+                SM.AddEntry();
+                Update();
+              }}
+            >
+              Add
+            </button>
+            <button
+              onClick={() => {
+                SM.SaveToEntry(currentData);
+                Update();
+              }}
+            >
+              Save
+            </button>
+            <button
+              disabled={SM.GetCurrent().hasData === false}
+              onClick={() => {
+                SM.LoadFromEntry(setData);
+                Update();
+              }}
+            >
+              Load
+            </button>
+            {/* <button
+              disabled={SM.saveEntries.length < 2}
+              onClick={() => {
+                SM.removeSelEntry();
+                Update();
+              }}
+            >
+              Delete
+            </button> */}
+            <button
+              disabled={SM.saveEntries.length < 2}
+              onClick={() => {
+                SM.clearSelEntry();
+                Update();
+              }}
+            >
+              Clear
+            </button>
+          </div>
+        );
+    }
+  };
+
+  const Entries = (props) => {
+    // keys
+    let key = 0;
+    return (
+      <div className="Saves">
+        <Header />
         {SM.saveEntries.map((save) => {
           return <Entry key={key++} index={key} save={save} />;
         })}
