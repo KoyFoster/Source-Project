@@ -18,10 +18,9 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 // Current Objectives
 // 1. For watchever reason, newly added entries are not given unique names like they use to
-// 2. Make it difficult for a user to overwrite their work.
-// 3. Consider allowing for multiple saves
-// 4. Consider making a widget system
+// 2. Consider making a widget system
 //  a. Cards, Diagrams, Inventories, Skills, Equipment, ect
+// 3. Add ability to import a massiv elist of stats
 
 // Possible objectived
 // Current Objectives

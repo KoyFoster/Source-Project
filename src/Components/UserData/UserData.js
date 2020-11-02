@@ -153,10 +153,12 @@ class SaveManager {
   }
 
   LoadFromEntry(setData) {
-    if (setData)
-      if (this.GetCurrent())
+    if (setData) {
+      if (this.GetCurrent()) {
         if (this.GetCurrent().hasData)
           setData(deformatSaveData(this.SAVE.Get()));
+      }
+    }
   }
 
   // Timestamp handling
@@ -232,7 +234,7 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
             </button>
             <button
               disabled={
-                SM.GetCurrent() ? SM.GetCurrent().hasData : false === false
+                SM.GetCurrent() ? !SM.GetCurrent().hasData : true === false
               }
               onClick={() => {
                 setState(states[3]);
