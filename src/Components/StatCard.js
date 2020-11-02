@@ -1,7 +1,9 @@
+/*eslint-disable react-hooks/exhaustive-deps */
+/*eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import Selector from './Selector';
 import ProfileCard from './Forms/Card';
-import { Templates, Styles } from './Templates';
+import { Templates, TemplateList, Styles } from './Templates';
 import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -126,18 +128,18 @@ const useStyles = makeStyles((msProps) => {
 // Stat Card
 const Stats = (props) => {
   // user data
+  const [value, setValue] = useState(Templates['Blank']);
+  const [series, setSeries] = useState(Templates['Blank'].Game);
   const [UD] = useState(new UserData('TemplateData'));
-  const [SM, setSM] = useState(new SaveManager('Saves', 'Calc_Save'));
+  const [SM] = useState(new SaveManager('Saves', 'Calc_Save'));
   const [refresh, setRefresh] = useState(false);
   const Refresh = () => {
     setRefresh(!refresh);
   };
 
   // member variables
-  const [value, setValue] = useState(Templates['Blank']);
-  console.log('values:', value);
+  // console.log('values:', value);
   const [style, setStyle] = useState('Default');
-
   const Modes = ['Calculator', 'View', 'Edit'];
 
   const getDefaultMode = () => {
@@ -228,7 +230,10 @@ const Stats = (props) => {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // Load First Save
+    SM.LoadFromEntry(setValue);
+  }, []);
 
   const CacheUserData = (props) => {
     const [info, setInfo] = useState('[No Loaded]');
@@ -311,17 +316,16 @@ const Stats = (props) => {
             <Selector
               combobox
               label={'Series'}
-              value={value.Game}
+              value={series}
               setter={(val) => {
                 Update(Templates[val]);
+                setSeries(Templates[val].Game);
                 setStyle(Templates[val].Style);
               }}
               getter={(val) => {
                 return val;
               }}
-              list={Object.keys(Templates).map((key) => {
-                return key;
-              })}
+              list={TemplateList}
             />
             <Selector
               label={'Styles'}
@@ -336,6 +340,22 @@ const Stats = (props) => {
                 return key;
               })}
             />
+            <Paper
+              style={{
+                display: 'flex',
+                whiteSpace: 'pre',
+                padding: '2px',
+              }}
+            >
+              Mode:{' '}
+              <button
+                type="push"
+                style={{ width: '80px' }}
+                onClick={() => handleModeChange()}
+              >
+                {Mode}
+              </button>
+            </Paper>
             <div>
               {/* <Paper style={{ display: 'flex', padding: '2px' }}>
                 <SaveStatCard value={value}></SaveStatCard>
@@ -353,22 +373,6 @@ const Stats = (props) => {
                 setData={setValue}
               ></Saves>
             </div>
-            <Paper
-              style={{
-                display: 'flex',
-                whiteSpace: 'pre',
-                padding: '2px',
-              }}
-            >
-              Mode:{' '}
-              <button
-                type="push"
-                style={{ width: '80px' }}
-                onClick={() => handleModeChange()}
-              >
-                {Mode}
-              </button>
-            </Paper>
           </Paper>
 
           <Paper

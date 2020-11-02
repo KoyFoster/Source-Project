@@ -2211,4 +2211,8 @@ const Templates = {
   },
 };
 
-export { Templates, Styles };
+const TemplateList = Object.keys(Templates).map((key) => {
+  return key;
+});
+
+export { Templates, TemplateList, Styles };

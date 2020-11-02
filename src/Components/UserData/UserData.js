@@ -53,7 +53,7 @@ class UserData {
 }
 
 class SaveManager {
-  constructor(indexName, saveName) {
+  constructor(indexName, saveName, setData) {
     // Load index file
     this.INDEX = new UserData(indexName);
     this.data = this.INDEX.Get();
@@ -95,14 +95,6 @@ class SaveManager {
       this.data = { header: {}, saves: [] };
       this.saveEntries = this.data.saves;
     }
-
-    // console.warn('Saves:', {
-    //   index: this.INDEX,
-    //   save: this.SAVE,
-    //   header: this.header,
-    //   saves: this.saveEntries,
-    //   data: this.data,
-    // });
   } // End of constructor
 
   getName() {
@@ -161,7 +153,8 @@ class SaveManager {
   }
 
   LoadFromEntry(setData) {
-    setData(deformatSaveData(this.SAVE.Get()));
+    if (setData)
+      if (this.GetCurrent().hasData) setData(deformatSaveData(this.SAVE.Get()));
   }
 
   // Timestamp handling
