@@ -159,12 +159,6 @@ const MathDialogue = (props) => {
       <tfoot>
         <tr>
           <td>
-            <button type="push" onClick={(e) => onCancel()}>
-              {' '}
-              Cancel{' '}
-            </button>
-          </td>
-          <td>
             <button
               type="push"
               onClick={(e) => {
@@ -182,6 +176,12 @@ const MathDialogue = (props) => {
             >
               {' '}
               Accept{' '}
+            </button>
+          </td>
+          <td>
+            <button type="push" onClick={(e) => onCancel()}>
+              {' '}
+              Cancel{' '}
             </button>
           </td>
         </tr>

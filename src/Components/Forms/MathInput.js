@@ -44,11 +44,11 @@ const MathInput = (props) => {
       expression={expression}
       vars={vars}
       data={data}
-      onCancel={() => {
-        togglePopup();
-      }}
       onAccept={(e) => {
         if (onChange) onChange(e);
+        togglePopup();
+      }}
+      onCancel={() => {
         togglePopup();
       }}
     ></MathDialogue>
