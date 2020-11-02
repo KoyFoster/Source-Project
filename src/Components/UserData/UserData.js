@@ -77,7 +77,7 @@ class SaveManager {
     // Parse out number of saves
     // Then parse out the meta data, such as Name, DateCreated and DateLastSaved
     // console.warn('Parse Index Data 0:', this.data, null, this.data !== null);
-    if (this.data !== 'null') {
+    if (this.data !== 'null' && this.data !== null && this.data !== undefined) {
       // parse
       // console.warn('Parse Index Data 1:', this.data);
       try {
@@ -231,7 +231,9 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
               Save
             </button>
             <button
-              disabled={SM.GetCurrent().hasData === false}
+              disabled={
+                SM.GetCurrent() ? SM.GetCurrent().hasData : false === false
+              }
               onClick={() => {
                 setState(states[3]);
               }}
