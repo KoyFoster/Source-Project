@@ -130,8 +130,12 @@ const Stats = (props) => {
   // user data
   const [value, setValue] = useState(Templates['Blank']);
   const [series, setSeries] = useState(Templates['Blank'].Game);
-  const [UD] = useState(new UserData('TemplateData'));
-  const [SM] = useState(new SaveManager('Saves', 'Calc_Save'));
+  // const [UD] = useState(new UserData('TemplateData'));
+  const [SM] = useState(
+    props.state === 'creator'
+      ? new SaveManager('Saves', 'Calc_Save')
+      : undefined,
+  );
   const [refresh, setRefresh] = useState(false);
   const Refresh = () => {
     setRefresh(!refresh);
@@ -232,73 +236,73 @@ const Stats = (props) => {
 
   useEffect(() => {
     // Load First Save
-    SM.LoadFromEntry(setValue);
+    if (SM) SM.LoadFromEntry(setValue);
   }, []);
 
-  const CacheUserData = (props) => {
-    const [info, setInfo] = useState('[No Loaded]');
+  // const CacheUserData = (props) => {
+  //   const [info, setInfo] = useState('[No Loaded]');
 
-    useEffect(() => {
-      // load user data if available
-    }, []);
+  //   useEffect(() => {
+  //     // load user data if available
+  //   }, []);
 
-    return (
-      <div>
-        <div>
-          <button
-            key="save"
-            onClick={() => {
-              // set save time state
-              // set creation date if never set before
-              const now = new Date();
-              if (!value.DateCreated)
-                value.DateCreated = DateTime.FormatDate(now);
-              value.DateEdited = DateTime.FormatDate(now);
-              setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
-              UD.Set(formatSaveData(value));
-            }}
-          >
-            Cache Data
-          </button>
-          <button
-            key="clear"
-            onClick={() => {
-              setInfo('[Cache Cleared]');
-              UD.Set('');
-            }}
-          >
-            Clear Cache
-          </button>
-          <button
-            key="Load"
-            onClick={() => {
-              const data = UD.Get();
-              if (data !== '') {
-                const buffer = deformatSaveData(data);
-                setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
-                setValue(buffer);
-              } else {
-                setInfo(`[No data to load]`);
-              }
-            }}
-          >
-            Load Last Cache
-          </button>
-        </div>
-        <div>
-          <span
-            style={{
-              border: '2px solid black',
-              justifyContent: 'center',
-              display: 'flex',
-            }}
-          >
-            {info}
-          </span>
-        </div>
-      </div>
-    );
-  };
+  //   return (
+  //     <div>
+  //       <div>
+  //         <button
+  //           key="save"
+  //           onClick={() => {
+  //             // set save time state
+  //             // set creation date if never set before
+  //             const now = new Date();
+  //             if (!value.DateCreated)
+  //               value.DateCreated = DateTime.FormatDate(now);
+  //             value.DateEdited = DateTime.FormatDate(now);
+  //             setInfo(`[Last Saved:${JSON.stringify(value.DateEdited)}]`);
+  //             UD.Set(formatSaveData(value));
+  //           }}
+  //         >
+  //           Cache Data
+  //         </button>
+  //         <button
+  //           key="clear"
+  //           onClick={() => {
+  //             setInfo('[Cache Cleared]');
+  //             UD.Set('');
+  //           }}
+  //         >
+  //           Clear Cache
+  //         </button>
+  //         <button
+  //           key="Load"
+  //           onClick={() => {
+  //             const data = UD.Get();
+  //             if (data !== '') {
+  //               const buffer = deformatSaveData(data);
+  //               setInfo(`[Last Loaded:${JSON.stringify(buffer.DateEdited)}]`);
+  //               setValue(buffer);
+  //             } else {
+  //               setInfo(`[No data to load]`);
+  //             }
+  //           }}
+  //         >
+  //           Load Last Cache
+  //         </button>
+  //       </div>
+  //       <div>
+  //         <span
+  //           style={{
+  //             border: '2px solid black',
+  //             justifyContent: 'center',
+  //             display: 'flex',
+  //           }}
+  //         >
+  //           {info}
+  //         </span>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   switch (props.state) {
     case 'creator':
@@ -395,17 +399,16 @@ const Stats = (props) => {
             <Selector
               combobox
               label={'Series'}
-              value={value.Game}
+              value={series}
               setter={(val) => {
                 Update(Templates[val]);
+                setSeries(Templates[val].Game);
                 setStyle(Templates[val].Style);
               }}
               getter={(val) => {
                 return val;
               }}
-              list={Object.keys(Templates).map((key) => {
-                return key;
-              })}
+              list={TemplateList}
             />
             <Selector
               label={'Styles'}
