@@ -22,6 +22,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 //  a. Cards, Diagrams, Inventories, Skills, Equipment, ect
 // 3. Add ability to import a massiv elist of stats
 // 4. Math input needs to be made easier to use.
+// 5. Make a unique default style for users to use
 
 // Possible objectived
 // Current Objectives
