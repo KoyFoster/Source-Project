@@ -173,7 +173,7 @@ class SaveManager {
 
 // simple ui for using rendering
 const Saves = ({ indexName, SM, Update, currentData, setData }) => {
-  const [states] = useState(['Base', 'Save', 'Clear', 'Delete']);
+  const [states] = useState(['Base', 'Save', 'Clear', 'Load', 'Delete']);
   const [currentState, setState] = useState(states[0]);
 
   const Entry = ({ save, index }) => {
@@ -231,8 +231,7 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
             <button
               disabled={SM.GetCurrent().hasData === false}
               onClick={() => {
-                SM.LoadFromEntry(setData);
-                Update();
+                setState(states[3]);
               }}
             >
               Load
@@ -305,6 +304,33 @@ const Saves = ({ indexName, SM, Update, currentData, setData }) => {
             </button>
           </div>
         );
+
+      // Load
+      case states[3]:
+        return (
+          <div className="Header">
+            Save {SM.iSelection + 1} selected
+            <div style={{ display: 'flex' }}></div>
+            <button
+              disabled={SM.GetCurrent().hasData === false}
+              onClick={() => {
+                SM.LoadFromEntry(setData);
+                Update();
+                setState(states[0]);
+              }}
+            >
+              Load
+            </button>
+            <button
+              onClick={() => {
+                setState(states[0]);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        );
+
       default:
         return (
           <div className="Header">
