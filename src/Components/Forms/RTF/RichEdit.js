@@ -28,8 +28,12 @@ const RichEdit = (props) => {
   // eslint-disable-next-line no-unused-vars
   let temp = [];
   const [elements, Update] = useState([
-    { style: { fontWeight: 'initial' }, value: '' },
+    { style: { fontWeight: 'initial' }, value: 'One' },
+    { style: { fontWeight: 'bold' }, value: 'Two' },
+    { style: { fontWeight: 'initial' }, value: 'Three' },
   ]);
+  const [elemRange, setElemRange] = useState([]);
+
   const [sel, setSel] = useState(0);
   const [caretPos] = useState(
     <div
@@ -137,25 +141,13 @@ const RichEdit = (props) => {
     }
   };
 
-  console.warn('sel:', elements[sel]);
-  console.warn('getSelection:', window.getSelection());
-  // anchorNode to extendNode
-  // anchorNode.parentElement.id to extendNode.parentElement.id
-  // The above should get the the range of elements to work with
-
-  // More details:
-  // selection {anchorNode: text, anchorOffset: 0, focusNode: text, focusOffset: 3, isCollapsed: false, …}
-  // anchorNode: text
-  // anchorOffset: 0
-  // baseNode: text
-  // baseOffset: 0
-  // extentNode: text
-  // extentOffset: 3
-  // focusNode: text
-  // focusOffset: 3
-  // isCollapsed: false
-  // rangeCount: 1
-  // type: "Range"
+  const CaptionBar = (prop) => {
+    return (
+      <div style={{ display: 'flex' }}>
+        <button>{ctrl ? 'CTRL' : 'ctrl'}</button>
+      </div>
+    );
+  };
 
   return (
     <div
@@ -180,18 +172,68 @@ const RichEdit = (props) => {
       // onKeyPress
 
       // onHighlight
+      // console.warn('sel:', elements[sel]);
+      // console.warn('getSelection:', window.getSelection());
+      // anchorNode to extentNode
+      // anchorNode.parentElement.id to extentNode.parentElement.id
+      // The above should get the the range of elements to work with
+
+      // More details:
+      // selection {anchorNode: text, anchorOffset: 0, focusNode: text, focusOffset: 3, isCollapsed: false, …}
+      // anchorNode: text
+      // anchorOffset: 0
+      // baseNode: text
+      // baseOffset: 0
+      // extentNode: text
+      // extentOffset: 3
+      // focusNode: text
+      // focusOffset: 3
+      // isCollapsed: false
+      // rangeCount: 1
+      // type: "Range"
+      onMouseUp={() => {
+        const startElem = {
+          elem: window.getSelection().anchorNode.parentElement,
+          id: window.getSelection().anchorNode.parentElement.id,
+          extent: window.getSelection().anchorOffset,
+        };
+        // const startChar
+        const endElem = {
+          elem: window.getSelection().extentNode.parentElement,
+          id: window.getSelection().extentNode.parentElement.id,
+          extent: window.getSelection().extentOffset,
+        };
+
+        console.warn('Range: \n', startElem, '\n', endElem);
+        console.warn('Range:', window.getSelection());
+        setElemRange([startElem, endElem]);
+      }}
     >
-      <div style={{ display: 'flex' }}>
-        <button>{ctrl ? 'CTRL' : 'ctrl'}</button>
-      </div>
+      <CaptionBar></CaptionBar>
       <div
         style={{
           display: 'flex',
           overflow: overflow,
+          border: '2px dashed grey',
         }}
       >
         {renderElements()}
         {caretPos}
+      </div>
+      {/* Debugger */}
+      <div
+        style={{
+          display: 'flex',
+          overflow: overflow,
+          border: '2px dotted red',
+          whiteSpace: 'pre',
+        }}
+      >
+        Debugger: sel: {sel}
+        elemRange:{' '}
+        {elemRange.length > 0
+          ? `(${elemRange[0].id},${elemRange[1].id}) (${elemRange[0].extent},${elemRange[1].extent})`
+          : 'No Selection'}
       </div>
       {/* {renderSelection()} */}
     </div>
