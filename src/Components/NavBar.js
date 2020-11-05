@@ -6,6 +6,7 @@ import CanvasCard from './CanvasCard';
 // import Test2 from './Test2';
 // import Test2 from './Test2';
 import { Paper, Button } from '@material-ui/core';
+import RichEdit from './Forms/RTF/RichEdit';
 
 // Make drop list for
 // - Calculator creator
@@ -48,6 +49,9 @@ function NavBar(props) {
             </Link>
             <Link to="/CanvasCard">
               <Button style={{ margin: '1px' }}>Canvas Card</Button>
+            </Link>
+            <Link to="/RichEdit">
+              <Button style={{ margin: '1px' }}>RichEdit</Button>
             </Link>
             {/* <Link to="/Test2">
               <Button style={{ margin: '1px' }}>Test2</Button>
@@ -93,6 +97,10 @@ function NavBar(props) {
           <Route path="/CanvasCard" component={CanvasCard} />
         </div>
 
+        <div>
+          <Route exact path="/" />
+          <Route path="/RichEdit" component={RichEdit} />
+        </div>
         {/* <div>
           <Route exact path="/" />
           <Route path="/Test2" component={Test2} />
