@@ -3,10 +3,8 @@
 /* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
-import React, { useState, useEffect } from 'react';
-import { RTF } from './RTF';
+import React, { useState } from 'react';
 import './RE.css';
-import { setSyntheticLeadingComments } from 'typescript';
 
 // Steps to accomplishing this
 // tracking caret positions
@@ -27,7 +25,6 @@ const RichEdit = (props) => {
   const [ctrl, setCtrl] = useState(false);
 
   const { overflow } = props;
-  const { disabled } = props;
   // eslint-disable-next-line no-unused-vars
   let temp = [];
   const [elements, Update] = useState([
@@ -45,35 +42,67 @@ const RichEdit = (props) => {
     />,
   );
 
+  const onElemSel = (e) => {
+    console.warn(`Sel Elm id:`, e.target.id);
+  };
+
   const renderElements = () => {
     let i = 0;
     return elements.map((l) => {
       return (
-        <div key={i++} style={{ ...l.style }}>
+        <div
+          tabIndex="0"
+          id={i}
+          key={i++}
+          style={{ ...l.style }}
+          onClick={(e) => onElemSel(e)}
+        >
           {l.value}
         </div>
       );
     });
   };
 
-  const renderSelection = () => {
-    return <div style={elements[sel].style}>{elements[sel].value}</div>;
-  };
+  // const renderSelection = () => {
+  //   return <div style={elements[sel].style}>{elements[sel].value}</div>;
+  // };
 
   const handleKey = (key) => {
-    console.warn('handleKey:', key);
+    // console.warn('handleKey:', key);
 
     elements[sel].value = elements[sel].value + key;
     Update([...elements]);
   };
 
+  const removeCurElement = () => {
+    elements.splice(sel, 1);
+
+    return sel - 1;
+  };
+
+  const addNewElement = () => {
+    const newElem = { style: { ...elements[sel].style }, value: '' };
+
+    // add element
+    elements.push(newElem);
+
+    return newElem;
+  };
+
   const handleSpecialKeyCombo = (key) => {
-    console.warn('handleSpecialKeyCombo:', key);
+    // console.warn('handleSpecialKeyCombo:', key);
 
     if (ctrl) {
       if (key === 'b') {
-        const { style } = elements[sel];
+        // add element
+        const elem = addNewElement();
+        const newSel = sel + 1;
+
+        // style new element
+        const { style } = elem;
         style.fontWeight = style.fontWeight === 'bold' ? 'normal' : 'bold';
+
+        setSel(newSel);
         Update([...elements]);
       }
     }
@@ -81,10 +110,22 @@ const RichEdit = (props) => {
 
   const handleSpecialKeyDown = (key) => {
     if (key == 'Backspace') {
-      elements[sel].value = elements[sel].value.slice(
-        0,
-        elements[sel].value.length - 1,
-      );
+      if (elements[sel].value !== '') {
+        elements[sel].value = elements[sel].value.slice(
+          0,
+          elements[sel].value.length - 1,
+        );
+      } else {
+        const newSel = removeCurElement();
+
+        if (newSel > -1) {
+          elements[newSel].value = elements[newSel].value.slice(
+            0,
+            elements[newSel].value.length - 1,
+          );
+          setSel(newSel);
+        }
+      }
       Update([...elements]);
     }
   };
@@ -97,6 +138,25 @@ const RichEdit = (props) => {
   };
 
   console.warn('sel:', elements[sel]);
+  console.warn('getSelection:', window.getSelection());
+  // anchorNode to extendNode
+  // anchorNode.parentElement.id to extendNode.parentElement.id
+  // The above should get the the range of elements to work with
+
+  // More details:
+  // selection {anchorNode: text, anchorOffset: 0, focusNode: text, focusOffset: 3, isCollapsed: false, …}
+  // anchorNode: text
+  // anchorOffset: 0
+  // baseNode: text
+  // baseOffset: 0
+  // extentNode: text
+  // extentOffset: 3
+  // focusNode: text
+  // focusOffset: 3
+  // isCollapsed: false
+  // rangeCount: 1
+  // type: "Range"
+
   return (
     <div
       tabIndex="0" // requires for onkey events
