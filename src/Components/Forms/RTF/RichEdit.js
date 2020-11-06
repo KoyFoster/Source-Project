@@ -50,7 +50,7 @@ const RichEdit = (props) => {
   );
 
   const onElemSel = (e) => {
-    console.warn(`Sel Elm id:`, e.target.id);
+    // console.warn(`Sel Elm id:`, e.target.id);
   };
 
   const RenderElement = ({ elem, index }) => {
@@ -70,7 +70,7 @@ const RichEdit = (props) => {
   const RenderElements = (props) => {
     const { elems } = props;
     const { index } = props;
-    console.warn(`RenderElements: ${JSON.stringify(elems)}, ${index}`);
+    // console.warn(`RenderElements: ${JSON.stringify(elems)}, ${index}`);
 
     let id = index ? index : 0;
     return elems.map((l) => {
@@ -160,6 +160,17 @@ const RichEdit = (props) => {
     );
   };
 
+  const splitByMinMax = (value, min, max) => {
+    if (!value) return [];
+
+    const results = [
+      value.substring(0, min - 1),
+      value.substring(min, max),
+      value.substring(max + 1, value.length),
+    ];
+    return results;
+  };
+
   const RenderSelected = () => {
     let selElm = undefined;
 
@@ -170,55 +181,77 @@ const RichEdit = (props) => {
     // 2.
 
     // for loop
-    let minID = elemRange.min.id;
+    let { min, max } = elemRange;
+    // flip minmax if needed
+    if (min.id > max.id) {
+      min = elemRange.max;
+      max = elemRange.min;
+    }
+
+    console.warn({ min, max });
+    let minID = min.id;
     let i = minID;
-    const max = elemRange.max.id;
+    const maxID = max.id;
     const list = [];
+
     // Get Range of elements
-    for (i; i <= max; i++) {
+    for (i; i <= maxID; i++) {
       // check if element needs to be split
       let elem = elements[i];
+      const { value } = elem;
+      list.push(elem);
+    }
 
-      // first element and only
-      if (i === minID && i === max) {
-        // check extent
-        const { min, max } = elemRange;
-        const { value } = elem;
-        // the entire element was selected
-        console.log(`${min.extent} === ${0} ${max.extent} === ${value.length}`);
-        if (min.extent === 0 && max.extent === value.length) {
-          list.push(elem);
-        }
-        // else slice just the selected part // if (min.extent === 0 && max.extent === value.length)
-        else {
-          // possible determine if should be split into 1, 2 or 3
-          const part = { ...elem };
-          part.value = part.value.slice(min.extent, max.extent);
-          console.log(`${part.value}: ${min.extent}, ${max.extent} `);
+    // now handle first and last elements
+    if (list.length > 0) {
+      if (list.length > 1) {
+        const first = list.splice(0, 1)[0];
+        const last = list.splice(list.length - 1, 1)[0];
 
-          list.push(part);
-        }
-      }
-      // first element
-      else {
+        // handle min
+        let split = splitByMinMax(first.value, min.extent, first.value.length);
+
+        // iterate through split results
+        let buffer = [];
+        split.forEach((val) => {
+          if (val) {
+            buffer.push({ ...first, value: val });
+          }
+        });
+        list.splice(0, 0, ...buffer);
+
+        // handle max
+        split = splitByMinMax(last.value, 0, max.extent);
+
+        // iterate through split results
+        buffer = [];
+        split.forEach((val) => {
+          if (val) {
+            buffer.push({ ...last, value: val });
+          }
+        });
+        list.splice(list.length, 0, ...buffer);
+      } else {
+        // handle only element
+        const first = list.splice(0, 1)[0];
+
+        const split = splitByMinMax(first.value, min.extent, max.extent);
+
+        // iterate through split results
+        const buffer = [];
+        split.forEach((val) => {
+          if (val) {
+            buffer.push({ ...first, value: val });
+          }
+        });
+
+        list.splice(0, 0, ...buffer);
       }
     }
+
     minID = elemRange.min.id;
 
-    // {elemRange.length > 0
-    //   ? [
-    //       <RenderElement
-    //         elem={elements[elemRange[0].id]}
-    //         id={elemRange[0].id}
-    //       />,
-    //       <RenderElement
-    //         elem={elements[elemRange[1].id]}
-    //         id={elemRange[1].id}
-    //       />,
-    //     ]
-    //   : null}
-
-    console.warn(`RenderSelected: ${JSON.stringify(list)}, ${minID}`);
+    // console.warn(`RenderSelected: ${JSON.stringify(list)}, ${minID}`);
     return <RenderElements elems={list} index={minID}></RenderElements>;
   };
 
@@ -278,8 +311,8 @@ const RichEdit = (props) => {
           extent: window.getSelection().extentOffset,
         };
 
-        console.warn('Range: \n', min, '\n', max);
-        console.warn('Range:', window.getSelection());
+        // console.warn('Range: \n', min, '\n', max);
+        // console.warn('Range:', window.getSelection());
         setElemRange({ min, max });
       }}
     >
