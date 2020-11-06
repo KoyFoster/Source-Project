@@ -1,3 +1,8 @@
+/* base div styles */
+.words {
+  border: 1px dotted purple;
+}
+
 .cursor-caret:focus {
   animation: blinkingBGColor 1.2s infinite;
 }

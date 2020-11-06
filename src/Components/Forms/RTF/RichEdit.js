@@ -53,28 +53,32 @@ const RichEdit = (props) => {
     // console.warn(`Sel Elm id:`, e.target.id);
   };
 
-  const RenderElement = ({ elem, index }) => {
+  const RenderElement = ({ elem, index, events }) => {
     return (
       <div
+        className="words"
         tabIndex="0"
         id={index}
-        key={index}
         style={{ ...elem.style }}
-        onClick={(e) => onElemSel(e)}
+        {...events}
       >
         {elem.value}
       </div>
     );
   };
 
-  const RenderElements = (props) => {
-    const { elems } = props;
-    const { index } = props;
-    // console.warn(`RenderElements: ${JSON.stringify(elems)}, ${index}`);
-
+  const RenderElements = ({ elems, index, tag, events }) => {
     let id = index ? index : 0;
     return elems.map((l) => {
-      return <RenderElement elem={l} index={id++}></RenderElement>;
+      return (
+        <RenderElement
+          key={`${tag}_${id}`}
+          elem={l}
+          tag={tag}
+          index={id++}
+          events={events}
+        ></RenderElement>
+      );
     });
   };
 
@@ -124,7 +128,7 @@ const RichEdit = (props) => {
   };
 
   const handleSpecialKeyDown = (key) => {
-    if (key == 'Backspace') {
+    if (key === 'Backspace') {
       if (elements[sel].value !== '') {
         elements[sel].value = elements[sel].value.slice(
           0,
@@ -161,19 +165,20 @@ const RichEdit = (props) => {
   };
 
   const splitByMinMax = (value, min, max) => {
+    // console.warn('splitByMinMax:', { value, min, max });
     if (!value) return [];
 
+    // if (min == max) max++;
+
     const results = [
-      value.substring(0, min - 1),
+      value.substring(0, min),
       value.substring(min, max),
-      value.substring(max + 1, value.length),
+      value.substring(max, value.length),
     ];
     return results;
   };
 
   const RenderSelected = () => {
-    let selElm = undefined;
-
     // 1. build new elements to replace selected elements
     //   z. This can be done by taking the elements objects and splitting them
     //   a. There can only be 2 maximum modified elements with tradition selection
@@ -188,7 +193,7 @@ const RichEdit = (props) => {
       max = elemRange.min;
     }
 
-    console.warn({ min, max });
+    // console.warn({ min, max });
     let minID = min.id;
     let i = minID;
     const maxID = max.id;
@@ -198,18 +203,19 @@ const RichEdit = (props) => {
     for (i; i <= maxID; i++) {
       // check if element needs to be split
       let elem = elements[i];
-      const { value } = elem;
       list.push(elem);
     }
 
     // now handle first and last elements
     if (list.length > 0) {
+      // if mutiple elements
       if (list.length > 1) {
         const first = list.splice(0, 1)[0];
         const last = list.splice(list.length - 1, 1)[0];
 
-        // handle min
+        // 1. handle min
         let split = splitByMinMax(first.value, min.extent, first.value.length);
+        // console.warn('1. split:', split);
 
         // iterate through split results
         let buffer = [];
@@ -218,10 +224,12 @@ const RichEdit = (props) => {
             buffer.push({ ...first, value: val });
           }
         });
+
         list.splice(0, 0, ...buffer);
 
-        // handle max
+        // 2. handle max
         split = splitByMinMax(last.value, 0, max.extent);
+        // console.warn('2. split:', split);
 
         // iterate through split results
         buffer = [];
@@ -230,8 +238,11 @@ const RichEdit = (props) => {
             buffer.push({ ...last, value: val });
           }
         });
+
         list.splice(list.length, 0, ...buffer);
-      } else {
+      }
+      // if only 1 element
+      else {
         // handle only element
         const first = list.splice(0, 1)[0];
 
@@ -252,7 +263,9 @@ const RichEdit = (props) => {
     minID = elemRange.min.id;
 
     // console.warn(`RenderSelected: ${JSON.stringify(list)}, ${minID}`);
-    return <RenderElements elems={list} index={minID}></RenderElements>;
+    return (
+      <RenderElements elems={list} tag="Sel" index={minID}></RenderElements>
+    );
   };
 
   return (
@@ -276,45 +289,6 @@ const RichEdit = (props) => {
         handleSpecialStates(e.key, false);
       }}
       // onKeyPress
-
-      // onHighlight
-      // console.warn('sel:', elements[sel]);
-      // console.warn('getSelection:', window.getSelection());
-      // anchorNode to extentNode
-      // anchorNode.parentElement.id to extentNode.parentElement.id
-      // The above should get the the range of elements to work with
-
-      // More details:
-      // selection {anchorNode: text, anchorOffset: 0, focusNode: text, focusOffset: 3, isCollapsed: false, …}
-      // anchorNode: text
-      // anchorOffset: 0
-      // baseNode: text
-      // baseOffset: 0
-      // extentNode: text
-      // extentOffset: 3
-      // focusNode: text
-      // focusOffset: 3
-      // isCollapsed: false
-      // rangeCount: 1
-      // type: "Range"
-      onMouseUp={() => {
-        const min = {
-          // elem: window.getSelection().anchorNode.parentElement,
-          id: window.getSelection().anchorNode.parentElement.id,
-          extent: window.getSelection().anchorOffset,
-        };
-
-        // const startChar
-        const max = {
-          // elem: window.getSelection().extentNode.parentElement,
-          id: window.getSelection().extentNode.parentElement.id,
-          extent: window.getSelection().extentOffset,
-        };
-
-        // console.warn('Range: \n', min, '\n', max);
-        // console.warn('Range:', window.getSelection());
-        setElemRange({ min, max });
-      }}
     >
       <CaptionBar></CaptionBar>
       <div
@@ -324,7 +298,51 @@ const RichEdit = (props) => {
           border: '2px dashed grey',
         }}
       >
-        <RenderElements elems={elements}></RenderElements>
+        <RenderElements
+          elems={elements}
+          tag={'text'}
+          // onHighlight
+          // console.warn('sel:', elements[sel]);
+          // console.warn('getSelection:', window.getSelection());
+          // anchorNode to extentNode
+          // anchorNode.parentElement.id to extentNode.parentElement.id
+          // The above should get the the range of elements to work with
+
+          // More details:
+          // selection {anchorNode: text, anchorOffset: 0, focusNode: text, focusOffset: 3, isCollapsed: false, …}
+          // anchorNode: text
+          // anchorOffset: 0
+          // baseNode: text
+          // baseOffset: 0
+          // extentNode: text
+          // extentOffset: 3
+          // focusNode: text
+          // focusOffset: 3
+          // isCollapsed: false
+          // rangeCount: 1
+          // type: "Range"
+          events={{
+            onClick: (e) => onElemSel(e),
+            onMouseUp: () => {
+              const min = {
+                // elem: window.getSelection().anchorNode.parentElement,
+                id: window.getSelection().anchorNode.parentElement.id,
+                extent: window.getSelection().anchorOffset,
+              };
+
+              // const startChar
+              const max = {
+                // elem: window.getSelection().extentNode.parentElement,
+                id: window.getSelection().extentNode.parentElement.id,
+                extent: window.getSelection().extentOffset,
+              };
+
+              // console.warn('Range: \n', min, '\n', max);
+              // console.warn('Range:', window.getSelection());
+              setElemRange({ min, max });
+            },
+          }}
+        ></RenderElements>
         {caretPos}
       </div>
       {/* Debugger */}
