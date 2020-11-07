@@ -3,6 +3,11 @@
   border: 1px dotted purple;
 }
 
+.highlight {
+  background: purple;
+  border: 1px dotted transparent;
+}
+
 .cursor-caret:focus {
   animation: blinkingBGColor 1.2s infinite;
 }

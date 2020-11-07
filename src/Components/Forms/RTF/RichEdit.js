@@ -25,22 +25,24 @@ const RichEdit = (props) => {
   const [ctrl, setCtrl] = useState(false);
 
   const { overflow } = props;
-  // eslint-disable-next-line no-unused-vars
-  let temp = [];
   const [elements, Update] = useState([
     { style: { fontWeight: 'initial' }, value: 'One' },
     { style: { fontWeight: 'bold' }, value: 'Two' },
     { style: { fontWeight: 'initial' }, value: 'Three' },
   ]);
   const [elemRange, setElemRange] = useState({
-    min: { id: undefined, extent: undefined },
-    max: { id: undefined, extent: undefined },
+    type: 'Caret',
+    min: { id: 0, extent: 0 },
+    max: { id: 0, extent: 0 },
   });
+  const [selection, setSelection] = useState([
+    { style: { fontWeight: 'initial' }, value: 'One' },
+  ]);
 
-  const [sel, setSel] = useState(0);
-  const [caretPos] = useState(
+  const [caret] = useState(
     <div
       className="cursor-caret"
+      key="cursor-caret"
       id="cursor-caret"
       style={{
         width: '2px',
@@ -49,58 +51,30 @@ const RichEdit = (props) => {
     />,
   );
 
-  const onElemSel = (e) => {
-    // console.warn(`Sel Elm id:`, e.target.id);
-  };
+  const handleNewValueInsert = (value) => {
+    // if Caret apply selected
+    if (elemRange.type === 'Caret') {
+      applySelected();
+    }
+    // if Range delete selected
+    else if (elemRange.type === 'Range') {
+      deleteSelected();
+    }
 
-  const RenderElement = ({ elem, index, events }) => {
-    return (
-      <div
-        className="words"
-        tabIndex="0"
-        id={index}
-        style={{ ...elem.style }}
-        {...events}
-      >
-        {elem.value}
-      </div>
-    );
+    elements[elemRange.min.id].value = elements[elemRange.min.id].value + value;
   };
-
-  const RenderElements = ({ elems, index, tag, events }) => {
-    let id = index ? index : 0;
-    return elems.map((l) => {
-      return (
-        <RenderElement
-          key={`${tag}_${id}`}
-          elem={l}
-          tag={tag}
-          index={id++}
-          events={events}
-        ></RenderElement>
-      );
-    });
-  };
-
-  // const renderSelection = () => {
-  //   return <div style={elements[sel].style}>{elements[sel].value}</div>;
-  // };
 
   const handleKey = (key) => {
-    // console.warn('handleKey:', key);
+    handleNewValueInsert(key);
 
-    elements[sel].value = elements[sel].value + key;
     Update([...elements]);
   };
 
-  const removeCurElement = () => {
-    elements.splice(sel, 1);
-
-    return sel - 1;
-  };
-
   const addNewElement = () => {
-    const newElem = { style: { ...elements[sel].style }, value: '' };
+    const newElem = {
+      style: { ...elements[elemRange.min.id].style },
+      value: '',
+    };
 
     // add element
     elements.push(newElem);
@@ -110,42 +84,33 @@ const RichEdit = (props) => {
 
   const handleSpecialKeyCombo = (key) => {
     // console.warn('handleSpecialKeyCombo:', key);
-
     if (ctrl) {
       if (key === 'b') {
         // add element
         const elem = addNewElement();
-        const newSel = sel + 1;
+        // const newSel = elemRange.min.id + 1;
 
         // style new element
         const { style } = elem;
         style.fontWeight = style.fontWeight === 'bold' ? 'normal' : 'bold';
 
-        setSel(newSel);
+        // TODO: Set Selection
         Update([...elements]);
       }
     }
   };
 
   const handleSpecialKeyDown = (key) => {
+    console.warn(`handleSpecialKeyDown:`, key);
     if (key === 'Backspace') {
-      if (elements[sel].value !== '') {
-        elements[sel].value = elements[sel].value.slice(
-          0,
-          elements[sel].value.length - 1,
-        );
-      } else {
-        const newSel = removeCurElement();
-
-        if (newSel > -1) {
-          elements[newSel].value = elements[newSel].value.slice(
-            0,
-            elements[newSel].value.length - 1,
-          );
-          setSel(newSel);
-        }
+      if (elements[elemRange.min.id].value !== '') {
+        elements[elemRange.min.id].value = elements[
+          elemRange.min.id
+        ].value.slice(0, elements[elemRange.min.id].value.length - 1);
       }
       Update([...elements]);
+    } else if (key === 'Escape') {
+      clearSelection();
     }
   };
 
@@ -178,7 +143,7 @@ const RichEdit = (props) => {
     return results;
   };
 
-  const RenderSelected = () => {
+  const generateSelected = (range = elemRange) => {
     // 1. build new elements to replace selected elements
     //   z. This can be done by taking the elements objects and splitting them
     //   a. There can only be 2 maximum modified elements with tradition selection
@@ -186,11 +151,11 @@ const RichEdit = (props) => {
     // 2.
 
     // for loop
-    let { min, max } = elemRange;
+    let { min, max } = range;
     // flip minmax if needed
     if (min.id > max.id) {
-      min = elemRange.max;
-      max = elemRange.min;
+      min = range.max;
+      max = range.min;
     }
 
     // console.warn({ min, max });
@@ -260,14 +225,181 @@ const RichEdit = (props) => {
       }
     }
 
-    minID = elemRange.min.id;
+    // minID = range.min.id;
 
-    // console.warn(`RenderSelected: ${JSON.stringify(list)}, ${minID}`);
+    // set Selection
+    setSelection(list);
+
+    // console.warn(`RenderSelected: ${JSON.stringify(list)}`);
+    // return (
+    //   <RenderElements elems={list} tag="Sel" index={minID}></RenderElements>
+    // );
+  };
+
+  const applySelected = () => {
+    const start = elemRange.min.id;
+    const size = elemRange.max.id + 1 - elemRange.min.id;
+    // console.log('applySelected', { selection, start, size });
+
+    elements.splice(start, size, ...selection);
+    clearSelection();
+  };
+
+  const deleteSelected = () => {
+    const remainder = [selection[0], selection[selection.length - 1]];
+    const start = elemRange.min.id;
+    const size = elemRange.max.id + 1 - elemRange.min.id;
+    console.log('deleteSelected', { remainder, start, size });
+
+    // in this case, deleting simply means replacing the orginal with the first and last elements
+    elements.splice(start, size, ...remainder);
+
+    clearSelection();
+  };
+
+  const rejoinLastElements = () => {
+    if (elemRange.min.id <= 0) return;
+
+    const left = elements[elemRange.min.id];
+    const right = elements[elemRange.min.id - 1];
+
+    console.log(`rejoinLastElements:`, { left, right });
+
+    // if styles are the same, merge
+    if (JSON.stringify(left.style) === JSON.stringify(right.style)) {
+      elements.splice(elemRange.min.id - 1, elemRange.min.id, {
+        style: left.style,
+        value: left.value + right.value,
+      });
+    }
+  };
+
+  const clearSelection = (now = false) => {
+    // console.warn(`clearSelection`);
+
+    if (now) {
+      selection.splice(0, selection.length);
+      elemRange.type = 'Caret';
+      elemRange.min = { id: -1, extent: 0 };
+      elemRange.max = { id: -1, extent: 0 };
+    } else {
+      setSelection([]);
+      setElemRange({
+        type: 'Caret',
+        min: { id: -1, extent: 0 },
+        max: { id: -1, extent: 0 },
+      });
+    }
+  };
+
+  const RenderElement = ({ elem, index, events, className }) => {
     return (
-      <RenderElements elems={list} tag="Sel" index={minID}></RenderElements>
+      <div
+        className={className}
+        tabIndex="0"
+        id={index}
+        style={{ ...elem.style }}
+        {...events}
+      >
+        {elem.value}
+      </div>
     );
   };
 
+  const RenderSelection = ({ id, tag }) => {
+    let i = id;
+    let iI = -1;
+    const size = selection.length;
+    return selection.map((l) => {
+      iI++;
+      console.log(`${iI} === ${0} || ${iI} === ${size - 1} `);
+      return [
+        i - 1 === id ? caret : null,
+        <RenderElement
+          className={iI === 0 || iI === size - 1 ? 'words' : 'highlight'}
+          tabIndex="0"
+          key={`${tag}_${i++}`}
+          elem={l}
+          tag={tag}
+          events={{
+            onMouseDownCapture: () => {
+              clearSelection();
+            },
+          }}
+        />,
+      ];
+    });
+  };
+
+  const RenderElements = ({ elems, index, tag, events }) => {
+    let id = index ? index : 0;
+
+    // if selection, render selection
+    const min = elemRange.min;
+    // <RenderSelected />
+    const max = elemRange.max;
+
+    return elems.map((l) => {
+      if (
+        min.id === undefined ||
+        max.id === undefined ||
+        id < min.id ||
+        id > max.id
+      ) {
+        // console.warn(`${id === min.id} : (${id} === ${min.id})`);
+        return [
+          id === min.id ? caret : null,
+          <RenderElement
+            className="words"
+            key={`${tag}_${id}`}
+            elem={l}
+            tag={tag}
+            index={id++}
+            events={{
+              onMouseDownCapture: () => {
+                rejoinLastElements();
+                clearSelection(true);
+              },
+              ...events,
+            }}
+            {...inputEvents()}
+          />,
+        ];
+      } else {
+        // console.warn(`2. '${id}' !== '${min.id}' :`, !(min.id === id), min.id === id);
+        if (min.id !== id++) {
+          return null;
+        } else {
+          return (
+            <RenderSelection
+              className="selected"
+              key={`Selection_${id}`}
+              id={id}
+              tag={'Sel'}
+            />
+          );
+        }
+      }
+    });
+  };
+
+  const inputEvents = () => {
+    return {
+      onKeyPress: (e) => {
+        handleKey(e.key);
+      },
+      onKeyDownCapture: (e) => {
+        handleSpecialStates(e.key, true);
+        handleSpecialKeyCombo(e.key);
+        handleSpecialKeyDown(e.key);
+      },
+      onKeyUpCapture: (e) => {
+        handleSpecialStates(e.key, false);
+      },
+    };
+  };
+
+  console.log('data:', { elements, elemRange, selection });
   return (
     <div
       tabIndex="0" // requires for onkey events
@@ -277,20 +409,9 @@ const RichEdit = (props) => {
         height: '256px',
         background: '#BBBBBB',
       }}
-      onKeyPress={(e) => {
-        handleKey(e.key);
-      }}
-      onKeyDownCapture={(e) => {
-        handleSpecialStates(e.key, true);
-        handleSpecialKeyCombo(e.key);
-        handleSpecialKeyDown(e.key);
-      }}
-      onKeyUpCapture={(e) => {
-        handleSpecialStates(e.key, false);
-      }}
-      // onKeyPress
+      {...inputEvents()}
     >
-      <CaptionBar></CaptionBar>
+      <CaptionBar />
       <div
         style={{
           display: 'flex',
@@ -301,49 +422,45 @@ const RichEdit = (props) => {
         <RenderElements
           elems={elements}
           tag={'text'}
-          // onHighlight
-          // console.warn('sel:', elements[sel]);
-          // console.warn('getSelection:', window.getSelection());
-          // anchorNode to extentNode
-          // anchorNode.parentElement.id to extentNode.parentElement.id
-          // The above should get the the range of elements to work with
-
-          // More details:
-          // selection {anchorNode: text, anchorOffset: 0, focusNode: text, focusOffset: 3, isCollapsed: false, …}
-          // anchorNode: text
-          // anchorOffset: 0
-          // baseNode: text
-          // baseOffset: 0
-          // extentNode: text
-          // extentOffset: 3
-          // focusNode: text
-          // focusOffset: 3
-          // isCollapsed: false
-          // rangeCount: 1
-          // type: "Range"
           events={{
-            onClick: (e) => onElemSel(e),
             onMouseUp: () => {
+              // console.warn('Context', selection, elemRange);
+
+              const { type } = window.getSelection();
+              // Selection Types: Caret, Range
+              if (type !== 'Range' && type !== 'Caret') {
+                console.error(`Not a valid selection type:`, type);
+                return;
+              }
+
               const min = {
                 // elem: window.getSelection().anchorNode.parentElement,
-                id: window.getSelection().anchorNode.parentElement.id,
+                id: Number(window.getSelection().anchorNode.parentElement.id),
                 extent: window.getSelection().anchorOffset,
               };
 
               // const startChar
               const max = {
                 // elem: window.getSelection().extentNode.parentElement,
-                id: window.getSelection().extentNode.parentElement.id,
+                id: Number(window.getSelection().extentNode.parentElement.id),
                 extent: window.getSelection().extentOffset,
               };
 
               // console.warn('Range: \n', min, '\n', max);
-              // console.warn('Range:', window.getSelection());
-              setElemRange({ min, max });
+              console.warn(
+                'Range:',
+                type,
+                window.getSelection().anchorNode.parentElement,
+                window.getSelection().extentNode.parentElement,
+              );
+
+              if (selection.length > 0) return;
+
+              setElemRange({ type: type, min, max });
+              generateSelected({ min, max });
             },
           }}
         ></RenderElements>
-        {caretPos}
       </div>
       {/* Debugger */}
       <div
@@ -354,12 +471,12 @@ const RichEdit = (props) => {
           whiteSpace: 'pre',
         }}
       >
-        Debugger: {'\n'} sel: {sel} {'\n'}
+        Debugger: {'\n'} caret position: {elemRange.min.id} {'\n'}
         elemRange:{' '}
         {elemRange.length > 0
           ? `(${elemRange.min.id},${elemRange.max.id}) (${elemRange.max.extent},${elemRange.max.extent})`
           : 'No Selection'}
-        <RenderSelected />
+        {/* <RenderSelected /> */}
       </div>
     </div>
   );
