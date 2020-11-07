@@ -6,18 +6,14 @@
 import React, { useState } from 'react';
 import './RE.css';
 
-// Steps to accomplishing this
+// TODO: Steps to accomplishing this
 // tracking caret positions
 // Tracking current context
-// 1. This context could be as simple as track element is focused,
-// which would mean you would be editing that element
-//  a. Adding text only add to that element
-//  b. subtracting from the current element would involve an index check
-//   i. if at the begginning, then affect the previous element or do nothing if at the start of editor
-//  c. modifying the style of the currently element would either mod the current character or
-//  mod the current sel
-//   i. modifying the current select would or could involve several selected elements.
-//   ii. Might be worth creating sel logic before this step.
+// 1. Code needs to be cleaned up
+// 2. It's very inconsistent as to when the user can type
+// 3. Caret context is unstabled
+// 4. Index selection is jank
+// 5. Carte navigations via arrow keys needs to occur.
 
 // TODO: Max Text
 const RichEdit = (props) => {
