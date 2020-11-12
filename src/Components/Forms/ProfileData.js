@@ -128,6 +128,7 @@ class Stat {
     // defaults
     this.Type = 'Static';
     this.Value = '[New Stat]';
+    this.Flavor = '[New Flavor]';
     this.Num = {};
     this.Min = {};
     this.Max = {};
@@ -136,6 +137,7 @@ class Stat {
     // defined
     if (obj) {
       this.Value = obj.Value ? obj.Value : '';
+      this.Flavor = obj.Flavor ? obj.Flavor : '[New Flavor]';
       this.Type = obj.Type ? obj.Type : '';
       this.Num = new Cell(obj.Num, 'Num', this);
       this.Min = new Cell(obj.Min, 'Min', this);

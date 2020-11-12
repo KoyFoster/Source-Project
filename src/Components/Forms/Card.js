@@ -16,6 +16,8 @@ import { Profile } from './ProfileData';
 import Diagram from '../Diagram.js';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
+import { Editor } from '@tinymce/tinymce-react';
+
 // Current Objectives
 // 1. For watchever reason, newly added entries are not given unique names like they use to
 // 2. Consider making a widget system
@@ -23,8 +25,10 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 // 3. Add ability to import a massiv elist of stats
 // 4. Math input needs to be made easier to use.
 // 5. Make a unique default style for users to use
+// 6. Add the option to apply text resulting scripts
+// 7. Validation needs to be added to key Values
 
-// Possible objectived
+// Possible objective
 // Current Objectives
 // 1. Create special case for when you want to update a field and have it also calculated
 //   a. No real example at this time
@@ -413,6 +417,27 @@ const Block = (props) => {
         </tr>,
       ];
     }
+    function setFlavor(i, key, value, flavor, row) {
+      return [
+        <tr
+          key={`tr_${key}(${i})`}
+          onMouseDown={(e) => {
+            // Right click and left click
+            if (e.button === 2 || e.button === 0) {
+              setStatSelection(row);
+            }
+          }}
+        >
+          <td key={`td_${key}(${i}) 0`}>{value}</td>
+          <td key={`td_${key}(${i}) 1`} colSpan="4">
+            {flavor}
+          </td>
+        </tr>,
+        <tr key={`trp_${key}(${i})`}>
+          <td key={`td_${key}(${i}) 6`} colSpan="5"></td>
+        </tr>,
+      ];
+    }
 
     let i = -1;
     function contents() {
@@ -423,192 +448,266 @@ const Block = (props) => {
 
         i += 1;
         if (Mode === 'View') {
-          return setRow(
-            i,
-            Stats.Value,
-            value.Value,
-            `${value.Num.result}${value.Unit}`,
-            '',
-          );
-        } else if (Mode === 'Calculator') {
-          if (Type === 'Static') {
-            return setRow(
-              i,
-              Stats.Value,
-              value.Value,
-              <input
-                type="number"
-                value={value.Num.result}
-                onChange={(e) => {
-                  value.Num.result = StatData.HandleStatMinMax(
-                    value,
-                    'Num',
-                    parseInt(e.target.value, 10),
-                  ).result;
-
-                  Update(UpdateAllVals(value.getPath(), data));
-                }}
-              />,
-              value.Unit,
-            );
-          } else {
-            return setRow(
-              i,
-              Stats.Value,
-              value.Value,
-              `${value.Num.result}${value.Unit}`,
-              '',
-            );
+          switch (Type) {
+            case 'Static':
+            case 'Calc':
+              return setRow(
+                i,
+                Stats.Value,
+                value.Value,
+                `${value.Num.result}${value.Unit}`,
+                '',
+              );
+            case 'Flavor':
+              return setRow(i, Stats.Value, value.Value, value.Flavor, '');
           }
-        } else if (Type === 'Static') {
-          return setRow(
-            i,
-            Stats.Value,
-            <TextInputValidator
-              key={value.Value}
-              defaultValue={value.Value}
-              blacklist={blacklist.replace(`${value.Value}~`, '')}
-              events={{
-                onKeyUp: (e) => {
-                  if (e.key === 'Enter') {
-                    const oldValue = value.Value;
-                    value.Value = e.target.value;
-                    // Update selection value
-                    setStatSelection(e.target.value);
-                    Update(
-                      UpdateAllKeys(
-                        [...kp, e.target.value],
-                        [...kp, oldValue],
-                        data,
-                      ),
-                    );
-                  }
-                },
-              }}
-            />,
-            <input
-              type="number"
-              value={value.Num.result}
-              onChange={(e) => {
-                value.Num.result = StatData.HandleStatMinMax(
-                  value,
-                  'Num',
-                  parseInt(e.target.value, 10),
-                ).result;
-                Update(UpdateAllVals(value.getPath(), data));
-              }}
-            />,
-            <input
-              type="number"
-              value={value.Min.result}
-              onChange={(e) => {
-                value.Min.result = StatData.HandleStatMinMax(
-                  value,
-                  'Min',
-                  parseInt(e.target.value, 10),
-                ).result;
-                Update(UpdateAllVals(value.getPath(), data));
-              }}
-            />,
-            <input
-              type="number"
-              value={value.Max.result}
-              onChange={(e) => {
-                value.Max.result = StatData.HandleStatMinMax(
-                  value,
-                  'Max',
-                  parseInt(e.target.value, 10),
-                ).result;
-                Update(UpdateAllVals(value.getPath(), data));
-              }}
-            />,
-            <input
-              type="text"
-              value={value.Unit}
-              onChange={(e) => {
-                value.Unit = e.target.value;
-                Update(data);
-              }}
-            />,
-            value.Value,
-          );
-        } else {
-          return setRow(
-            i,
-            Stats.Value,
-            <TextInputValidator
-              key={value.Value}
-              blacklist={blacklist.replace(`${value.Value}~`, '')}
-              defaultValue={value.Value}
-              events={{
-                onKeyUp: (e) => {
-                  if (e.key === 'Enter') {
-                    const oldValue = value.Value;
-                    value.Value = e.target.value;
-                    // Update selection value
-                    setStatSelection(e.target.value);
-                    Update(
-                      UpdateAllKeys(
-                        [...kp, e.target.value],
-                        [...kp, oldValue],
-                        data,
-                      ),
-                    );
-                  }
-                },
-              }}
-            />,
-            <MathInput
-              key="2"
-              value={value.Num}
-              data={data}
-              onChange={(e) => {
-                value.Num.result = e.target.value.result;
-                value.Num.expression = e.target.value.expression;
-                value.Num.vars = e.target.value.vars;
+        } else if (Mode === 'Calculator') {
+          switch (Type) {
+            case 'Static':
+              return setRow(
+                i,
+                Stats.Value,
+                value.Value,
+                <input
+                  type="number"
+                  value={value.Num.result}
+                  onChange={(e) => {
+                    value.Num.result = StatData.HandleStatMinMax(
+                      value,
+                      'Num',
+                      parseInt(e.target.value, 10),
+                    ).result;
 
-                Update(data);
-              }}
-            />,
-            <MathInput
-              key="3"
-              value={value.Min}
-              style={{
-                filter: 'brightness(88%)',
-              }}
-              data={data}
-              onChange={(e) => {
-                value.Min.result = e.target.value.result;
-                value.Min.expression = e.target.value.expression;
-                value.Min.vars = e.target.value.vars;
-                Update(data);
-              }}
-            />,
-            <MathInput
-              key="4"
-              value={value.Max}
-              style={{
-                filter: 'brightness(88%)',
-              }}
-              data={data}
-              onChange={(e) => {
-                value.Max.result = e.target.value.result;
-                value.Max.expression = e.target.value.expression;
-                value.Max.vars = e.target.value.vars;
-                Update(data);
-              }}
-            />,
-            <input
-              type="text"
-              key="5"
-              value={value.Unit}
-              onChange={(e) => {
-                value.Unit = e.target.value;
-                Update(data);
-              }}
-            />,
-            value.Value,
-          );
+                    Update(UpdateAllVals(value.getPath(), data));
+                  }}
+                />,
+                value.Unit,
+              );
+            case 'Calc':
+              return setRow(
+                i,
+                Stats.Value,
+                value.Value,
+                `${value.Num.result}${value.Unit}`,
+                '',
+              );
+            case 'Flavor':
+              return setFlavor(
+                i,
+                Stats.Value,
+                value.Value,
+
+                <TextInputValidator
+                  key={`${value.Value}-Flavor`}
+                  defaultValue={value.Flavor}
+                  events={{
+                    onKeyUp: (e) => {
+                      if (e.key === 'Enter') {
+                        value.Flavor = e.target.value;
+                        Update(data);
+                      }
+                    },
+                  }}
+                />,
+
+                value.Value,
+              );
+          } // end of switch
+        } else {
+          switch (Type) {
+            case 'Static':
+              return setRow(
+                i,
+                Stats.Value,
+                <TextInputValidator
+                  key={value.Value}
+                  defaultValue={value.Value}
+                  blacklist={blacklist.replace(`${value.Value}~`, '')}
+                  events={{
+                    onKeyUp: (e) => {
+                      if (e.key === 'Enter') {
+                        const oldValue = value.Value;
+                        value.Value = e.target.value;
+                        // Update selection value
+                        setStatSelection(e.target.value);
+                        Update(
+                          UpdateAllKeys(
+                            [...kp, e.target.value],
+                            [...kp, oldValue],
+                            data,
+                          ),
+                        );
+                      }
+                    },
+                  }}
+                />,
+                <input
+                  type="number"
+                  value={value.Num.result}
+                  onChange={(e) => {
+                    value.Num.result = StatData.HandleStatMinMax(
+                      value,
+                      'Num',
+                      parseInt(e.target.value, 10),
+                    ).result;
+                    Update(UpdateAllVals(value.getPath(), data));
+                  }}
+                />,
+                <input
+                  type="number"
+                  value={value.Min.result}
+                  onChange={(e) => {
+                    value.Min.result = StatData.HandleStatMinMax(
+                      value,
+                      'Min',
+                      parseInt(e.target.value, 10),
+                    ).result;
+                    Update(UpdateAllVals(value.getPath(), data));
+                  }}
+                />,
+                <input
+                  type="number"
+                  value={value.Max.result}
+                  onChange={(e) => {
+                    value.Max.result = StatData.HandleStatMinMax(
+                      value,
+                      'Max',
+                      parseInt(e.target.value, 10),
+                    ).result;
+                    Update(UpdateAllVals(value.getPath(), data));
+                  }}
+                />,
+                <input
+                  type="text"
+                  value={value.Unit}
+                  onChange={(e) => {
+                    value.Unit = e.target.value;
+                    Update(data);
+                  }}
+                />,
+                value.Value,
+              );
+            case 'Calc':
+              return setRow(
+                i,
+                Stats.Value,
+                <TextInputValidator
+                  key={value.Value}
+                  blacklist={blacklist.replace(`${value.Value}~`, '')}
+                  defaultValue={value.Value}
+                  events={{
+                    onKeyUp: (e) => {
+                      if (e.key === 'Enter') {
+                        const oldValue = value.Value;
+                        value.Value = e.target.value;
+                        // Update selection value
+                        setStatSelection(e.target.value);
+                        Update(
+                          UpdateAllKeys(
+                            [...kp, e.target.value],
+                            [...kp, oldValue],
+                            data,
+                          ),
+                        );
+                      }
+                    },
+                  }}
+                />,
+                <MathInput
+                  key="2"
+                  value={value.Num}
+                  data={data}
+                  onChange={(e) => {
+                    value.Num.result = e.target.value.result;
+                    value.Num.expression = e.target.value.expression;
+                    value.Num.vars = e.target.value.vars;
+
+                    Update(data);
+                  }}
+                />,
+                <MathInput
+                  key="3"
+                  value={value.Min}
+                  style={{
+                    filter: 'brightness(88%)',
+                  }}
+                  data={data}
+                  onChange={(e) => {
+                    value.Min.result = e.target.value.result;
+                    value.Min.expression = e.target.value.expression;
+                    value.Min.vars = e.target.value.vars;
+                    Update(data);
+                  }}
+                />,
+                <MathInput
+                  key="4"
+                  value={value.Max}
+                  style={{
+                    filter: 'brightness(88%)',
+                  }}
+                  data={data}
+                  onChange={(e) => {
+                    value.Max.result = e.target.value.result;
+                    value.Max.expression = e.target.value.expression;
+                    value.Max.vars = e.target.value.vars;
+                    Update(data);
+                  }}
+                />,
+                <input
+                  type="text"
+                  key="5"
+                  value={value.Unit}
+                  onChange={(e) => {
+                    value.Unit = e.target.value;
+                    Update(data);
+                  }}
+                />,
+                value.Value,
+              );
+            case 'Flavor':
+              return setFlavor(
+                i,
+                Stats.Value,
+                <TextInputValidator
+                  className="Flavor"
+                  key={value.Value}
+                  defaultValue={value.Value}
+                  blacklist={blacklist.replace(`${value.Value}~`, '')}
+                  events={{
+                    onKeyUp: (e) => {
+                      if (e.key === 'Enter') {
+                        const oldValue = value.Value;
+                        value.Value = e.target.value;
+                        // Update selection value
+                        setStatSelection(e.target.value);
+                        Update(
+                          UpdateAllKeys(
+                            [...kp, e.target.value],
+                            [...kp, oldValue],
+                            data,
+                          ),
+                        );
+                      }
+                    },
+                  }}
+                />,
+
+                <TextInputValidator
+                  key={`${value.Value}-Flavor`}
+                  defaultValue={value.Flavor}
+                  events={{
+                    onKeyUp: (e) => {
+                      if (e.key === 'Enter') {
+                        value.Flavor = e.target.value;
+                        Update(data);
+                      }
+                    },
+                  }}
+                />,
+
+                value.Value,
+              );
+          }
         }
       });
     }
@@ -641,16 +740,44 @@ const Block = (props) => {
   const statMenu = (stat) => [
     // <MenuItem key="div_1" divider />,
     <MenuItem
-      key="Change Stat"
+      key="To Calc"
       onClick={() => {
-        stat.Type = stat.Type === 'Static' ? 'Calc' : 'Static';
+        stat.Type = 'Calc';
         Update(data);
       }}
     >
       Change [<span style={{ color: 'red' }}>{stat.Value}</span>] to{' '}
-      <span style={{ color: 'gold' }}>
-        {stat.Type === 'Static' ? 'Calc' : 'Static'}
-      </span>
+      <span style={{ color: 'gold' }}>Calc</span>
+    </MenuItem>,
+    <MenuItem
+      key="To Static"
+      onClick={() => {
+        stat.Type = 'Static';
+        Update(data);
+      }}
+    >
+      Change [<span style={{ color: 'red' }}>{stat.Value}</span>] to{' '}
+      <span style={{ color: 'gold' }}>Static</span>
+    </MenuItem>,
+    <MenuItem
+      key="To Flavor"
+      onClick={() => {
+        stat.Type = 'Flavor';
+        Update(data);
+      }}
+    >
+      Change [<span style={{ color: 'red' }}>{stat.Value}</span>] to{' '}
+      <span style={{ color: 'gold' }}>Flavor</span>
+    </MenuItem>,
+    <MenuItem
+      key="To Script Flavor"
+      onClick={() => {
+        stat.Type = 'ScriptFlavor';
+        Update(data);
+      }}
+    >
+      Change [<span style={{ color: 'red' }}>{stat.Value}</span>] to{' '}
+      <span style={{ color: 'gold' }}>Scripted Flavor</span>
     </MenuItem>,
     // <MenuItem key="div_2" divider />,
   ];

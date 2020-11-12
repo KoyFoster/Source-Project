@@ -1,16 +1,28 @@
-/* base div styles */
-.words {
-  border: 1px dotted purple;
+.rich-editor {
+  width: 256px;
 }
 
-.highlight {
-  background: purple;
-  border: 1px dotted transparent;
+.rich-edit-box {
+  border-top: 2px solid rgb(190, 0, 190);
+  border-left: 2px solid rgb(182, 0, 182);
+  border-right: 2px solid rgb(97, 0, 97);
+  border-bottom: 2px solid rgb(87, 0, 87);
+
+  background: rgb(167, 167, 167);
+}
+
+/* base div styles */
+.caption {
+  border-top: 2px solid rgb(190, 0, 190);
+  border-left: 2px solid rgb(182, 0, 182);
+  border-right: 2px solid rgb(97, 0, 97);
+  border-bottom: 2px solid rgb(87, 0, 87);
 }
 
 .cursor-caret:focus {
   animation: blinkingBGColor 1.2s infinite;
 }
+
 .cursor-caret {
   /* position: absolute; */
   width: 1px;
