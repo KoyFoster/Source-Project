@@ -1,5 +1,5 @@
 import React from 'react';
-import Drag from './Forms/Drag';
+import Drag from '../../Components/Forms/Drag';
 
 const Test = (props) => {
   // const [checked, setChecked] = useState(false);

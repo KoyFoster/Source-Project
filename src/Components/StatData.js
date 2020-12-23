@@ -1,5 +1,5 @@
 import { /*Coll, */ Calc } from './KoyMath.js';
-import { evaluate, hex } from 'mathjs';
+import { evaluate, hex, isNaN } from 'mathjs';
 import { Cell } from './Forms/ProfileData';
 
 class StatData {
@@ -149,7 +149,7 @@ class StatData {
         `Warn: Valid Expression('${expression}', scope: '`,
         scope,
         `'):`,
-        { result },
+        { result, rnd: this.Round(result), isNaN: isNaN(result) },
       );
     } catch (err) {
       console.error(
@@ -160,7 +160,9 @@ class StatData {
       return undefined;
     }
 
-    return result !== undefined ? this.Round(result) : 0;
+    // Note: Why am I rounding this in the first place???
+    // return result !== undefined ? this.Round(result) : 0;
+    return result !== undefined && isNaN(result) ? result : 0;
   }
 
   // Get Calculated Value

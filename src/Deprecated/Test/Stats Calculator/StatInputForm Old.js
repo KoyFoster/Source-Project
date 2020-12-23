@@ -1,8 +1,8 @@
 import '../App.css';
 import React, { useState } from 'react';
-import { Row, Col } from './DivGrid.js';
-import Grid from './Forms/Grid';
-import TogglePopup from './TogglePopup';
+import { Row, Col } from '../../../Components/DivGrid.js';
+import Grid from '../../../Components/Forms/Grid';
+import TogglePopup from '../../../Components/TogglePopup';
 
 //User Input Class
 function StatInputForm(props) {

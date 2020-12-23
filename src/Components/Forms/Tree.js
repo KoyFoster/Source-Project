@@ -1052,7 +1052,6 @@ class Tree extends React.Component {
       for (let i = 0; i < strArr.length; i) {
         const iPos = strArr[i].indexOf(parentSeparator);
         if (iPos > -1) {
-          // versasuite technically fails to parse this out when parents are involved, so we are breaking and return nothing here
           return { checked: undefined, strArr: undefined };
           // strArr[i] = strArr[i].slice(iPos, strArr[i].length);
           // console.log('new Str:', strArr[i]);

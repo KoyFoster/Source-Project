@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import TemplateSelector from './Selector';
+import TemplateSelector from '../../../Components/Selector';
 import { MenuItem } from '@material-ui/core';
 import StatInputForm from './StatInputForm Old.js';
-import Diagram from './Diagram.js';
-import StatData from './StatData.js';
-import { Row, Col } from './DivGrid';
-import StatCode from './StatCode';
-import Tree from './Forms/Tree';
+import Diagram from '../../../Components/Diagram.js';
+import StatData from '../../../Components/StatData.js';
+import { Row, Col } from '../../../Components/DivGrid';
+import StatCode from '../../../Components/StatCode';
+import Tree from '../../../Components/Forms/Tree';
 
 // defaultTemplates
 const iDefTmpl = 0;

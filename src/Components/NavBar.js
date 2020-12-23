@@ -6,7 +6,7 @@ import CanvasCard from './CanvasCard';
 // import Test2 from './Test2';
 // import Test2 from './Test2';
 import { Paper, Button } from '@material-ui/core';
-import RichEdit from './Forms/RTF/RichEdit';
+import Resume from './Resume';
 
 // Make drop list for
 // - Calculator creator
@@ -44,14 +44,13 @@ function NavBar(props) {
             <Link to="/Calculators">
               <Button style={{ margin: '1px' }}>Calculators</Button>
             </Link>
-            <Link to="/Profiles">
-              <Button style={{ margin: '1px' }}>Profiles</Button>
+            <Link disabled to="/Profiles">
+              <Button disabled style={{ margin: '1px' }}>
+                Profiles
+              </Button>
             </Link>
             <Link to="/CanvasCard">
               <Button style={{ margin: '1px' }}>Canvas Card</Button>
-            </Link>
-            <Link to="/RichEdit">
-              <Button style={{ margin: '1px' }}>RichEdit</Button>
             </Link>
             {/* <Link to="/Test2">
               <Button style={{ margin: '1px' }}>Test2</Button>
@@ -63,6 +62,9 @@ function NavBar(props) {
         </Paper>
         <hr style={{ display: 'none' }} />
 
+        <div>
+          <Route exact path="/" render={() => <Resume></Resume>} />
+        </div>
         <div>
           <Route exact path="/" />
           <Route
@@ -95,11 +97,6 @@ function NavBar(props) {
         <div>
           <Route exact path="/" />
           <Route path="/CanvasCard" component={CanvasCard} />
-        </div>
-
-        <div>
-          <Route exact path="/" />
-          <Route path="/RichEdit" component={RichEdit} />
         </div>
         {/* <div>
           <Route exact path="/" />
