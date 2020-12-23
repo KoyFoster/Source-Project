@@ -127,8 +127,8 @@ const useStyles = makeStyles((msProps) => {
 // Stat Card
 const Stats = (props) => {
   // user data
-  const [value, setValue] = useState(Templates['Blank']);
-  const [series, setSeries] = useState(Templates['Blank'].Game);
+  const [value, setValue] = useState(Templates['Dark Souls III']);
+  const [series, setSeries] = useState(Templates['Dark Souls III'].Game);
   // const [UD] = useState(new UserData('TemplateData'));
   const [SM] = useState(
     props.state === 'creator'
@@ -142,7 +142,7 @@ const Stats = (props) => {
 
   // member variables
   // console.log('values:', value);
-  const [style, setStyle] = useState('Default');
+  const [style, setStyle] = useState('Dark Souls III');
   const Modes = ['Calculator', 'View', 'Edit'];
 
   const getDefaultMode = () => {
