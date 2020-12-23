@@ -2,11 +2,9 @@ import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
 import Stats from './StatCard';
 import { Row } from './DivGrid';
-import CanvasCard from './CanvasCard';
-// import Test2 from './Test2';
-// import Test2 from './Test2';
+// import CanvasCard from './CanvasCard';
 import { Paper, Button } from '@material-ui/core';
-import Resume from './Resume';
+// import Resume from './Resume';
 
 // Make drop list for
 // - Calculator creator
@@ -35,36 +33,52 @@ function NavBar(props) {
           <Row justifyContent="left" style={{ height: props.height }}>
             {' '}
             {/* The actual nav bar */}
-            <Link to="/">
+            {/* <Link to="/">
               <Button style={{ margin: '1px' }}>Home</Button>
-            </Link>
+            </Link> */}
             <Link to="/CalcCreator">
-              <Button style={{ margin: '1px' }}>Calc.Creator</Button>
+              <div className="tooltip">
+                <div>
+                  <Button style={{ margin: '1px' }}>Calc.Creator</Button>
+                </div>
+                <span className="tooltiptext">
+                  A calculator doesn't exist for the thing you like? Create one
+                  here.
+                </span>
+              </div>
             </Link>
             <Link to="/Calculators">
-              <Button style={{ margin: '1px' }}>Calculators</Button>
+              <div className="tooltip">
+                <div>
+                  <Button style={{ margin: '1px' }}>Calculators</Button>
+                </div>
+                <span className="tooltiptext">
+                  Use calculators created by other users
+                </span>
+              </div>
             </Link>
-            <Link disabled to="/Profiles">
-              <Button disabled style={{ margin: '1px' }}>
-                Profiles
-              </Button>
-            </Link>
-            <Link to="/CanvasCard">
+            {/* <Link disabled to="/Profiles"> */}
+            <div className="tooltip">
+              <div>
+                <Button disabled style={{ margin: '1px' }}>
+                  Profiles
+                </Button>
+              </div>
+              <span className="tooltiptext">
+                View profiles from user created calculators
+              </span>
+            </div>
+            {/* </Link> */}
+            {/* <Link to="/CanvasCard">
               <Button style={{ margin: '1px' }}>Canvas Card</Button>
-            </Link>
-            {/* <Link to="/Test2">
-              <Button style={{ margin: '1px' }}>Test2</Button>
-            </Link> */}
-            {/* <Link to="/Test2">
-              <Button style={{ margin: '1px' }}>Test2</Button>
             </Link> */}
           </Row>
         </Paper>
         <hr style={{ display: 'none' }} />
 
-        <div>
+        {/* <div>
           <Route exact path="/" render={() => <Resume></Resume>} />
-        </div>
+        </div> */}
         <div>
           <Route exact path="/" />
           <Route
@@ -94,10 +108,10 @@ function NavBar(props) {
           <Route path="/StatCard" render={() => <Stats></Stats>} />
         </div>
 
-        <div>
+        {/* <div>
           <Route exact path="/" />
           <Route path="/CanvasCard" component={CanvasCard} />
-        </div>
+        </div> */}
         {/* <div>
           <Route exact path="/" />
           <Route path="/Test2" component={Test2} />
