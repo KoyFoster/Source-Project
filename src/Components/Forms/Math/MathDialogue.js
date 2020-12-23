@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import '../../App.css';
-import { TagList } from './Tags';
-import Popup from './Popup';
-import StatData from '../StatData';
-import VariablePicker from './VariablePicker';
+import { TagList } from '../Tags';
+import Popup from '../Popup';
+import StatData from '../../StatData';
+import VariablePicker from '../VariablePicker';
+import './Math.css';
 
 const MathDialogue = (props) => {
   const { style } = props;
@@ -82,6 +82,7 @@ const MathDialogue = (props) => {
 
   return (
     <table
+      className="evaluation"
       style={{
         ...style,
         tableLayout: 'fixed',

@@ -361,10 +361,10 @@ const Stats = (props) => {
               </button>
             </Paper>
             <div>
-              {/* <Paper style={{ display: 'flex', padding: '2px' }}>
+              <Paper style={{ display: 'flex', padding: '2px' }}>
                 <SaveStatCard value={value}></SaveStatCard>
                 <LoadStatCard setValue={setValue}></LoadStatCard>
-              </Paper> */}
+              </Paper>
               {/* <CacheUserData key="UserData" /> */}
               <Saves
                 key="UserData"

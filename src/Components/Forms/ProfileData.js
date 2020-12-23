@@ -1,4 +1,6 @@
+import React from 'react';
 import StatData from '../StatData';
+import TextInputValidator from './TextInputValidator.js';
 
 class Funcs {
   static add = (selection, add = 1, src, ELEMENT) => {
@@ -128,7 +130,6 @@ class Stat {
     // defaults
     this.Type = 'Static';
     this.Value = '[New Stat]';
-    this.Flavor = '[New Flavor]';
     this.Num = {};
     this.Min = {};
     this.Max = {};
@@ -137,7 +138,7 @@ class Stat {
     // defined
     if (obj) {
       this.Value = obj.Value ? obj.Value : '';
-      this.Flavor = obj.Flavor ? obj.Flavor : '[New Flavor]';
+      this.Data = obj.Data ? obj.Data : undefined;
       this.Type = obj.Type ? obj.Type : '';
       this.Num = new Cell(obj.Num, 'Num', this);
       this.Min = new Cell(obj.Min, 'Min', this);
@@ -149,6 +150,67 @@ class Stat {
       this.Max = new Cell(0, 'Max', this);
     }
   }
+
+  getPath = () => {
+    const buffer = this.P.getPath();
+    buffer.push('Values');
+    buffer.push(this.Value);
+    return buffer;
+  };
+}
+
+// Flavor
+class Flavor {
+  constructor(obj, parent) {
+    // link
+    this.P = parent;
+
+    // defaults
+    this.Type = 'Static'; // static or free or something else?
+    this.Value = '[New Stat]';
+    this.Flavor = '';
+    this.Data = ''; // Start with & if referencing anyother field for data
+
+    // defined
+    if (obj) {
+      this.Value = obj.Value ? obj.Value : '';
+      this.Data = obj.Data ? obj.Data : undefined;
+      this.Type = obj.Type ? obj.Type : '';
+    } else {
+    }
+  }
+
+  // render
+  render = ({ events, mode, asRow, showHeader = false }) => {
+    if (asRow) {
+      switch (mode) {
+        case 'Edit':
+          return (
+            <tr {...events}>
+              <td>{this.Value}</td>
+              <td colSpan="4">{this.Flavor}</td>
+            </tr>
+          );
+
+        case 'Calc':
+          return (
+            <tr {...events}>
+              <td>{this.Value}</td>
+              <td colSpan="4">{this.Flavor}</td>
+            </tr>
+          );
+
+        default:
+        case 'View':
+          return (
+            <tr {...events}>
+              <td>{this.Value}</td>
+              <td colSpan="4">{this.Flavor}</td>
+            </tr>
+          );
+      } // end of switch
+    }
+  };
 
   getPath = () => {
     const buffer = this.P.getPath();
@@ -214,7 +276,7 @@ class Card {
     // defaults
     this.Value = '[New Card]';
     this.Values = [];
-    this.Type = 'Card';
+    this.Type = 'Card'; // Graph, Data
 
     // defined
     if (obj) {

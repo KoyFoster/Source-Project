@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import StatData from '../StatData.js';
 import ToggleButton from './ToggleButton.js';
-import MathInput from './MathInput.js';
+import MathInput from './Math/MathInput.js';
 import Popup from './Popup';
 import Controls from './Controls.js';
 import TextInputValidator from './TextInputValidator.js';
@@ -16,7 +16,7 @@ import { Profile } from './ProfileData';
 import Diagram from '../Diagram.js';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
-import { Editor } from '@tinymce/tinymce-react';
+import { Editor } from '@tinymce/tinymce-react'; // https://www.tiny.cloud/docs/integrations/react/
 
 // Current Objectives
 // 1. For watchever reason, newly added entries are not given unique names like they use to
@@ -27,6 +27,10 @@ import { Editor } from '@tinymce/tinymce-react';
 // 5. Make a unique default style for users to use
 // 6. Add the option to apply text resulting scripts
 // 7. Validation needs to be added to key Values
+// 8. Have presetable data text
+//  a. This is the point where it might be work developing standard card formats for such data
+//  b. e.g. Graphs and data
+// 9. Make sure labels reflect with contents of table rows
 
 // Possible objective
 // Current Objectives
@@ -34,274 +38,6 @@ import { Editor } from '@tinymce/tinymce-react';
 //   a. No real example at this time
 // 2. May need to create a predefined index of all cells that have variabled,
 //  - so that one can search through that list, as appose to the entire data object
-
-const replaceVar = (newKey, oldKey, varObj) => {
-  if (varObj.vars) {
-    const obj = JSON.parse(varObj.vars);
-    Object.keys(obj).forEach((key2) => {
-      // Cross compare against oldKey
-      // Size check
-      const pos = oldKey.length - 1;
-      let bUpdate = false;
-      if (oldKey.length > obj[key2].length) {
-      } else {
-        let i = 0;
-        let bMatch = true;
-
-        obj[key2].forEach((k) => {
-          if (obj[key2][i] !== oldKey[i]) {
-            bMatch = false;
-          }
-          if (bMatch && i === pos) {
-            obj[key2][i] = newKey[i];
-            bUpdate = true;
-          }
-
-          i += 1;
-        });
-      }
-      // update vars
-      if (bUpdate) {
-        varObj.vars = JSON.stringify(obj);
-      }
-    });
-  }
-  // An array of objects or arrays
-  else if (Array.isArray(varObj)) {
-    // Is Raw Array
-    const obj = varObj;
-    Object.keys(obj).forEach((key2) => {
-      // Cross compare against oldKey
-      // Size check
-      const pos = oldKey.length - 1;
-      if (oldKey.length > obj[key2].length) {
-      } else {
-        let i = 0;
-        let bMatch = true;
-
-        obj[key2].forEach((k) => {
-          if (obj[key2][i] !== oldKey[i]) {
-            bMatch = false;
-          }
-          if (bMatch && i === pos) {
-            obj[key2][i] = newKey[i];
-          }
-
-          i += 1;
-        });
-      }
-    });
-  }
-};
-
-const bVarInUse = (newKey, oldKey, varObj) => {
-  // const vars = [];
-  let bFound = false;
-
-  if (varObj.vars) {
-    const obj = JSON.parse(varObj.vars);
-    Object.keys(obj).forEach((key2) => {
-      // Cross compare against oldKey
-      // Size check
-      const pos = oldKey.length - 1;
-      let bUpdate = false;
-      if (oldKey.length > obj[key2].length) {
-      } else {
-        let i = 0;
-        let bMatch = true;
-
-        obj[key2].forEach((k) => {
-          if (obj[key2][i] !== oldKey[i]) {
-            bMatch = false;
-          }
-          if (bMatch && i === pos) {
-            bFound = true;
-          }
-
-          i += 1;
-        });
-      }
-      // update vars
-      if (bUpdate) {
-        varObj.vars = JSON.stringify(obj);
-      }
-    });
-  }
-  // An array of objects or arrays
-  else if (Array.isArray(varObj)) {
-    // Is Raw Array
-    const obj = varObj;
-    Object.keys(obj).forEach((key2) => {
-      // Cross compare against oldKey
-      // Size check
-      const pos = oldKey.length - 1;
-      if (oldKey.length > obj[key2].length) {
-      } else {
-        let i = 0;
-        let bMatch = true;
-
-        obj[key2].forEach((k) => {
-          if (obj[key2][i] !== oldKey[i]) {
-            bMatch = false;
-          }
-          if (bMatch && i === pos) {
-            // vars.push(obj);
-            bFound = true;
-          }
-
-          i += 1;
-        });
-      }
-    });
-  }
-
-  return bFound;
-};
-
-const UpdateAllKeys = (newKey, oldKey, data) => {
-  // newKey should be the same length as the old Key
-  if (newKey.length !== oldKey.length) return;
-
-  // Iterate through entire dataobject
-  data.Values.forEach((Value) => {
-    // Card
-    if (Value.Type === 'Card') {
-      if (Value.Values)
-        Object.keys(Value.Values).forEach((key) => {
-          // ITERATE through Num/Min/Max vars
-          Value.Values[key].Values.forEach((val) => {
-            if (val.Num.vars) {
-              replaceVar(newKey, oldKey, val.Num);
-            }
-            if (val.Min.vars) {
-              replaceVar(newKey, oldKey, val.Min);
-            }
-            if (val.Max.vars) {
-              replaceVar(newKey, oldKey, val.Max);
-            }
-          });
-        });
-    } else if (Value.Type === 'Graph') {
-      // ITERATE through Values
-      if (Value.Keys) {
-        replaceVar(newKey, oldKey, Value.Keys);
-      }
-    }
-  });
-
-  return data;
-};
-
-const updateVal = (key, varObj, data) => {
-  if (varObj.vars) {
-    const obj = JSON.parse(varObj.vars);
-    Object.keys(obj).forEach((key2) => {
-      // Cross compare against key
-      // Size check
-      const pos = key.length - 1;
-      let bUpdate = false;
-      if (key.length > obj[key2].length) {
-      } else {
-        let i = 0;
-        let bMatch = true;
-
-        obj[key2].forEach((k) => {
-          if (obj[key2][i] !== key[i]) {
-            bMatch = false;
-          }
-          if (bMatch && i === pos) {
-            obj[key2][i] = key[i];
-            bUpdate = true;
-          }
-
-          i += 1;
-        });
-      }
-      // update val
-      if (bUpdate) {
-        // varObj.vars = JSON.stringify(obj);
-
-        const buffer = StatData.GetCellValue(
-          varObj.expression,
-          obj,
-          data,
-          true,
-        );
-
-        varObj.result = buffer;
-
-        // This is where recursion happens
-        // TODO: Big dangerous
-        UpdateAllVals(varObj.getPath(), data);
-      }
-    });
-  }
-};
-
-const UpdateAllVals = (varKey, data) => {
-  // Iterate through entire dataobject
-  data.Values.forEach((Value) => {
-    // Card
-    if (Value.Type === 'Card') {
-      if (Value.Values)
-        Object.keys(Value.Values).forEach((key) => {
-          // ITERATE through Num/Min/Max vars
-          Value.Values[key].Values.forEach((val) => {
-            if (val.Num.vars) {
-              updateVal(varKey, val.Num, data);
-            }
-            if (val.Min.vars) {
-              updateVal(varKey, val.Min, data);
-            }
-            if (val.Max.vars) {
-              updateVal(varKey, val.Max, data);
-            }
-          });
-        });
-    }
-  });
-
-  return data;
-};
-
-const ValidateAllKeys = (newKey, oldKey, data) => {
-  // newKey should be the same length as the old Key
-  if (newKey.length !== oldKey.length) return false;
-
-  let vars = [];
-
-  // Iterate through entire dataobject
-  data.Values.forEach((Value) => {
-    // Card
-    if (Value.Type === 'Card') {
-      if (Value.Values)
-        Object.keys(Value.Values).forEach((key) => {
-          // ITERATE through Num/Min/Max vars
-          Value.Values[key].Values.forEach((val) => {
-            if (val.Num.vars) {
-              if (bVarInUse(newKey, oldKey, val.Num))
-                vars.push(`${Value.Value}/${val.Value}/Num`);
-            }
-            if (val.Min.vars) {
-              if (bVarInUse(newKey, oldKey, val.Min))
-                vars.push(`${Value.Value}/${val.Value}/Min`);
-            }
-            if (val.Max.vars) {
-              if (bVarInUse(newKey, oldKey, val.Max))
-                vars.push(`${Value.Value}/${val.Value}/Max`);
-            }
-          });
-        });
-    } else if (Value.Type === 'Graph') {
-      // ITERATE through Values
-      if (Value.Keys) {
-        if (bVarInUse(newKey, oldKey, Value.Keys)) vars.push(Value.Value);
-      }
-    }
-  });
-
-  return vars;
-};
 
 // styling contrainers
 const ProfileContainer = (props) => {
@@ -348,6 +84,10 @@ const StatsContainer = (props) => {
     </div>
   );
 };
+
+// Stat Data display
+
+// Flavor data display
 
 const Block = (props) => {
   const [seen, setSeen] = useState(false);
@@ -478,7 +218,7 @@ const Block = (props) => {
                       parseInt(e.target.value, 10),
                     ).result;
 
-                    Update(UpdateAllVals(value.getPath(), data));
+                    Update(StatData.UpdateAllVals(value.getPath(), data));
                   }}
                 />,
                 value.Unit,
@@ -531,7 +271,7 @@ const Block = (props) => {
                         // Update selection value
                         setStatSelection(e.target.value);
                         Update(
-                          UpdateAllKeys(
+                          StatData.UpdateAllKeys(
                             [...kp, e.target.value],
                             [...kp, oldValue],
                             data,
@@ -550,7 +290,7 @@ const Block = (props) => {
                       'Num',
                       parseInt(e.target.value, 10),
                     ).result;
-                    Update(UpdateAllVals(value.getPath(), data));
+                    Update(StatData.UpdateAllVals(value.getPath(), data));
                   }}
                 />,
                 <input
@@ -562,7 +302,7 @@ const Block = (props) => {
                       'Min',
                       parseInt(e.target.value, 10),
                     ).result;
-                    Update(UpdateAllVals(value.getPath(), data));
+                    Update(StatData.UpdateAllVals(value.getPath(), data));
                   }}
                 />,
                 <input
@@ -574,7 +314,7 @@ const Block = (props) => {
                       'Max',
                       parseInt(e.target.value, 10),
                     ).result;
-                    Update(UpdateAllVals(value.getPath(), data));
+                    Update(StatData.UpdateAllVals(value.getPath(), data));
                   }}
                 />,
                 <input
@@ -603,7 +343,7 @@ const Block = (props) => {
                         // Update selection value
                         setStatSelection(e.target.value);
                         Update(
-                          UpdateAllKeys(
+                          StatData.UpdateAllKeys(
                             [...kp, e.target.value],
                             [...kp, oldValue],
                             data,
@@ -681,7 +421,7 @@ const Block = (props) => {
                         // Update selection value
                         setStatSelection(e.target.value);
                         Update(
-                          UpdateAllKeys(
+                          StatData.UpdateAllKeys(
                             [...kp, e.target.value],
                             [...kp, oldValue],
                             data,
@@ -828,7 +568,7 @@ const Block = (props) => {
                       setBlockSelection(e.target.value);
 
                       // Update(
-                      UpdateAllKeys(
+                      StatData.UpdateAllKeys(
                         [...keyPath, 'Values', e.target.value],
                         [...keyPath, 'Values', oldValue],
                         data,
@@ -894,7 +634,7 @@ const Block = (props) => {
                       'Values',
                       selection,
                     ];
-                    const vars = ValidateAllKeys(kp, kp, data);
+                    const vars = StatData.ValidateAllKeys(kp, kp, data);
                     if (vars.length > 0) {
                       setWarn(vars);
                       togglePopup();
@@ -999,7 +739,7 @@ const Card = (props) => {
                     // Update selection value
                     setBlockSelection(e.target.value);
                     Update(
-                      UpdateAllKeys(
+                      StatData.UpdateAllKeys(
                         [...keyPath, e.target.value],
                         [...keyPath, oldValue],
                         data,
@@ -1055,7 +795,7 @@ const Card = (props) => {
           Add={(selection, i) => {
             // If subtraction, check for existing references to said item
             if (i < 0) {
-              const vars = ValidateAllKeys(
+              const vars = StatData.ValidateAllKeys(
                 [...keyPath, cardData.Value, 'Values', selection],
                 [...keyPath, cardData.Value, 'Values', selection],
                 data,
@@ -1167,7 +907,7 @@ const ProfileCard = (props) => {
                       // Update selection value
                       setCardSelection(e.target.value);
                       Update(
-                        UpdateAllKeys(
+                        StatData.UpdateAllKeys(
                           ['Values', data.Game],
                           ['Values', oldValue],
                           data,
@@ -1203,7 +943,7 @@ const ProfileCard = (props) => {
               Add={(selection, i) => {
                 // If subtraction, check for existing references to said item
                 if (i < 0) {
-                  const vars = ValidateAllKeys(
+                  const vars = StatData.ValidateAllKeys(
                     ['Values', selection],
                     ['Values', selection],
                     data,

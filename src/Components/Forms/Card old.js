@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import Grid from './Grid';
 import StatData from '../StatData.js';
 import ToggleButton from './ToggleButton.js';
-import MathInput from './MathInput.js';
+import MathInput from './Math/MathInput.js';
 import Controls from './Controls.js';
 import './Card.css';
 
