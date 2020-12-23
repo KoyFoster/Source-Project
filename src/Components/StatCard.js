@@ -9,7 +9,6 @@ import TogglePopup from './TogglePopup';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 import { UserData, SaveManager, Saves } from './UserData/UserData';
-import DateTime from './Forms/DateTime';
 
 const formatSaveData = (value) => {
   const regex1 = /}}},/gi;
@@ -423,13 +422,7 @@ const Stats = (props) => {
                 return key;
               })}
             />
-            <div>
-              {/* <Paper style={{ display: 'flex', padding: '2px' }}>
-                <SaveStatCard value={value}></SaveStatCard>
-                <LoadStatCard setValue={setValue}></LoadStatCard>
-              </Paper>
-              <CacheUserData key="UserData" /> */}
-            </div>
+            <div></div>
             <Paper
               style={{
                 display: 'flex',
