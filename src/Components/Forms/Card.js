@@ -16,8 +16,6 @@ import { Profile } from './ProfileData';
 import Diagram from '../Diagram.js';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
-import { Editor } from '@tinymce/tinymce-react'; // https://www.tiny.cloud/docs/integrations/react/
-
 // Current Objectives
 // 1. For watchever reason, newly added entries are not given unique names like they use to
 // 2. Consider making a widget system
@@ -200,6 +198,8 @@ const Block = (props) => {
               );
             case 'Flavor':
               return setRow(i, Stats.Value, value.Value, value.Flavor, '');
+            default:
+              break;
           }
         } else if (Mode === 'Calculator') {
           switch (Type) {
@@ -252,6 +252,8 @@ const Block = (props) => {
 
                 value.Value,
               );
+            default:
+              break;
           } // end of switch
         } else {
           switch (Type) {
@@ -447,8 +449,11 @@ const Block = (props) => {
 
                 value.Value,
               );
+            default:
+              break;
           }
         }
+        return <div>[End Of StatTable]</div>;
       });
     }
 

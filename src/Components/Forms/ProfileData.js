@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import StatData from '../StatData';
-import TextInputValidator from './TextInputValidator.js';
 
 class Funcs {
   static add = (selection, add = 1, src, ELEMENT) => {

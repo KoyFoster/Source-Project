@@ -1,5 +1,5 @@
 import { /*Coll, */ Calc } from './KoyMath.js';
-import { evaluate, hex, isNaN } from 'mathjs';
+import { evaluate, isNaN } from 'mathjs';
 import { Cell } from './Forms/ProfileData';
 
 class StatData {
