@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckBox } from './CheckBox';
-import { List } from './List';
+import { List, ListUtil } from './List';
 
 class CheckListBox extends React.Component {
   constructor(props) {
@@ -152,37 +152,63 @@ const CheckListBoxControl = (props) => {
   const { events } = props;
   // convert control data into single dimension
   const dataFormat = (d) => {
+    let i = 0;
+
     if (d.length === 1 && d[0][0].length === 0) return [];
-    const buffer = d.map(function cull(val) {
+    let buffer = d.map(function cull(val) {
       return val.slice(0, 1)[0]; // subtract unecessary rows
     });
-    return buffer.length ? buffer : [];
+    if (sort) buffer = buffer.sort;
+
+    console.log('buffer:', buffer, 'd:', d);
+
+    const result = buffer.map(function cull(val) {
+      return { value: val, key: i++ }; // subtract unecessary rows
+    });
+
+    return result.length ? result : [];
   };
   const [style, setStyle] = useState(props.style);
+
   const [data, setData] = useState(() => {
     const d = dataFormat(control.data);
     // empty data check
     if (d.length === 0) control.data = [];
-    return sort ? d.sort() : d;
+    return d;
   });
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(() => {
+    // eslint-disable-next-line react/prop-types
+    const val = props.value ? props.value : '';
+    control.value = String(val);
+    return val;
+  });
+  const [dataValue, setDataValue] = useState([]);
 
   // Function Links
   control.setStyle = setStyle;
+  // When updating this, the value also needs to be updated
   control.setData = (newData) => {
     control.data = newData;
     const d = dataFormat(control.data);
     if (d.length === 0) control.data = [];
-    setData(sort ? d.sort() : d);
+    setData(d);
+
+    // If control has value, then update it
+    if (value !== '') {
+      setDataValue(ListUtil.getValueFromString(d, value, separator));
+    }
   };
   // GET AND SET
   control.getValue = () => ({ type: 6, value: control.value });
+  // When string value is set,
+  // data value needs to be updated
   control.setValue = (val) => {
     setValue(val);
     control.value = val;
   };
   control.clear = () => {
     control.handleChange('');
+    setDataValue([]);
   };
   const handleChange = (e) => {
     control.handleChange(e.target.value);
@@ -202,7 +228,7 @@ const CheckListBoxControl = (props) => {
         verticalAlignment={
           control.properties.propStyles.verticalAlignment === 1
         }
-        value={value}
+        value={dataValue}
         separator={separator}
         singleSelect={singleSelect}
         style={{

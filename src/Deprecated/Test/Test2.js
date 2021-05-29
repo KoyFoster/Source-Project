@@ -1,6 +1,6 @@
 import React from 'react';
 // import Drag from './Forms/Drag';
-import { defaultTemplates as Templates } from '../../Components/Templates';
+import { defaultTemplates as Templates } from '../../Stat Calculator Generator/Templates';
 
 const Test2 = () => {
   const replaceVar = (newKey, oldKey, varObj) => {

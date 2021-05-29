@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DropDown from './DropDown';
 import { CheckListBox } from './CheckListBox';
+import { ListUtil } from './List';
 
 // import PropTypes from 'prop-types';
 
@@ -171,18 +172,30 @@ const CheckListBoxDropDownControl = (props) => {
   const { events } = props;
   const [style, setStyle] = useState(props.style);
   const { disabled } = style;
+
   // convert control data into single dimension
+  // Convert into key pair formar [{value: 'one', key: 1}]
   const dataFormat = (d) => {
+    let i = 0;
+
     if (d.length === 1 && d[0][0].length === 0) return [];
-    const buffer = d.map(function cull(val) {
+    let buffer = d.map(function cull(val) {
       return val.slice(0, 1)[0]; // subtract unecessary rows
     });
-    return buffer.length ? buffer : undefined;
+    if (sort) buffer = buffer.sort();
+
+    const result = buffer.map(function cull(val) {
+      return { value: val, key: i++ }; // subtract unecessary rows
+    });
+
+    console.log('result:', result, i);
+    return result.length ? result : [];
   };
+
   const [data, setData] = useState(() => {
-    const d = dataFormat(control.data);
-    return sort ? d.sort() : d;
+    return dataFormat(control.data);
   });
+
   const [checked, setChecked] = useState(false);
   const [value, setValue] = useState(() => {
     // eslint-disable-next-line react/prop-types
@@ -190,12 +203,19 @@ const CheckListBoxDropDownControl = (props) => {
     control.value = String(val);
     return val;
   });
+  const [dataValue, setDataValue] = useState([]);
 
   // Function Links
   control.setStyle = setStyle;
   control.setData = (newData) => {
-    control.data = newData;
-    setData(newData);
+    const d = dataFormat(control.data);
+    if (d.length === 0) control.data = [];
+    setData(d);
+
+    // If control has value, then update it
+    if (value !== '') {
+      setDataValue(ListUtil.getValueFromStr(d, value, separator));
+    }
   };
   // GET AND SET
   control.getValue = () => ({ type: 6, value: control.value });
@@ -205,9 +225,11 @@ const CheckListBoxDropDownControl = (props) => {
   };
   control.clear = () => {
     control.handleChange('');
+    setDataValue([]);
   };
   const handleChange = (e) => {
-    control.handleChange(e.target.value);
+    setDataValue(e.target.data);
+    control.handleChange(ListUtil.getStrFromValue(e.target.data, separator));
   };
 
   return (
@@ -224,7 +246,7 @@ const CheckListBoxDropDownControl = (props) => {
         pushLike={pushLike}
         separator={separator}
         singleSelect={singleSelect}
-        value={value}
+        value={dataValue}
         checked={checked}
         setChecked={setChecked}
         list={data}

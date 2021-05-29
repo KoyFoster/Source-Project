@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Vector2, Coll } from './KoyMath.js';
+import { Coll, Vector2 } from '../Components/KoyMath';
 
 // #globals
 const iLineWidth = 1;

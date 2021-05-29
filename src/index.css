@@ -10,7 +10,7 @@ body {
 @font-face {
   font-family: 'NotoSansKR';
   src: local('NotoSansKR'),
-    url(./fonts/NotoSansKR-Regular.otf) format('opentype');
+    url(./Assets/Fonts/Korean/NotoSansKR-Regular.otf) format('opentype');
 }
 
 code {

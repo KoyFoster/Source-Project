@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import StatData from '../StatData';
+import StatData from '../../Stat Calculator Generator/StatData';
 
 class Funcs {
   static add = (selection, add = 1, src, ELEMENT) => {

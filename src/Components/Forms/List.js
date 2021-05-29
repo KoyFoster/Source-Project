@@ -1,5 +1,39 @@
 import React from 'react';
 
+class ListUtil {
+  static getValueFromStr(list, str, sep) {
+    let result = [];
+    let split = list.split(sep);
+
+    split.every((val) => {
+      list.every((l) => {
+        if (val === l.value) {
+          result.push(...l);
+          return false;
+        }
+
+        return true;
+      });
+    });
+
+    return result;
+  }
+  static getStrFromValue(list, sep) {
+    let result = '';
+
+    list.every((l) => {
+      if (result) {
+        result = sep + l.value;
+      } else {
+        result = l.value;
+      }
+      return true;
+    });
+
+    return result;
+  }
+}
+
 // Note: I was crazy when writing this
 // Done to know how many children needed to be created
 const List = (props) => {
@@ -100,4 +134,4 @@ const List = (props) => {
   );
 };
 
-export { List };
+export { List, ListUtil };

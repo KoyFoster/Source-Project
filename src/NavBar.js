@@ -1,9 +1,10 @@
 import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
-import Stats from './StatCard';
-import { Row } from './DivGrid';
+import { Row } from './Components/DivGrid';
 // import CanvasCard from './CanvasCard';
 import { Paper, Button } from '@material-ui/core';
+import Test from './Deprecated/Test/Test';
+import Stats from './Stat Calculator Generator/StatCard';
 // import Resume from './Resume';
 
 // Make drop list for
@@ -72,6 +73,9 @@ function NavBar(props) {
             {/* <Link to="/CanvasCard">
               <Button style={{ margin: '1px' }}>Canvas Card</Button>
             </Link> */}
+            <Link to="/Test">
+              <Button style={{ margin: '1px' }}>Test</Button>
+            </Link>
           </Row>
         </Paper>
         <hr style={{ display: 'none' }} />
@@ -112,10 +116,10 @@ function NavBar(props) {
           <Route exact path="/" />
           <Route path="/CanvasCard" component={CanvasCard} />
         </div> */}
-        {/* <div>
+        <div>
           <Route exact path="/" />
-          <Route path="/Test2" component={Test2} />
-        </div> */}
+          <Route path="/Test" component={Test} />
+        </div>
         {/* <div>
           <Route exact path="/" />
           <Route path="/Test2" component={Test2} />

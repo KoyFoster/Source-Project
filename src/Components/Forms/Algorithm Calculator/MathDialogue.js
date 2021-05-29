@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { TagList } from '../Tags';
 import Popup from '../Popup';
-import StatData from '../../StatData';
 import VariablePicker from '../VariablePicker';
 import './Math.css';
+import StatData from '../../../Stat Calculator Generator/StatData';
 
 const MathDialogue = (props) => {
   const { style } = props;

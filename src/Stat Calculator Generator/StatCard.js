@@ -1,14 +1,17 @@
 /*eslint-disable react-hooks/exhaustive-deps */
 /*eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import Selector from './Selector';
-import ProfileCard from './Forms/Card';
-import { Templates, TemplateList, Styles } from './Templates';
-import TogglePopup from './TogglePopup';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import { UserData, SaveManager, Saves } from './UserData/UserData';
+import ProfileCard from '../Components/Forms/Card';
+import TemplateSelector from '../Components/Selector';
+import { Styles, Templates, TemplateList } from './Templates';
+import TogglePopup from '../Components/TogglePopup';
+import {
+  SaveManager,
+  Saves,
+} from '../Components/Store Management/UserStoreData';
 
 const formatSaveData = (value) => {
   const regex1 = /}}},/gi;
@@ -316,7 +319,7 @@ const Stats = (props) => {
       return (
         <div style={{ display: 'flex' }}>
           <Paper style={{ margin: '4px', padding: '4px' }}>
-            <Selector
+            <TemplateSelector
               combobox
               label={'Series'}
               value={series}
@@ -330,7 +333,7 @@ const Stats = (props) => {
               }}
               list={TemplateList}
             />
-            <Selector
+            <TemplateSelector
               label={'Styles'}
               value={style}
               setter={(val) => {
@@ -395,7 +398,7 @@ const Stats = (props) => {
       return (
         <div style={{ display: 'flex' }}>
           <Paper style={{ margin: '4px', padding: '4px' }}>
-            <Selector
+            <TemplateSelector
               combobox
               label={'Series'}
               value={series}
@@ -409,7 +412,7 @@ const Stats = (props) => {
               }}
               list={TemplateList}
             />
-            <Selector
+            <TemplateSelector
               label={'Styles'}
               value={style}
               setter={(val) => {

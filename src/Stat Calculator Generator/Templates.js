@@ -1,6 +1,6 @@
 // import React from 'react';
 // import { renderToStaticMarkup } from 'react-dom/server';
-import DS3Frame from '../assets/SVG/ImageBorders/DS3Frame.svg';
+import DS3Frame from '../Assets/SVG/ImageBorders/DS3Frame.svg';
 
 // const html = `${(
 //   <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
@@ -801,8 +801,7 @@ const Templates = {
                   Value: 'Num',
                   result: 21,
                   expression: '(a+b+c+d+e+f+g+h+i)-90+1',
-                  vars:
-                    '{"a":["Values","Koy","Values","Attributes","Values","Vigor","Num"],"b":["Values","Koy","Values","Attributes","Values","Attunement","Num"],"c":["Values","Koy","Values","Attributes","Values","Endurance","Num"],"d":["Values","Koy","Values","Attributes","Values","Vitality","Num"],"e":["Values","Koy","Values","Attributes","Values","Strength","Num"],"f":["Values","Koy","Values","Attributes","Values","Dexterity","Num"],"g":["Values","Koy","Values","Attributes","Values","Intelligence","Num"],"h":["Values","Koy","Values","Attributes","Values","Faith","Num"],"i":["Values","Koy","Values","Attributes","Values","Luck","Num"]}',
+                  vars: '{"a":["Values","Koy","Values","Attributes","Values","Vigor","Num"],"b":["Values","Koy","Values","Attributes","Values","Attunement","Num"],"c":["Values","Koy","Values","Attributes","Values","Endurance","Num"],"d":["Values","Koy","Values","Attributes","Values","Vitality","Num"],"e":["Values","Koy","Values","Attributes","Values","Strength","Num"],"f":["Values","Koy","Values","Attributes","Values","Dexterity","Num"],"g":["Values","Koy","Values","Attributes","Values","Intelligence","Num"],"h":["Values","Koy","Values","Attributes","Values","Faith","Num"],"i":["Values","Koy","Values","Attributes","Values","Luck","Num"]}',
                 },
                 Min: { Value: 'Min', result: 1, expression: '1', vars: '{}' },
                 Max: {
@@ -828,8 +827,7 @@ const Templates = {
                   Value: 'Num',
                   result: 20583,
                   expression: 'a == 1 ? 0 : b * (a-1) + (17 * (a-2))',
-                  vars:
-                    '{"a":["Values","Koy","Values","Misc","Values","Level","Num"],"b":["Values","Koy","Values","Misc","Values","Required souls","Num"]}',
+                  vars: '{"a":["Values","Koy","Values","Misc","Values","Level","Num"],"b":["Values","Koy","Values","Misc","Values","Required souls","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
@@ -852,8 +850,7 @@ const Templates = {
                   Value: 'Num',
                   result: 1013,
                   expression: '673 + 17 * (a-1)',
-                  vars:
-                    '{"a":["Values","Koy","Values","Misc","Values","Level","Num"]}',
+                  vars: '{"a":["Values","Koy","Values","Misc","Values","Level","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
@@ -1206,8 +1203,7 @@ const Templates = {
                   result: 2,
                   expression:
                     'a < 10 ? 0 :  a <= 18 ? floor( (a-10)/4 )+1 :  a <= 30 ? floor( (a-18)/6 )+3 :  a <= 60 ? floor( (a-30)/10 )+5 :  a <= 80 ? floor( (a-60)/20 )+8 :  a >= 99  ? 10 : 9',
-                  vars:
-                    '{"a":["Values","Koy","Values","Attributes","Values","Attunement","Num"]}',
+                  vars: '{"a":["Values","Koy","Values","Attributes","Values","Attunement","Num"]}',
                 },
                 Min: { Value: 'Min', result: 0, expression: '0', vars: '{}' },
                 Max: { Value: 'Max', result: 10, expression: '10', vars: '{}' },
@@ -1239,22 +1235,19 @@ const Templates = {
                   Value: 'Num',
                   result: 2172,
                   expression: '12 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 36,
                   expression: '12 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 30720,
                   expression: '12 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
                 },
                 Unit: '',
               },
@@ -1265,22 +1258,19 @@ const Templates = {
                   Value: 'Num',
                   result: 696,
                   expression: '12 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 696,
                   expression: '12 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 30720,
                   expression: '12 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
                 },
                 Unit: '',
               },
@@ -1381,22 +1371,19 @@ const Templates = {
                   Value: 'Num',
                   result: 20.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 0.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 512,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Strength","Max"]}',
                 },
                 Unit: '',
               },
@@ -1407,22 +1394,19 @@ const Templates = {
                   Value: 'Num',
                   result: 23.8,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 0.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 512,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Agility","Max"]}',
                 },
                 Unit: '',
               },
@@ -1433,22 +1417,19 @@ const Templates = {
                   Value: 'Num',
                   result: 11.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 11.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 512,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
                 },
                 Unit: '',
               },
@@ -1459,22 +1440,19 @@ const Templates = {
                   Value: 'Num',
                   result: 0.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 0.6,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 512,
                   expression: '0.2 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"]}',
                 },
                 Unit: '',
               },
@@ -1485,22 +1463,19 @@ const Templates = {
                   Value: 'Num',
                   result: 181,
                   expression: '1 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 3,
                   expression: '1 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 2560,
                   expression: '1 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
                 },
                 Unit: '',
               },
@@ -1511,22 +1486,19 @@ const Templates = {
                   Value: 'Num',
                   result: 181,
                   expression: '1 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 3,
                   expression: '1 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 2560,
                   expression: '1 * a',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Stamina","Max"]}',
                 },
                 Unit: '',
               },
@@ -1561,24 +1533,21 @@ const Templates = {
                   result: 99.16,
                   expression:
                     '(z = (100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013))) ) ) < 40 ? 40 : z',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Num"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Num"]}',
                 },
                 Min: {
                   Value: 'Min',
                   result: 99.16,
                   expression:
                     '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Min"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Min"]}',
                 },
                 Max: {
                   Value: 'Max',
                   result: 68.54,
                   expression:
                     '100 - ((a <= 1000 ? a * 0.0137 : (1000 * 0.0137) + ((a - 1000) * 0.0013)) + (b <= 1000 ? b * 0.0137 : (1000 * 0.0137) + ((b - 1000) * 0.0013)))',
-                  vars:
-                    '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
+                  vars: '{"a":["Values","Page One","Values","Primary Stats","Values","Spirit","Max"],"b":["Values","Page One","Values","Primary Stats","Values","Intelligence","Max"]}',
                 },
                 Unit: '%',
               },

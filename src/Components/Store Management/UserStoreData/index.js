@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import DateTime from '../Forms/DateTime';
-import './UserData.css';
+import DateTime from '../../Forms/DateTime';
+import './UserStoreData.css';
 
 const formatSaveData = (value) => {
   const regex1 = /}}},/gi;

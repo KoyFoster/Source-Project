@@ -1,5 +1,5 @@
 import React from 'react';
-import NavBar from './Components/NavBar';
+import NavBar from './NavBar';
 import FootBar from './Components/FootBar';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
