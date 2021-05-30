@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { CheckListBoxDropDown } from '../../Components/Forms/Fields';
+import { CheckListBoxDropDown, Edit } from '../../Components/Forms/Fields';
+import { TextInputValidator } from '../../Components/Forms/Fields/Input';
 
 const DevSpaceOne = (props) => {
   // const [checked, setChecked] = useState(false);
@@ -20,6 +21,11 @@ const DevSpaceOne = (props) => {
 
   return (
     <div>
+      <Edit></Edit>
+      <TextInputValidator
+        defaultValue={'stop'}
+        blacklist={['Apples']}
+      ></TextInputValidator>
       <CheckListBoxDropDown
         checked={checked}
         setChecked={setChecked}

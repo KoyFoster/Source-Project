@@ -1,0 +1,21 @@
+input,
+textarea {
+  display: block;
+  box-shadow: none;
+  min-height: 22px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.unchanged {
+}
+
+.changed {
+  background-color: yellow;
+  color: black;
+}
+
+.invalid {
+  background-color: red;
+  color: white;
+}

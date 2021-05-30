@@ -8,7 +8,7 @@ export { ComboBox } from './ComboBox';
 export { DateTime, DT } from './DateTime';
 export { RadioButton } from './RadioButton';
 export { CheckListBoxDropDown } from './CheckListBoxDropDown';
-export { Edit, Number } from './Edit';
+export { Edit, TextInputValidator } from './Edit';
 export { RichEdit } from './RichEdit';
 export { Slider } from './Slider';
 export { List } from './List';

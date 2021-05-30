@@ -10,7 +10,6 @@ export {
   RadioButton,
   CheckListBoxDropDown,
   Edit,
-  Number,
   RichEdit,
   Slider,
   List,
