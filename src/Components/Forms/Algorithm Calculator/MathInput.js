@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MathDialogue from './MathDialogue';
 import './Math.css';
 import StatData from '../../../Projects/Stat Calculator Generator/StatData';
-import { Popup } from '../Input/Helper';
+import { Popup } from '../Fields/Helper';
 
 const MathInput = (props) => {
   const { children } = props;

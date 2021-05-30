@@ -11,7 +11,7 @@ import {
   Saves,
 } from '../../Components/Store Management/UserStoreData';
 import TemplateSelector from './Selector';
-import TogglePopup from '../../Components/Forms/Input/Helper/TogglePopup';
+import TogglePopup from '../../Components/Forms/Fields/Helper/TogglePopup';
 
 const formatSaveData = (value) => {
   const regex1 = /}}},/gi;

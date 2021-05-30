@@ -2,7 +2,7 @@ import '../App.css';
 import React, { useState } from 'react';
 import { Row, Col } from './DivGrid.js.js';
 import Grid from './Forms/Grid';
-import TogglePopup from '../../Components/Forms/Input/Helper/TogglePopup';
+import TogglePopup from '../../Components/Forms/Fields/Helper/TogglePopup';
 
 //User Input Class
 function StatInputForm(props) {

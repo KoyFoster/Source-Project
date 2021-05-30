@@ -1,6 +1,6 @@
 import { evaluate, isNaN } from 'mathjs';
 import { Calc } from '../../Utilities/KoyMath.js';
-import { Cell } from '../../Components/Forms/ProfileData.js';
+import { Cell } from './ProfileData.js';
 
 class StatData {
   // handles value range and returns event state

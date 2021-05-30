@@ -1,5 +1,5 @@
 import React from 'react';
-import SVGCanvas from '../../Components/Forms/SVGCanvas';
+import { SVGCanvas } from '../../Components/Forms/Fields/Imaging';
 
 const CanvasCard = (props) => {
   // Note: The idea is to have a node and polygon system

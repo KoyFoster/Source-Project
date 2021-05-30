@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { CheckBox } from '../../Components/Forms/CheckBox';
-import { CheckListBox } from '../../Components/Forms/CheckListBox';
-import { CheckListBoxDropDown } from '../../Components/Forms/CheckListBoxDropDown';
-import Drag from '../../Components/Forms/Drag';
+import { CheckListBoxDropDown } from '../../Components/Forms/Fields';
 
 const DevSpaceOne = (props) => {
   // const [checked, setChecked] = useState(false);

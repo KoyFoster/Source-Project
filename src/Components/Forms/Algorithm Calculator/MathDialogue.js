@@ -3,7 +3,7 @@ import { TagList } from '../Tags';
 import VariablePicker from '../VariablePicker';
 import './Math.css';
 import StatData from '../../../Projects/Stat Calculator Generator/StatData';
-import { Popup } from '../Input/Helper';
+import { Popup } from '../Fields/Helper';
 
 const MathDialogue = (props) => {
   const { style } = props;

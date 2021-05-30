@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import DateTime from '../../Forms/DateTime';
+import DateTime from '../../../Utilities/DateTime';
 import './UserStoreData.css';
 
 const formatSaveData = (value) => {
