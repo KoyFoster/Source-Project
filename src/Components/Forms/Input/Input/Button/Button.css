@@ -1,0 +1,12 @@
+.pushlike {
+    background: #e1e1e1;
+    border: 1px solid #aaaaaa;
+    color: black;
+  }
+  .pushlike:hover {
+    background: #e5f1fb;
+  }
+  .pushlike:active {
+    background: #cce4f7;
+    border: 1px solid #005499;
+  }

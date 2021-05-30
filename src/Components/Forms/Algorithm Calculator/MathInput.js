@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Popup from '../Popup';
 import MathDialogue from './MathDialogue';
 import './Math.css';
-import StatData from '../../../Stat Calculator Generator/StatData';
+import StatData from '../../../Projects/Stat Calculator Generator/StatData';
+import { Popup } from '../Input/Helper';
 
 const MathInput = (props) => {
   const { children } = props;

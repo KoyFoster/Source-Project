@@ -1,0 +1,209 @@
+/* Versa Colors */
+/* VersaLight 0:  (176,196,222) : #B0C4DE */
+/* VersaLight 1:  (221,238,255) : #DDEEFF */
+/* VersaDark 0:   (67,110,150)  : #436E96*/
+/* VersaDark 1:   (142,162,196) : #8EA2C4*/
+/* VersaH 0:      (78,139,175)  : #4E8BAF*/
+
+/* Test Divs */
+.TD1 {
+  display: inline-flex;
+  /* justify-content: flex-start; */
+  align-items: 'stretch';
+  border: 1px solid red;
+}
+.TD2 {
+  display: flex;
+  flex-grow: 1;
+  border: 1px solid blue;
+}
+.TD3 {
+  display: inline;
+  flex-grow: 1;
+  border: 2px solid green;
+}
+
+.textarea {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  outline: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  outline: none;
+  box-shadow: none;
+}
+
+/* null */
+.null {
+}
+
+input[type='date']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
+}
+input[type='date']::-webkit-clear-button {
+  display: none;
+}
+input[type='date']::-ms-clear {
+  display: none;
+}
+
+input[type='time']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
+}
+input[type='time']::-webkit-clear-button {
+  display: none;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  display: none;
+  margin: 0;
+}
+.file-picker {
+  color: red;
+}
+.file-picker::-webkit-file-upload-button {
+  display: none;
+  width: 0px;
+  height: 0px;
+}
+.file-picker::before {
+  -webkit-user-select: none;
+  content: 'Select some files';
+}
+.file-picker {
+  -webkit-user-select: none;
+  width: 0px;
+  height: 0px;
+  color: black;
+  display: none;
+  border: 1px solid #999;
+  outline: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+/* Remove all phantom space from control grids */
+table,
+th,
+td,
+thead,
+tbody,
+tfoot {
+  padding: 0px;
+  margin: 0px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/*  This is a direct reference to the x buttons on the date and time controls, 
+    but fails to reach them*/
+/* An attempted work around for removing these for Mozilla */
+/*button.reset-button#datetime-reset-button {
+  color: red;
+}*/
+
+/* Popup Modal Style */
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.modal_content {
+  background-color: white;
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  padding: 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+}
+
+.focusParent:focus-within {
+}
+
+.cursor-caret:focus {
+  animation: blinkingBGColor 1.2s infinite;
+}
+.cursor-caret {
+  position: absolute;
+  width: 1px;
+  height: 17.6px;
+  background-color: #000000;
+}
+
+@keyframes blinkingBGColor {
+  0% {
+    background-color: #000;
+  }
+  49% {
+    background-color: #000;
+  }
+  60% {
+    background-color: transparent;
+  }
+  99% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: #000;
+  }
+}
+
+@keyframes blinkingColor {
+  0% {
+    color: #000;
+  }
+  49% {
+    color: #000;
+  }
+  60% {
+    color: transparent;
+  }
+  99% {
+    color: transparent;
+  }
+  100% {
+    color: #000;
+  }
+}
+
+/* VersaSuite Checkbox Style */
+.pl_pushed {
+  background: #cce4f7;
+  border: 1px solid #005499;
+}
+.nonpushlike {
+  background: 'transparent';
+  color: black;
+}
+.checkbox {
+  display: 'inline-block';
+}
+.listitem {
+  background: transparent;
+  border: 1px solid #aaaaaa;
+  color: black;
+}
+.listitem:hover {
+  background: #e5f1fb;
+}
+.listitem:active {
+  background: #cce4f7;
+  border: 1px solid #005499;
+}
+.li_pushed {
+  background: #0078d7;
+  border: 0px none solid;
+  color: #ffffff;
+}
