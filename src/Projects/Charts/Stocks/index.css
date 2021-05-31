@@ -1,0 +1,65 @@
+.Stocks {
+  text-align: center;
+  background-color: #282c34;
+}
+
+header {
+  color: rgb(230, 230, 230);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.Card {
+  background-color: #6e7481;
+
+  color: black;
+
+  /*Border*/
+  border-style: solid;
+  border-width: 8px;
+  border-radius: 8px;
+
+  border-left-color: rgb(51, 51, 51);
+  border-right-color: grey;
+  border-bottom-color: rgb(17, 17, 17);
+  border-top-color: rgb(216, 216, 216);
+}
+
+/* Note: Legend is a span inherits from a class called "recharts-legend-item-text" */
+span {
+  font-size: 16px;
+}
+
+/* Graph Element Default colors */
+
+
+/*The graph itself */
+/* This influences the yAxis*/
+svg {
+  stroke: red;
+  font-size: 14px;
+  background-color: rgb(194, 194, 194);
+}
+/* grid*/
+line
+{
+  /* color: red;
+  stroke: red; */
+  stroke-width: 1;
+}
+
+/* Data line */
+path
+{
+  /* color: red;
+  stroke: red; */
+  stroke-width: 1px;
+}
+
+/* spots */
+circle
+{
+  /* color: green;
+  stroke: purple; */
+  stroke-width: 1px;
+}

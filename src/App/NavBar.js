@@ -5,6 +5,7 @@ import { Row } from '../Projects/Stat Calculator Generator/DivGrid';
 import { Paper, Button } from '@material-ui/core';
 import Stats from '../Projects/Stat Calculator Generator/StatCard';
 import DevSpaceOne from '../Projects/Dev Space #1';
+import { Stocks } from '../Projects/Charts/Stocks';
 // import Resume from './Resume';
 
 // Make drop list for
@@ -76,6 +77,9 @@ function NavBar(props) {
             <Link to="/Test">
               <Button style={{ margin: '1px' }}>Test</Button>
             </Link>
+            <Link to="/Charts">
+              <Button style={{ margin: '1px' }}>Charts</Button>
+            </Link>
           </Row>
         </Paper>
         <hr style={{ display: 'none' }} />
@@ -120,10 +124,10 @@ function NavBar(props) {
           <Route exact path="/" />
           <Route path="/Test" component={DevSpaceOne} />
         </div>
-        {/* <div>
+        <div>
           <Route exact path="/" />
-          <Route path="/Test2" component={Test2} />
-        </div> */}
+          <Route path="/Charts" component={Stocks} />
+        </div>
       </HashRouter>
     </Paper>
   );

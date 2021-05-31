@@ -1,0 +1,64 @@
+.Stocks {
+  text-align: center;
+  background-color: #282c34;
+}
+
+header {
+  color: rgb(230, 230, 230);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.Card {
+  background-color: #6e7481;
+
+  color: black;
+
+  /*Border*/
+  border-style: solid;
+  border-width: 8px;
+  border-radius: 8px;
+
+  border-left-color: rgb(51, 51, 51);
+  border-right-color: grey;
+  border-bottom-color: rgb(17, 17, 17);
+  border-top-color: rgb(216, 216, 216);
+}
+
+/* Note: Legend is a span inherits from a class called "recharts-legend-item-text" */
+span {
+  font-size: 24px;
+}
+
+/* Graph Element Default colors */
+
+
+/*The graph itself */
+svg {
+  stroke: red;
+  font-size: 24px;
+  background-color: rgb(194, 194, 194);
+}
+/* grid*/
+line[id='2']
+{
+  color: red;
+  stroke: red;
+  stroke-width: 5;
+}
+
+/* Data line */
+path
+{
+  /* color: red;
+  stroke: red; */
+  stroke-width: 2px;
+}
+
+/* spots */
+circle
+{
+  /* color: green;
+  stroke: purple; */
+  stroke-width: 2px;
+}
