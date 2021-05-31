@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TagList } from '../Tags';
-import VariablePicker from '../VariablePicker';
+import { TagList } from '../../../Projects/Stat Calculator Generator/Tags';
+import VariablePicker from '../../../Projects/Stat Calculator Generator/VariablePicker';
 import './Math.css';
 import StatData from '../../../Projects/Stat Calculator Generator/StatData';
 import { Popup } from '../Fields/Helper';

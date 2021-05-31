@@ -6,15 +6,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
-import MathInput from './Algorithm Calculator/MathInput.js';
-import Controls from './InputControls.js';
-import { Profile } from '../../Projects/Stat Calculator Generator/ProfileData';
+import MathInput from '../../../Components/Forms/Algorithm Calculator/MathInput.js';
+import Controls from '../InputControls.js';
+import { Profile } from '../ProfileData';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import Diagram from '../../Projects/Stat Calculator Generator/Diagram.js';
-import StatData from '../../Projects/Stat Calculator Generator/StatData.js';
-import { Popup } from './Fields/Helper/index.js';
-import { ToggleButton } from './Fields/Input/Button/index.js';
-import { TextInputValidator } from './Fields/Input/index.js';
+import Diagram from '../Diagram.js';
+import StatData from '../StatData.js';
+import { Popup } from '../../../Components/Forms/Fields/Helper/index.js';
+import { ToggleButton } from '../../../Components/Forms/Fields/Input/Button/index.js';
+import { TextInputValidator } from '../../../Components/Forms/Fields/Input/index.js';
 
 // Current Objectives
 // 1. For watchever reason, newly added entries are not given unique names like they use to

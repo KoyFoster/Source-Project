@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { CheckBox } from '../CheckBox';
-
 import { List, ListUtil } from '../List';
 
 class CheckListBox extends React.Component {
@@ -111,7 +110,7 @@ class CheckListBox extends React.Component {
         <CheckBox
           classNames={['listitem', 'li_pushed']}
           hasBorder={false}
-          pushLike={this.props.pushLike}
+          pushlike={this.props.pushlike}
           style={{
             justifyContent: 'left',
             border: 'none',
@@ -126,7 +125,7 @@ class CheckListBox extends React.Component {
 const CheckListBoxControl = (props) => {
   // only pushlike if ListBox
   const { control } = props;
-  const pushLike = control.controlType === 14;
+  const pushlike = control.controlType === 14;
   const { listProperties } = control.properties;
   const { sort } = listProperties;
   const { separator } = listProperties;
@@ -216,7 +215,7 @@ const CheckListBoxControl = (props) => {
       }}
     >
       <CheckListBox
-        pushLike={pushLike}
+        pushlike={pushlike}
         list={data}
         verticalAlignment={
           control.properties.propStyles.verticalAlignment === 1

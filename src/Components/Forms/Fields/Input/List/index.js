@@ -8,8 +8,8 @@ class ListUtil {
     let iLastID = list[list.length - 1].id;
     let extraValues = [];
 
-    strList.every(val => {
-      list.every(l => {
+    strList.every((val) => {
+      list.every((l) => {
         if (val === l.value) {
           result.push({ ...l });
           return false; // Break
@@ -25,8 +25,8 @@ class ListUtil {
 
     // Prepend missing values to data
     if (extraValues.length > 0) {
-      extraValues.every(val => {
-        list.unshift({...val}); // add to data list
+      extraValues.every((val) => {
+        list.unshift({ ...val }); // add to data list
         result.unshift(val); // now add to dataValue
         return true;
       });
@@ -39,8 +39,8 @@ class ListUtil {
     // Order data by listing
     let buffer = [];
     if (sortList) {
-      sortList.every(val => {
-        value.every(l => {
+      sortList.every((val) => {
+        value.every((l) => {
           if (val.id === l.id) {
             buffer.push(val);
             return false;
@@ -55,7 +55,7 @@ class ListUtil {
 
     // convert to string
     let result = '';
-    buffer.forEach(val => {
+    buffer.forEach((val) => {
       if (result === '') result = val.value;
       else result += sep + val.value;
     });
@@ -66,7 +66,7 @@ class ListUtil {
 
 // Note: I was crazy when writing this
 // Done to know how many children needed to be created
-const List = props => {
+const List = (props) => {
   const { style } = props;
 
   const sizerStyle = props.verticalAlignment
@@ -109,7 +109,7 @@ const List = props => {
   // compile items
   const items = () => {
     let i = -1;
-    const result = props.data.map(item => {
+    const result = props.data.map((item) => {
       i += 1;
 
       // Check for checked state
@@ -117,7 +117,7 @@ const List = props => {
       // if checked values passed as a list of objects, generate a list
       if (typeof item === 'object' && item !== null) {
         // check if item is in the checked list
-        props.checked.every(chk => {
+        props.checked.every((chk) => {
           if (item.id === chk.id) {
             checked = true;
             // break
@@ -146,7 +146,7 @@ const List = props => {
               ...(item !== undefined ? { children: item.value } : {}),
               // intended for data object handling
               // list events that allow for data to be returned
-              onChange: e => {
+              onChange: (e) => {
                 e.target.data = item;
               },
             },

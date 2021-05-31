@@ -99,7 +99,7 @@ tfoot {
   white-space: nowrap;
 }
 
-/*  This is a direct reference to the x buttons on the date and time controls, 
+/*  This is a direct reference to the x buttons on the date and time controls,
     but fails to reach them*/
 /* An attempted work around for removing these for Mozilla */
 /*button.reset-button#datetime-reset-button {
@@ -176,34 +176,4 @@ tfoot {
   100% {
     color: #000;
   }
-}
-
-/* VersaSuite Checkbox Style */
-.pl_pushed {
-  background: #cce4f7;
-  border: 1px solid #005499;
-}
-.nonpushlike {
-  background: 'transparent';
-  color: black;
-}
-.checkbox {
-  display: 'inline-block';
-}
-.listitem {
-  background: transparent;
-  border: 1px solid #aaaaaa;
-  color: black;
-}
-.listitem:hover {
-  background: #e5f1fb;
-}
-.listitem:active {
-  background: #cce4f7;
-  border: 1px solid #005499;
-}
-.li_pushed {
-  background: #0078d7;
-  border: 0px none solid;
-  color: #ffffff;
 }

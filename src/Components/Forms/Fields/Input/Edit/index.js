@@ -2,7 +2,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
 import React, { useState } from 'react';
-import './index.css';
+
+// import './index.css';
+
+require('./index.css');
 
 const Edit = (props) => {
   // props that need handling
@@ -58,6 +61,7 @@ const Edit = (props) => {
   // have additonal props for defining them.
   return props.password ? (
     <input
+      className="Edit"
       {...props}
       id="align"
       type="password"
@@ -68,6 +72,7 @@ const Edit = (props) => {
     />
   ) : (
     <textarea
+      className="Edit"
       {...props}
       id="align"
       ref={(elem) =>

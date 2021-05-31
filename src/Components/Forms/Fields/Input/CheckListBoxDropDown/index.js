@@ -50,7 +50,7 @@ const CheckListBoxDropDown = (props) => {
   const { style } = props;
   const { fieldStyle } = props;
   const { ddStyle } = props;
-  const { pushLike } = props;
+  const { pushlike } = props;
 
   const { onChange } = props;
   const { onClick } = props;
@@ -58,9 +58,11 @@ const CheckListBoxDropDown = (props) => {
   const { onFocus } = props;
 
   const dataset = { 'data-x': props['data-x'], 'data-y': props['data-y'] };
-  
+
   // To allow the edit field be updated independently
-  const [text, setText] = useState(ListUtil.getStrFromValue(value, separator, list));
+  const [text, setText] = useState(
+    ListUtil.getStrFromValue(value, separator, list),
+  );
   useEffect(() => {
     setText(ListUtil.getStrFromValue(value, separator, list));
   }, [value]);
@@ -73,7 +75,7 @@ const CheckListBoxDropDown = (props) => {
     <CheckListBox
       {...dataset}
       classNames={props.classNames}
-      pushLike={pushLike}
+      pushlike={pushlike}
       list={list}
       value={value}
       separator={separator}

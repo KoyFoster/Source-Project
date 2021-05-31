@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 // import Grid from './Forms/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import ProfileCard from '../../Components/Forms/Card';
+import ProfileCard from './Card/Card';
 import { Styles, Templates, TemplateList } from './Templates';
 import {
   SaveManager,

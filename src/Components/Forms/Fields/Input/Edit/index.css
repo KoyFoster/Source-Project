@@ -1,10 +1,13 @@
-input,
-textarea {
+/* done to conform input an textarea as much as possible */
+.Edit > input,
+.Edit > textarea {
   display: block;
   box-shadow: none;
+  height: 122px;
   min-height: 22px;
   overflow: hidden;
   padding: 0;
+  resize: none;
 }
 
 .unchanged {

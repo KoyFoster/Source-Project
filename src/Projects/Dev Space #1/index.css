@@ -1,0 +1,9 @@
+.div1 {
+  outline: solid black 2px;
+}
+
+.div2 {
+  display: flex;
+  height: 24px;
+  outline: solid red 2px;
+}

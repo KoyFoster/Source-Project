@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
-import { Row } from '../Components/DivGrid';
+import { Row } from '../Projects/Stat Calculator Generator/DivGrid';
 // import CanvasCard from './CanvasCard';
 import { Paper, Button } from '@material-ui/core';
 import Stats from '../Projects/Stat Calculator Generator/StatCard';
