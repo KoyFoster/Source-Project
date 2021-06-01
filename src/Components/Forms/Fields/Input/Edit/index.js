@@ -115,7 +115,6 @@ const TextInputValidator = (props) => {
   };
 
   const getClassName = () => {
-    console.log('getClassName:', state);
     switch (state) {
       case 0:
         return 'unchanged';

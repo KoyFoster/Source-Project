@@ -87,7 +87,7 @@ class SaveManager {
         this.header = this.data.header;
         this.saveEntries = this.data.saves;
       } catch (err) {
-        console.warn(`Error (${err}: failed to load index`);
+        console.error(`Error (${err}: failed to load index`);
         this.data = { header: {}, saves: [] };
         this.saveEntries = this.data.saves;
       }

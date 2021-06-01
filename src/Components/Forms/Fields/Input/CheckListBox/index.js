@@ -192,7 +192,6 @@ const CheckListBoxControl = (props) => {
     control.value = val;
     // Update DataValue
     const dataVal = ListUtil.getValueFromStr(data, val, separator);
-    console.warn('CLB SetValue:', val, dataVal);
     setDataValue(dataVal);
   };
   control.clear = () => {

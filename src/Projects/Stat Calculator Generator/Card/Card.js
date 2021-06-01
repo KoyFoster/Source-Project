@@ -240,13 +240,11 @@ const Block = (props) => {
                 <TextInputValidator
                   key={`${value.Value}-Flavor`}
                   defaultValue={value.Flavor}
-                  events={{
-                    onKeyUp: (e) => {
-                      if (e.key === 'Enter') {
-                        value.Flavor = e.target.value;
-                        Update(data);
-                      }
-                    },
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      value.Flavor = e.target.value;
+                      Update(data);
+                    }
                   }}
                 />,
 
@@ -267,22 +265,20 @@ const Block = (props) => {
                   blacklist={blacklist
                     .replace(`${value.Value}~`, '')
                     .split('~')}
-                  events={{
-                    onKeyUp: (e) => {
-                      if (e.key === 'Enter') {
-                        const oldValue = value.Value;
-                        value.Value = e.target.value;
-                        // Update selection value
-                        setStatSelection(e.target.value);
-                        Update(
-                          StatData.UpdateAllKeys(
-                            [...kp, e.target.value],
-                            [...kp, oldValue],
-                            data,
-                          ),
-                        );
-                      }
-                    },
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      const oldValue = value.Value;
+                      value.Value = e.target.value;
+                      // Update selection value
+                      setStatSelection(e.target.value);
+                      Update(
+                        StatData.UpdateAllKeys(
+                          [...kp, e.target.value],
+                          [...kp, oldValue],
+                          data,
+                        ),
+                      );
+                    }
                   }}
                 />,
                 <input
@@ -341,22 +337,20 @@ const Block = (props) => {
                     .replace(`${value.Value}~`, '')
                     .split('~')}
                   defaultValue={value.Value}
-                  events={{
-                    onKeyUp: (e) => {
-                      if (e.key === 'Enter') {
-                        const oldValue = value.Value;
-                        value.Value = e.target.value;
-                        // Update selection value
-                        setStatSelection(e.target.value);
-                        Update(
-                          StatData.UpdateAllKeys(
-                            [...kp, e.target.value],
-                            [...kp, oldValue],
-                            data,
-                          ),
-                        );
-                      }
-                    },
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      const oldValue = value.Value;
+                      value.Value = e.target.value;
+                      // Update selection value
+                      setStatSelection(e.target.value);
+                      Update(
+                        StatData.UpdateAllKeys(
+                          [...kp, e.target.value],
+                          [...kp, oldValue],
+                          data,
+                        ),
+                      );
+                    }
                   }}
                 />,
                 <MathInput
@@ -421,35 +415,31 @@ const Block = (props) => {
                   blacklist={blacklist
                     .replace(`${value.Value}~`, '')
                     .split('~')}
-                  events={{
-                    onKeyUp: (e) => {
-                      if (e.key === 'Enter') {
-                        const oldValue = value.Value;
-                        value.Value = e.target.value;
-                        // Update selection value
-                        setStatSelection(e.target.value);
-                        Update(
-                          StatData.UpdateAllKeys(
-                            [...kp, e.target.value],
-                            [...kp, oldValue],
-                            data,
-                          ),
-                        );
-                      }
-                    },
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      const oldValue = value.Value;
+                      value.Value = e.target.value;
+                      // Update selection value
+                      setStatSelection(e.target.value);
+                      Update(
+                        StatData.UpdateAllKeys(
+                          [...kp, e.target.value],
+                          [...kp, oldValue],
+                          data,
+                        ),
+                      );
+                    }
                   }}
                 />,
 
                 <TextInputValidator
                   key={`${value.Value}-Flavor`}
                   defaultValue={value.Flavor}
-                  events={{
-                    onKeyUp: (e) => {
-                      if (e.key === 'Enter') {
-                        value.Flavor = e.target.value;
-                        Update(data);
-                      }
-                    },
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      value.Flavor = e.target.value;
+                      Update(data);
+                    }
                   }}
                 />,
 
@@ -570,22 +560,20 @@ const Block = (props) => {
               <TextInputValidator
                 key={Value}
                 defaultValue={Value}
-                events={{
-                  onKeyUp: (e) => {
-                    if (e.key === 'Enter') {
-                      const oldValue = Stats.Value;
-                      Stats.Value = e.target.value;
-                      // Update selection value
-                      setBlockSelection(e.target.value);
+                onKeyUp={(e) => {
+                  if (e.key === 'Enter') {
+                    const oldValue = Stats.Value;
+                    Stats.Value = e.target.value;
+                    // Update selection value
+                    setBlockSelection(e.target.value);
 
-                      // Update(
-                      StatData.UpdateAllKeys(
-                        [...keyPath, 'Values', e.target.value],
-                        [...keyPath, 'Values', oldValue],
-                        data,
-                      );
-                    }
-                  },
+                    // Update(
+                    StatData.UpdateAllKeys(
+                      [...keyPath, 'Values', e.target.value],
+                      [...keyPath, 'Values', oldValue],
+                      data,
+                    );
+                  }
                 }}
               />
             ) : (
@@ -742,22 +730,20 @@ const Card = (props) => {
             <TextInputValidator
               key={Value}
               defaultValue={Value}
-              events={{
-                onKeyUp: (e) => {
-                  if (e.key === 'Enter') {
-                    const oldValue = cardData.Value;
-                    cardData.Value = e.target.value;
-                    // Update selection value
-                    setBlockSelection(e.target.value);
-                    Update(
-                      StatData.UpdateAllKeys(
-                        [...keyPath, e.target.value],
-                        [...keyPath, oldValue],
-                        data,
-                      ),
-                    );
-                  }
-                },
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  const oldValue = cardData.Value;
+                  cardData.Value = e.target.value;
+                  // Update selection value
+                  setBlockSelection(e.target.value);
+                  Update(
+                    StatData.UpdateAllKeys(
+                      [...keyPath, e.target.value],
+                      [...keyPath, oldValue],
+                      data,
+                    ),
+                  );
+                }
               }}
             />
           ) : cardData.bShow ? (
@@ -910,22 +896,20 @@ const ProfileCard = (props) => {
               <TextInputValidator
                 key={Game}
                 defaultValue={Game}
-                events={{
-                  onKeyUp: (e) => {
-                    if (e.key === 'Enter') {
-                      const oldValue = data.Game;
-                      data.Game = e.target.value;
-                      // Update selection value
-                      setCardSelection(e.target.value);
-                      Update(
-                        StatData.UpdateAllKeys(
-                          ['Values', data.Game],
-                          ['Values', oldValue],
-                          data,
-                        ),
-                      );
-                    }
-                  },
+                onKeyUp={(e) => {
+                  if (e.key === 'Enter') {
+                    const oldValue = data.Game;
+                    data.Game = e.target.value;
+                    // Update selection value
+                    setCardSelection(e.target.value);
+                    Update(
+                      StatData.UpdateAllKeys(
+                        ['Values', data.Game],
+                        ['Values', oldValue],
+                        data,
+                      ),
+                    );
+                  }
                 }}
               />
             ) : (
