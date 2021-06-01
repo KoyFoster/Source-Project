@@ -264,7 +264,9 @@ const Block = (props) => {
                 <TextInputValidator
                   key={value.Value}
                   defaultValue={value.Value}
-                  blacklist={blacklist.replace(`${value.Value}~`, '')}
+                  blacklist={blacklist
+                    .replace(`${value.Value}~`, '')
+                    .split('~')}
                   events={{
                     onKeyUp: (e) => {
                       if (e.key === 'Enter') {
@@ -335,7 +337,9 @@ const Block = (props) => {
                 Stats.Value,
                 <TextInputValidator
                   key={value.Value}
-                  blacklist={blacklist.replace(`${value.Value}~`, '')}
+                  blacklist={blacklist
+                    .replace(`${value.Value}~`, '')
+                    .split('~')}
                   defaultValue={value.Value}
                   events={{
                     onKeyUp: (e) => {
@@ -414,7 +418,9 @@ const Block = (props) => {
                   className="Flavor"
                   key={value.Value}
                   defaultValue={value.Value}
-                  blacklist={blacklist.replace(`${value.Value}~`, '')}
+                  blacklist={blacklist
+                    .replace(`${value.Value}~`, '')
+                    .split('~')}
                   events={{
                     onKeyUp: (e) => {
                       if (e.key === 'Enter') {

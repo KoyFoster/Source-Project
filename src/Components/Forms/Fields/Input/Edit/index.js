@@ -3,12 +3,11 @@
 /* eslint-disable no-return-assign */
 import React, { useState } from 'react';
 
-// import './index.css';
-
-require('./index.css');
+import './index.css';
 
 const Edit = (props) => {
   // props that need handling
+  const { multiline } = props;
   const { type } = props;
   const { value } = props;
   // Orderlapping events
@@ -46,6 +45,13 @@ const Edit = (props) => {
 
   // number type handling
   const handleChangeCapture = (e) => {
+    // newline prevention
+    if (multiline !== true)
+      if (e.target.value.search('\n') > -1) {
+        // revert
+        e.target.value = value;
+      }
+
     // If not number SKIP
     if (type === 'number' || type === 'Number') {
       NumberHandler(e);
@@ -57,7 +63,7 @@ const Edit = (props) => {
 
   // Note: Using input form for password and using textarea for multiple line content
   // Input does not do text alignment or justify, but does have PASSWORD functionality
-  // Additional Notes: Scroll bars are  always auto. See not reason to have them always show or
+  // Additional Notes: Scroll bars are always auto. See no reason to have them always show or
   // have additonal props for defining them.
   return props.password ? (
     <input
@@ -71,7 +77,8 @@ const Edit = (props) => {
       onChangeCapture={(e) => handleChangeCapture(e)}
     />
   ) : (
-    <textarea
+    <input
+      //  rows="1" // causes to size to one row like the input field
       className="Edit"
       {...props}
       id="align"
