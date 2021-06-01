@@ -3,7 +3,6 @@
 .Edit > textarea {
   display: block;
   box-shadow: none;
-  height: 122px;
   min-height: 22px;
   overflow: hidden;
   padding: 0;

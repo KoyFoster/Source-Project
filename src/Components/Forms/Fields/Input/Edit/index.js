@@ -2,14 +2,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
 import React, { useState } from 'react';
-
 import './index.css';
 
 const Edit = (props) => {
   // props that need handling
-  const { multiline } = props;
-  const { type } = props;
-  const { value } = props;
+  const defaultProps = { multiline: true };
+  const { multiline, type, value } = { ...defaultProps, ...props };
   // Orderlapping events
   const { onChangeCapture } = props;
 
@@ -46,11 +44,12 @@ const Edit = (props) => {
   // number type handling
   const handleChangeCapture = (e) => {
     // newline prevention
-    if (multiline !== true)
+    if (multiline === false) {
       if (e.target.value.search('\n') > -1) {
         // revert
         e.target.value = value;
       }
+    }
 
     // If not number SKIP
     if (type === 'number' || type === 'Number') {
@@ -77,8 +76,8 @@ const Edit = (props) => {
       onChangeCapture={(e) => handleChangeCapture(e)}
     />
   ) : (
-    <input
-      //  rows="1" // causes to size to one row like the input field
+    <textarea
+      rows="1" // causes to size to one row like the input field
       className="Edit"
       {...props}
       id="align"
@@ -149,4 +148,4 @@ const TextInputValidator = (props) => {
   );
 };
 
-export { Edit, TextInputValidator };
+export { Edit, Edit as Number, TextInputValidator };
