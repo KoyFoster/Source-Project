@@ -2,14 +2,31 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
 import React, { useState } from 'react';
+import ObjUtil from '../../../../../Utilities/ObjUtil';
+import { Label } from '../../Dividers';
 import './index.css';
 
 const Edit = (props) => {
   // props that need handling
-  const defaultProps = { multiline: true };
-  const { multiline, type, value } = { ...defaultProps, ...props };
+  const defaultProps = { multiline: true, labelPos: 'left' };
+  // Edit props
+  const { className, multiline, type, value, label, labelPos } = {
+    ...defaultProps,
+    ...props,
+  };
   // Orderlapping events
   const { onChangeCapture } = props;
+
+  // Get remaining props so that they can be passed to the Input element
+  const remainingInputProps = ObjUtil.getRemainingObj(props, {
+    className: 0,
+    value: 0,
+    type: 0,
+    multiline: 0,
+    label: 0,
+    labelPos: 0,
+    onChangeCapture: 0,
+  });
 
   // Handle Number Mode
   const NumberHandler = (e) => {
@@ -60,32 +77,47 @@ const Edit = (props) => {
     if (onChangeCapture) onChangeCapture(e);
   };
 
+  const input = () =>
+    remainingInputProps.password ? (
+      <input
+        {...remainingInputProps}
+        className="Edit"
+        value={value}
+        id="align"
+        type="password"
+        ref={(elem) =>
+          remainingInputProps.textInput
+            ? (remainingInputProps.textInput.elem = elem)
+            : undefined
+        }
+        onChangeCapture={(e) => handleChangeCapture(e)}
+      />
+    ) : (
+      <textarea
+        {...remainingInputProps}
+        className="Edit"
+        value={value}
+        rows="1" // causes to size to one row like the input field
+        id="align"
+        ref={(elem) =>
+          remainingInputProps.textInput
+            ? (remainingInputProps.textInput.elem = elem)
+            : undefined
+        }
+        onChangeCapture={(e) => handleChangeCapture(e)}
+      />
+    );
+
   // Note: Using input form for password and using textarea for multiple line content
   // Input does not do text alignment or justify, but does have PASSWORD functionality
   // Additional Notes: Scroll bars are always auto. See no reason to have them always show or
   // have additonal props for defining them.
-  return props.password ? (
-    <input
-      className="Edit"
-      {...props}
-      id="align"
-      type="password"
-      ref={(elem) =>
-        props.textInput ? (props.textInput.elem = elem) : undefined
-      }
-      onChangeCapture={(e) => handleChangeCapture(e)}
-    />
+  return label ? (
+    <Label className={className} label={label} labelPos={labelPos}>
+      {input()}
+    </Label>
   ) : (
-    <textarea
-      rows="1" // causes to size to one row like the input field
-      className="Edit"
-      {...props}
-      id="align"
-      ref={(elem) =>
-        props.textInput ? (props.textInput.elem = elem) : undefined
-      }
-      onChangeCapture={(e) => handleChangeCapture(e)}
-    />
+    input()
   );
 };
 
@@ -116,13 +148,13 @@ const TextInputValidator = (props) => {
   const getClassName = () => {
     switch (state) {
       case 0:
-        return 'unchanged';
+        return 'Edit unchanged';
       case 1:
-        return 'changed';
+        return 'Edit changed';
       case 2:
-        return 'invalid';
+        return 'Edit invalid';
       default:
-        return 'unchanged';
+        return 'Edit unchanged';
     }
   };
 

@@ -2,7 +2,10 @@
 import './index.css';
 import React, { useState } from 'react';
 import { CheckListBoxDropDown, Edit } from '../../Components/Forms/Fields';
-import { TextInputValidator } from '../../Components/Forms/Fields/Input';
+import {
+  CheckBox,
+  TextInputValidator,
+} from '../../Components/Forms/Fields/Input';
 
 const DevSpaceOne = (props) => {
   // const [checked, setChecked] = useState(false);
@@ -23,13 +26,19 @@ const DevSpaceOne = (props) => {
   return (
     <div>
       <div className="div2">
-        <Edit></Edit>
+        <CheckBox pushlike style={{ width: '24px', height: '24px' }}>
+          CB
+        </CheckBox>
+        <CheckBox style={{ width: '64px', height: '48px' }}>CB</CheckBox>
+        <Edit label="Label" labelPos="bottom"></Edit>
         <TextInputValidator
-          defaultValue={'stop'}
+          multiline={false}
+          labelPos="right"
+          label="Label"
           blacklist={['Apples']}
         ></TextInputValidator>
       </div>
-      <CheckListBoxDropDown
+      {/* <CheckListBoxDropDown
         pushlike
         checked={checked}
         setChecked={setChecked}
@@ -46,7 +55,7 @@ const DevSpaceOne = (props) => {
           border: '1px solid #505050',
           zIndex: 1,
         }}
-      ></CheckListBoxDropDown>
+      ></CheckListBoxDropDown> */}
     </div>
   );
 };

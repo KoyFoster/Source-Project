@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-nested-ternary */
 import './index.css';
-import React, { useState } from 'react';
+import React from 'react';
+import ObjUtil from '../../../../../Utilities/ObjUtil';
 
 // TODO: Vertical and Horizontal Text Alignment properties
 // Note/TODO: Currently the font props is taken and set, however, text is always "black" in VersaSuite,
@@ -9,40 +10,37 @@ import React, { useState } from 'react';
 // TODO: Triggers: Double Clicked
 const CheckBox = (props) => {
   // split properties
-  const cbProps = { ...props };
-  const { checked } = cbProps;
-  const { children } = cbProps;
+  const { checked } = props;
+  const { children } = props;
   const { pushlike } = props;
+  const cbProps = ObjUtil.getRemainingObj(props, {
+    checked: 0,
+    pushLike: 0,
+    classNames: 0,
+    hasBorder: 0,
+    children: 0,
+  });
 
-  // delete undesired props from cbProps
-  delete cbProps.pushlike;
-  delete cbProps.style;
-  delete cbProps.classNames;
-  delete cbProps.hasBorder;
-  delete cbProps.children;
+  const cbStyle = pushlike === true ? { display: 'none' } : {};
 
-  const cbStyle = pushlike === true ? { width: 0, visibility: 'hidden' } : {};
-
-  const events = {
-    onClick: props.onClick,
-    onFocus: props.onFocus,
-    onBlur: props.onBlur,
-  };
-
-  let className = '';
+  let className = 'cb_label';
 
   // check for passed classNames
   // this expects 2 classNames: 1 for a checked state (1), and 1 for everything else (0)
   if (props.classNames)
     if (props.classNames.length > 1) {
-      className = pushlike
+      className += pushlike
         ? checked
           ? props.classNames[1]
           : props.classNames[0]
-        : 'nonpushlike';
+        : ' nonpushlike';
     }
-  if (className === '') {
-    className = pushlike ? (checked ? 'pl_pushed' : 'pushlike') : 'nonpushlike';
+  if (className === 'cb_label') {
+    className += pushlike
+      ? checked
+        ? ' pl_pushed'
+        : ' pushlike'
+      : ' nonpushlike';
   }
 
   // return
@@ -53,10 +51,6 @@ const CheckBox = (props) => {
         type="checkbox"
         {...cbProps}
         style={{ ...cbStyle }}
-        {...events}
-        onChange={(e) => {
-          if (props.onChange) props.onChange(e);
-        }}
       />
       {children}
     </label>

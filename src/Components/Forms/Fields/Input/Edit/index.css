@@ -1,6 +1,11 @@
-/* done to conform input an textarea as much as possible */
-.Edit > input,
-.Edit > textarea {
+/* Base Styles*/
+.Round {
+  text-align: left;
+  padding: 4px;
+  border-radius: 4px;
+  margin: 4px;
+}
+.Edit {
   display: block;
   box-shadow: none;
   min-height: 22px;
@@ -9,15 +14,14 @@
   resize: none;
 }
 
-.unchanged {
+/* Edit States */
+.Edit.unchanged {
 }
-
-.changed {
+.Edit.changed {
   background-color: yellow;
   color: black;
 }
-
-.invalid {
+.Edit.invalid {
   background-color: red;
   color: white;
 }

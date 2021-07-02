@@ -1,18 +1,29 @@
 /* VersaSuite Checkbox Style */
-label {
-  display: flex;
+.checkbox {
 }
-.pl_pushed {
+.cb_label {
+  white-space: nowrap;
+  text-align: center;
+}
+.cb_label.pushlike {
+  background: #e1e1e1;
+  border: 1px solid #aaaaaa;
+  color: black;
+}
+.cb_label.pushlike:hover {
+  background: #e5f1fb;
+}
+.cb_label.pushlike:active {
   background: #cce4f7;
   border: 1px solid #005499;
 }
-.nonpushlike {
+.cb_label.pl_pushed {
+  background: #cce4f7;
+  border: 1px solid #005499;
+}
+.cb_label.nonpushlike {
   background: 'transparent';
   color: black;
-}
-.checkbox {
-  align-self: center;
-  display: 'inline-block';
 }
 .listitem {
   background: transparent;

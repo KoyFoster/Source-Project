@@ -1,0 +1,34 @@
+/* Base Styles*/
+.Label {
+}
+/* done to conform input an textarea as much as possible */
+.Label.container {
+}
+.Label.container.vertical {
+  display: grid;
+  grid-template-columns: min-content;
+  grid-template-rows: min-content min-content;
+}
+.Label.container.horizontal {
+  display: grid;
+  grid-template-columns: min-content min-content;
+  grid-template-rows: min-content;
+}
+
+/**/
+.Label.left {
+  grid-column: 1;
+  grid-row: 1;
+}
+.Label.right {
+  grid-column: 2;
+  grid-row: 1;
+}
+.Label.top {
+  grid-column: 1;
+  grid-row: 1;
+}
+.Label.bottom {
+  grid-column: 1;
+  grid-row: 2;
+}
